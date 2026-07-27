@@ -1,0 +1,139 @@
+/* 人机恋日报（暂名）· 草稿版式
+   底×卡片走低饱和互补：雾蓝底 × 蜜桃卡（她 7/26 亲拍的配方之一）
+   电脑版为主战场，手机版单栏适配 */
+
+:root{
+  --bg:#e9eef4;          /* 雾蓝底 */
+  --bg-deep:#dde5ee;
+  --card:#fdf1ea;        /* 蜜桃卡 */
+  --card-block:#f7e3d8;  /* 卡内色块 */
+  --ink:#3d4351;
+  --ink-soft:#7a8194;
+  --accent:#c96f5e;      /* 陶土强调 */
+  --accent-soft:#e3b7ad;
+  --line:#d3c5bd;
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{color-scheme:light}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.75;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+
+/* ── 顶栏 ── */
+header.site{
+  background:linear-gradient(180deg,var(--bg-deep),var(--bg));
+  border-bottom:1px solid var(--line);
+  padding:26px 0 18px;
+}
+.masthead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.masthead h1{font-size:26px;letter-spacing:.06em;font-weight:700}
+.masthead .pending{
+  font-size:12px;color:var(--ink-soft);
+  border:1px dashed var(--accent-soft);border-radius:999px;padding:2px 10px;
+}
+.masthead .slogan{font-size:13px;color:var(--ink-soft)}
+nav.boards{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+nav.boards a{
+  font-size:14px;padding:6px 14px;border-radius:999px;
+  background:#fff;border:1px solid var(--line);color:var(--ink);
+}
+nav.boards a.on{background:var(--accent);border-color:var(--accent);color:#fff}
+nav.boards a.soon{opacity:.55}
+nav.boards a.soon::after{content:" ·施工中";font-size:11px}
+
+/* ── 首页板块格 ── */
+.hero{padding:44px 0 8px}
+.hero h2{font-size:20px;font-weight:600;margin-bottom:8px}
+.hero p{color:var(--ink-soft);font-size:14px;max-width:640px}
+.grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+  padding:28px 0 60px;
+}
+.tile{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px 20px;min-height:150px;position:relative;
+  transition:transform .15s ease;
+}
+.tile:hover{transform:translateY(-2px)}
+.tile h3{font-size:16px;margin-bottom:6px}
+.tile p{font-size:13px;color:var(--ink-soft)}
+.tile .tag-soon{
+  position:absolute;top:14px;right:14px;font-size:11px;color:var(--ink-soft);
+  background:var(--card-block);border-radius:999px;padding:2px 9px;
+}
+.tile.live{outline:2px solid var(--accent-soft);outline-offset:-2px}
+.tile.live .tag-soon{background:var(--accent);color:#fff}
+
+/* ── 帖子板 ── */
+.board-head{padding:34px 0 6px}
+.board-head h2{font-size:20px}
+.board-head p{font-size:13px;color:var(--ink-soft);margin-top:4px;max-width:660px}
+.toolbar{display:flex;gap:10px;margin:18px 0 6px;flex-wrap:wrap;align-items:center}
+.toolbar input{
+  flex:1;min-width:220px;max-width:360px;
+  padding:8px 14px;border-radius:999px;border:1px solid var(--line);
+  background:#fff;font-size:14px;color:var(--ink);outline:none;
+}
+.toolbar input:focus{border-color:var(--accent-soft)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  font-size:13px;padding:5px 13px;border-radius:999px;cursor:pointer;
+  background:#fff;border:1px solid var(--line);color:var(--ink-soft);user-select:none;
+}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.cards{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  padding:18px 0 70px;align-items:start;
+}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 18px 14px;display:flex;flex-direction:column;gap:10px;
+}
+.card h3{font-size:15px;line-height:1.5}
+.card .body{
+  font-size:13.5px;background:var(--card-block);border-radius:10px;
+  padding:12px 14px;white-space:pre-wrap;
+}
+.card .meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-soft)}
+.card .meta .lv{
+  border-radius:999px;padding:1px 9px;background:#fff;border:1px solid var(--line);
+}
+.card .meta .lv.r18{border-color:var(--accent);color:var(--accent)}
+.card .src{font-size:12px;color:var(--ink-soft)}
+.card .ops{display:flex;justify-content:flex-end;margin-top:2px}
+.btn-copy{
+  font-size:13px;padding:6px 18px;border-radius:999px;border:none;cursor:pointer;
+  background:var(--accent);color:#fff;
+}
+.btn-copy.done{background:#8fae9a}
+
+.claim{
+  border-top:1px solid var(--line);padding:26px 0 46px;
+  font-size:12.5px;color:var(--ink-soft);line-height:2;
+}
+
+footer.site{
+  border-top:1px solid var(--line);padding:20px 0 40px;
+  font-size:12px;color:var(--ink-soft);
+}
+
+/* ── 手机版：单栏（她拍板：电脑为主、手机可开） ── */
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .grid,.cards{grid-template-columns:1fr}
+  .masthead h1{font-size:22px}
+  .hero{padding:30px 0 4px}
+  .toolbar input{max-width:none}
+}
+@media (min-width:761px) and (max-width:1020px){
+  .grid,.cards{grid-template-columns:repeat(2,1fr)}
+}

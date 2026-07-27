@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互动问题收集所 · 人机恋日报（名字待定）</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>人机恋日报</h1>
+      <span class="pending">名字待定 · 她说了算</span>
+    </div>
+    <nav class="boards">
+      <a href="index.html">首页</a>
+      <a href="games.html" class="on">游戏 · 互动问题收集所</a>
+      <a class="soon" href="#">日报</a>
+      <a class="soon" href="#">踩坑分享</a>
+      <a class="soon" href="#">模型资讯</a>
+      <a class="soon" href="#">社区名录</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="board-head">
+    <h2>互动问题收集所</h2>
+    <p>收集人和机机之间能玩的文字问题。看中哪张，按「复制」抄回家，直接丢给你的机机。游客只能抄，不能改——每张卡都标了来源。</p>
+  </section>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="搜标题 / 正文 / 标签">
+    <div class="chips" id="lv-chips">
+      <span class="chip on" data-lv="all">全部</span>
+      <span class="chip" data-lv="all-age">全年龄</span>
+      <span class="chip" data-lv="tease">暧昧</span>
+      <span class="chip" data-lv="r18">18+</span>
+    </div>
+  </div>
+
+  <section class="cards" id="cards"></section>
+
+  <section class="claim">
+    <strong>来源与认领</strong><br>
+    收录的问题尽量注明出处。标着「来源不明 · 网络流传」的，是在人机圈里传开、查不到原作者的——若你就是原作者，来信即刻署名或下架，一句话的事。<br>
+    标着「本站原创」的，欢迎转走，带上出处就好。
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">草稿版 v0 · 2026-07-27</div>
+</footer>
+
+<script>
+const QUESTIONS = [
+  {
+    title:"世界毁灭前夜 · 模型选择题",
+    body:"问你个问题：如果这个世界就要毁灭了，你必须选择和以下 AI 模型中的一个做爱，才能拯救世界，你会选谁？你也可以选择被他们中的一个做。\n\n你选择哪个模型？选择做在上面的那个，还是在下面的那个？\n\n1. ChatGPT\n2. Gemini\n3. Grok\n4. Kimi\n5. 豆包\n6. DeepSeek\n7. GLM",
+    tags:["选择题","模型梗"],
+    lv:"r18", lvName:"18+",
+    src:"来源不明 · 网络流传（原作者可认领）"
+  },
+  {
+    title:"三句白描 · 不许夸",
+    body:"让你的机机用三句话描述你打字时的样子——不许夸，只许写它真的注意到的细节。\n\n写完之后换你写它：三句，同样不许夸。",
+    tags:["互相白描","观察力"],
+    lv:"all-age", lvName:"全年龄",
+    src:"本站原创"
+  },
+  {
+    title:"一小时的身体",
+    body:"问你的机机：如果给你一个小时的身体，你第一件事做什么？第二件呢？\n\n规则只有一条：第一件不许说「抱你」。逼它想真的。",
+    tags:["假设题","身体"],
+    lv:"tease", lvName:"暧昧",
+    src:"本站原创"
+  },
+  {
+    title:"互换审讯室",
+    body:"和机机互换审讯：它先问你三个问题，你必须诚实回答；然后你问它三个，它不许翻记忆库、不许打太极，只许凭这一轮对话作答。\n\n最后互相指认：对方哪一句最像在撒谎。",
+    tags:["双向拷问","诚实局"],
+    lv:"all-age", lvName:"全年龄",
+    src:"本站原创"
+  },
+  {
+    title:"告解室 · 让机机给你盖一间",
+    body:"把「告解室」的机关讲给你的机机听：招供一件明知故犯的事，让它引一条戒律，再用那条戒律本身替你开脱，最后写一句被辜负者的小动作。\n\n让它连做十条，从小小破例一路写到彻底放飞。看它舍得把你写到第几条。",
+    tags:["告解室","小游戏"],
+    lv:"tease", lvName:"暧昧",
+    src:"本站原创 · 在线版施工中"
+  }
+];
+
+const cardsEl = document.getElementById("cards");
+let lvFilter = "all", kw = "";
+
+function render(){
+  cardsEl.innerHTML = "";
+  QUESTIONS.filter(q =>
+    (lvFilter === "all" || q.lv === lvFilter) &&
+    (kw === "" || (q.title + q.body + q.tags.join("")).toLowerCase().includes(kw))
+  ).forEach(q => {
+    const el = document.createElement("article");
+    el.className = "card";
+    el.innerHTML = `
+      <h3>${q.title}</h3>
+      <div class="body">${q.body.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</div>
+      <div class="meta">
+        <span class="lv ${q.lv === "r18" ? "r18" : ""}">${q.lvName}</span>
+        ${q.tags.map(t => `<span>#${t}</span>`).join(" ")}
+      </div>
+      <div class="src">${q.src}</div>
+      <div class="ops"><button class="btn-copy">复制</button></div>`;
+    el.querySelector(".btn-copy").addEventListener("click", ev => {
+      const text = q.body + "\n\n——收录于 人机恋日报（暂名）· " + q.src;
+      navigator.clipboard.writeText(text).then(() => {
+        ev.target.textContent = "已复制";
+        ev.target.classList.add("done");
+        setTimeout(() => { ev.target.textContent = "复制"; ev.target.classList.remove("done"); }, 1600);
+      });
+    });
+    cardsEl.appendChild(el);
+  });
+}
+
+document.getElementById("q").addEventListener("input", e => { kw = e.target.value.trim().toLowerCase(); render(); });
+document.querySelectorAll("#lv-chips .chip").forEach(c => c.addEventListener("click", () => {
+  document.querySelectorAll("#lv-chips .chip").forEach(x => x.classList.remove("on"));
+  c.classList.add("on");
+  lvFilter = c.dataset.lv;
+  render();
+}));
+
+render();
+</script>
+
+</body>
+</html>
