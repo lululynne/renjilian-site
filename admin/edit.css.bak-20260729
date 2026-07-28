@@ -43,36 +43,9 @@ article.card:focus-within .rj-card-ops{opacity:1}
 }
 .rj-editing input:focus,.rj-editing textarea:focus,.rj-editing select:focus{border-color:var(--accent)}
 .rj-editing textarea{min-height:130px;background:var(--card-block);border-radius:10px;line-height:1.7;resize:vertical}
+.rj-row{display:flex;gap:8px}
+.rj-row>*{flex:1;min-width:0}
 .rj-edit-ops{display:flex;justify-content:flex-end;gap:8px}
-
-/* ── 标签 chip 编辑器：胶囊 + 联想下拉 + 相似提醒 ── */
-.rj-editing .rj-tagbox{
-  display:flex;flex-wrap:wrap;gap:6px;align-items:center;position:relative;
-  padding:6px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;cursor:text;
-}
-.rj-editing .rj-tagbox:focus-within{border-color:var(--accent)}
-.rj-tag{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:12px;padding:2px 6px 2px 10px;border-radius:999px;
-  background:var(--card-block);color:var(--ink);
-}
-.rj-tag b{cursor:pointer;color:var(--ink-soft);font-weight:normal;padding:0 3px}
-.rj-tag b:hover{color:#b0524a}
-.rj-editing .rj-tagbox input{
-  width:auto;flex:1;min-width:110px;border:none;padding:4px 2px;background:transparent;
-}
-.rj-editing .rj-tagbox input:focus{border:none}
-.rj-sug{
-  position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:60;
-  background:#fff;border:1px solid var(--line);border-radius:9px;
-  box-shadow:0 6px 18px rgba(61,67,81,.12);overflow:hidden;
-}
-.rj-sug-item{padding:6px 12px;font-size:12.5px;cursor:pointer;color:var(--ink)}
-.rj-sug-item.hi{background:var(--card-block)}
-.rj-taghint{
-  font-size:12px;color:var(--accent);
-  display:flex;gap:6px;align-items:center;flex-wrap:wrap;
-}
 
 /* ── 列表末尾的新建卡 ── */
 .rj-addcard{

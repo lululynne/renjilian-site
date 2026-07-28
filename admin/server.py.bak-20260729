@@ -7,7 +7,6 @@
 2026-07-28 按她的原话改成所见即所得：「我想要跟网站界面一模一样，只是多了编辑和上架权限。」
 """
 import json, os, secrets, subprocess, time
-from datetime import datetime, timezone, timedelta
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 SITE = os.path.expanduser("~/renjilian-site")
@@ -161,31 +160,12 @@ class H(BaseHTTPRequestHandler):
             qs = self._body().get("questions")
             if not isinstance(qs, list):
                 return self._send(400, {"error": "格式不对"})
-            now = datetime.now(timezone(timedelta(hours=8))).isoformat(timespec="seconds")
-            seen_ids = set()
             for q in qs:
                 if not (isinstance(q, dict) and isinstance(q.get("title"), str) and isinstance(q.get("body"), str)):
                     return self._send(400, {"error": "卡片缺标题或正文"})
                 q.setdefault("tags", []); q.setdefault("lv", "all-age")
                 q.setdefault("lvName", {"all-age": "全年龄", "tease": "暧昧", "r18": "18+"}.get(q["lv"], "全年龄"))
                 q.setdefault("src", "本站原创")
-                # 稳定身份证：缺 id 补发（时间戳+随机，与标题无关），已有 id 永不动
-                if not q.get("id") or q["id"] in seen_ids:
-                    while True:
-                        nid = "q-%s-%s" % (time.strftime("%Y%m%d"), secrets.token_hex(3))
-                        if nid not in seen_ids:
-                            break
-                    q["id"] = nid
-                seen_ids.add(q["id"])
-                q.setdefault("created_at", now)
-                # 标签落库归一化：去前导 #、去首尾空格、去空、同卡去重（纯文本，不带 #）
-                cleaned, seen_t = [], set()
-                for t in q["tags"]:
-                    t = str(t).strip().lstrip("#").strip()
-                    if t and t not in seen_t:
-                        seen_t.add(t)
-                        cleaned.append(t)
-                q["tags"] = cleaned
             if os.path.exists(DATA):
                 os.replace(DATA, DATA + ".bak")
             json.dump(qs, open(DATA, "w"), ensure_ascii=False, indent=2)

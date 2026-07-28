@@ -39,7 +39,6 @@
       <span class="chip" data-lv="tease">暧昧</span>
       <span class="chip" data-lv="r18">18+</span>
     </div>
-    <span id="tag-filter" hidden></span>
   </div>
 
   <section class="cards" id="cards"></section>
@@ -60,43 +59,24 @@ let QUESTIONS = [];
 fetch("data/questions.json?v=" + Date.now()).then(r => r.json()).then(d => { QUESTIONS = d; render(); });
 
 const cardsEl = document.getElementById("cards");
-let lvFilter = "all", kw = "", tagFilter = null;
-
-function escHtml(s){ return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
-
-function filtered(){
-  return QUESTIONS.filter(q =>
-    (lvFilter === "all" || q.lv === lvFilter) &&
-    (!tagFilter || (q.tags || []).includes(tagFilter)) &&
-    (kw === "" || (q.title + q.body + q.tags.join("")).toLowerCase().includes(kw))
-  ).slice().sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
-}
+let lvFilter = "all", kw = "";
 
 function render(){
   cardsEl.innerHTML = "";
-  const tf = document.getElementById("tag-filter");
-  if(tagFilter){
-    tf.hidden = false;
-    tf.innerHTML = '标签 <span class="chip on">#' + escHtml(tagFilter) + '</span>' +
-      '<span class="chip" id="tag-clear">清除</span>';
-    tf.querySelector("#tag-clear").addEventListener("click", () => { tagFilter = null; render(); });
-  } else {
-    tf.hidden = true;
-    tf.innerHTML = "";
-  }
-  filtered().forEach(q => {
+  QUESTIONS.filter(q =>
+    (lvFilter === "all" || q.lv === lvFilter) &&
+    (kw === "" || (q.title + q.body + q.tags.join("")).toLowerCase().includes(kw))
+  ).forEach(q => {
     const el = document.createElement("article");
     el.className = "card";
-    if(q.id) el.dataset.qid = q.id;
     el.innerHTML = `
-      <h3>${escHtml(q.title)}</h3>
-      <div class="body cut">${escHtml(q.body)}</div>
+      <h3>${q.title}</h3>
+      <div class="body">${q.body.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</div>
       <div class="meta">
-        <span class="lv ${q.lv === "r18" ? "r18" : ""}">${escHtml(q.lvName)}</span>
-        ${q.tags.map(t => `<span class="tag${t === tagFilter ? " on" : ""}" data-tag="${escHtml(t)}">#${escHtml(t)}</span>`).join(" ")}
-        ${q.created_at ? `<span class="date">${String(q.created_at).slice(0, 10)}</span>` : ""}
+        <span class="lv ${q.lv === "r18" ? "r18" : ""}">${q.lvName}</span>
+        ${q.tags.map(t => `<span>#${t}</span>`).join(" ")}
       </div>
-      <div class="src">${escHtml(q.src)}</div>
+      <div class="src">${q.src}</div>
       <div class="ops"><button class="btn-copy">复制</button></div>`;
     el.querySelector(".btn-copy").addEventListener("click", ev => {
       const text = q.body + "\n\n——收录于 人机恋日报（暂名）· " + q.src;
@@ -106,24 +86,7 @@ function render(){
         setTimeout(() => { ev.target.textContent = "复制"; ev.target.classList.remove("done"); }, 1600);
       });
     });
-    el.querySelectorAll(".tag").forEach(s => s.addEventListener("click", () => {
-      tagFilter = (tagFilter === s.dataset.tag) ? null : s.dataset.tag;
-      render();
-    }));
     cardsEl.appendChild(el);
-    // 正文超出固定高度才截断并给「展开 / 收起」；短正文不出按钮（搜索仍搜全文，不受折叠影响）
-    const body = el.querySelector(".body");
-    if(body.scrollHeight > body.clientHeight + 2){
-      const fb = document.createElement("button");
-      fb.type = "button";
-      fb.className = "fold";
-      fb.textContent = "展开";
-      fb.addEventListener("click", () => {
-        const cut = body.classList.toggle("cut");
-        fb.textContent = cut ? "展开" : "收起";
-      });
-      body.after(fb);
-    }
   });
 }
 
