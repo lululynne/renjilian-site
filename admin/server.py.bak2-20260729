@@ -117,8 +117,6 @@ class H(BaseHTTPRequestHandler):
             return self._send(200, LOGIN.encode(), "text/html")
         if path == "/style.css":
             return self._file("style.css", "text/css")
-        if path == "/interactions.js":
-            return self._file("interactions.js", "application/javascript")
         if path == "/data/questions.json":
             return self._file(os.path.join("data", "questions.json"))
         if path in ("/admin/edit.js", "/admin/edit.css"):

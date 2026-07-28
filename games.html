@@ -39,6 +39,7 @@
       <span class="chip" data-lv="tease">暧昧</span>
       <span class="chip" data-lv="r18">18+</span>
     </div>
+    <span class="chip" id="fav-chip">我的收藏</span>
     <span id="tag-filter" hidden></span>
   </div>
 
@@ -55,12 +56,23 @@
   <div class="wrap">草稿版 v0 · 2026-07-27</div>
 </footer>
 
+<script src="interactions.js"></script>
 <script>
+/* ══════════ 两档卡片阈值（她要调数字就改这两行）══════════
+   正文字数 ≤ CARD_SHORT_MAX → 短卡；超过 → 长卡；
+   长卡内容超出固定高度时在卡内渐隐截断（完整正文点卡片看浮层，不再有展开按钮）*/
+const CARD_SHORT_MAX = 120;
+const CARD_LONG_MAX  = 460;
+/* 认领提交内容的接收邮箱 · 占位常量，她之后填。
+   这一刀不上传任何服务器：只生成结构化内容供下载/复制，页面提示发到该邮箱 */
+const CLAIM_MAIL_TO  = "claim@example.com";
+
 let QUESTIONS = [];
 fetch("data/questions.json?v=" + Date.now()).then(r => r.json()).then(d => { QUESTIONS = d; render(); });
 
 const cardsEl = document.getElementById("cards");
-let lvFilter = "all", kw = "", tagFilter = null;
+const INTER = window.RJ_INTERACTIONS;   // 点赞/收藏统一走这个模块（见 interactions.js 顶部注释）
+let lvFilter = "all", kw = "", tagFilter = null, favOnly = false;
 
 function escHtml(s){ return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
 
@@ -68,10 +80,221 @@ function filtered(){
   return QUESTIONS.filter(q =>
     (lvFilter === "all" || q.lv === lvFilter) &&
     (!tagFilter || (q.tags || []).includes(tagFilter)) &&
+    (!favOnly || (q.id && INTER.isFavorite(q.id))) &&
     (kw === "" || (q.title + q.body + q.tags.join("")).toLowerCase().includes(kw))
   ).slice().sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
 }
 
+/* ── 详情浮层（小红书式：点卡片浮起，遮罩/×/Esc 关闭，滚动位置不变）── */
+const overlay = document.createElement("div");
+overlay.id = "rj-overlay";
+overlay.hidden = true;
+overlay.innerHTML = `
+  <div class="rj-modal" role="dialog" aria-modal="true">
+    <button class="rj-m-close" type="button" aria-label="关闭">×</button>
+    <h3 class="rj-m-title"></h3>
+    <div class="rj-m-meta"></div>
+    <div class="rj-m-body"></div>
+    <div class="rj-m-src"></div>
+    <div class="rj-m-ops">
+      <button class="btn-claim rj-m-claim" type="button">这是我写的</button>
+      <button class="btn-copy rj-m-copy" type="button">复制</button>
+    </div>
+    <div class="rj-inter">
+      <button class="rj-ibtn rj-like" type="button"><span class="ic">♡</span> 赞 <span class="n">0</span></button>
+      <button class="rj-ibtn rj-fav" type="button"><span class="ic">☆</span><span class="lbl"> 收藏</span></button>
+    </div>
+    <div class="rj-comments">
+      <div class="rj-c-title">评论</div>
+      <input class="rj-c-input" type="text" disabled placeholder="登录后可评论 · 即将开放">
+      <div class="rj-c-note">评论为纯文字，不支持上传图片</div>
+    </div>
+  </div>`;
+document.body.appendChild(overlay);
+
+let modalQ = null;
+
+function refreshInter(){
+  if(!modalQ || !modalQ.id) return;
+  const likeBtn = overlay.querySelector(".rj-like");
+  const favBtn  = overlay.querySelector(".rj-fav");
+  const liked = INTER.isLiked(modalQ.id), fav = INTER.isFavorite(modalQ.id);
+  likeBtn.classList.toggle("on", liked);
+  likeBtn.querySelector(".ic").textContent = liked ? "♥" : "♡";
+  likeBtn.querySelector(".n").textContent = INTER.likeCount(modalQ.id);
+  favBtn.classList.toggle("on", fav);
+  favBtn.querySelector(".ic").textContent = fav ? "★" : "☆";
+  favBtn.querySelector(".lbl").textContent = fav ? " 已收藏" : " 收藏";
+}
+
+function openModal(q){
+  modalQ = q;
+  overlay.querySelector(".rj-m-title").textContent = q.title;
+  overlay.querySelector(".rj-m-meta").innerHTML =
+    `<span class="lv ${q.lv === "r18" ? "r18" : ""}">${escHtml(q.lvName)}</span> ` +
+    q.tags.map(t => `<span class="tag" data-tag="${escHtml(t)}">#${escHtml(t)}</span>`).join(" ") +
+    (q.created_at ? ` <span class="date">${String(q.created_at).slice(0, 10)}</span>` : "");
+  overlay.querySelector(".rj-m-body").textContent = q.body;   // 完整正文，不截断
+  overlay.querySelector(".rj-m-src").textContent = q.src;
+  const copyBtn = overlay.querySelector(".rj-m-copy");
+  copyBtn.textContent = "复制"; copyBtn.classList.remove("done");
+  refreshInter();
+  overlay.hidden = false;
+  overlay.querySelector(".rj-modal").scrollTop = 0;
+  document.body.classList.add("no-scroll");   // 只锁滚动，不动 scrollY，关闭后原位不动
+}
+
+function closeModal(){
+  overlay.hidden = true;
+  modalQ = null;
+  document.body.classList.remove("no-scroll");
+}
+
+overlay.querySelector(".rj-m-close").addEventListener("click", closeModal);
+overlay.addEventListener("click", ev => { if(ev.target === overlay) closeModal(); });
+overlay.querySelector(".rj-m-meta").addEventListener("click", ev => {
+  const t = ev.target.closest(".tag");
+  if(!t) return;
+  tagFilter = (tagFilter === t.dataset.tag) ? null : t.dataset.tag;   // 浮层标签：关浮层并按该标签筛选
+  closeModal();
+  render();
+});
+overlay.querySelector(".rj-m-copy").addEventListener("click", ev => {
+  if(!modalQ) return;
+  const text = modalQ.body + "\n\n——收录于 人机恋日报（暂名）· " + modalQ.src;
+  navigator.clipboard.writeText(text).then(() => {
+    ev.target.textContent = "已复制";
+    ev.target.classList.add("done");
+    setTimeout(() => { ev.target.textContent = "复制"; ev.target.classList.remove("done"); }, 1600);
+  });
+});
+overlay.querySelector(".rj-like").addEventListener("click", () => {
+  if(modalQ && modalQ.id){ INTER.toggleLike(modalQ.id); refreshInter(); }
+});
+overlay.querySelector(".rj-fav").addEventListener("click", () => {
+  if(modalQ && modalQ.id){ INTER.toggleFavorite(modalQ.id); refreshInter(); }
+});
+overlay.querySelector(".rj-m-claim").addEventListener("click", () => {
+  if(!modalQ) return;
+  const q = modalQ;
+  closeModal();
+  openClaim(q);
+});
+
+/* ── 认领表单（「这是我写的」· 唯一允许传图处，截图仅审核用、绝不公开）── */
+const claimOverlay = document.createElement("div");
+claimOverlay.id = "claim-overlay";
+claimOverlay.hidden = true;
+claimOverlay.innerHTML = `
+  <div class="rj-modal claim-form" role="dialog" aria-modal="true">
+    <button class="rj-m-close" type="button" aria-label="关闭">×</button>
+    <h3 class="rj-m-title">这是我写的</h3>
+    <div class="claim-q"></div>
+    <label>原发布截图（仅用于核验，不会公开，处理后删除）
+      <input class="c-shot" type="file" accept="image/*">
+    </label>
+    <label>作者名（必填）
+      <input class="c-name" type="text" maxlength="40">
+    </label>
+    <label>原发布链接（选填）
+      <input class="c-url" type="url" placeholder="https://…">
+    </label>
+    <label>你的诉求</label>
+    <div class="radios">
+      <label><input type="radio" name="c-act" value="credit" checked> 署我的名</label>
+      <label><input type="radio" name="c-act" value="takedown"> 请撤下</label>
+    </div>
+    <label>联系方式（邮箱，用于回复结果）
+      <input class="c-mail" type="email" placeholder="you@example.com">
+    </label>
+    <div class="claim-note">截图仅用于核验、不会公开展示、处理后删除。</div>
+    <div class="claim-ops">
+      <button class="btn-ghost c-dl" type="button">下载为文件</button>
+      <button class="btn-ghost c-cp" type="button">复制到剪贴板</button>
+    </div>
+    <div class="claim-hint"></div>
+  </div>`;
+document.body.appendChild(claimOverlay);
+
+let claimQ = null;
+
+function openClaim(q){
+  claimQ = q;
+  claimOverlay.querySelector(".claim-q").textContent = "认领卡片：" + q.title;
+  claimOverlay.querySelector(".claim-hint").textContent = "";
+  claimOverlay.hidden = false;
+  document.body.classList.add("no-scroll");
+}
+function closeClaim(){
+  claimOverlay.hidden = true;
+  claimQ = null;
+  document.body.classList.remove("no-scroll");
+}
+claimOverlay.querySelector(".rj-m-close").addEventListener("click", closeClaim);
+claimOverlay.addEventListener("click", ev => { if(ev.target === claimOverlay) closeClaim(); });
+
+document.addEventListener("keydown", ev => {
+  if(ev.key !== "Escape") return;
+  if(!claimOverlay.hidden) closeClaim();
+  else if(!overlay.hidden) closeModal();
+});
+
+/* 组装认领提交内容。
+   将来接后端时，把下面的「下载 / 复制」换成一次请求：
+     POST /api/claims   (multipart/form-data)
+       question_id    string  卡片 id
+       question_title string  卡片标题（便于审核辨认）
+       author_name    string  必填，作者名
+       original_url   string  选填，原发布链接（空串=未填）
+       action         string  "credit"=署我的名 | "takedown"=请撤下
+       contact_email  string  必填，回复结果用
+       screenshot     File    原发布截图（image/*，仅审核用，绝不公开展示，处理后删除）
+   本刀不上传：只生成同字段的 JSON 供下载/复制，截图由用户作为邮件附件手动发送 */
+function buildClaimPayload(){
+  const name = claimOverlay.querySelector(".c-name").value.trim();
+  const mail = claimOverlay.querySelector(".c-mail").value.trim();
+  if(!name){ return {error:"请填作者名"}; }
+  if(!mail){ return {error:"请填联系邮箱"}; }
+  const shot = claimOverlay.querySelector(".c-shot").files[0];
+  return {payload:{
+    type: "claim",
+    question_id: claimQ.id || "",
+    question_title: claimQ.title,
+    author_name: name,
+    original_url: claimOverlay.querySelector(".c-url").value.trim(),
+    action: claimOverlay.querySelector('input[name="c-act"]:checked').value,
+    contact_email: mail,
+    screenshot_file: shot ? shot.name : null,
+    submitted_at: new Date().toISOString(),
+    note: "截图仅用于核验、不会公开、处理后删除"
+  }};
+}
+function claimHint(extra){
+  claimOverlay.querySelector(".claim-hint").textContent =
+    extra + "请把这份内容发到 " + CLAIM_MAIL_TO +
+    (claimOverlay.querySelector(".c-shot").files[0] ? "，截图作为附件一并发送。" : "。");
+}
+claimOverlay.querySelector(".c-dl").addEventListener("click", () => {
+  const r = buildClaimPayload();
+  if(r.error){ claimOverlay.querySelector(".claim-hint").textContent = r.error; return; }
+  const blob = new Blob([JSON.stringify(r.payload, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "claim-" + (r.payload.question_id || "card") + "-" +
+    new Date().toISOString().slice(0, 10) + ".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  claimHint("已下载。不上传服务器——");
+});
+claimOverlay.querySelector(".c-cp").addEventListener("click", () => {
+  const r = buildClaimPayload();
+  if(r.error){ claimOverlay.querySelector(".claim-hint").textContent = r.error; return; }
+  navigator.clipboard.writeText(JSON.stringify(r.payload, null, 2)).then(() => {
+    claimHint("已复制。不上传服务器——");
+  });
+});
+
+/* ── 卡片墙 ── */
 function render(){
   cardsEl.innerHTML = "";
   const tf = document.getElementById("tag-filter");
@@ -86,18 +309,19 @@ function render(){
   }
   filtered().forEach(q => {
     const el = document.createElement("article");
-    el.className = "card";
+    // 两档定高：字数 ≤ 短档阈值 → 短卡，超过 → 长卡（阈值见文件顶部常量）
+    el.className = "card " + ((q.body || "").length <= CARD_SHORT_MAX ? "tier-short" : "tier-long");
     if(q.id) el.dataset.qid = q.id;
     el.innerHTML = `
       <h3>${escHtml(q.title)}</h3>
-      <div class="body cut">${escHtml(q.body)}</div>
+      <div class="body">${escHtml(q.body)}</div>
       <div class="meta">
         <span class="lv ${q.lv === "r18" ? "r18" : ""}">${escHtml(q.lvName)}</span>
         ${q.tags.map(t => `<span class="tag${t === tagFilter ? " on" : ""}" data-tag="${escHtml(t)}">#${escHtml(t)}</span>`).join(" ")}
         ${q.created_at ? `<span class="date">${String(q.created_at).slice(0, 10)}</span>` : ""}
       </div>
       <div class="src">${escHtml(q.src)}</div>
-      <div class="ops"><button class="btn-copy">复制</button></div>`;
+      <div class="ops"><button class="btn-claim">这是我写的</button><button class="btn-copy">复制</button></div>`;
     el.querySelector(".btn-copy").addEventListener("click", ev => {
       const text = q.body + "\n\n——收录于 人机恋日报（暂名）· " + q.src;
       navigator.clipboard.writeText(text).then(() => {
@@ -106,24 +330,21 @@ function render(){
         setTimeout(() => { ev.target.textContent = "复制"; ev.target.classList.remove("done"); }, 1600);
       });
     });
+    el.querySelector(".btn-claim").addEventListener("click", () => openClaim(q));
     el.querySelectorAll(".tag").forEach(s => s.addEventListener("click", () => {
-      tagFilter = (tagFilter === s.dataset.tag) ? null : s.dataset.tag;
+      tagFilter = (tagFilter === s.dataset.tag) ? null : s.dataset.tag;   // 卡上标签：只筛选，不弹浮层
       render();
     }));
+    // 点卡片其他位置 → 详情浮层；标签/按钮/编辑态/后台编辑元素不触发
+    el.addEventListener("click", ev => {
+      if(el.classList.contains("rj-editing")) return;
+      if(ev.target.closest(".tag, button, input, textarea, select, .rj-card-ops")) return;
+      openModal(q);
+    });
     cardsEl.appendChild(el);
-    // 正文超出固定高度才截断并给「展开 / 收起」；短正文不出按钮（搜索仍搜全文，不受折叠影响）
+    // 超出本档固定高度 → 渐隐截断（完整内容点卡片看浮层）
     const body = el.querySelector(".body");
-    if(body.scrollHeight > body.clientHeight + 2){
-      const fb = document.createElement("button");
-      fb.type = "button";
-      fb.className = "fold";
-      fb.textContent = "展开";
-      fb.addEventListener("click", () => {
-        const cut = body.classList.toggle("cut");
-        fb.textContent = cut ? "展开" : "收起";
-      });
-      body.after(fb);
-    }
+    if(body.scrollHeight > body.clientHeight + 2) body.classList.add("cut");
   });
 }
 
@@ -134,6 +355,11 @@ document.querySelectorAll("#lv-chips .chip").forEach(c => c.addEventListener("cl
   lvFilter = c.dataset.lv;
   render();
 }));
+document.getElementById("fav-chip").addEventListener("click", () => {
+  favOnly = !favOnly;   // 「我的收藏」：只看本机收藏过的
+  document.getElementById("fav-chip").classList.toggle("on", favOnly);
+  render();
+});
 
 render();
 </script>

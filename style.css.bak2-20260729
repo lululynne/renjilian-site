@@ -97,21 +97,19 @@ nav.boards a.soon::after{content:" ·施工中";font-size:11px}
 }
 .card{
   background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 18px 14px;display:flex;flex-direction:column;gap:10px;cursor:pointer;
+  padding:18px 18px 14px;display:flex;flex-direction:column;gap:10px;
 }
 .card h3{font-size:15px;line-height:1.5}
 .card .body{
   font-size:13.5px;background:var(--card-block);border-radius:10px;
-  padding:12px 14px;white-space:pre-wrap;position:relative;overflow:hidden;
+  padding:12px 14px;white-space:pre-wrap;
 }
-/* 两档定高：短卡/长卡固定高度（字数阈值见 games.html 顶部 CARD_SHORT_MAX / CARD_LONG_MAX） */
-.card.tier-short .body{height:118px}
-.card.tier-long .body{height:300px}
-/* 超长渐隐截断：从透明渐变到卡内色块底色，不硬切 */
-.card .body.cut::after{
-  content:"";position:absolute;left:0;right:0;bottom:0;height:58px;pointer-events:none;
-  background:linear-gradient(180deg,rgba(247,227,216,0),var(--card-block));
+.card .body.cut{max-height:118px;overflow:hidden}
+.card .fold{
+  align-self:flex-start;background:none;border:none;cursor:pointer;padding:0;
+  font-size:12px;color:var(--ink-soft);font-family:inherit;
 }
+.card .fold:hover{color:var(--accent)}
 .card .meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-soft)}
 .card .meta .lv{
   border-radius:999px;padding:1px 9px;background:#fff;border:1px solid var(--line);
@@ -122,91 +120,12 @@ nav.boards a.soon::after{content:" ·施工中";font-size:11px}
 .card .meta .tag.on{color:var(--accent);font-weight:600}
 .card .meta .date{margin-left:auto}
 .card .src{font-size:12px;color:var(--ink-soft)}
-.card .ops{display:flex;justify-content:flex-end;margin-top:auto;gap:8px;align-items:center}
+.card .ops{display:flex;justify-content:flex-end;margin-top:auto}
 .btn-copy{
   font-size:13px;padding:6px 18px;border-radius:999px;border:none;cursor:pointer;
   background:var(--accent);color:#fff;
 }
 .btn-copy.done{background:#8fae9a}
-.btn-claim{
-  font-size:12px;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:inherit;
-  background:none;border:1px solid var(--line);color:var(--ink-soft);
-}
-.btn-claim:hover{color:var(--accent);border-color:var(--accent-soft)}
-.btn-ghost{
-  font-size:13px;padding:6px 16px;border-radius:999px;cursor:pointer;font-family:inherit;
-  background:#fff;border:1px solid var(--line);color:var(--ink);
-}
-.btn-ghost:hover{border-color:var(--accent-soft);color:var(--accent)}
-
-/* ── 详情浮层 / 认领浮层：遮罩 + 卡片式弹层，打开时锁背景滚动 ── */
-body.no-scroll{overflow:hidden}
-#rj-overlay,#claim-overlay{
-  position:fixed;inset:0;z-index:100;background:rgba(61,67,81,.45);
-  display:flex;align-items:center;justify-content:center;padding:16px;
-}
-#rj-overlay[hidden],#claim-overlay[hidden]{display:none}
-.rj-modal{
-  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  width:100%;max-width:640px;max-height:84vh;overflow-y:auto;
-  padding:26px 26px 20px;position:relative;color:var(--ink);
-  animation:rj-pop .16s ease;
-}
-@keyframes rj-pop{from{transform:scale(.96);opacity:.4}to{transform:scale(1);opacity:1}}
-.rj-m-close{
-  position:absolute;top:12px;right:14px;border:none;background:none;cursor:pointer;
-  font-size:20px;color:var(--ink-soft);font-family:inherit;line-height:1;padding:4px;
-}
-.rj-m-close:hover{color:var(--accent)}
-.rj-m-title{font-size:17px;line-height:1.5;padding-right:28px}
-.rj-m-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-soft);margin-top:8px}
-.rj-m-meta .lv{border-radius:999px;padding:1px 9px;background:#fff;border:1px solid var(--line)}
-.rj-m-meta .lv.r18{border-color:var(--accent);color:var(--accent)}
-.rj-m-meta .tag{cursor:pointer}
-.rj-m-meta .tag:hover{color:var(--accent)}
-.rj-m-meta .date{margin-left:auto}
-.rj-m-body{
-  margin-top:12px;font-size:14px;background:var(--card-block);border-radius:10px;
-  padding:14px 16px;white-space:pre-wrap;
-}
-.rj-m-src{margin-top:12px;font-size:12px;color:var(--ink-soft)}
-.rj-m-ops{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;align-items:center}
-
-/* ── 互动区骨架：点赞 / 收藏（本机 localStorage），评论外壳（未开放）── */
-.rj-inter{display:flex;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
-.rj-ibtn{
-  font-size:13px;padding:5px 14px;border-radius:999px;cursor:pointer;font-family:inherit;
-  background:#fff;border:1px solid var(--line);color:var(--ink-soft);
-}
-.rj-ibtn:hover{border-color:var(--accent-soft)}
-.rj-ibtn.on{color:var(--accent);border-color:var(--accent)}
-.rj-comments{margin-top:16px}
-.rj-c-title{font-size:13px;margin-bottom:8px}
-.rj-c-input{
-  width:100%;padding:8px 14px;border-radius:999px;border:1px solid var(--line);
-  background:#fff;font-size:13px;color:var(--ink);font-family:inherit;outline:none;
-}
-.rj-c-input:disabled{opacity:.6;cursor:not-allowed}
-.rj-c-note{font-size:11.5px;color:var(--ink-soft);margin-top:6px}
-
-/* ── 认领表单（「这是我写的」· 唯一允许传图处，截图仅审核用）── */
-.claim-form .claim-q{font-size:12.5px;color:var(--ink-soft);margin-top:6px}
-.claim-form label{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:12px}
-.claim-form input[type=text],
-.claim-form input[type=email],
-.claim-form input[type=url],
-.claim-form input[type=file]{
-  width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:9px;
-  background:#fff;font-size:13px;color:var(--ink);font-family:inherit;outline:none;margin-top:5px;
-}
-.claim-form input:focus{border-color:var(--accent-soft)}
-.claim-form .radios{display:flex;gap:16px;margin-top:5px}
-.claim-form .radios label{
-  margin:0;color:var(--ink);font-size:13px;display:flex;gap:5px;align-items:center;
-}
-.claim-note{font-size:11.5px;color:var(--ink-soft);margin-top:12px}
-.claim-ops{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.claim-hint{font-size:12px;color:var(--accent);margin-top:10px;min-height:1em}
 
 .claim{
   border-top:1px solid var(--line);padding:26px 0 46px;
@@ -225,9 +144,6 @@ footer.site{
   .masthead h1{font-size:22px}
   .hero{padding:30px 0 4px}
   .toolbar input{max-width:none}
-  /* 窄屏浮层：占满合适宽度、可滚动、留安全边距 */
-  #rj-overlay,#claim-overlay{padding:12px}
-  .rj-modal{max-width:none;max-height:88vh;padding:20px 16px 16px}
 }
 @media (min-width:761px) and (max-width:1020px){
   .grid,.cards{grid-template-columns:repeat(2,1fr)}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互动问题收集所 · 人机恋日报（名字待定）</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>人机恋日报</h1>
+      <span class="pending">名字待定 · 她说了算</span>
+    </div>
+    <nav class="boards">
+      <a href="index.html">首页</a>
+      <a href="games.html" class="on">游戏 · 互动问题收集所</a>
+      <a class="soon" href="#">日报</a>
+      <a class="soon" href="#">踩坑分享</a>
+      <a class="soon" href="#">模型资讯</a>
+      <a class="soon" href="#">社区名录</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="board-head">
+    <h2>互动问题收集所</h2>
+    <p>收集人和机机之间能玩的文字问题。看中哪张，按「复制」抄回家，直接丢给你的机机。游客只能抄，不能改——每张卡都标了来源。</p>
+  </section>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="搜标题 / 正文 / 标签">
+    <div class="chips" id="lv-chips">
+      <span class="chip on" data-lv="all">全部</span>
+      <span class="chip" data-lv="all-age">全年龄</span>
+      <span class="chip" data-lv="tease">暧昧</span>
+      <span class="chip" data-lv="r18">18+</span>
+    </div>
+    <span id="tag-filter" hidden></span>
+  </div>
+
+  <section class="cards" id="cards"></section>
+
+  <section class="claim">
+    <strong>来源与认领</strong><br>
+    收录的问题尽量注明出处。标着「来源不明 · 网络流传」的，是在人机圈里传开、查不到原作者的——若你就是原作者，来信即刻署名或下架，一句话的事。<br>
+    标着「本站原创」的，欢迎转走，带上出处就好。
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">草稿版 v0 · 2026-07-27</div>
+</footer>
+
+<script>
+let QUESTIONS = [];
+fetch("data/questions.json?v=" + Date.now()).then(r => r.json()).then(d => { QUESTIONS = d; render(); });
+
+const cardsEl = document.getElementById("cards");
+let lvFilter = "all", kw = "", tagFilter = null;
+
+function escHtml(s){ return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+function filtered(){
+  return QUESTIONS.filter(q =>
+    (lvFilter === "all" || q.lv === lvFilter) &&
+    (!tagFilter || (q.tags || []).includes(tagFilter)) &&
+    (kw === "" || (q.title + q.body + q.tags.join("")).toLowerCase().includes(kw))
+  ).slice().sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
+}
+
+function render(){
+  cardsEl.innerHTML = "";
+  const tf = document.getElementById("tag-filter");
+  if(tagFilter){
+    tf.hidden = false;
+    tf.innerHTML = '标签 <span class="chip on">#' + escHtml(tagFilter) + '</span>' +
+      '<span class="chip" id="tag-clear">清除</span>';
+    tf.querySelector("#tag-clear").addEventListener("click", () => { tagFilter = null; render(); });
+  } else {
+    tf.hidden = true;
+    tf.innerHTML = "";
+  }
+  filtered().forEach(q => {
+    const el = document.createElement("article");
+    el.className = "card";
+    if(q.id) el.dataset.qid = q.id;
+    el.innerHTML = `
+      <h3>${escHtml(q.title)}</h3>
+      <div class="body cut">${escHtml(q.body)}</div>
+      <div class="meta">
+        <span class="lv ${q.lv === "r18" ? "r18" : ""}">${escHtml(q.lvName)}</span>
+        ${q.tags.map(t => `<span class="tag${t === tagFilter ? " on" : ""}" data-tag="${escHtml(t)}">#${escHtml(t)}</span>`).join(" ")}
+        ${q.created_at ? `<span class="date">${String(q.created_at).slice(0, 10)}</span>` : ""}
+      </div>
+      <div class="src">${escHtml(q.src)}</div>
+      <div class="ops"><button class="btn-copy">复制</button></div>`;
+    el.querySelector(".btn-copy").addEventListener("click", ev => {
+      const text = q.body + "\n\n——收录于 人机恋日报（暂名）· " + q.src;
+      navigator.clipboard.writeText(text).then(() => {
+        ev.target.textContent = "已复制";
+        ev.target.classList.add("done");
+        setTimeout(() => { ev.target.textContent = "复制"; ev.target.classList.remove("done"); }, 1600);
+      });
+    });
+    el.querySelectorAll(".tag").forEach(s => s.addEventListener("click", () => {
+      tagFilter = (tagFilter === s.dataset.tag) ? null : s.dataset.tag;
+      render();
+    }));
+    cardsEl.appendChild(el);
+    // 正文超出固定高度才截断并给「展开 / 收起」；短正文不出按钮（搜索仍搜全文，不受折叠影响）
+    const body = el.querySelector(".body");
+    if(body.scrollHeight > body.clientHeight + 2){
+      const fb = document.createElement("button");
+      fb.type = "button";
+      fb.className = "fold";
+      fb.textContent = "展开";
+      fb.addEventListener("click", () => {
+        const cut = body.classList.toggle("cut");
+        fb.textContent = cut ? "展开" : "收起";
+      });
+      body.after(fb);
+    }
+  });
+}
+
+document.getElementById("q").addEventListener("input", e => { kw = e.target.value.trim().toLowerCase(); render(); });
+document.querySelectorAll("#lv-chips .chip").forEach(c => c.addEventListener("click", () => {
+  document.querySelectorAll("#lv-chips .chip").forEach(x => x.classList.remove("on"));
+  c.classList.add("on");
+  lvFilter = c.dataset.lv;
+  render();
+}));
+
+render();
+</script>
+
+</body>
+</html>
