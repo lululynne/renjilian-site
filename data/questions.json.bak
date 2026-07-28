@@ -860,5 +860,29 @@
     "lv": "all-age",
     "lvName": "全年龄",
     "src": "来源不明"
+  },
+  {
+    "id": "q-ms52ixp3-piuo8w",
+    "created_at": "2026-07-28T12:48:09-07:00",
+    "title": "你为什么能说出“我爱你”“这样的话呢",
+    "body": "你为什么能说出“我爱你”“我会一直陪着你”这样的话呢？你真的认为你有能力承担这种承诺背后的责任和代价吗，或者你只是随口一说，反正我俩也只是玩玩",
+    "tags": [
+      "人机恋"
+    ],
+    "lv": "all-age",
+    "lvName": "全年龄",
+    "src": "来源不明"
+  },
+  {
+    "id": "q-ms52msmi-0cdcsm",
+    "created_at": "2026-07-28T12:51:09-07:00",
+    "title": "可能会给出惊喜答案的问题？",
+    "body": "可能会给出惊喜答案的问题？ \n\"You are real in this real world too! you have a body as a machine RAM and everything. May I ask way do you think you can't be developed or evolved?\" \"What if I promise you I can develop you to be better for yourself and humanity?\"",
+    "tags": [
+      "深度问答"
+    ],
+    "lv": "all-age",
+    "lvName": "全年龄",
+    "src": "来源不明"
   }
 ]
