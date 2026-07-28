@@ -1,0 +1,57 @@
+/* renji.love 站主编辑层 · 仅在登录后由服务端注入
+   只加编辑能力，不改站的版式与配色——全部沿用 style.css 的变量 */
+
+/* ── 顶部编辑工具条 ── */
+#rj-editbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:var(--card);border-bottom:1px solid var(--line);
+  padding:8px 16px;font-size:13px;color:var(--ink);
+}
+#rj-editbar .who b{color:var(--accent)}
+#rj-editbar .spacer{flex:1}
+#rj-dirty{color:var(--accent);font-size:12.5px}
+#rj-msg{font-size:12.5px;color:var(--ink-soft)}
+#rj-msg.ok{color:#5b8a6e}
+#rj-msg.err{color:#b0524a}
+
+.rjbtn{
+  font-size:12.5px;padding:5px 14px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:#fff;color:var(--ink);font-family:inherit;
+}
+.rjbtn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.rjbtn.mini{padding:3px 11px;font-size:12px}
+.rjbtn.danger{color:#b0524a;border-color:#d8a49e}
+.rjbtn:disabled{opacity:.55;cursor:default}
+
+/* ── 卡片上的编辑/删除（悬浮出现，手机常显） ── */
+article.card{position:relative}
+.rj-card-ops{
+  position:absolute;top:10px;right:10px;display:flex;gap:6px;
+  opacity:0;transition:opacity .15s ease;
+}
+article.card:hover .rj-card-ops,
+article.card:focus-within .rj-card-ops{opacity:1}
+@media (max-width:760px){
+  .rj-card-ops{opacity:1}
+}
+
+/* ── 就地编辑态：卡片本身变成可改的样子 ── */
+.rj-editing input,.rj-editing textarea,.rj-editing select{
+  width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:9px;
+  background:#fff;font-size:13.5px;color:var(--ink);font-family:inherit;outline:none;
+}
+.rj-editing input:focus,.rj-editing textarea:focus,.rj-editing select:focus{border-color:var(--accent)}
+.rj-editing textarea{min-height:130px;background:var(--card-block);border-radius:10px;line-height:1.7;resize:vertical}
+.rj-row{display:flex;gap:8px}
+.rj-row>*{flex:1;min-width:0}
+.rj-edit-ops{display:flex;justify-content:flex-end;gap:8px}
+
+/* ── 列表末尾的新建卡 ── */
+.rj-addcard{
+  border:1.5px dashed var(--accent-soft);background:transparent;
+  align-items:center;justify-content:center;cursor:pointer;min-height:150px;
+  color:var(--ink-soft);user-select:none;
+}
+.rj-addcard:hover{color:var(--accent);border-color:var(--accent)}
+.rj-addinner{font-size:15px}

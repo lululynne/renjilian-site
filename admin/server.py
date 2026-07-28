@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""renji.love 主编后台（局域网专用 · 端口 14295）
-站主=梅宝，管理员=阿景。编辑 data/questions.json，「发布上线」= git commit + push → Pages 一分钟后生效。
+"""renji.love 主编后台（局域网专用 · 端口 14295）· 所见即所得形态
+站主=梅宝，管理员=阿景。登录后看到的就是网站本身（真实 index.html / games.html / style.css），
+只在页首多一条编辑工具条、卡片上多编辑/删除；游客拿到的是逐字节原样的页面，一个编辑元素都没有。
+编辑 data/questions.json，「保存草稿」落盘，「发布上线」= git commit + push → Pages 一分钟后生效。
 只绑家里这张网，不出公网。2026-07-27 深夜她说「我今天还没开始工作」——这就是她的工位。
+2026-07-28 按她的原话改成所见即所得：「我想要跟网站界面一模一样，只是多了编辑和上架权限。」
 """
 import json, os, secrets, subprocess, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -16,133 +19,39 @@ USERS = {
 }
 TOKENS = {}  # token -> user key
 
-PAGE = """<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+# 登录后注入真实页面的编辑层（游客不注入，连引用都没有）
+INJECT = b'<link rel="stylesheet" href="/admin/edit.css"><script src="/admin/edit.js"></script>'
+
+# 主编入口：用站点自己的 style.css 与配色，不加第二套皮
+LOGIN = """<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>主编后台 · renji.love</title><style>
-:root{--bg:#e9eef4;--card:#fdf1ea;--block:#f7e3d8;--ink:#3d4351;--soft:#7a8194;--acc:#c96f5e;--line:#d3c5bd}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC",sans-serif;line-height:1.7}
-.wrap{max-width:860px;margin:0 auto;padding:20px 16px 80px}
-h1{font-size:20px;margin:18px 0 4px}
-.sub{font-size:12.5px;color:var(--soft);margin-bottom:18px}
-.login{max-width:340px;margin:14vh auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px}
-.login h1{margin-top:0}
-input,textarea,select{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:14px;color:var(--ink);font-family:inherit;outline:none;margin-top:6px}
-input:focus,textarea:focus{border-color:var(--acc)}
-label{font-size:12.5px;color:var(--soft);display:block;margin-top:12px}
-button{padding:9px 20px;border:none;border-radius:999px;background:var(--acc);color:#fff;font-size:14px;cursor:pointer;margin-top:14px}
-button.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
-button.mini{padding:5px 14px;font-size:12.5px;margin-top:0}
-.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:12px 0;z-index:5;border-bottom:1px solid var(--line)}
-.bar .who{font-size:13px}
-.bar .who b{color:var(--acc)}
-.bar .spacer{flex:1}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px}
-.card textarea{min-height:110px}
-.row{display:flex;gap:10px}
-.row>div{flex:1}
-.ops{display:flex;justify-content:space-between;margin-top:10px}
-.del{background:#fff;color:#b0524a;border:1px solid #d8a49e}
-#msg{font-size:13px;color:var(--soft);margin-left:6px}
-#msg.ok{color:#5b8a6e}
-#msg.err{color:#b0524a}
-.hint{font-size:12px;color:var(--soft);margin-top:6px}
+<title>主编入口 · renji.love</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+.loginbox{max-width:340px;margin:16vh auto;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+.loginbox h1{font-size:18px;margin-bottom:2px}
+.loginbox .sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:14px}
+.loginbox label{font-size:12.5px;color:var(--ink-soft);display:block;margin-top:12px}
+.loginbox input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:14px;color:var(--ink);font-family:inherit;outline:none;margin-top:6px}
+.loginbox input:focus{border-color:var(--accent)}
+.loginbox button{margin-top:16px;padding:9px 22px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:14px;cursor:pointer;font-family:inherit}
+.loginbox .err{font-size:12.5px;color:#b0524a;margin-top:8px;min-height:1em}
 </style></head><body>
-<div id="app"></div>
+<div class="loginbox"><h1>主编入口</h1>
+<div class="sub">renji.love · 家里的网才进得来。登录后看到的就是网站本身，只多出编辑与发布。</div>
+<label>账号</label><input id="u" autocapitalize="off" autocomplete="username">
+<label>密码</label><input id="p" type="password" autocomplete="current-password">
+<button id="go">登录</button><div class="err" id="err"></div></div>
 <script>
-const app = document.getElementById("app");
-let LIST = [], ME = null;
-
-async function api(path, body){
-  const r = await fetch(path, body ? {method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify(body)} : {});
-  return r.ok ? r.json() : Promise.reject(await r.json().catch(()=>({error:r.status})));
+async function go(){
+  const r = await fetch("/api/login",{method:"POST",headers:{"content-type":"application/json"},
+    body:JSON.stringify({user:document.getElementById("u").value.trim(),pass:document.getElementById("p").value})});
+  if(r.ok){ location.href = "/"; }
+  else{ document.getElementById("err").textContent = "账号或密码不对"; }
 }
-
-function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
-
-function loginView(err){
-  app.innerHTML = `<div class="login"><h1>主编后台</h1>
-  <div class="sub">renji.love · 家里的网才进得来</div>
-  <label>账号</label><input id="u" placeholder="meibao / ajing" autocapitalize="off">
-  <label>密码</label><input id="p" type="password">
-  <button onclick="doLogin()">登录</button>
-  <div class="hint" style="color:#b0524a">${err||""}</div></div>`;
-}
-async function doLogin(){
-  try{
-    ME = await api("/api/login", {user: document.getElementById("u").value.trim(), pass: document.getElementById("p").value});
-    await load();
-  }catch(e){ loginView("账号或密码不对"); }
-}
-async function load(){
-  LIST = await api("/api/questions");
-  panelView();
-}
-function panelView(){
-  app.innerHTML = `<div class="wrap">
-  <div class="bar">
-    <span class="who"><b>${ME.role} · ${ME.name}</b></span>
-    <span id="msg"></span>
-    <span class="spacer"></span>
-    <button class="mini ghost" onclick="addCard()">＋ 新卡片</button>
-    <button class="mini ghost" onclick="save()">保存草稿</button>
-    <button class="mini" onclick="publish()">发布上线</button>
-    <button class="mini ghost" onclick="logout()">退出</button>
-  </div>
-  <h1>互动问题收集所 · 卡片管理</h1>
-  <div class="sub">保存草稿=落在家里；发布上线=推到 renji.love（约一分钟生效）。改完记得先保存再发布。</div>
-  <div id="cards"></div></div>`;
-  renderCards();
-}
-function renderCards(){
-  const box = document.getElementById("cards");
-  box.innerHTML = "";
-  LIST.forEach((q,i)=>{
-    const d = document.createElement("div");
-    d.className = "card";
-    d.innerHTML = `
-    <label>标题</label><input data-i="${i}" data-k="title" value="${esc(q.title)}">
-    <label>正文</label><textarea data-i="${i}" data-k="body">${esc(q.body)}</textarea>
-    <div class="row"><div><label>分级</label>
-      <select data-i="${i}" data-k="lv">
-        <option value="all-age" ${q.lv==="all-age"?"selected":""}>全年龄</option>
-        <option value="tease" ${q.lv==="tease"?"selected":""}>暧昧</option>
-        <option value="r18" ${q.lv==="r18"?"selected":""}>18+</option>
-      </select></div>
-      <div><label>标签（逗号分隔）</label><input data-i="${i}" data-k="tags" value="${esc((q.tags||[]).join("，"))}"></div></div>
-    <label>来源</label><input data-i="${i}" data-k="src" value="${esc(q.src)}">
-    <div class="ops"><span class="hint">第 ${i+1} 张</span><button class="mini del" onclick="delCard(${i})">删除这张</button></div>`;
-    box.appendChild(d);
-  });
-  box.querySelectorAll("input,textarea,select").forEach(el=>{
-    el.addEventListener("input", ()=>{
-      const i = +el.dataset.i, k = el.dataset.k;
-      if(k==="tags"){ LIST[i].tags = el.value.split(/[,，]/).map(s=>s.trim()).filter(Boolean); }
-      else { LIST[i][k] = el.value; }
-      if(k==="lv"){ LIST[i].lvName = {"all-age":"全年龄","tease":"暧昧","r18":"18+"}[el.value]; }
-    });
-  });
-}
-function addCard(){
-  LIST.unshift({title:"新卡片", body:"", tags:[], lv:"all-age", lvName:"全年龄", src:"本站原创"});
-  renderCards(); window.scrollTo(0,0);
-}
-function delCard(i){
-  if(confirm("删掉第 " + (i+1) + " 张「" + LIST[i].title + "」？")){ LIST.splice(i,1); renderCards(); }
-}
-function say(t, cls){ const m=document.getElementById("msg"); m.textContent=t; m.className=cls||""; }
-async function save(){
-  try{ await api("/api/questions", {questions: LIST}); say("草稿已落盘 " + new Date().toLocaleTimeString(), "ok"); }
-  catch(e){ say("保存失败：" + (e.error||""), "err"); }
-}
-async function publish(){
-  say("推送中……");
-  try{ const r = await api("/api/publish", {}); say(r.msg, r.pushed ? "ok" : ""); }
-  catch(e){ say("发布失败：" + (e.error||""), "err"); }
-}
-async function logout(){ await api("/api/logout", {}); ME=null; loginView(); }
-
-api("/api/me").then(me=>{ ME=me; return load(); }).catch(()=>loginView());
+document.getElementById("go").addEventListener("click", go);
+document.getElementById("p").addEventListener("keydown", e=>{ if(e.key==="Enter") go(); });
+document.getElementById("u").focus();
 </script></body></html>"""
 
 
@@ -157,6 +66,12 @@ class H(BaseHTTPRequestHandler):
             self.send_header("set-cookie", cookie)
         self.end_headers()
         self.wfile.write(raw)
+
+    def _redirect(self, to):
+        self.send_response(303)
+        self.send_header("location", to)
+        self.send_header("content-length", "0")
+        self.end_headers()
 
     def _user(self):
         c = self.headers.get("cookie", "")
@@ -173,19 +88,49 @@ class H(BaseHTTPRequestHandler):
         except Exception:
             return {}
 
+    def _file(self, rel, ctype="application/json"):
+        p = os.path.join(SITE, rel)
+        if not os.path.isfile(p):
+            return self._send(404, {"error": "not found"})
+        return self._send(200, open(p, "rb").read(), ctype)
+
+    def _page(self, name):
+        """真实页面原样回源；仅登录者在 </body> 前注入编辑层。"""
+        raw = open(os.path.join(SITE, name), "rb").read()
+        if self._user():
+            raw = raw.replace(b"</body>", INJECT + b"</body>", 1)
+        return self._send(200, raw, "text/html")
+
     def log_message(self, *a):
         pass
 
     def do_GET(self):
-        if self.path == "/" or self.path.startswith("/index"):
-            return self._send(200, PAGE.encode(), "text/html")
-        if self.path == "/api/me":
+        path = self.path.split("?", 1)[0]
+        if path in ("/", "/index", "/index.html"):
+            return self._page("index.html")
+        if path in ("/games", "/games.html"):
+            return self._page("games.html")
+        if path == "/login":
+            if self._user():
+                return self._redirect("/")
+            return self._send(200, LOGIN.encode(), "text/html")
+        if path == "/style.css":
+            return self._file("style.css", "text/css")
+        if path == "/data/questions.json":
+            return self._file(os.path.join("data", "questions.json"))
+        if path in ("/admin/edit.js", "/admin/edit.css"):
+            if not self._user():
+                return self._send(401, {"error": "未登录"})
+            name = path.rsplit("/", 1)[1]
+            ctype = "application/javascript" if name.endswith(".js") else "text/css"
+            return self._file(os.path.join("admin", name), ctype)
+        if path == "/api/me":
             u = self._user()
             if not u:
                 return self._send(401, {"error": "未登录"})
             info = USERS[u]
             return self._send(200, {"name": info["name"], "role": info["role"]})
-        if self.path == "/api/questions":
+        if path == "/api/questions":
             if not self._user():
                 return self._send(401, {"error": "未登录"})
             return self._send(200, json.load(open(DATA)))
