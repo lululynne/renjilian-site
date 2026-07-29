@@ -138,6 +138,10 @@ function showToast(msg, isErr){
 }
 /* 复制只复制正文（不带标题/来源/标签尾巴）；卡面按钮与浮层按钮共用这一套行为 */
 function copyBody(q, btn){
+  if(!navigator.clipboard?.writeText){
+    showToast("复制失败：浏览器未授权剪贴板", true);
+    return;
+  }
   navigator.clipboard.writeText(txt(q.body)).then(() => {
     btn.textContent = "已复制";
     btn.classList.add("done");
@@ -356,8 +360,14 @@ claimOverlay.querySelector(".c-dl").addEventListener("click", () => {
 claimOverlay.querySelector(".c-cp").addEventListener("click", () => {
   const r = buildClaimPayload();
   if(r.error){ claimOverlay.querySelector(".claim-hint").textContent = r.error; return; }
+  if(!navigator.clipboard?.writeText){
+    claimHint("复制失败：浏览器未授权剪贴板");
+    return;
+  }
   navigator.clipboard.writeText(JSON.stringify(r.payload, null, 2)).then(() => {
     claimHint("已复制。不上传服务器——");
+  }).catch(() => {
+    claimHint("复制失败：浏览器未授权剪贴板");
   });
 });
 

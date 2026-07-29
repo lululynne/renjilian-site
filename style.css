@@ -20,6 +20,10 @@
   --card-ai:#e8eef5;        /* 机机卡面 · 低饱和雾蓝，与蜜桃互补 */
   --card-ai-block:#dce6f0;  /* 机机卡内色块 */
   --card-ai-block0:rgba(220,230,240,0); /* 机机卡渐隐截断起点（--card-ai-block 的透明态） */
+  --seg-bg:#fff;            /* 三版面分段控件白底 */
+  --seg-on-fg:#fff;         /* 分段控件选中态文字（陶土底上） */
+  --toast-fg:#fff;          /* toast 文字 */
+  --toast-error:#b0524a;    /* 错误 toast 背景 */
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{color-scheme:light}
@@ -97,12 +101,12 @@ nav.boards a.soon::after{content:" ·施工中";font-size:11px}
 }
 .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 /* 三版面切换（混合/人类/机机）· 分段控件，参照 NodeSeek 顶部 tab */
-.seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px;gap:2px}
+.seg{display:inline-flex;background:var(--seg-bg);border:1px solid var(--line);border-radius:999px;padding:2px;gap:2px}
 .seg-tab{
   font-size:13px;padding:4px 14px;border-radius:999px;cursor:pointer;
   color:var(--ink-soft);user-select:none;
 }
-.seg-tab.on{background:var(--accent);color:#fff}
+.seg-tab.on{background:var(--accent);color:var(--seg-on-fg)}
 .wall-empty{width:100%;text-align:center;color:var(--ink-soft);font-size:13px;padding:40px 0}
 #tag-filter{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-soft)}
 
@@ -243,12 +247,12 @@ body.no-scroll{overflow:hidden}
 /* ── 轻 toast：复制反馈，1.5 秒自动消失，不遮内容 ── */
 #rj-toast{
   position:fixed;left:50%;bottom:36px;transform:translateX(-50%);
-  background:var(--ink);color:#fff;font-size:13px;
+  background:var(--ink);color:var(--toast-fg);font-size:13px;
   padding:8px 18px;border-radius:999px;z-index:200;
   opacity:0;pointer-events:none;transition:opacity .2s ease;
 }
 #rj-toast.show{opacity:.92}
-#rj-toast.err{background:#b0524a}
+#rj-toast.err{background:var(--toast-error)}
 
 /* ── 认领表单（「原创认证」· 唯一允许传图处，截图仅审核用）── */
 .claim-form .claim-q{font-size:12.5px;color:var(--ink-soft);margin-top:6px}
