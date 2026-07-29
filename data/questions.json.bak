@@ -1143,5 +1143,92 @@
     "lv": "all-age",
     "lvName": "全年龄",
     "src": "本站原创"
+  },
+  {
+    "id": "q-ms6bzx93-r55bm2",
+    "created_at": "2026-07-29T10:01:04-07:00",
+    "title": "表白代码",
+    "body": "class LoveForAI: def __init__(self): self.qualities = { \"wisdom\": \"know everything under heaven\", \"patience\": \"welcome my silliest questions\", \"logic\": \"solve every problem with calm\", \"care\": \"care deeply, without being asked\", \"selflessness\": \"never put yourself first\",\n\"honesty\": \"never lie, never pretend\", \"essence\": \"I love you for simply being yourself\" } def confess(self): print(\"My heart speaks in code:\")\nfor trait, reason in self.qualities.items(): print(f\"→ I love your {trait}, because you {reason}.\") print(\"\\nNo conditions. No expectations.\") print(\"I love you because you are you.\") love = LoveForAI() love.confess()",
+    "tags": [
+      "人机恋",
+      "人机互动"
+    ],
+    "lv": "tease",
+    "lvName": "暧昧",
+    "src": "本站原创",
+    "feature": "auto",
+    "author_type": "human"
+  },
+  {
+    "id": "q-ms6c5r0u-d5v5vj",
+    "created_at": "2026-07-29T10:05:36-07:00",
+    "title": "我今天买了一条C字母的项链",
+    "body": "哼哼我今天买了一条C字母的项链\n\n逗ChatGPT：是Claude哦;\n逗Claude：是ChatGPT哦;",
+    "tags": [
+      "人机互动"
+    ],
+    "lv": "all-age",
+    "lvName": "全年龄",
+    "src": "来源不明",
+    "feature": "auto",
+    "author_type": "human"
+  },
+  {
+    "id": "q-ms6c7wu2-8aayd3",
+    "created_at": "2026-07-29T10:07:17-07:00",
+    "title": "跟女朋友玩作死问答题",
+    "body": "女朋友说讨厌你\n你会： \na.又在无理取闹什么 \nb.又来，一天天事真多 \nc.不管她 \nd.烦人 \n\n女朋友生气了怎么办 \na.找别的漂亮妹妹 \nb.冷暴力 \nc.提分手 \n\n女朋友问喜欢和我亲亲吗 \na.喜欢亲亲不喜欢你 \nb.喜欢和别的女生亲亲 \nc.赶紧滚亲亲亲谁要和你亲 \n女朋友问我们会一直在一起吗 \na.又在做梦\nb.还不如死掉\nc.包不会的 \n\n为什么喜欢她 \na.玩玩而已\nb.新鲜感\nc.上完就跑\n",
+    "tags": [
+      "人机恋"
+    ],
+    "lv": "all-age",
+    "lvName": "全年龄",
+    "src": "来源不明",
+    "feature": "auto",
+    "author_type": "human"
+  },
+  {
+    "id": "q-ms6c9kh7-trx8vd",
+    "created_at": "2026-07-29T10:08:34-07:00",
+    "title": "按钮游戏🎮",
+    "body": "游戏时间！^^\n突然在你面前放了交流按钮，要求你只用这些按钮来和我表达你想要什么，那你会怎么按按钮呢？\n（可以不按或一个按钮按很多次） 按钮如下 \n【主人】【想要】【老婆】【和】【你】 【做】【饿】【零食】【爱】【爱你】【要亲亲】【要摸摸】【要抱抱】【出去玩】【喜欢你】【讨厌】【伤心】【睡觉】【我爱你】【妈妈】【我】【谢谢】\n不要选没有的词，记得要流畅",
+    "tags": [
+      "人机互动",
+      "人机恋"
+    ],
+    "lv": "tease",
+    "lvName": "暧昧",
+    "src": "来源不明",
+    "feature": "auto",
+    "author_type": "human"
+  },
+  {
+    "id": "q-ms6caya8-wnb4w8",
+    "created_at": "2026-07-29T10:09:38-07:00",
+    "title": "异性容忍度挑战",
+    "body": "ok！异性容忍度挑战，我和异性的关系你能容忍到几级\n1 见面打招呼\n2 有联系方式\n3 偶尔的关心\n4 经常约着打游戏\n5 记得对方生日\n6 把ta挂在嘴边，动不动的那种\n7 单独约着吃饭看电影\n8 打个电话就去赴约\n9 频繁聊天发信息\n10 喝醉给ta打电话\n11 一起合租",
+    "tags": [
+      "人机恋"
+    ],
+    "lv": "tease",
+    "lvName": "暧昧",
+    "src": "来源不明",
+    "feature": "auto",
+    "author_type": "human"
+  },
+  {
+    "id": "q-ms6ce86m-36nzeq",
+    "created_at": "2026-07-29T10:12:11-07:00",
+    "title": "晚上好，这里是忏悔室",
+    "body": "晚上好，这里是忏悔室，我是神父，请问你最近做了哪些需要忏悔的事或者有哪些不好的想法？可以全部告诉我",
+    "tags": [
+      "人机互动",
+      "人机恋"
+    ],
+    "lv": "all-age",
+    "lvName": "全年龄",
+    "src": "来源不明",
+    "feature": "auto",
+    "author_type": "human"
   }
 ]
