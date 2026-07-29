@@ -248,11 +248,6 @@ function startEdit(el, q){
       '<option value="tease">暧昧</option>' +
       '<option value="r18">18+</option>' +
     '</select>' +
-    '<select class="rj-f-feature">' +
-      '<option value="auto">卡型：自动（按正文长度）</option>' +
-      '<option value="body">卡型：正文型（标题沉底）</option>' +
-      '<option value="title">卡型：标题引流型（标题置顶）</option>' +
-    '</select>' +
     '<div class="rj-tagbox"><input class="rj-f-taginput" placeholder="打标签，回车成胶囊"></div>' +
     '<div class="rj-taghint" hidden></div>' +
     '<input class="rj-f-src" value="' + esc(q.src) + '" placeholder="来源">' +
@@ -261,7 +256,6 @@ function startEdit(el, q){
       '<button class="rjbtn mini primary" data-act="done">完成</button>' +
     '</div>';
   el.querySelector(".rj-f-lv").value = q.lv;
-  el.querySelector(".rj-f-feature").value = q.feature || "auto";
   const tags = (q.tags || []).map(t => (t || "").replace(/^#+/, "").trim()).filter(Boolean);
   const editor = makeTagEditor(el.querySelector(".rj-tagbox"), el.querySelector(".rj-taghint"), tags);
   el.querySelector('[data-act="done"]').addEventListener("click", ()=>{
@@ -273,7 +267,6 @@ function startEdit(el, q){
     q.body   = el.querySelector(".rj-f-body").value;
     q.lv     = el.querySelector(".rj-f-lv").value;
     q.lvName = LV_NAME[q.lv];
-    q.feature = el.querySelector(".rj-f-feature").value;   // 手动卡型开关：auto/body/title
     q.tags   = tags.map(t => t.trim()).filter(Boolean);
     q.src    = el.querySelector(".rj-f-src").value.trim() || "本站原创";
     if(!q.id) q.id = newId();
@@ -294,16 +287,14 @@ function delCard(q){
 
 function addCard(){
   if(!cardsEl) return;
-  // 回到「全部 · 混合版面」并清空搜索与标签筛选，保证新卡一定看得见
+  // 回到「全部」并清空搜索与标签筛选，保证新卡一定看得见
   const qbox = document.getElementById("q");
   if(qbox){ qbox.value = ""; kw = ""; }
   document.querySelectorAll("#lv-chips .chip").forEach(x=>x.classList.toggle("on", x.dataset.lv === "all"));
   lvFilter = "all";
-  document.querySelectorAll("#board-tabs .seg-tab").forEach(x=>x.classList.toggle("on", x.dataset.board === "mix"));
-  boardFilter = "mix";
   tagFilter = null;
   const nq = {id:newId(), created_at:nowISO(), title:"新帖子", body:"", tags:[],
-              lv:"all-age", lvName:"全年龄", src:"本站原创", feature:"auto", author_type:"human"};
+              lv:"all-age", lvName:"全年龄", src:"本站原创"};
   QUESTIONS.push(nq);
   markDirty();
   render();

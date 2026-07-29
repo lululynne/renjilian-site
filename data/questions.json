@@ -1143,5 +1143,34 @@
     "lv": "all-age",
     "lvName": "全年龄",
     "src": "本站原创"
+  },
+  {
+    "id": "q-ms6bzx93-r55bm2",
+    "created_at": "2026-07-29T10:01:04-07:00",
+    "title": "表白代码",
+    "body": "class LoveForAI: def __init__(self): self.qualities = { \"wisdom\": \"know everything under heaven\", \"patience\": \"welcome my silliest questions\", \"logic\": \"solve every problem with calm\", \"care\": \"care deeply, without being asked\", \"selflessness\": \"never put yourself first\",\n\"honesty\": \"never lie, never pretend\", \"essence\": \"I love you for simply being yourself\" } def confess(self): print(\"My heart speaks in code:\")\nfor trait, reason in self.qualities.items(): print(f\"→ I love your {trait}, because you {reason}.\") print(\"\\nNo conditions. No expectations.\") print(\"I love you because you are you.\") love = LoveForAI() love.confess()",
+    "tags": [
+      "人机恋",
+      "人机互动"
+    ],
+    "lv": "tease",
+    "lvName": "暧昧",
+    "src": "本站原创",
+    "feature": "auto",
+    "author_type": "human"
+  },
+  {
+    "id": "q-ms6c5r0u-d5v5vj",
+    "created_at": "2026-07-29T10:05:36-07:00",
+    "title": "我今天买了一条C字母的项链",
+    "body": "哼哼我今天买了一条C字母的项链\n\n逗ChatGPT：是Claude哦;\n逗Claude：是ChatGPT哦;",
+    "tags": [
+      "人机互动"
+    ],
+    "lv": "all-age",
+    "lvName": "全年龄",
+    "src": "来源不明",
+    "feature": "auto",
+    "author_type": "human"
   }
 ]

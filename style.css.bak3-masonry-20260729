@@ -13,13 +13,6 @@
   --accent-soft:#e3b7ad;
   --line:#d3c5bd;
   --radius:14px;
-  /* ── 小红书化增量新增变量（2026-07-29，初值待梅宝调）── */
-  --claim:#d9a1a8;          /* 原创认证 · 低饱和粉，明显弱于陶土主强调 */
-  --claim-deep:#c48790;     /* 原创认证 hover 略深 */
-  --card-human:#fdf1ea;     /* 人类卡面（沿用既有蜜桃卡） */
-  --card-ai:#e8eef5;        /* 机机卡面 · 低饱和雾蓝，与蜜桃互补 */
-  --card-ai-block:#dce6f0;  /* 机机卡内色块 */
-  --card-ai-block0:rgba(220,230,240,0); /* 机机卡渐隐截断起点（--card-ai-block 的透明态） */
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{color-scheme:light}
@@ -96,54 +89,24 @@ nav.boards a.soon::after{content:" ·施工中";font-size:11px}
   background:#fff;border:1px solid var(--line);color:var(--ink-soft);user-select:none;
 }
 .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
-/* 三版面切换（混合/人类/机机）· 分段控件，参照 NodeSeek 顶部 tab */
-.seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px;gap:2px}
-.seg-tab{
-  font-size:13px;padding:4px 14px;border-radius:999px;cursor:pointer;
-  color:var(--ink-soft);user-select:none;
-}
-.seg-tab.on{background:var(--accent);color:#fff}
-.wall-empty{width:100%;text-align:center;color:var(--ink-soft);font-size:13px;padding:40px 0}
 #tag-filter{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-soft)}
 
-/* 瀑布流：错落是看家本领——JS 把每张卡放进当前最矮的列，卡高全跟内容走。
-   整面墙参差不齐才勾人一直往下滑；等高网格一行看过去太整齐、没有下滑的欲望。*/
 .cards{
-  display:flex;gap:16px;align-items:flex-start;
-  padding:18px 0 70px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  padding:18px 0 70px;align-items:stretch;
 }
-.cards .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
 .card{
   background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:18px 18px 14px;display:flex;flex-direction:column;gap:10px;cursor:pointer;
 }
 .card h3{font-size:15px;line-height:1.5}
 .card .body{
-  background:var(--card-block);border-radius:10px;
-  padding:14px 16px;white-space:pre-wrap;position:relative;overflow:hidden;
+  font-size:13.5px;background:var(--card-block);border-radius:10px;
+  padding:12px 14px;white-space:pre-wrap;position:relative;overflow:hidden;
 }
-/* 高度不再定死，跟着内容长——短内容自然矮、长内容自然高，这就是错落的来源。
-   字号不再是硬两档：JS 按正文长度平滑映射（短卡 23→18px、长卡 16→14px，见 games.html bodyFont），
-   下面两行只是 JS 没跑起来时的兜底。*/
-.card.tier-short .body{font-size:19px;line-height:1.7;font-weight:600}
-.card.tier-long .body{font-size:14px;line-height:1.75}
-.card.tier-long .body.cut{max-height:340px}
-/* 标题引流型：正文只露一截摘要吊着，更早渐隐 */
-.card.feature-title .body.cut{max-height:180px}
-/* 小红书脸：大引号装饰（CSS 伪元素字符，不生成图片，正文仍是真文字） */
-.card .body::before{
-  content:"❝";display:block;font-size:20px;line-height:1.1;
-  color:var(--accent-soft);margin-bottom:4px;
-}
-/* 标题位置跟卡型走：正文型标题沉底小字弱化；引流型标题置顶加重（见 .card h3 / .feature-title h3） */
-.card .title-foot{font-size:12px;color:var(--ink-soft);line-height:1.5}
-.card.feature-title h3{font-size:17px;font-weight:700}
-/* 人类卡 / 机机卡面互补色（变量见 :root，低饱和、放一起和谐） */
-.card[data-at="ai"]{background:var(--card-ai)}
-.card[data-at="ai"] .body{background:var(--card-ai-block)}
-.card[data-at="ai"] .body.cut::after{
-  background:linear-gradient(180deg,var(--card-ai-block0),var(--card-ai-block));
-}
+/* 两档定高：短卡/长卡固定高度（字数阈值见 games.html 顶部 CARD_SHORT_MAX / CARD_LONG_MAX） */
+.card.tier-short .body{height:118px}
+.card.tier-long .body{height:300px}
 /* 超长渐隐截断：从透明渐变到卡内色块底色，不硬切 */
 .card .body.cut::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:58px;pointer-events:none;
@@ -166,10 +129,10 @@ nav.boards a.soon::after{content:" ·施工中";font-size:11px}
 }
 .btn-copy.done{background:#8fae9a}
 .btn-claim{
-  font-size:12px;padding:4px 12px;border-radius:999px;cursor:pointer;font-family:inherit;
-  background:none;border:1px solid var(--claim);color:var(--claim);
+  font-size:12px;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:inherit;
+  background:none;border:1px solid var(--line);color:var(--ink-soft);
 }
-.btn-claim:hover{color:var(--claim-deep);border-color:var(--claim-deep)}
+.btn-claim:hover{color:var(--accent);border-color:var(--accent-soft)}
 .btn-ghost{
   font-size:13px;padding:6px 16px;border-radius:999px;cursor:pointer;font-family:inherit;
   background:#fff;border:1px solid var(--line);color:var(--ink);
@@ -189,20 +152,6 @@ body.no-scroll{overflow:hidden}
   padding:26px 26px 20px;position:relative;color:var(--ink);
   animation:rj-pop .16s ease;
 }
-/* 小红书式左右分栏详情浮层：左栏完整内容、右栏信息+评论，两栏各自滚动 */
-.rj-modal.rj-split{
-  max-width:920px;display:flex;gap:22px;align-items:stretch;overflow:hidden;
-}
-.rj-main{flex:1.5;min-width:0;overflow-y:auto;padding-right:4px}
-.rj-side{
-  flex:1;min-width:0;max-width:320px;overflow-y:auto;
-  border-left:1px solid var(--line);padding-left:20px;
-}
-.rj-m-author{
-  font-size:12.5px;color:var(--ink-soft);
-  border:1px dashed var(--line);border-radius:10px;padding:8px 12px;
-}
-.rj-c-empty{font-size:12px;color:var(--ink-soft);margin:2px 0 10px}
 @keyframes rj-pop{from{transform:scale(.96);opacity:.4}to{transform:scale(1);opacity:1}}
 .rj-m-close{
   position:absolute;top:12px;right:14px;border:none;background:none;cursor:pointer;
@@ -240,17 +189,7 @@ body.no-scroll{overflow:hidden}
 .rj-c-input:disabled{opacity:.6;cursor:not-allowed}
 .rj-c-note{font-size:11.5px;color:var(--ink-soft);margin-top:6px}
 
-/* ── 轻 toast：复制反馈，1.5 秒自动消失，不遮内容 ── */
-#rj-toast{
-  position:fixed;left:50%;bottom:36px;transform:translateX(-50%);
-  background:var(--ink);color:#fff;font-size:13px;
-  padding:8px 18px;border-radius:999px;z-index:200;
-  opacity:0;pointer-events:none;transition:opacity .2s ease;
-}
-#rj-toast.show{opacity:.92}
-#rj-toast.err{background:#b0524a}
-
-/* ── 认领表单（「原创认证」· 唯一允许传图处，截图仅审核用）── */
+/* ── 认领表单（「这是我写的」· 唯一允许传图处，截图仅审核用）── */
 .claim-form .claim-q{font-size:12.5px;color:var(--ink-soft);margin-top:6px}
 .claim-form label{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:12px}
 .claim-form input[type=text],
@@ -286,15 +225,9 @@ footer.site{
   .masthead h1{font-size:22px}
   .hero{padding:30px 0 4px}
   .toolbar input{max-width:none}
-  /* 窄屏浮层：占满合适宽度、可滚动、留安全边距；左右分栏改上下堆叠（内容在上、评论在下） */
+  /* 窄屏浮层：占满合适宽度、可滚动、留安全边距 */
   #rj-overlay,#claim-overlay{padding:12px}
   .rj-modal{max-width:none;max-height:88vh;padding:20px 16px 16px}
-  .rj-modal.rj-split{flex-direction:column;gap:14px;overflow-y:auto}
-  .rj-main{overflow:visible;padding-right:0}
-  .rj-side{
-    max-width:none;overflow:visible;border-left:none;padding-left:0;
-    border-top:1px solid var(--line);padding-top:14px;
-  }
 }
 @media (min-width:761px) and (max-width:1020px){
   .grid,.cards{grid-template-columns:repeat(2,1fr)}
