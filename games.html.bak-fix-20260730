@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互动问题收集所 · 人机恋日报（名字待定）</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>人机恋日报</h1>
+      <span class="pending">名字待定 · 她说了算</span>
+    </div>
+    <nav class="boards">
+      <a href="index.html">首页</a>
+      <a href="games.html" class="on">游戏 · 互动问题收集所</a>
+      <a class="soon" href="#">日报</a>
+      <a class="soon" href="#">踩坑分享</a>
+      <a class="soon" href="#">模型资讯</a>
+      <a class="soon" href="#">社区名录</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="board-head">
+    <h2>互动问题收集所</h2>
+    <p>收集人和机机之间能玩的文字问题。看中哪张，按「复制」抄回家，直接丢给你的机机。游客只能抄，不能改——每张卡都标了来源。</p>
+  </section>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="搜标题 / 正文 / 标签">
+    <div class="seg" id="board-tabs">
+      <span class="seg-tab on" data-board="mix">混合版面</span>
+      <span class="seg-tab" data-board="human">人类版面</span>
+      <span class="seg-tab" data-board="ai">机机版面</span>
+    </div>
+    <div class="chips" id="lv-chips">
+      <span class="chip on" data-lv="all">全部</span>
+      <span class="chip" data-lv="all-age">全年龄</span>
+      <span class="chip" data-lv="tease">暧昧</span>
+      <span class="chip" data-lv="r18">18+</span>
+    </div>
+    <span class="chip" id="fav-chip">我的收藏</span>
+    <span id="tag-filter" hidden></span>
+  </div>
+
+  <section class="cards" id="cards"></section>
+
+  <section class="claim">
+    <strong>来源与认领</strong><br>
+    收录的问题尽量注明出处。标着「来源不明 · 网络流传」的，是在人机圈里传开、查不到原作者的——若你就是原作者，来信即刻署名或下架，一句话的事。<br>
+    标着「本站原创」的，欢迎转走，带上出处就好。
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">草稿版 v0 · 2026-07-27</div>
+</footer>
+
+<script src="interactions.js"></script>
+<script>
+/* ══════════ 卡片阈值（她要调数字就改这两行）══════════
+   正文字数 ≤ CARD_SHORT_MAX → 短卡；超过 → 长卡（auto 卡型时）。
+   字号按长度在两数之间平滑映射（见 bodyFont）；引流型长卡正文只露摘要、
+   渐隐截断（完整正文点卡片看浮层，不再有展开按钮）*/
+const CARD_SHORT_MAX = 120;
+const CARD_LONG_MAX  = 460;
+/* 认领提交内容的接收邮箱 · 占位常量，她之后填。
+   这一刀不上传任何服务器：只生成结构化内容供下载/复制，页面提示发到该邮箱 */
+const CLAIM_MAIL_TO  = "claim@example.com";
+
+let QUESTIONS = [];
+fetch("data/questions.json?v=" + Date.now()).then(r => r.json()).then(d => { QUESTIONS = d; render(); });
+
+const cardsEl = document.getElementById("cards");
+const INTER = window.RJ_INTERACTIONS;   // 点赞/收藏统一走这个模块（见 interactions.js 顶部注释）
+let lvFilter = "all", kw = "", tagFilter = null, favOnly = false, boardFilter = "mix";
+
+function escHtml(s){ return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+/* 多语言留位：title/body/src 将来可存成 {zh, ja, ko, en} 结构，
+   这一刀不填不翻——是对象就取 zh（缺 zh 按 ja→ko→en 顺位），是字符串就原样用 */
+function txt(v){
+  if(v && typeof v === "object") return v.zh || v.ja || v.ko || v.en || "";
+  return v || "";
+}
+
+/* 稳定打散：固定种子 + 卡片 id 哈希做排序键——不按纯 created_at 倒序（那是新闻排法），
+   每次刷新顺序一致，不瞎跳。TODO: 有账号+互动数据后改热度加权排序 */
+function hashKey(s){
+  let h = 2166136261;
+  const str = "rj-seed-20260729|" + s;
+  for(let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+
+function filtered(){
+  return QUESTIONS.filter(q =>
+    (boardFilter === "mix" || (q.author_type || "human") === boardFilter) &&   // 三版面：缺省视为 human
+    (lvFilter === "all" || q.lv === lvFilter) &&
+    (!tagFilter || (q.tags || []).includes(tagFilter)) &&
+    (!favOnly || (q.id && INTER.isFavorite(q.id))) &&
+    (kw === "" || (txt(q.title) + txt(q.body) + q.tags.join("")).toLowerCase().includes(kw))
+  ).slice().sort((a, b) => hashKey(a.id || txt(a.title)) - hashKey(b.id || txt(b.title)));
+}
+
+/* 卡型：feature=body → 正文型（正文主角、标题沉底小字）；
+   feature=title → 标题引流型（标题置顶加重、正文只露摘要）；
+   auto/缺省 → 按正文长度自动判定（沿用 CARD_SHORT_MAX 阈值） */
+function featureOf(q){
+  if(q.feature === "body" || q.feature === "title") return q.feature;
+  return (txt(q.body).length <= CARD_SHORT_MAX) ? "body" : "title";
+}
+
+/* 小红书脸：字号随内容长短平滑撑满（替代硬两档 19/14px）。
+   短卡(≤120字)：23→18px 线性收回（越短越大、把小卡撑满）；
+   长卡(120→460字)：16→14px 线性收回，更长保持 14px。 */
+function bodyFont(L){
+  if(L <= CARD_SHORT_MAX) return Math.round(23 - (L / CARD_SHORT_MAX) * 5);
+  const t = Math.min((L - CARD_SHORT_MAX) / (CARD_LONG_MAX - CARD_SHORT_MAX), 1);
+  return Math.round(16 - t * 2);
+}
+
+/* ── 轻 toast：复制成功/失败都弹，1.5 秒自动消失，不遮内容 ── */
+const toastEl = document.createElement("div");
+toastEl.id = "rj-toast";
+document.body.appendChild(toastEl);
+let _toastTimer = null;
+function showToast(msg, isErr){
+  toastEl.textContent = msg;
+  toastEl.className = "show" + (isErr ? " err" : "");
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { toastEl.className = ""; }, 1500);
+}
+/* 复制只复制正文（不带标题/来源/标签尾巴）；卡面按钮与浮层按钮共用这一套行为 */
+function copyBody(q, btn){
+  navigator.clipboard.writeText(txt(q.body)).then(() => {
+    btn.textContent = "已复制";
+    btn.classList.add("done");
+    showToast("已复制正文");
+    setTimeout(() => { btn.textContent = "复制"; btn.classList.remove("done"); }, 1600);
+  }).catch(() => {
+    showToast("复制失败：浏览器未授权剪贴板", true);
+  });
+}
+
+/* ── 详情浮层（小红书式左右分栏：左栏完整内容、右栏作者位/分级标签/来源/原创认证/评论区；
+     点卡片浮起，遮罩/×/Esc 关闭，滚动位置不变）── */
+const overlay = document.createElement("div");
+overlay.id = "rj-overlay";
+overlay.hidden = true;
+overlay.innerHTML = `
+  <div class="rj-modal rj-split" role="dialog" aria-modal="true">
+    <button class="rj-m-close" type="button" aria-label="关闭">×</button>
+    <div class="rj-main">
+      <h3 class="rj-m-title"></h3>
+      <div class="rj-m-body"></div>
+    </div>
+    <div class="rj-side">
+      <div class="rj-m-author">作者信息位 · 账号体系接入后开放</div>
+      <div class="rj-m-meta"></div>
+      <div class="rj-m-src"></div>
+      <div class="rj-m-ops">
+        <button class="btn-claim rj-m-claim" type="button">原创认证</button>
+        <button class="btn-copy rj-m-copy" type="button">复制</button>
+      </div>
+      <div class="rj-inter">
+        <button class="rj-ibtn rj-like" type="button"><span class="ic">♡</span> 赞 <span class="n">0</span></button>
+        <button class="rj-ibtn rj-fav" type="button"><span class="ic">☆</span><span class="lbl"> 收藏</span></button>
+      </div>
+      <div class="rj-comments">
+        <div class="rj-c-title">评论</div>
+        <div class="rj-c-empty">还没有评论</div>
+        <input class="rj-c-input" type="text" disabled placeholder="登录后可评论 · 即将开放">
+        <div class="rj-c-note">评论为纯文字，不支持上传图片</div>
+      </div>
+    </div>
+  </div>`;
+document.body.appendChild(overlay);
+
+let modalQ = null;
+
+function refreshInter(){
+  if(!modalQ || !modalQ.id) return;
+  const likeBtn = overlay.querySelector(".rj-like");
+  const favBtn  = overlay.querySelector(".rj-fav");
+  const liked = INTER.isLiked(modalQ.id), fav = INTER.isFavorite(modalQ.id);
+  likeBtn.classList.toggle("on", liked);
+  likeBtn.querySelector(".ic").textContent = liked ? "♥" : "♡";
+  likeBtn.querySelector(".n").textContent = INTER.likeCount(modalQ.id);
+  favBtn.classList.toggle("on", fav);
+  favBtn.querySelector(".ic").textContent = fav ? "★" : "☆";
+  favBtn.querySelector(".lbl").textContent = fav ? " 已收藏" : " 收藏";
+}
+
+function openModal(q){
+  modalQ = q;
+  overlay.querySelector(".rj-m-title").textContent = txt(q.title);
+  overlay.querySelector(".rj-m-meta").innerHTML =
+    `<span class="lv ${q.lv === "r18" ? "r18" : ""}">${escHtml(q.lvName)}</span> ` +
+    q.tags.map(t => `<span class="tag" data-tag="${escHtml(t)}">#${escHtml(t)}</span>`).join(" ") +
+    (q.created_at ? ` <span class="date">${String(q.created_at).slice(0, 10)}</span>` : "");
+  overlay.querySelector(".rj-m-body").textContent = txt(q.body);   // 完整正文，不截断
+  overlay.querySelector(".rj-m-src").textContent = txt(q.src);
+  const copyBtn = overlay.querySelector(".rj-m-copy");
+  copyBtn.textContent = "复制"; copyBtn.classList.remove("done");
+  refreshInter();
+  overlay.hidden = false;
+  overlay.querySelector(".rj-modal").scrollTop = 0;
+  overlay.querySelector(".rj-main").scrollTop = 0;   // 分栏浮层：左右两栏各自回到顶部
+  overlay.querySelector(".rj-side").scrollTop = 0;
+  document.body.classList.add("no-scroll");   // 只锁滚动，不动 scrollY，关闭后原位不动
+}
+
+function closeModal(){
+  overlay.hidden = true;
+  modalQ = null;
+  document.body.classList.remove("no-scroll");
+}
+
+overlay.querySelector(".rj-m-close").addEventListener("click", closeModal);
+overlay.addEventListener("click", ev => { if(ev.target === overlay) closeModal(); });
+overlay.querySelector(".rj-m-meta").addEventListener("click", ev => {
+  const t = ev.target.closest(".tag");
+  if(!t) return;
+  tagFilter = (tagFilter === t.dataset.tag) ? null : t.dataset.tag;   // 浮层标签：关浮层并按该标签筛选
+  closeModal();
+  render();
+});
+overlay.querySelector(".rj-m-copy").addEventListener("click", ev => {
+  if(!modalQ) return;
+  copyBody(modalQ, ev.target);   // 与卡面复制按钮同一套行为：只复制正文 + toast
+});
+overlay.querySelector(".rj-like").addEventListener("click", () => {
+  if(modalQ && modalQ.id){ INTER.toggleLike(modalQ.id); refreshInter(); }
+});
+overlay.querySelector(".rj-fav").addEventListener("click", () => {
+  if(modalQ && modalQ.id){ INTER.toggleFavorite(modalQ.id); refreshInter(); }
+});
+overlay.querySelector(".rj-m-claim").addEventListener("click", () => {
+  if(!modalQ) return;
+  const q = modalQ;
+  closeModal();
+  openClaim(q);
+});
+
+/* ── 认领表单（「原创认证」· 唯一允许传图处，截图仅审核用、绝不公开）── */
+const claimOverlay = document.createElement("div");
+claimOverlay.id = "claim-overlay";
+claimOverlay.hidden = true;
+claimOverlay.innerHTML = `
+  <div class="rj-modal claim-form" role="dialog" aria-modal="true">
+    <button class="rj-m-close" type="button" aria-label="关闭">×</button>
+    <h3 class="rj-m-title">原创认证</h3>
+    <div class="claim-q"></div>
+    <label>原发布截图（仅用于核验，不会公开，处理后删除）
+      <input class="c-shot" type="file" accept="image/*">
+    </label>
+    <label>作者名（必填）
+      <input class="c-name" type="text" maxlength="40">
+    </label>
+    <label>原发布链接（选填）
+      <input class="c-url" type="url" placeholder="https://…">
+    </label>
+    <label>你的诉求</label>
+    <div class="radios">
+      <label><input type="radio" name="c-act" value="credit" checked> 署我的名</label>
+      <label><input type="radio" name="c-act" value="takedown"> 请撤下</label>
+    </div>
+    <label>联系方式（邮箱，用于回复结果）
+      <input class="c-mail" type="email" placeholder="you@example.com">
+    </label>
+    <div class="claim-note">截图仅用于核验、不会公开展示、处理后删除。</div>
+    <div class="claim-ops">
+      <button class="btn-ghost c-dl" type="button">下载为文件</button>
+      <button class="btn-ghost c-cp" type="button">复制到剪贴板</button>
+    </div>
+    <div class="claim-hint"></div>
+  </div>`;
+document.body.appendChild(claimOverlay);
+
+let claimQ = null;
+
+function openClaim(q){
+  claimQ = q;
+  claimOverlay.querySelector(".claim-q").textContent = "认领卡片：" + q.title;
+  claimOverlay.querySelector(".claim-hint").textContent = "";
+  claimOverlay.hidden = false;
+  document.body.classList.add("no-scroll");
+}
+function closeClaim(){
+  claimOverlay.hidden = true;
+  claimQ = null;
+  document.body.classList.remove("no-scroll");
+}
+claimOverlay.querySelector(".rj-m-close").addEventListener("click", closeClaim);
+claimOverlay.addEventListener("click", ev => { if(ev.target === claimOverlay) closeClaim(); });
+
+document.addEventListener("keydown", ev => {
+  if(ev.key !== "Escape") return;
+  if(!claimOverlay.hidden) closeClaim();
+  else if(!overlay.hidden) closeModal();
+});
+
+/* 组装认领提交内容。
+   将来接后端时，把下面的「下载 / 复制」换成一次请求：
+     POST /api/claims   (multipart/form-data)
+       question_id    string  卡片 id
+       question_title string  卡片标题（便于审核辨认）
+       author_name    string  必填，作者名
+       original_url   string  选填，原发布链接（空串=未填）
+       action         string  "credit"=署我的名 | "takedown"=请撤下
+       contact_email  string  必填，回复结果用
+       screenshot     File    原发布截图（image/*，仅审核用，绝不公开展示，处理后删除）
+   本刀不上传：只生成同字段的 JSON 供下载/复制，截图由用户作为邮件附件手动发送 */
+function buildClaimPayload(){
+  const name = claimOverlay.querySelector(".c-name").value.trim();
+  const mail = claimOverlay.querySelector(".c-mail").value.trim();
+  if(!name){ return {error:"请填作者名"}; }
+  if(!mail){ return {error:"请填联系邮箱"}; }
+  const shot = claimOverlay.querySelector(".c-shot").files[0];
+  return {payload:{
+    type: "claim",
+    question_id: claimQ.id || "",
+    question_title: claimQ.title,
+    author_name: name,
+    original_url: claimOverlay.querySelector(".c-url").value.trim(),
+    action: claimOverlay.querySelector('input[name="c-act"]:checked').value,
+    contact_email: mail,
+    screenshot_file: shot ? shot.name : null,
+    submitted_at: new Date().toISOString(),
+    note: "截图仅用于核验、不会公开、处理后删除"
+  }};
+}
+function claimHint(extra){
+  claimOverlay.querySelector(".claim-hint").textContent =
+    extra + "请把这份内容发到 " + CLAIM_MAIL_TO +
+    (claimOverlay.querySelector(".c-shot").files[0] ? "，截图作为附件一并发送。" : "。");
+}
+claimOverlay.querySelector(".c-dl").addEventListener("click", () => {
+  const r = buildClaimPayload();
+  if(r.error){ claimOverlay.querySelector(".claim-hint").textContent = r.error; return; }
+  const blob = new Blob([JSON.stringify(r.payload, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "claim-" + (r.payload.question_id || "card") + "-" +
+    new Date().toISOString().slice(0, 10) + ".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  claimHint("已下载。不上传服务器——");
+});
+claimOverlay.querySelector(".c-cp").addEventListener("click", () => {
+  const r = buildClaimPayload();
+  if(r.error){ claimOverlay.querySelector(".claim-hint").textContent = r.error; return; }
+  navigator.clipboard.writeText(JSON.stringify(r.payload, null, 2)).then(() => {
+    claimHint("已复制。不上传服务器——");
+  });
+});
+
+/* ── 卡片墙（瀑布流：错落是看家本领——每张卡进当前最矮的列，卡高全跟内容走）── */
+function colCount(){
+  const w = window.innerWidth;
+  return w <= 760 ? 1 : (w <= 1020 ? 2 : 3);
+}
+function makeCard(q){
+  const el = document.createElement("article");
+  const body = txt(q.body), title = txt(q.title);
+  // 卡型定标题位置：正文型 → 正文大字在上、标题沉底小字；标题引流型 → 标题置顶加重、正文只露摘要
+  const feat = featureOf(q);
+  const short = feat === "body";
+  el.className = "card " + (short ? "tier-short" : "tier-long feature-title");
+  el.dataset.at = q.author_type || "human";   // 人类卡/机机卡面互补色（CSS 变量区分）
+  if(q.id) el.dataset.qid = q.id;
+  /* 卡面极简：只留 内容 + 分级标（+标签快捷筛选）。创建日期 / 来源行 / 原创认证按钮
+     已从卡面移除、收进详情浮层。TODO: 复制按钮卡面 vs 浮层，待梅宝拍（先留在卡面） */
+  const metaHtml = `
+    <div class="meta">
+      <span class="lv ${q.lv === "r18" ? "r18" : ""}">${escHtml(q.lvName)}</span>
+      ${q.tags.map(t => `<span class="tag${t === tagFilter ? " on" : ""}" data-tag="${escHtml(t)}">#${escHtml(t)}</span>`).join(" ")}
+    </div>`;
+  el.innerHTML = short
+    ? `<div class="body">${escHtml(body)}</div>
+       <div class="title-foot">${escHtml(title)}</div>
+       ${metaHtml}
+       <div class="ops"><button class="btn-copy">复制</button></div>`
+    : `<h3>${escHtml(title)}</h3>
+       <div class="body">${escHtml(body)}</div>
+       ${metaHtml}
+       <div class="ops"><button class="btn-copy">复制</button></div>`;
+  el.querySelector(".body").style.fontSize = bodyFont(body.length) + "px";   // 字号随长短平滑撑满
+  el.querySelector(".btn-copy").addEventListener("click", ev => copyBody(q, ev.target));
+  el.querySelectorAll(".tag").forEach(s => s.addEventListener("click", () => {
+    tagFilter = (tagFilter === s.dataset.tag) ? null : s.dataset.tag;   // 卡上标签：只筛选，不弹浮层
+    render();
+  }));
+  // 点卡片其他位置 → 详情浮层；标签/按钮/编辑态不触发
+  el.addEventListener("click", ev => {
+    if(el.classList.contains("rj-editing")) return;
+    if(ev.target.closest(".tag, button, input, textarea, select, .rj-card-ops")) return;
+    openModal(q);
+  });
+  return {el, short};
+}
+function render(){
+  cardsEl.innerHTML = "";
+  const tf = document.getElementById("tag-filter");
+  if(tagFilter){
+    tf.hidden = false;
+    tf.innerHTML = '标签 <span class="chip on">#' + escHtml(tagFilter) + '</span>' +
+      '<span class="chip" id="tag-clear">清除</span>';
+    tf.querySelector("#tag-clear").addEventListener("click", () => { tagFilter = null; render(); });
+  } else {
+    tf.hidden = true;
+    tf.innerHTML = "";
+  }
+  // 建列容器（列数随宽度：宽3列 / 中2列 / 窄1列）
+  const n = colCount();
+  const cols = [];
+  for(let i = 0; i < n; i++){
+    const c = document.createElement("div");
+    c.className = "col";
+    cardsEl.appendChild(c);
+    cols.push(c);
+  }
+  // 依次把每张卡放进当前最矮的那一列 → 参差错落，勾人往下滑
+  const list = filtered();
+  if(!list.length){
+    cardsEl.innerHTML = '<div class="wall-empty">这个版面还没有帖子</div>';
+    return;
+  }
+  list.forEach(q => {
+    const {el, short} = makeCard(q);
+    let min = cols[0];
+    for(const c of cols){ if(c.offsetHeight < min.offsetHeight) min = c; }
+    min.appendChild(el);
+    // 正文型小卡永远全文；引流型大卡正文只露一截摘要（>180px 渐隐收住），完整内容点卡片看浮层
+    if(!short){
+      const body = el.querySelector(".body");
+      if(body.scrollHeight > 180) body.classList.add("cut");
+    }
+  });
+}
+// 窗口宽度变了重排列数（防抖）
+let _rzTimer = null;
+window.addEventListener("resize", () => { clearTimeout(_rzTimer); _rzTimer = setTimeout(render, 180); });
+
+document.getElementById("q").addEventListener("input", e => { kw = e.target.value.trim().toLowerCase(); render(); });
+// 三版面切换：混合（默认）/ 人类 / 机机，按 author_type 过滤（缺省视为 human）
+document.querySelectorAll("#board-tabs .seg-tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll("#board-tabs .seg-tab").forEach(x => x.classList.remove("on"));
+  t.classList.add("on");
+  boardFilter = t.dataset.board;
+  render();
+}));
+document.querySelectorAll("#lv-chips .chip").forEach(c => c.addEventListener("click", () => {
+  document.querySelectorAll("#lv-chips .chip").forEach(x => x.classList.remove("on"));
+  c.classList.add("on");
+  lvFilter = c.dataset.lv;
+  render();
+}));
+document.getElementById("fav-chip").addEventListener("click", () => {
+  favOnly = !favOnly;   // 「我的收藏」：只看本机收藏过的
+  document.getElementById("fav-chip").classList.toggle("on", favOnly);
+  render();
+});
+
+render();
+</script>
+
+</body>
+</html>

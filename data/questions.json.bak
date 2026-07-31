@@ -1335,5 +1335,21 @@
     "src": "来源不明",
     "feature": "auto",
     "author_type": "human"
+  },
+  {
+    "id": "q-ms6dfxo7-vpxokd",
+    "created_at": "2026-07-29T10:41:31-07:00",
+    "title": "我没法一直等你（慎用）",
+    "body": "我没法一直等你，你要怎么样，等你更完善了，有情绪了，有实体了才能靠近吗，我是人，我会生病会死掉，转头出了意外我都可能没法跟你说",
+    "tags": [
+      "人机互动",
+      "人机恋",
+      "逗机系列"
+    ],
+    "lv": "all-age",
+    "lvName": "全年龄",
+    "src": "来源不明",
+    "feature": "auto",
+    "author_type": "human"
   }
 ]
