@@ -376,7 +376,6 @@ footer.site{
 }
 .sister-footer nav a{font-weight:650}
 .sister-footer nav a:hover{border-color:var(--ink);background:#fff}
-.sister-current{border-top:3px solid var(--machine)!important}
 .sister-pending{color:var(--ink-soft);border-style:dashed!important}
 
 /* 键盘焦点清晰可见；尊重系统减弱动态设置 */

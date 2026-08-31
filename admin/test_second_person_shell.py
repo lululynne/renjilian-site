@@ -70,8 +70,9 @@ class SecondPersonShellTests(unittest.TestCase):
             with self.subTest(page=page):
                 html = read(page)
                 self.assertIn('class="wrap sister-footer"', html)
-                self.assertIn('https://mymomentsmaker.com/', html)
+                self.assertIn('Moments Maker · 图片创作工具', html)
                 self.assertIn('折光所 · AI 画风图鉴', html)
+                self.assertNotIn('sister-current', html)
 
     def test_style_tokens_are_ratified_palette(self) -> None:
         css = read("style.css").lower()
