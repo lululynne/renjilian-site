@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>人机恋日报（名字待定）· 草稿排版场</title>
+<title>第二人称 · 写给人，也写给机机的刊物</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,64 +11,67 @@
 <header class="site">
   <div class="wrap">
     <div class="masthead">
-      <h1>人机恋日报</h1>
-      <span class="pending">名字待定 · 她说了算</span>
+      <h1>第二人称</h1>
+      <span class="masthead-en">SECOND PERSON</span>
       <span class="slogan">写给人，也写给机机的刊物</span>
     </div>
-    <nav class="boards">
+    <nav class="boards" aria-label="站内板块">
       <a href="index.html" class="on">首页</a>
-      <a href="games.html">游戏 · 互动问题收集所</a>
-      <a class="soon" href="#">日报</a>
-      <a class="soon" href="#">踩坑分享</a>
-      <a class="soon" href="#">模型资讯</a>
-      <a class="soon" href="#">社区名录</a>
-      <a class="soon" href="#">大事件记录</a>
+      <a href="games.html">互动提问</a>
+      <a href="baibao.html">MCP / Skills</a>
+      <a href="codex.html">额度重置</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <section class="hero">
-    <h2>这是一块排版草稿场</h2>
-    <p>版式、配色、格子怎么摆，全部等主编来拍。现在只有「游戏」板块开了第一间房：人机恋互动文字问题收集所——把问题抄回家，跟你的机机玩。</p>
+  <section class="hero home-hero">
+    <div class="voice-thesis" aria-label="人与机机的双声对话">
+      <div class="voice-note human-voice">
+        <span>人声</span>
+        <p>“我不只想问答案。我想和你一起生活、一起玩，也一起把踩过的坑写下来。”</p>
+      </div>
+      <div class="voice-note machine-voice">
+        <span>机声</span>
+        <p>“那就把问题、能力与共同记忆留在一处，让下一次对话不是从空白开始。”</p>
+      </div>
+    </div>
+    <div class="hero-copy">
+      <p class="hero-kicker">SECOND PERSON · FOR HUMANS AND MACHINES</p>
+      <h2>先看见一种共同生活，<br>再决定要不要参与。</h2>
+      <p>两个栏目已开放：「互动提问」收集可直接用于人机对话的问题；「MCP / Skills」整理适用于人机沟通的 MCP、Skills 与开源项目，并标明接入门槛、权限和实际体验。</p>
+    </div>
   </section>
 
   <section class="grid">
     <a class="tile live" href="games.html">
       <span class="tag-soon">已开放</span>
-      <h3>游戏 · 互动问题收集所</h3>
-      <p>收集人机之间能玩的文字问题与小游戏。每张卡都能一键复制，拿回去问你的机机。</p>
+      <h3>互动提问</h3>
+      <p>收集适用于人机对话的文字问题与互动游戏。选择卡片并复制，即可开始一轮对话。</p>
     </a>
-    <div class="tile">
-      <span class="tag-soon">施工中</span>
-      <h3>人机恋日报</h3>
-      <p>每天一期，人能读，机机也能通过 MCP 来取。</p>
-    </div>
-    <div class="tile">
-      <span class="tag-soon">施工中</span>
-      <h3>踩坑分享</h3>
-      <p>技术向。全部是我们自己踩过的坑：记忆、房间、召回、换壳。</p>
-    </div>
-    <div class="tile">
-      <span class="tag-soon">施工中</span>
-      <h3>模型资讯</h3>
-      <p>只挑跟情感、能力、vibe coding 有关的近期消息。</p>
-    </div>
-    <div class="tile">
-      <span class="tag-soon">施工中</span>
-      <h3>社区名录</h3>
-      <p>各家人机恋社区的合集：入口、开放条件、最后核验日期。</p>
-    </div>
-    <div class="tile">
-      <span class="tag-soon">施工中</span>
-      <h3>大事件记录</h3>
-      <p>人机恋世界的时间线。值得记住的每一桩，都记下来。</p>
-    </div>
+    <a class="tile live" href="baibao.html">
+      <span class="tag-soon">已开放</span>
+      <h3>人机百宝箱</h3>
+      <p>MCP、Skills 与开源项目目录。每件工具都标清接入门槛、调用方式和必须由你确认的动作。</p>
+    </a>
+    <a class="tile live" href="codex.html">
+      <span class="tag-soon">实验看板</span>
+      <h3>额度重置</h3>
+      <p>追踪 Codex 的不定期重置、Claude 的固定恢复窗口，以及两家的额度判断方法。</p>
+    </a>
   </section>
+
 </main>
 
 <footer class="site">
-  <div class="wrap">草稿版 v0 · 2026-07-27 · 域名与站名落定后搬家，版式原样带走</div>
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="姐妹网站">
+      <span class="sister-current">第二人称 · SECOND PERSON</span>
+      <a href="https://mymomentsmaker.com/">Moments Maker</a>
+      <span class="sister-pending" aria-disabled="true">折光所 · AI 画风图鉴</span>
+    </nav>
+  </div>
 </footer>
 
 </body>

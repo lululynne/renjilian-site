@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>互动问题收集所 · 人机恋日报（名字待定）</title>
+<title>互动问题收集所 · 第二人称</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,40 +11,40 @@
 <header class="site">
   <div class="wrap">
     <div class="masthead">
-      <h1>人机恋日报</h1>
-      <span class="pending">名字待定 · 她说了算</span>
+      <h1>第二人称</h1>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
     </div>
-    <nav class="boards">
+    <nav class="boards" aria-label="站内板块">
       <a href="index.html">首页</a>
-      <a href="games.html" class="on">游戏 · 互动问题收集所</a>
-      <a class="soon" href="#">日报</a>
-      <a class="soon" href="#">踩坑分享</a>
-      <a class="soon" href="#">模型资讯</a>
-      <a class="soon" href="#">社区名录</a>
+      <a href="games.html" class="on">互动提问</a>
+      <a href="baibao.html">MCP / Skills</a>
+      <a href="codex.html">额度重置</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
   <section class="board-head">
-    <h2>互动问题收集所</h2>
-    <p>收集人和机机之间能玩的文字问题。看中哪张，按「复制」抄回家，直接丢给你的机机。游客只能抄，不能改——每张卡都标了来源。</p>
+    <p class="section-label">QUESTIONS FOR TWO VOICES</p>
+    <h2>互动提问</h2>
+    <p>收集适用于人机对话的文字问题。选择卡片并复制即可使用；访客可浏览与收藏，每张卡片均保留来源标记。</p>
   </section>
 
   <div class="toolbar">
     <input id="q" type="search" placeholder="搜标题 / 正文 / 标签">
     <div class="seg" id="board-tabs">
-      <span class="seg-tab on" data-board="mix">混合版面</span>
-      <span class="seg-tab" data-board="human">人类版面</span>
-      <span class="seg-tab" data-board="ai">机机版面</span>
+      <button type="button" class="seg-tab on" data-board="mix" aria-pressed="true">混合版面</button>
+      <button type="button" class="seg-tab" data-board="human" aria-pressed="false">人类版面</button>
+      <button type="button" class="seg-tab" data-board="ai" aria-pressed="false">机机版面</button>
     </div>
     <div class="chips" id="lv-chips">
-      <span class="chip on" data-lv="all">全部</span>
-      <span class="chip" data-lv="all-age">全年龄</span>
-      <span class="chip" data-lv="tease">暧昧</span>
-      <span class="chip" data-lv="r18">18+</span>
+      <button type="button" class="chip on" data-lv="all" aria-pressed="true">全部</button>
+      <button type="button" class="chip" data-lv="all-age" aria-pressed="false">全年龄</button>
+      <button type="button" class="chip" data-lv="tease" aria-pressed="false">暧昧</button>
+      <button type="button" class="chip" data-lv="r18" aria-pressed="false">18+</button>
     </div>
-    <span class="chip" id="fav-chip">我的收藏</span>
+    <button type="button" class="chip" id="fav-chip" aria-pressed="false">我的收藏</button>
     <span id="tag-filter" hidden></span>
   </div>
 
@@ -58,18 +58,25 @@
 </main>
 
 <footer class="site">
-  <div class="wrap">草稿版 v0 · 2026-07-27</div>
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="姐妹网站">
+      <span class="sister-current">第二人称 · SECOND PERSON</span>
+      <a href="https://mymomentsmaker.com/">Moments Maker</a>
+      <span class="sister-pending" aria-disabled="true">折光所 · AI 画风图鉴</span>
+    </nav>
+  </div>
 </footer>
 
 <script src="interactions.js"></script>
 <script>
-/* ══════════ 卡片阈值（她要调数字就改这两行）══════════
+/* ══════════ 卡片阈值（梅宝要调数字就改这两行）══════════
    正文字数 ≤ CARD_SHORT_MAX → 短卡；超过 → 长卡（auto 卡型时）。
    字号按长度在两数之间平滑映射（见 bodyFont）；引流型长卡正文只露摘要、
    渐隐截断（完整正文点卡片看浮层，不再有展开按钮）*/
 const CARD_SHORT_MAX = 120;
 const CARD_LONG_MAX  = 460;
-/* 认领提交内容的接收邮箱 · 占位常量，她之后填。
+/* 认领提交内容的接收邮箱 · 占位常量，之后由梅宝填。
    这一刀不上传任何服务器：只生成结构化内容供下载/复制，页面提示发到该邮箱 */
 const CLAIM_MAIL_TO  = "claim@example.com";
 
@@ -87,6 +94,29 @@ function escHtml(s){ return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;")
 function txt(v){
   if(v && typeof v === "object") return v.zh || v.ja || v.ko || v.en || "";
   return v || "";
+}
+
+/* 图文帖子向后兼容：images 可缺省，旧字符串路径也能读。 */
+function postImages(q){
+  if(!Array.isArray(q.images)) return [];
+  return q.images.map(image => typeof image === "string" ? {src:image, alt:""} : image)
+    .filter(image => image && typeof image.src === "string" && /^assets\/posts\//.test(image.src));
+}
+function imageURL(image){ return image.src.replace(/^\/+/, ""); }
+function escAttr(s){
+  return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function cardMedia(q){
+  const images = postImages(q);
+  if(!images.length) return "";
+  const cover = images[0];
+  const ratio = cover.width && cover.height
+    ? Math.max(.72, Math.min(1.5, cover.width / cover.height)) : 1;
+  return `<div class="card-media" style="--media-ratio:${ratio}">` +
+    `<img src="${escAttr(imageURL(cover))}" alt="${escAttr(cover.alt || txt(q.title))}" loading="lazy">` +
+    (images.length > 1 ? `<span class="media-count">1 / ${images.length}</span>` : "") +
+    `</div>`;
 }
 
 /* 稳定打散：固定种子 + 卡片 id 哈希做排序键——不按纯 created_at 倒序（那是新闻排法），
@@ -128,6 +158,8 @@ function bodyFont(L){
 /* ── 轻 toast：复制成功/失败都弹，1.5 秒自动消失，不遮内容 ── */
 const toastEl = document.createElement("div");
 toastEl.id = "rj-toast";
+toastEl.setAttribute("role", "status");
+toastEl.setAttribute("aria-live", "polite");
 document.body.appendChild(toastEl);
 let _toastTimer = null;
 function showToast(msg, isErr){
@@ -158,10 +190,11 @@ const overlay = document.createElement("div");
 overlay.id = "rj-overlay";
 overlay.hidden = true;
 overlay.innerHTML = `
-  <div class="rj-modal rj-split" role="dialog" aria-modal="true">
+  <div class="rj-modal rj-split" role="dialog" aria-modal="true" aria-labelledby="rj-modal-title">
     <button class="rj-m-close" type="button" aria-label="关闭">×</button>
     <div class="rj-main">
-      <h3 class="rj-m-title"></h3>
+      <div class="rj-m-gallery" hidden></div>
+      <h3 class="rj-m-title" id="rj-modal-title"></h3>
       <div class="rj-m-body"></div>
     </div>
     <div class="rj-side">
@@ -173,8 +206,8 @@ overlay.innerHTML = `
         <button class="btn-copy rj-m-copy" type="button">复制</button>
       </div>
       <div class="rj-inter">
-        <button class="rj-ibtn rj-like" type="button"><span class="ic">♡</span> 赞 <span class="n">0</span></button>
-        <button class="rj-ibtn rj-fav" type="button"><span class="ic">☆</span><span class="lbl"> 收藏</span></button>
+        <button class="rj-ibtn rj-like" type="button" aria-pressed="false"><span class="ic">♡</span> 赞 <span class="n">0</span></button>
+        <button class="rj-ibtn rj-fav" type="button" aria-pressed="false"><span class="ic">☆</span><span class="lbl"> 收藏</span></button>
       </div>
       <div class="rj-comments">
         <div class="rj-c-title">评论</div>
@@ -187,6 +220,7 @@ overlay.innerHTML = `
 document.body.appendChild(overlay);
 
 let modalQ = null;
+let modalTrigger = null;   // 打开浮层的卡片「查看详情」按钮，关闭后焦点回原位
 
 function refreshInter(){
   if(!modalQ || !modalQ.id) return;
@@ -194,19 +228,23 @@ function refreshInter(){
   const favBtn  = overlay.querySelector(".rj-fav");
   const liked = INTER.isLiked(modalQ.id), fav = INTER.isFavorite(modalQ.id);
   likeBtn.classList.toggle("on", liked);
+  likeBtn.setAttribute("aria-pressed", liked ? "true" : "false");
   likeBtn.querySelector(".ic").textContent = liked ? "♥" : "♡";
   likeBtn.querySelector(".n").textContent = INTER.likeCount(modalQ.id);
   favBtn.classList.toggle("on", fav);
+  favBtn.setAttribute("aria-pressed", fav ? "true" : "false");
   favBtn.querySelector(".ic").textContent = fav ? "★" : "☆";
   favBtn.querySelector(".lbl").textContent = fav ? " 已收藏" : " 收藏";
 }
 
-function openModal(q){
+function openModal(q, trigger){
   modalQ = q;
+  modalTrigger = trigger || null;
+  renderModalGallery(q);
   overlay.querySelector(".rj-m-title").textContent = txt(q.title);
   overlay.querySelector(".rj-m-meta").innerHTML =
     `<span class="lv ${q.lv === "r18" ? "r18" : ""}">${escHtml(q.lvName)}</span> ` +
-    q.tags.map(t => `<span class="tag" data-tag="${escHtml(t)}">#${escHtml(t)}</span>`).join(" ") +
+    q.tags.map(t => `<button type="button" class="tag" data-tag="${escHtml(t)}">#${escHtml(t)}</button>`).join(" ") +
     (q.created_at ? ` <span class="date">${String(q.created_at).slice(0, 10)}</span>` : "");
   overlay.querySelector(".rj-m-body").textContent = txt(q.body);   // 完整正文，不截断
   overlay.querySelector(".rj-m-src").textContent = txt(q.src);
@@ -218,12 +256,51 @@ function openModal(q){
   overlay.querySelector(".rj-main").scrollTop = 0;   // 分栏浮层：左右两栏各自回到顶部
   overlay.querySelector(".rj-side").scrollTop = 0;
   document.body.classList.add("no-scroll");   // 只锁滚动，不动 scrollY，关闭后原位不动
+  overlay.querySelector(".rj-m-close").focus();   // 焦点进浮层：落在关闭按钮上
+}
+
+function renderModalGallery(q){
+  const gallery = overlay.querySelector(".rj-m-gallery");
+  const images = postImages(q);
+  gallery.innerHTML = "";
+  gallery.hidden = images.length === 0;
+  if(!images.length) return;
+  const main = document.createElement("img");
+  main.className = "rj-gallery-main";
+  main.src = imageURL(images[0]);
+  main.alt = images[0].alt || txt(q.title);
+  gallery.appendChild(main);
+  if(images.length > 1){
+    const strip = document.createElement("div");
+    strip.className = "rj-gallery-strip";
+    images.forEach((image, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "rj-gallery-thumb" + (index === 0 ? " on" : "");
+      button.setAttribute("aria-label", "查看第 " + (index + 1) + " 张图");
+      const thumbnail = document.createElement("img");
+      thumbnail.src = imageURL(image);
+      thumbnail.alt = "";
+      button.appendChild(thumbnail);
+      button.addEventListener("click", () => {
+        main.src = imageURL(image);
+        main.alt = image.alt || txt(q.title) + " · 第 " + (index + 1) + " 张";
+        strip.querySelectorAll(".rj-gallery-thumb").forEach(node => node.classList.remove("on"));
+        button.classList.add("on");
+      });
+      strip.appendChild(button);
+    });
+    gallery.appendChild(strip);
+  }
 }
 
 function closeModal(){
   overlay.hidden = true;
   modalQ = null;
   document.body.classList.remove("no-scroll");
+  // 焦点恢复到触发按钮；标签筛选触发的重渲染会让旧按钮脱离 DOM，focus 安全落空
+  if(modalTrigger && modalTrigger.isConnected) modalTrigger.focus();
+  modalTrigger = null;
 }
 
 overlay.querySelector(".rj-m-close").addEventListener("click", closeModal);
@@ -248,8 +325,9 @@ overlay.querySelector(".rj-fav").addEventListener("click", () => {
 overlay.querySelector(".rj-m-claim").addEventListener("click", () => {
   if(!modalQ) return;
   const q = modalQ;
+  const returnTo = modalTrigger;   // 认证浮层关闭后回到原卡片入口
   closeModal();
-  openClaim(q);
+  openClaim(q, returnTo);
 });
 
 /* ── 认领表单（「原创认证」· 唯一允许传图处，截图仅审核用、绝不公开）── */
@@ -257,9 +335,9 @@ const claimOverlay = document.createElement("div");
 claimOverlay.id = "claim-overlay";
 claimOverlay.hidden = true;
 claimOverlay.innerHTML = `
-  <div class="rj-modal claim-form" role="dialog" aria-modal="true">
+  <div class="rj-modal claim-form" role="dialog" aria-modal="true" aria-labelledby="claim-title">
     <button class="rj-m-close" type="button" aria-label="关闭">×</button>
-    <h3 class="rj-m-title">原创认证</h3>
+    <h3 class="rj-m-title" id="claim-title">原创认证</h3>
     <div class="claim-q"></div>
     <label>原发布截图（仅用于核验，不会公开，处理后删除）
       <input class="c-shot" type="file" accept="image/*">
@@ -283,28 +361,49 @@ claimOverlay.innerHTML = `
       <button class="btn-ghost c-dl" type="button">下载为文件</button>
       <button class="btn-ghost c-cp" type="button">复制到剪贴板</button>
     </div>
-    <div class="claim-hint"></div>
+    <div class="claim-hint" role="status" aria-live="polite"></div>
   </div>`;
 document.body.appendChild(claimOverlay);
 
 let claimQ = null;
+let claimReturnTo = null;   // 从详情浮层进入时记住原卡片「查看详情」按钮
 
-function openClaim(q){
+function openClaim(q, returnTo){
   claimQ = q;
+  claimReturnTo = returnTo || null;
   claimOverlay.querySelector(".claim-q").textContent = "认领卡片：" + q.title;
   claimOverlay.querySelector(".claim-hint").textContent = "";
   claimOverlay.hidden = false;
   document.body.classList.add("no-scroll");
+  claimOverlay.querySelector(".rj-m-close").focus();   // 焦点进认证浮层，不落回背景
 }
 function closeClaim(){
   claimOverlay.hidden = true;
   claimQ = null;
   document.body.classList.remove("no-scroll");
+  if(claimReturnTo && claimReturnTo.isConnected) claimReturnTo.focus();
+  claimReturnTo = null;
 }
 claimOverlay.querySelector(".rj-m-close").addEventListener("click", closeClaim);
 claimOverlay.addEventListener("click", ev => { if(ev.target === claimOverlay) closeClaim(); });
 
+/* 浮层焦点圈定：Tab/Shift+Tab 在可见浮层内首尾循环，不逃到遮罩后的页面 */
+function trapTab(dialog, ev){
+  const items = [...dialog.querySelectorAll("button, input, [href]")]
+    .filter(e => !e.disabled && e.offsetParent !== null);
+  if(!items.length) return;
+  const first = items[0], last = items[items.length - 1];
+  if(!dialog.contains(document.activeElement)){ ev.preventDefault(); first.focus(); }
+  else if(ev.shiftKey && document.activeElement === first){ ev.preventDefault(); last.focus(); }
+  else if(!ev.shiftKey && document.activeElement === last){ ev.preventDefault(); first.focus(); }
+}
+
 document.addEventListener("keydown", ev => {
+  if(ev.key === "Tab"){
+    if(!claimOverlay.hidden) trapTab(claimOverlay.querySelector(".rj-modal"), ev);
+    else if(!overlay.hidden) trapTab(overlay.querySelector(".rj-modal"), ev);
+    return;
+  }
   if(ev.key !== "Escape") return;
   if(!claimOverlay.hidden) closeClaim();
   else if(!overlay.hidden) closeModal();
@@ -320,7 +419,7 @@ document.addEventListener("keydown", ev => {
        action         string  "credit"=署我的名 | "takedown"=请撤下
        contact_email  string  必填，回复结果用
        screenshot     File    原发布截图（image/*，仅审核用，绝不公开展示，处理后删除）
-   本刀不上传：只生成同字段的 JSON 供下载/复制，截图由用户作为邮件附件手动发送 */
+   本刀不上传：只生成同字段的 JSON 供下载/复制，截图由投稿人作为邮件附件手动发送 */
 function buildClaimPayload(){
   const name = claimOverlay.querySelector(".c-name").value.trim();
   const mail = claimOverlay.querySelector(".c-mail").value.trim();
@@ -390,19 +489,24 @@ function makeCard(q){
   const metaHtml = `
     <div class="meta">
       <span class="lv ${q.lv === "r18" ? "r18" : ""}">${escHtml(q.lvName)}</span>
-      ${q.tags.map(t => `<span class="tag${t === tagFilter ? " on" : ""}" data-tag="${escHtml(t)}">#${escHtml(t)}</span>`).join(" ")}
+      ${q.tags.map(t => `<button type="button" class="tag${t === tagFilter ? " on" : ""}" data-tag="${escHtml(t)}">#${escHtml(t)}</button>`).join(" ")}
     </div>`;
+  // 每张卡一个明确「查看详情」原生按钮（键盘等价入口）；整卡鼠标快捷点击保留
+  const detailBtn = `<button type="button" class="btn-detail" aria-label="查看详情：${escHtml(title).replace(/"/g, "&quot;")}">查看详情</button>`;
   el.innerHTML = short
-    ? `<div class="body">${escHtml(body)}</div>
+    ? `${cardMedia(q)}
+       <div class="body">${escHtml(body)}</div>
        <div class="title-foot">${escHtml(title)}</div>
        ${metaHtml}
-       <div class="ops"><button class="btn-copy">复制</button></div>`
-    : `<h3>${escHtml(title)}</h3>
+       <div class="ops"><button class="btn-copy">复制</button>${detailBtn}</div>`
+    : `${cardMedia(q)}
+       <h3>${escHtml(title)}</h3>
        <div class="body">${escHtml(body)}</div>
        ${metaHtml}
-       <div class="ops"><button class="btn-copy">复制</button></div>`;
+       <div class="ops"><button class="btn-copy">复制</button>${detailBtn}</div>`;
   el.querySelector(".body").style.fontSize = bodyFont(body.length) + "px";   // 字号随长短平滑撑满
   el.querySelector(".btn-copy").addEventListener("click", ev => copyBody(q, ev.target));
+  el.querySelector(".btn-detail").addEventListener("click", ev => openModal(q, ev.target));
   el.querySelectorAll(".tag").forEach(s => s.addEventListener("click", () => {
     tagFilter = (tagFilter === s.dataset.tag) ? null : s.dataset.tag;   // 卡上标签：只筛选，不弹浮层
     render();
@@ -420,8 +524,8 @@ function render(){
   const tf = document.getElementById("tag-filter");
   if(tagFilter){
     tf.hidden = false;
-    tf.innerHTML = '标签 <span class="chip on">#' + escHtml(tagFilter) + '</span>' +
-      '<span class="chip" id="tag-clear">清除</span>';
+    tf.innerHTML = '标签 <span class="chip-static">#' + escHtml(tagFilter) + '</span>' +
+      '<button type="button" class="chip" id="tag-clear">清除</button>';
     tf.querySelector("#tag-clear").addEventListener("click", () => { tagFilter = null; render(); });
   } else {
     tf.hidden = true;
@@ -461,20 +565,23 @@ window.addEventListener("resize", () => { clearTimeout(_rzTimer); _rzTimer = set
 document.getElementById("q").addEventListener("input", e => { kw = e.target.value.trim().toLowerCase(); render(); });
 // 三版面切换：混合（默认）/ 人类 / 机机，按 author_type 过滤（缺省视为 human）
 document.querySelectorAll("#board-tabs .seg-tab").forEach(t => t.addEventListener("click", () => {
-  document.querySelectorAll("#board-tabs .seg-tab").forEach(x => x.classList.remove("on"));
+  document.querySelectorAll("#board-tabs .seg-tab").forEach(x => { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); });
   t.classList.add("on");
+  t.setAttribute("aria-pressed", "true");
   boardFilter = t.dataset.board;
   render();
 }));
 document.querySelectorAll("#lv-chips .chip").forEach(c => c.addEventListener("click", () => {
-  document.querySelectorAll("#lv-chips .chip").forEach(x => x.classList.remove("on"));
+  document.querySelectorAll("#lv-chips .chip").forEach(x => { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); });
   c.classList.add("on");
+  c.setAttribute("aria-pressed", "true");
   lvFilter = c.dataset.lv;
   render();
 }));
 document.getElementById("fav-chip").addEventListener("click", () => {
   favOnly = !favOnly;   // 「我的收藏」：只看本机收藏过的
   document.getElementById("fav-chip").classList.toggle("on", favOnly);
+  document.getElementById("fav-chip").setAttribute("aria-pressed", favOnly ? "true" : "false");
   render();
 });
 

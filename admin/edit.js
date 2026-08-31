@@ -4,13 +4,16 @@
 "use strict";
 
 const LV_NAME = {"all-age":"全年龄","tease":"暧昧","r18":"18+"};
-let ME = null, dirty = false, enhancing = false;
+const MAX_POST_IMAGES = 9;
+const MAX_IMAGE_FILE_BYTES = 20 * 1024 * 1024;
+const MAX_IMAGE_PIXELS = 40_000_000;
+let ME = null, CSRF = "", dirty = false, enhancing = false;
 const cardsEl = document.getElementById("cards");   // 只有 games.html 有
 
 async function api(path, body){
-  const r = await fetch(path, body
-    ? {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)}
-    : {});
+  const options = body ? {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)} : {};
+  if(body && path !== "/api/login" && CSRF) options.headers["x-rj-csrf"] = CSRF;
+  const r = await fetch(path, options);
   return r.ok ? r.json() : Promise.reject(await r.json().catch(()=>({error:r.status})));
 }
 function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
@@ -39,22 +42,33 @@ function buildToolbar(){
     '<span class="spacer"></span>' +
     (cardsEl ? '<button class="rjbtn" id="rj-add">＋ 新建帖子</button>' : '') +
     '<button class="rjbtn" id="rj-save">保存草稿</button>' +
-    '<button class="rjbtn primary" id="rj-pub">发布上线</button>' +
+    (ME.publish_enabled !== false ? '<button class="rjbtn primary" id="rj-pub">发布上线</button>' : '') +
     '<button class="rjbtn" id="rj-quit">退出</button>';
   document.body.prepend(bar);
   if(cardsEl) document.getElementById("rj-add").addEventListener("click", addCard);
   document.getElementById("rj-save").addEventListener("click", save);
-  document.getElementById("rj-pub").addEventListener("click", publish);
+  if(document.getElementById("rj-pub")) document.getElementById("rj-pub").addEventListener("click", publish);
   document.getElementById("rj-quit").addEventListener("click", logout);
 }
 
 async function save(){
   say("保存中……");
   try{
-    await api("/api/questions", {questions: QUESTIONS});
+    const pendingPreviews = QUESTIONS.flatMap(q => (q.images || []))
+      .filter(image => image && image._file && image._preview)
+      .map(image => image._preview);
+    const questions = await questionsForSave();
+    const result = await api("/api/questions", {questions});
+    pendingPreviews.forEach(url => URL.revokeObjectURL(url));
+    if(Array.isArray(result.questions)){
+      QUESTIONS.length = 0;
+      QUESTIONS.push(...result.questions);
+      render();
+    }
     clearDirty();
-    say("草稿已落盘 " + new Date().toLocaleTimeString(), "ok");
-  }catch(e){ say("保存失败：" + (e.error || ""), "err"); }
+    say("草稿已落盘" + (result.archived_images ? " · 已收起删除图 " + result.archived_images + " 张" : "") +
+      " " + new Date().toLocaleTimeString(), "ok");
+  }catch(e){ say("保存失败：" + (e.error || e.message || "未知错误"), "err"); }
 }
 
 async function publish(){
@@ -85,6 +99,160 @@ function nowISO(){
   return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) +
     "T" + p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds()) +
     sign + p(Math.floor(Math.abs(off) / 60)) + ":" + p(Math.abs(off) % 60);
+}
+
+/* ── 图文帖子：客户端先缩边，服务端仍会解码验图并二次压缩 ── */
+function imageSrc(image){
+  if(!image) return "";
+  if(image._preview) return image._preview;
+  const src = typeof image === "string" ? image : image.src;
+  if(!src) return "";
+  return src.startsWith("assets/") ? "/" + src : src;
+}
+function imageItems(q){
+  return Array.isArray(q.images) ? q.images.filter(image => image && imageSrc(image)) : [];
+}
+function blobDataURL(blob){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("读取图片失败"));
+    reader.readAsDataURL(blob);
+  });
+}
+function decodeFileImage(file){
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => { URL.revokeObjectURL(url); resolve(image); };
+    image.onerror = () => { URL.revokeObjectURL(url); reject(new Error("这张图片无法读取")); };
+    image.src = url;
+  });
+}
+async function compressImage(file){
+  if(!file || !String(file.type || "").startsWith("image/")) throw new Error("只能选择图片");
+  if(file.size > MAX_IMAGE_FILE_BYTES) throw new Error("单张图片不能超过 20 MB");
+  const image = await decodeFileImage(file);
+  if(image.naturalWidth * image.naturalHeight > MAX_IMAGE_PIXELS) throw new Error("图片像素过大");
+  const edge = 2048;
+  const scale = Math.min(1, edge / Math.max(image.naturalWidth, image.naturalHeight));
+  const width = Math.max(1, Math.round(image.naturalWidth * scale));
+  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width; canvas.height = height;
+  const context = canvas.getContext("2d", {alpha:true});
+  if(!context) throw new Error("浏览器无法压缩这张图");
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = "high";
+  context.drawImage(image, 0, 0, width, height);
+  let blob = await new Promise(resolve => canvas.toBlob(resolve, "image/webp", .84));
+  if(!blob) blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", .86));
+  if(!blob) throw new Error("图片压缩失败");
+  return blobDataURL(blob);
+}
+async function questionsForSave(){
+  let total = 0, finished = 0;
+  QUESTIONS.forEach(q => imageItems(q).forEach(image => { if(image._file) total++; }));
+  const output = [];
+  for(const q of QUESTIONS){
+    const copy = {...q};
+    const images = imageItems(q);
+    if(images.length || Array.isArray(q.images)) copy.images = [];
+    else delete copy.images;
+    for(const image of images){
+      if(image._file){
+        finished++;
+        say("正在压缩图片 " + finished + " / " + total + "……");
+        copy.images.push({
+          alt: image.alt || "",
+          _upload: {name:image._file.name || "photo", data:await compressImage(image._file)}
+        });
+      }else{
+        copy.images.push({
+          src: image.src,
+          alt: image.alt || "",
+          width: image.width,
+          height: image.height,
+          bytes: image.bytes
+        });
+      }
+    }
+    output.push(copy);
+  }
+  return output;
+}
+
+function makeImageEditor(container, images){
+  const list = container.querySelector(".rj-image-list");
+  const picker = container.querySelector(".rj-image-input");
+  const note = container.querySelector(".rj-image-note");
+
+  function move(from, to){
+    if(to < 0 || to >= images.length) return;
+    const [item] = images.splice(from, 1);
+    images.splice(to, 0, item);
+    renderImages();
+  }
+  function renderImages(){
+    list.innerHTML = "";
+    images.forEach((item, index) => {
+      const tile = document.createElement("div");
+      tile.className = "rj-image-tile";
+      const image = document.createElement("img");
+      image.src = imageSrc(item);
+      image.alt = item.alt || (index === 0 ? "封面预览" : "配图预览");
+      const badge = document.createElement("span");
+      badge.className = "rj-cover-badge";
+      badge.textContent = index === 0 ? "封面" : String(index + 1).padStart(2, "0");
+      const alt = document.createElement("input");
+      alt.className = "rj-image-alt";
+      alt.maxLength = 180;
+      alt.placeholder = "图片说明（选填）";
+      alt.value = item.alt || "";
+      alt.addEventListener("input", () => { item.alt = alt.value; });
+      const actions = document.createElement("div");
+      actions.className = "rj-image-actions";
+      const controls = [
+        ["设封面", () => move(index, 0), index === 0],
+        ["左移", () => move(index, index - 1), index === 0],
+        ["右移", () => move(index, index + 1), index === images.length - 1],
+        ["移除", () => { images.splice(index, 1); renderImages(); }, false]
+      ];
+      controls.forEach(([label, action, disabled]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "rj-image-action" + (label === "移除" ? " danger" : "");
+        button.textContent = label;
+        button.disabled = disabled;
+        button.addEventListener("click", action);
+        actions.appendChild(button);
+      });
+      tile.append(image, badge, alt, actions);
+      list.appendChild(tile);
+    });
+    container.classList.toggle("is-empty", images.length === 0);
+    note.textContent = images.length
+      ? images.length + " / " + MAX_POST_IMAGES + " 张 · 首图会成为卡片封面"
+      : "可一次多选，最多 " + MAX_POST_IMAGES + " 张；保存时自动压缩";
+  }
+  picker.addEventListener("change", () => {
+    const files = Array.from(picker.files || []);
+    const room = MAX_POST_IMAGES - images.length;
+    if(files.length > room) say("这篇帖子还能加 " + room + " 张图", "err");
+    files.slice(0, room).forEach(file => {
+      if(!String(file.type || "").startsWith("image/")) return;
+      if(file.size > MAX_IMAGE_FILE_BYTES){ say(file.name + " 超过 20 MB，没有加入", "err"); return; }
+      images.push({
+        _localId: "img-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7),
+        _file: file,
+        _preview: URL.createObjectURL(file),
+        alt: ""
+      });
+    });
+    picker.value = "";
+    renderImages();
+  });
+  renderImages();
 }
 
 function enhance(){
@@ -238,6 +406,9 @@ function makeTagEditor(box, hintEl, tags){
 }
 
 function startEdit(el, q){
+  const originalImages = imageItems(q).slice();
+  const originalLocalIds = new Set(originalImages.filter(image => image._file).map(image => image._localId));
+  const images = originalImages.map(image => typeof image === "string" ? {src:image, alt:""} : {...image});
   el.dataset.rjEditing = "1";
   el.classList.add("rj-editing");
   el.innerHTML =
@@ -253,6 +424,13 @@ function startEdit(el, q){
       '<option value="body">卡型：正文型（标题沉底）</option>' +
       '<option value="title">卡型：标题引流型（标题置顶）</option>' +
     '</select>' +
+    '<section class="rj-image-editor">' +
+      '<div class="rj-image-head"><b>帖子图片</b><span class="rj-image-note"></span></div>' +
+      '<div class="rj-image-list"></div>' +
+      '<label class="rj-image-picker">＋ 从手机或电脑选择图片' +
+        '<input class="rj-image-input" type="file" accept="image/*" multiple>' +
+      '</label>' +
+    '</section>' +
     '<div class="rj-tagbox"><input class="rj-f-taginput" placeholder="打标签，回车成胶囊"></div>' +
     '<div class="rj-taghint" hidden></div>' +
     '<input class="rj-f-src" value="' + esc(q.src) + '" placeholder="来源">' +
@@ -264,6 +442,7 @@ function startEdit(el, q){
   el.querySelector(".rj-f-feature").value = q.feature || "auto";
   const tags = (q.tags || []).map(t => (t || "").replace(/^#+/, "").trim()).filter(Boolean);
   const editor = makeTagEditor(el.querySelector(".rj-tagbox"), el.querySelector(".rj-taghint"), tags);
+  makeImageEditor(el.querySelector(".rj-image-editor"), images);
   el.querySelector('[data-act="done"]').addEventListener("click", ()=>{
     editor.commitRest();
     const title = el.querySelector(".rj-f-title").value.trim() || q.title;
@@ -276,12 +455,19 @@ function startEdit(el, q){
     q.feature = el.querySelector(".rj-f-feature").value;   // 手动卡型开关：auto/body/title
     q.tags   = tags.map(t => t.trim()).filter(Boolean);
     q.src    = el.querySelector(".rj-f-src").value.trim() || "本站原创";
+    originalImages.filter(image => image._file && !images.some(current => current._localId === image._localId))
+      .forEach(image => URL.revokeObjectURL(image._preview));
+    q.images = images;
     if(!q.id) q.id = newId();
     if(!q.created_at) q.created_at = nowISO();
     markDirty();
     render();
   });
-  el.querySelector('[data-act="cancel"]').addEventListener("click", ()=>render());
+  el.querySelector('[data-act="cancel"]').addEventListener("click", ()=>{
+    images.filter(image => image._file && !originalLocalIds.has(image._localId))
+      .forEach(image => URL.revokeObjectURL(image._preview));
+    render();
+  });
 }
 
 function delCard(q){
@@ -302,7 +488,7 @@ function addCard(){
   document.querySelectorAll("#board-tabs .seg-tab").forEach(x=>x.classList.toggle("on", x.dataset.board === "mix"));
   boardFilter = "mix";
   tagFilter = null;
-  const nq = {id:newId(), created_at:nowISO(), title:"新帖子", body:"", tags:[],
+  const nq = {id:newId(), created_at:nowISO(), title:"新帖子", body:"", tags:[], images:[],
               lv:"all-age", lvName:"全年龄", src:"本站原创", feature:"auto", author_type:"human"};
   QUESTIONS.push(nq);
   markDirty();
@@ -318,6 +504,7 @@ function addCard(){
 (async function(){
   try{ ME = await api("/api/me"); }
   catch(e){ return; }   // 未登录：什么都不做
+  CSRF = ME.csrf || "";
   buildToolbar();
   if(cardsEl){
     try{

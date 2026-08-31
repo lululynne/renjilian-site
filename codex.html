@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>额度重置 · 第二人称</title>
+<link rel="stylesheet" href="style.css">
+<style>
+:root{
+  --ink:#202a33; --muted:#65717a; --faint:#87929a;
+  --paper:#f2f6f7; --line:#d3dde1; --panel:#fff;
+  --lilac:#7f8fca; --rose:#dd7e70; --ice:#e8eff1; --pick:#7f8fca;
+  --r:16px;
+  --ok:#6f9280; --mid:#b09263; --no:#c2818f;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;color:var(--ink);
+  background:var(--paper);
+  background-attachment:fixed;
+  font-family:"Avenir Next",-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+  font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+:focus-visible{outline:3px solid color-mix(in srgb, var(--pick) 54%, #8096ac);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,3vw,42px)}
+
+/* 顶栏 */
+.head{
+  position:sticky;top:0;z-index:30;
+  display:grid;grid-template-columns:auto 1fr;align-items:center;gap:20px;
+  min-height:62px;padding:10px clamp(16px,3vw,42px);
+  border-bottom:1px solid rgba(229,228,234,.8);
+  background:rgba(249,250,252,.82);
+  backdrop-filter:blur(18px) saturate(1.25);
+  -webkit-backdrop-filter:blur(18px) saturate(1.25);
+}
+.brand{font-family:"Songti SC","STSong",serif;font-size:19px;letter-spacing:.04em;white-space:nowrap}
+.brand span{color:var(--muted);font-size:13px;margin-left:8px}
+.nav{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.nav a{
+  color:var(--muted);text-decoration:none;font-size:12px;font-weight:650;
+  padding:7px 12px;border-radius:999px;white-space:nowrap;transition:background .15s,color .15s;
+}
+.nav a:hover{background:rgba(241,241,246,.9);color:var(--ink)}
+.nav a.on{background:var(--ink);color:#fff}
+/* 开篇 */
+.hero{padding:clamp(34px,6vw,62px) 0 8px;max-width:660px}
+.kicker{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin:0 0 12px;font-family:ui-monospace,monospace}
+.hero h1{
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;font-weight:500;
+  font-size:clamp(30px,5.4vw,46px);line-height:1.25;letter-spacing:.03em;margin:0 0 16px;text-wrap:balance;
+}
+.hero p{color:var(--muted);font-size:14.5px;margin:0}
+.hero b{color:var(--ink);font-weight:600}
+
+/* 品牌分节 */
+.mark{display:flex;align-items:center;gap:15px;margin:clamp(44px,7vw,74px) 0 14px}
+.orb{
+  width:52px;height:52px;border-radius:17px;flex:0 0 auto;position:relative;overflow:hidden;
+  display:grid;place-items:center;color:#fff;font-size:21px;font-weight:700;letter-spacing:.02em;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.74), 0 14px 24px rgba(66,60,79,.12);
+}
+.orb::before{content:"";position:absolute;inset:-20%;background:linear-gradient(135deg,rgba(255,255,255,.9),transparent 45%,rgba(255,255,255,.35));filter:blur(3px)}
+.orb i{position:relative;font-style:normal}
+.orb.oa{background:linear-gradient(145deg,#a9cfc2,#6f9d95)}
+.orb.an{background:linear-gradient(145deg,#e4c3cf,#c08fa4)}
+.mark h2{font-family:"Noto Serif SC","Songti SC","STSong",serif;font-weight:500;font-size:29px;letter-spacing:.05em;margin:0;line-height:1.2}
+.mark .sub{font-size:12px;color:var(--faint);margin-top:2px;letter-spacing:.02em}
+.lede{color:var(--muted);font-size:13.5px;max-width:680px;margin:0 0 20px;line-height:1.85}
+.lede b{color:var(--ink);font-weight:600}
+
+/* 玻璃面板 */
+.bench{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+.p{
+  grid-column:span 2;position:relative;
+  border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  box-shadow:0 18px 60px rgba(49,44,58,.055);
+  padding:20px;display:flex;flex-direction:column;gap:15px;min-width:0;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.p.wide{grid-column:span 4}
+@media (max-width:780px){.bench{grid-template-columns:1fr}.p,.p.wide{grid-column:span 1}}
+.p-kicker{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-family:ui-monospace,monospace;margin:0}
+.p h3{font-family:"Noto Serif SC","Songti SC","STSong",serif;font-weight:500;font-size:19px;letter-spacing:.04em;margin:-6px 0 0}
+.size{position:absolute;top:17px;right:18px;font-size:9px;letter-spacing:.12em;color:var(--faint);font-family:ui-monospace,monospace}
+.num{font-variant-numeric:tabular-nums}
+.lead{margin:0;font-size:13.5px;color:var(--muted)}
+.lead b{color:var(--ink);font-weight:650;font-size:15px}
+.note{font-size:12px;line-height:1.75;color:var(--faint);margin:0}
+.note b{color:var(--muted)}
+.body{font-size:13px;color:var(--muted);margin:0;line-height:1.85}
+.body b{color:var(--ink);font-weight:600}
+
+/* 概率曲线 */
+.fc{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.fc-n{flex:0 0 auto;min-width:92px}
+.fc-big{font-size:44px;line-height:1;font-weight:300;letter-spacing:-.02em;color:var(--ink);font-family:"Songti SC",serif}
+.fc-cap{font-size:11px;color:var(--faint);margin-top:6px;letter-spacing:.04em}
+.fc-2{font-size:12.5px;color:var(--muted);margin-top:12px}
+.fc-2 b{color:var(--ink);font-weight:650}
+.fc-c{flex:1 1 250px;min-width:0}
+.fc-c svg{width:100%;height:auto;display:block;overflow:visible}
+.ax{fill:none;stroke:var(--line);stroke-width:1}
+.axd{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:2 5}
+.band{fill:var(--pick);opacity:.16}
+.bandlab{font-size:8.5px;fill:var(--faint);letter-spacing:.1em}
+.area{fill:url(#g1)}
+.line{fill:none;stroke:var(--pick);stroke-width:2.5;stroke-linecap:round;
+  stroke-dasharray:var(--len,600);stroke-dashoffset:var(--len,600);
+  animation:draw 1.5s cubic-bezier(.3,.7,.3,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.knot{fill:#fff;stroke:var(--pick);stroke-width:2.5}
+.klab{font-size:10.5px;font-weight:650;fill:var(--ink)}
+.tick{font-size:9px;fill:var(--faint);letter-spacing:.06em}
+.nowline{stroke:var(--faint);stroke-width:1;stroke-dasharray:2 3;opacity:.6}
+@media (prefers-reduced-motion:reduce){.line{animation:none;stroke-dashoffset:0}.dot-live{animation:none}}
+
+/* 分隔与时间行 */
+.rule{border-top:1px solid var(--line);padding-top:14px;display:flex;gap:10px;align-items:flex-start}
+.dot-live{width:7px;height:7px;border-radius:50%;background:var(--pick);flex:0 0 auto;margin-top:7px;
+  box-shadow:0 0 0 0 color-mix(in srgb,var(--pick) 60%,transparent);animation:halo 2.8s ease-out infinite}
+@keyframes halo{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--pick) 55%,transparent)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.rule p{margin:0;font-size:13px;color:var(--muted)}
+.rule b{color:var(--ink);font-weight:650}
+.rule small{display:block;font-size:11px;color:var(--faint);margin-top:4px;line-height:1.7}
+
+/* 月计数 */
+.count{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.cn{display:flex;align-items:baseline;gap:7px}
+.cn b{font-family:"Songti SC",serif;font-size:36px;font-weight:400;line-height:1;color:var(--ink)}
+.cn b.tk{color:#b892ab}
+.cn span{font-size:10.5px;color:var(--faint);line-height:1.35}
+.cn-note{flex:1 1 210px;min-width:0;font-size:12px;color:var(--muted);line-height:1.8}
+.cn-note b{color:var(--ink);font-weight:650}
+.cal{border-top:1px solid var(--line);padding-top:13px}
+.cal-row{display:flex;gap:2px;align-items:flex-end;height:26px}
+.cal-row i{flex:1 1 0;border-radius:3px;background:#eceaf1;height:8px}
+.cal-row i.on{background:var(--pick);height:24px}
+.cal-row i.tk{background:#e0c3d3;height:17px}
+.cal-row i.now{outline:1.5px solid var(--faint);outline-offset:2px}
+.cal-key{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:9px;font-size:10.5px;color:var(--faint)}
+.cal-key i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;background:#eceaf1;vertical-align:-1px}
+.cal-key i.on{background:var(--pick)}
+.cal-key i.tk{background:#e0c3d3}
+.cal-key i.now{background:transparent;outline:1.5px solid var(--faint)}
+.cal-key .sc{margin-left:auto;font-family:ui-monospace,monospace;letter-spacing:.06em}
+
+/* 行动块 / 状态块 */
+.slab{border-radius:14px;padding:15px 17px;border:1px solid rgba(255,255,255,.7)}
+.slab.warm{background:linear-gradient(145deg,rgba(233,204,217,.34),rgba(217,213,230,.3))}
+.slab.cool{background:linear-gradient(145deg,rgba(217,234,240,.4),rgba(248,249,251,.7))}
+.slab h4{margin:0 0 7px;font-size:13.5px;font-weight:650;color:var(--ink)}
+.slab p{margin:0 0 6px;font-size:12.5px;color:var(--muted);line-height:1.75}
+.slab p:last-child{margin-bottom:0}
+.slab b{color:var(--ink);font-weight:650}
+.slab .how{border-top:1px dashed rgba(122,116,128,.28);padding-top:8px;margin-top:9px;font-size:12px;color:var(--faint)}
+.slab code,.body code,.rule code{font-family:ui-monospace,monospace;font-size:11.5px;background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.kv{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline}
+.kv p{margin:0;font-size:12.5px;color:var(--muted)}
+.kv b{color:var(--ink);font-weight:650}
+.kv .good{color:var(--ok);font-weight:650}
+.kv .stale{color:var(--no)}
+
+/* 表 */
+.tw{overflow-x:auto;margin:0 -2px;padding:0 2px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}
+caption{text-align:left;font-size:12.5px;color:var(--faint);padding-bottom:12px;line-height:1.75}
+th{text-align:left;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+  font-family:ui-monospace,monospace;font-weight:400;padding:0 14px 9px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:13px 14px 13px 0;border-bottom:1px solid rgba(229,228,234,.7);vertical-align:top;color:var(--muted);line-height:1.8}
+tr:last-child td{border-bottom:none}
+th:last-child,td:last-child{padding-right:0}
+td.k{color:var(--ink);width:28%;font-weight:600}
+.tag{display:inline-block;font-size:10.5px;padding:3px 10px;border-radius:999px;white-space:nowrap;font-weight:650}
+.t-ok{color:var(--ok);background:rgba(111,146,128,.12)}
+.t-mid{color:var(--mid);background:rgba(176,146,99,.13)}
+.t-no{color:var(--no);background:rgba(194,129,143,.13)}
+
+.foot{margin:44px 0 60px;font-size:11.5px;color:var(--faint);max-width:680px;line-height:1.95}
+.foot a{color:#8f7fa6;text-decoration:none;border-bottom:1px solid rgba(143,127,166,.25)}
+.foot a:hover{border-bottom-color:#8f7fa6}
+.foot b{color:var(--muted)}
+.seal{margin-top:22px;display:flex;gap:9px;align-items:center;color:var(--faint);font-family:ui-monospace,monospace;font-size:8.5px;letter-spacing:.1em}
+.seal i{width:19px;height:19px;border:1px solid var(--faint);border-radius:50%;box-shadow:inset 0 0 0 3px #fff}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>第二人称</h1>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
+    </div>
+    <nav class="boards" aria-label="站内板块">
+      <a href="index.html">首页</a>
+      <a href="games.html">互动提问</a>
+      <a href="baibao.html">MCP / Skills</a>
+      <a href="codex.html" class="on">额度重置</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <p class="kicker">Quota · Reset · Watch</p>
+    <h1>额度什么时候回来</h1>
+    <p>用得凶的人都被卡过。这里把两家摊开讲：<b>OpenAI 的 Codex</b> 靠官方随手发，说来就来；<b>Anthropic 的 Claude</b> 到点自己回，不看运气。两家该问的问题都不一样，所以分开看。</p>
+  </section>
+
+  <div class="mark">
+    <span class="orb oa"><i>C</i></span>
+    <div><h2>Codex</h2><div class="sub">OpenAI · 同时覆盖 ChatGPT Work</div></div>
+  </div>
+  <p class="lede">
+    Codex 没有「几号回满」这回事。OpenAI 会因为查出用量 bug、服务扛不住、或者用户数过了某个坎，随时把所有付费用户的周额度清零重来。
+    消息一律先出现在 <b>Thibault Sottiaux</b>（大家叫他 Tibo，Codex 团队负责人）的 X 账号 <b>@thsottiaux</b> 上，官方渠道反而更慢。
+    所以这一块要回答的是：<b>今天会不会发？</b>
+  </p>
+
+  <section class="bench">
+
+    <article class="p">
+      <span class="size">小 · 2×1</span>
+      <p class="p-kicker">Today</p>
+      <h3>今天会重置吗</h3>
+      <p class="lead">今天<b>还没有新的重置消息</b>。上一轮发生在 8 月 30 日凌晨 4:43。</p>
+      <div class="fc">
+        <div class="fc-n">
+          <div class="fc-big num">25%</div>
+          <div class="fc-cap">今天之内再来一次</div>
+          <p class="fc-2">两天之内 <b class="num">45%</b></p>
+        </div>
+        <div class="fc-c">
+          <svg viewBox="0 0 480 158" role="img" aria-label="未来 48 小时 Codex 重置概率：今天之内 25%，两天之内 45%；淡紫竖带是 OpenAI 历史上最常发布重置的早上 7 到 10 点">
+            <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#cab8d8" stop-opacity=".34"></stop>
+              <stop offset="1" stop-color="#cab8d8" stop-opacity="0"></stop>
+            </linearGradient></defs>
+            <line class="ax" x1="40" y1="120" x2="472" y2="120"></line>
+            <line class="axd" x1="40" y1="67.5" x2="472" y2="67.5"></line>
+            <line class="axd" x1="40" y1="15" x2="472" y2="15"></line>
+            <text class="tick" x="33" y="123" text-anchor="end">0</text>
+            <text class="tick" x="33" y="71" text-anchor="end">25%</text>
+            <text class="tick" x="33" y="18" text-anchor="end">50%</text>
+            <g id="bands"></g>
+            <path class="area" d="M40 120 C 130 118, 178 92, 255 67.5 S 402 36, 470 25.5 L470 120 Z"></path>
+            <path class="line" id="fcLine" d="M40 120 C 130 118, 178 92, 255 67.5 S 402 36, 470 25.5"></path>
+            <line class="nowline" x1="40" y1="12" x2="40" y2="124"></line>
+            <circle class="knot" cx="255" cy="67.5" r="4.5"></circle>
+            <text class="klab" x="255" y="55" text-anchor="middle">25%</text>
+            <circle class="knot" cx="470" cy="25.5" r="4.5"></circle>
+            <text class="klab" x="470" y="14" text-anchor="end">45%</text>
+            <text class="tick" x="40" y="137" text-anchor="start">现在</text>
+            <text class="tick" x="255" y="137" text-anchor="middle">今天之内</text>
+            <text class="tick" x="470" y="137" text-anchor="end">两天之内</text>
+            <text class="tick" id="peakNote" x="40" y="153" text-anchor="start"></text>
+          </svg>
+        </div>
+      </div>
+      <p class="note">这条曲线不准，别当真。预测模型还在试，准头跟按平均节奏瞎猜差不多；另一个追踪站同一时刻给的是 3%——两家差这么远，就说明谁都算不出来。曲线只说明一件事：<b>等得越久，等到的可能性越大。</b></p>
+      <div class="rule">
+        <span class="dot-live" aria-hidden="true"></span>
+        <p>上次重置 <b class="num">8 月 30 日凌晨 4:43</b>
+          <small>Tibo 发帖说「正在给所有 Codex 和 ChatGPT Work 付费用户重置额度」，追踪站把原帖直接镜像过来。发帖那一刻就是重置那一刻，这次没有时间差。</small></p>
+      </div>
+    </article>
+
+    <article class="p">
+      <span class="size">中 · 2×1</span>
+      <p class="p-kicker">August</p>
+      <h3>八月重置了几次</h3>
+      <div class="count">
+        <div class="cn"><b class="num">8</b><span>次<br>全员重置</span></div>
+        <div class="cn"><b class="num tk">1</b><span>张券<br>还没用</span></div>
+        <div class="cn-note">八月里 OpenAI 一共清零重来了 <b>8</b> 次，平均隔 <b class="num">4.1</b> 天；另外发过 <b>1</b> 张重置券（8 月 22 日到手，现在还能用）。<b>9 月 1 号这两个数字归零，重新数。</b></div>
+      </div>
+      <div class="cal" aria-label="八月重置日历：1、8、11、13、24、25、27、30 日重置，22 日发券">
+        <div class="cal-row" id="cal"></div>
+        <div class="cal-key">
+          <span><i class="on"></i>重置</span>
+          <span><i class="tk"></i>发券</span>
+          <span><i class="now"></i>今天</span>
+          <span class="sc">8/1 — 8/31</span>
+        </div>
+      </div>
+      <div class="slab warm">
+        <h4>那张重置券还在，没用掉</h4>
+        <p>8 月 21 日 Codex 用户数过两千万时发放，22 日到手。它不会自己生效，需要手动使用；<b>当前是否仍可用，以 ChatGPT 用量页面显示为准</b>，这里保留的是 8 月 30 日快照。</p>
+        <p class="how">在哪点：ChatGPT 用量页面的 Codex 那一栏，看到「reset available」点掉它。</p>
+      </div>
+      <div class="kv">
+        <p style="width:100%;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-family:ui-monospace,monospace">你的 Codex 额度</p>
+        <p>档位 <b>Pro</b></p>
+        <p><b class="good">已经重置了</b> · 8 月 30 日 05:25 在客户端确认</p>
+      </div>
+      <p class="body">电脑里存的那些旧数字（23:10 还显示用掉 98%）只是没跟服务器通过话，<b>数字旧 ≠ 没重置</b>。看额度只认 Codex 客户端里敲 <code>/status</code> 的结果。</p>
+    </article>
+
+    <article class="p wide">
+      <span class="size">大 · 4×2</span>
+      <p class="p-kicker">Fact check</p>
+      <h3>网上流传的七条「Codex 重置规律」，哪些是真的</h3>
+      <div class="tw">
+        <table>
+          <caption>这七条在 X 上转得很广。逐条对着 Tibo 本人发过的帖子核了一遍：四条站得住，一条时间说得太乐观，两条查无实据。</caption>
+          <thead><tr><th>传的是什么</th><th>是真的吗</th><th>为什么这么判</th></tr></thead>
+          <tbody>
+            <tr><td class="k">用量统计出 bug，必重置</td><td><span class="tag t-ok">有据</span></td>
+              <td>最硬的一条。8 月 23 日 Tibo 公布查出三处多吃额度的毛病——长对话反复压缩时的图片、Computer History 的高位用量、自动给对话起标题的功能——随修复一起全员重置。另有一次原话是「还在排查，我先把所有人的额度重置了」。</td></tr>
+            <tr><td class="k">服务不稳定，必重置</td><td><span class="tag t-mid">大致有据</span></td>
+              <td>成立，但证据比第一条弱。有一次重置的说法是感谢团队「在我们扩张得比以往都快的时候把基础设施撑住了」——属这一类，但不是每次抖动都补。</td></tr>
+            <tr><td class="k">对家发布强力模型，必重置</td><td><span class="tag t-no">查无实据</span></td>
+              <td>找不到任何一次重置能和竞品发布对上号。更像事后往上套——重置本来就两三天一次，撞上谁发模型都不奇怪。</td></tr>
+            <tr><td class="k">对家发布次强模型，可能重置</td><td><span class="tag t-no">查无实据</span></td>
+              <td>同上。而且「可能」这个词让它没法被证伪，不适合拿来做判断。</td></tr>
+            <tr><td class="k">事情发生后 12 小时内重置</td><td><span class="tag t-mid">偏乐观</span></td>
+              <td>实测更接近 24 小时：8 月 23 日宣布，24 日才到手。按 12 小时蹲会扑空一轮，按一天算比较稳。</td></tr>
+            <tr><td class="k">用户数每涨一百万就重置</td><td><span class="tag t-ok">有据 · 已过期</span></td>
+              <td>这条最值钱，因为它曾经是公开承诺：Tibo 8 月 12 日重申过「每多 100 万活跃用户就重置一次，直到 1000 万」。注意上限是 1000 万，如今已经两千万，承诺本身过期了；但 1500 万和 2000 万这两个坎仍各发了一次（两千万那次发的是可自选时机的重置券）。规律还在，只是不再是承诺。</td></tr>
+            <tr><td class="k">纯福利，看 Tibo 心情</td><td><span class="tag t-ok">有据</span></td>
+              <td>这就是官方口径本身。有一次的原话是「Oops… I did it again，周末愉快」。追踪站给整件事的定性也是「不定期的善意重置」「是节奏，不是时刻表」。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+  </section>
+
+  <div class="mark">
+    <span class="orb an"><i>A</i></span>
+    <div><h2>Claude</h2><div class="sub">Anthropic · Claude Code 与 claude.ai 共用同一份额度</div></div>
+  </div>
+  <p class="lede">
+    Claude 这边没有「今天会不会发」这个问题——Anthropic 不搞随手发放。额度按固定周期自己回，谁也不用刷 X 等消息。
+    所以这一块要回答的是另一个问题：<b>你的窗口几点到？</b>
+  </p>
+
+  <section class="bench">
+
+    <article class="p">
+      <span class="size">小 · 2×1</span>
+      <p class="p-kicker">Rhythm</p>
+      <h3>什么时候回</h3>
+      <p class="lead">不用等发放，<b>到点自己回</b>。</p>
+      <p class="body">
+        额度是两层叠着的：<br>
+        · <b>短的一层</b>——每隔几小时滚动一次，撞上了它会直接告诉你几点恢复（比如「resets 7pm」）。<br>
+        · <b>长的一层</b>——每周一个总量上限，用完了得等这一周过去。<br>
+        两层任意一层满了都会被拦，所以有时候明明「才聊了一会儿」也会撞墙——那是撞到了周上限，不是小时窗口。
+      </p>
+      <div class="rule">
+        <span class="dot-live" aria-hidden="true"></span>
+        <p>好处是<b>心里有数</b>，不用刷 X、不用碰运气
+          <small>坏处是没有惊喜——不会有人半夜发帖说「大家额度清零重来」。想多用只能升档位或者买额外用量。</small></p>
+      </div>
+    </article>
+
+    <article class="p">
+      <span class="size">中 · 2×1</span>
+      <p class="p-kicker">Your account</p>
+      <h3>你自己的情况</h3>
+      <div class="kv">
+        <p>档位 <b>Max5</b>（新小号刚订阅，暂时升不了 Max20）</p>
+        <p style="width:100%">8 月 30 日 02:40 撞过一次：<b>Fable 5 用满</b>，换成 Opus 5 继续</p>
+        <p style="width:100%">更早那次撞的是短窗口，提示写着 <b>resets 7pm</b></p>
+      </div>
+      <div class="slab cool">
+        <h4>怎么查此刻还剩多少</h4>
+        <p>在 Claude Code 里敲 <code>/usage-credits</code>。撞上限时的报错里也会直接带这个命令。</p>
+        <p class="how">别凭感觉估。几个窗口同时开着会一起吃同一份额度，撞墙常比想象中早。</p>
+      </div>
+      <p class="note"><b>具体数字这里不写死</b>——每个档位的小时窗口和周上限会随官方调整变动，也跟你用哪个模型有关。以 <code>/usage-credits</code> 当场返回的为准，这一页只讲规则，不替官方报数。</p>
+    </article>
+
+    <article class="p wide">
+      <span class="size">大 · 4×2</span>
+      <p class="p-kicker">Side by side</p>
+      <h3>两家对着看</h3>
+      <div class="tw">
+        <table>
+          <caption>同样是「额度用完了怎么办」，两家的答案完全不同。搞混了就会白等。</caption>
+          <thead><tr><th>你关心的</th><th>OpenAI Codex</th><th>Anthropic Claude</th></tr></thead>
+          <tbody>
+            <tr><td class="k">额度怎么回来</td><td>官方随手全员重置，说发就发</td><td>按固定周期自己回，没有额外发放</td></tr>
+            <tr><td class="k">该问什么</td><td>今天会不会发？</td><td>我的窗口几点到？</td></tr>
+            <tr><td class="k">能不能提前知道</td><td>不能。只能看 Tibo 发帖，最多按历史节奏估个概率</td><td>能。撞上限时直接告诉你几点恢复</td></tr>
+            <tr><td class="k">有没有「券」这种东西</td><td>有。用户数过坎时发重置券，自己挑时间点掉</td><td>没有。想多用只能升档位或买额外用量</td></tr>
+            <tr><td class="k">查真实剩余</td><td>Codex 客户端里敲 <code>/status</code></td><td>Claude Code 里敲 <code>/usage-credits</code></td></tr>
+            <tr><td class="k">最容易踩的坑</td><td>拿本地存的旧数字判断「还没重置」</td><td>忘了周上限，以为只有小时窗口</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+  </section>
+
+  <div class="foot">
+    <b>Codex 这部分的数据</b>来自 <a href="https://codex-reset.com/">codex-reset.com</a>（它把 Tibo 的帖子原样镜像过来，首页那行「N 分钟前」就是照帖子时间走的）和 <a href="https://codexlimitwatch.com/">codexlimitwatch.com</a>（另一套概率模型 + 原帖汇总）。八月那 8 次是从前者的公开时间线逐条去重后自己数的：原始记录有 13 条，其中「预告 + 到手 + 跟帖」属同一次的合并成一次；8 月 15 日那条原文是在说「订阅里的额度本来就够用」，不是宣布重置，不计入。<br>
+    <b>Claude 这部分</b>只讲规则，不报具体数字：档位上限会随官方调整变动，以客户端 <code>/usage-credits</code> 当场返回的为准。<br>
+    两个追踪站都不是官方，概率自己标着「实验性」，只能事后确认、不能事前保证。快照时间 <span class="num">2026-08-30 05:5x</span>。下一步：加一条定时探针自动抓两家的数，让这一页的数字自己更新。
+    <div class="seal"><i></i>草稿版 v0 · 额度重置看板 · 2026-08-30 · 首页组件第一块砖</div>
+  </div>
+
+</main>
+
+<footer class="site">
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="姐妹网站">
+      <span class="sister-current">第二人称 · SECOND PERSON</span>
+      <a href="https://mymomentsmaker.com/">Moments Maker</a>
+      <span class="sister-pending" aria-disabled="true">折光所 · AI 画风图鉴</span>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var cal = document.getElementById('cal');
+  if (cal) {
+    var R = [1,8,11,13,24,25,27,30], TK = 22;
+    var t = new Date(), td = (t.getFullYear()===2026 && t.getMonth()===7) ? t.getDate() : 0;
+    for (var d=1; d<=31; d++){
+      var i = document.createElement('i');
+      if (R.indexOf(d)>=0) i.className='on'; else if (d===TK) i.className='tk';
+      if (d===td) i.className += ' now';
+      i.title = '8 月 '+d+' 日' + (R.indexOf(d)>=0 ? ' · 重置' : (d===TK ? ' · 发券到手' : ''));
+      cal.appendChild(i);
+    }
+  }
+  var ln = document.getElementById('fcLine');
+  if (ln) ln.style.setProperty('--len', ln.getTotalLength().toFixed(0));
+  var bands = document.getElementById('bands');
+  if (bands) {
+    var X0=40, X1=470, SPAN=48, now=new Date();
+    var hF = now.getHours() + now.getMinutes()/60, next=[];
+    for (var k=0;k<=2;k++){
+      var s0 = k*24+7-hF, s1 = k*24+10-hF;
+      if (s1>0 && s0<SPAN) next.push([Math.max(s0,0), Math.min(s1,SPAN), s0]);
+    }
+    var ns='http://www.w3.org/2000/svg';
+    next.forEach(function(b,ix){
+      var x = X0 + (b[0]/SPAN)*(X1-X0), w = ((b[1]-b[0])/SPAN)*(X1-X0);
+      var r = document.createElementNS(ns,'rect');
+      r.setAttribute('class','band'); r.setAttribute('x',x.toFixed(1)); r.setAttribute('y','12');
+      r.setAttribute('width',w.toFixed(1)); r.setAttribute('height','108'); r.setAttribute('rx','3');
+      bands.appendChild(r);
+      if (ix===0 && w>28){
+        var tx = document.createElementNS(ns,'text');
+        tx.setAttribute('class','bandlab'); tx.setAttribute('x',(x+w/2).toFixed(1));
+        tx.setAttribute('y','8'); tx.setAttribute('text-anchor','middle'); tx.textContent='高发';
+        bands.appendChild(tx);
+      }
+    });
+    var n = document.getElementById('peakNote');
+    if (n && next.length){
+      var l = next[0][2];
+      n.textContent = l>0
+        ? '淡紫＝OpenAI 最常发重置的早上 7–10 点，下一个窗口还有 '+Math.floor(l)+' 小时 '+Math.round((l%1)*60)+' 分'
+        : '淡紫＝OpenAI 最常发重置的早上 7–10 点，现在就在窗口里';
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

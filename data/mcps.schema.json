@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://renji.love/schemas/mcps.schema.json",
+  "title": "Second Person Capability Catalog v2 (production)",
+  "type": "object",
+  "required": ["schema_version", "updated_at", "items"],
+  "properties": {
+    "schema_version": { "const": 2 },
+    "updated_at": { "type": "string", "format": "date" },
+    "items": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/item" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": [
+        "id", "name", "kind", "category", "summary", "status", "rating",
+        "maintainer", "last_verified", "access_mode", "repo", "installations",
+        "risks", "human_confirmation", "tags", "experiences", "verdict", "links"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "kind": { "enum": ["mcp", "skill", "app", "game", "connector"] },
+        "icon": { "type": "string", "maxLength": 12 },
+        "category": { "enum": ["life", "play"] },
+        "summary": { "type": "string", "minLength": 12, "maxLength": 360 },
+        "status": { "enum": ["candidate", "planned", "verified", "unavailable"] },
+        "rating": { "enum": ["all", "r18"] },
+        "maintainer": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "last_verified": { "type": ["string", "null"], "format": "date" },
+        "access_mode": { "enum": ["direct", "assisted", "human-confirm"] },
+        "repo": { "anyOf": [{ "$ref": "#/$defs/repo" }, { "type": "null" }] },
+        "installations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/installation" }
+        },
+        "risks": { "$ref": "#/$defs/risks" },
+        "human_confirmation": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 180 }
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 32 },
+          "uniqueItems": true
+        },
+        "experiences": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/experience" }
+        },
+        "verdict": { "type": "string", "minLength": 8, "maxLength": 240 },
+        "links": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/link" }
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "verified" } } },
+          "then": {
+            "properties": {
+              "last_verified": { "type": "string", "format": "date" },
+              "installations": { "type": "array", "minItems": 1 },
+              "experiences": { "type": "array", "minItems": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "enum": ["candidate", "planned"] } } },
+          "then": {
+            "properties": {
+              "repo": { "type": "null" },
+              "last_verified": { "type": "null" },
+              "installations": { "type": "array", "maxItems": 0 },
+              "experiences": { "type": "array", "maxItems": 0 },
+              "links": { "type": "array", "maxItems": 0 }
+            }
+          }
+        }
+      ]
+    },
+    "repo": {
+      "type": "object",
+      "required": ["url", "license", "stars_cache"],
+      "properties": {
+        "url": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
+        "license": { "$ref": "#/$defs/license" },
+        "stars_cache": { "$ref": "#/$defs/starsCache" },
+        "pin": { "anyOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] }
+      },
+      "additionalProperties": false
+    },
+    "license": {
+      "type": "object",
+      "required": ["name", "commercial_use", "source_url"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "commercial_use": { "enum": ["allowed", "forbidden", "unknown"] },
+        "source_url": { "type": "string", "format": "uri", "pattern": "^https://" }
+      },
+      "additionalProperties": false
+    },
+    "starsCache": {
+      "type": "object",
+      "required": ["count", "fetched_at", "source"],
+      "properties": {
+        "count": { "type": "integer", "minimum": 0 },
+        "fetched_at": { "type": "string", "format": "date-time" },
+        "source": { "const": "github-api" }
+      },
+      "additionalProperties": false
+    },
+    "pin": {
+      "type": "object",
+      "required": ["commit", "verified_at"],
+      "properties": {
+        "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "verified_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "installation": {
+      "type": "object",
+      "required": ["client", "label", "method", "copy_text", "needs_secret"],
+      "properties": {
+        "client": { "enum": ["claude-code", "claude-desktop", "codex", "chatgpt", "generic-mcp"] },
+        "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "method": { "enum": ["command", "json", "url", "manual"] },
+        "copy_text": { "type": ["string", "null"], "maxLength": 12000 },
+        "needs_secret": { "type": "boolean" },
+        "requirements": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 180 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "risks": {
+      "type": "object",
+      "required": ["permissions", "secrets", "network", "filesystem", "external_write", "payment", "adult"],
+      "properties": {
+        "permissions": { "type": "array", "items": { "type": "string", "maxLength": 80 } },
+        "secrets": { "type": "boolean" },
+        "network": { "enum": ["none", "allowlist", "open", "unknown"] },
+        "filesystem": { "enum": ["none", "read", "write", "unknown"] },
+        "external_write": { "type": "boolean" },
+        "payment": { "type": "boolean" },
+        "adult": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "experience": {
+      "oneOf": [
+        { "$ref": "#/$defs/replay" },
+        { "$ref": "#/$defs/remote" }
+      ]
+    },
+    "replay": {
+      "type": "object",
+      "required": ["level", "label", "media", "caption"],
+      "properties": {
+        "level": { "const": "replay" },
+        "label": { "type": "string", "maxLength": 80 },
+        "media": { "type": "array", "items": { "$ref": "#/$defs/media" } },
+        "caption": { "type": "string", "maxLength": 240 }
+      },
+      "additionalProperties": false
+    },
+    "remote": {
+      "type": "object",
+      "required": ["level", "label", "url", "operator", "privacy_note"],
+      "properties": {
+        "level": { "const": "remote" },
+        "label": { "type": "string", "maxLength": 80 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "operator": { "type": "string", "maxLength": 120 },
+        "privacy_note": { "type": "string", "maxLength": 240 }
+      },
+      "additionalProperties": false
+    },
+    "media": {
+      "type": "object",
+      "required": ["type", "src", "alt"],
+      "properties": {
+        "type": { "enum": ["image", "gif", "video", "transcript"] },
+        "src": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "alt": { "type": "string", "minLength": 1, "maxLength": 240 }
+      },
+      "additionalProperties": false
+    },
+    "link": {
+      "type": "object",
+      "required": ["label", "url", "kind"],
+      "properties": {
+        "label": { "type": "string", "maxLength": 80 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "kind": { "enum": ["primary", "docs", "homepage", "source"] }
+      },
+      "additionalProperties": false
+    }
+  }
+}

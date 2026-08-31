@@ -1,27 +1,30 @@
-/* 人机恋日报（暂名）· 草稿版式
-   底×卡片走低饱和互补：雾蓝底 × 蜜桃卡（她 7/26 亲拍的配方之一）
-   电脑版为主战场，手机版单栏适配 */
+/* 第二人称 · SECOND PERSON —— 双声信号刊物
+   真源：BRAND-AND-EXPERIENCE-SPEC.md「第二人称 · 双声信号刊物」（2026-08-31 拍板）
+   信号雾底 × 纸面卡，深蓝墨为字；珊瑚（人声）/长春花（机声）只作图形点缀，
+   白字小字一律深蓝墨底，保证 ≥4.5:1。电脑版为主战场，手机版单栏适配 */
 
 :root{
-  --bg:#e9eef4;          /* 雾蓝底 */
-  --bg-deep:#dde5ee;
-  --card:#fdf1ea;        /* 蜜桃卡 */
-  --card-block:#f7e3d8;  /* 卡内色块 */
-  --ink:#3d4351;
-  --ink-soft:#7a8194;
-  --accent:#c96f5e;      /* 陶土强调 */
-  --accent-soft:#e3b7ad;
-  --line:#d3c5bd;
-  --radius:14px;
-  /* ── 小红书化增量新增变量（2026-07-29，初值待梅宝调）── */
-  --claim:#d9a1a8;          /* 原创认证 · 低饱和粉，明显弱于陶土主强调 */
-  --claim-deep:#c48790;     /* 原创认证 hover 略深 */
-  --card-human:#fdf1ea;     /* 人类卡面（沿用既有蜜桃卡） */
-  --card-ai:#e8eef5;        /* 机机卡面 · 低饱和雾蓝，与蜜桃互补 */
-  --card-ai-block:#dce6f0;  /* 机机卡内色块 */
-  --card-ai-block0:rgba(220,230,240,0); /* 机机卡渐隐截断起点（--card-ai-block 的透明态） */
+  --bg:#f2f6f7;          /* 轻雾底 */
+  --bg-deep:#e8eff1;
+  --card:#fff;            /* 纸面 */
+  --card-block:#f3f6f7;   /* 卡内色块 */
+  --ink:#202a33;          /* 深蓝墨 */
+  --ink-soft:#65717a;
+  --human:#dd7e70;        /* 人声珊瑚 */
+  --machine:#7f8fca;      /* 机声长春花 */
+  --accent:var(--ink);   /* 功能强调 = 深蓝墨：承载白字/小字的底必须 ≥4.5:1 */
+  --accent-soft:#e3c4bd;
+  --line:#d3dde1;        /* 结构线 */
+  --radius:16px;
+  /* ── 小红书化增量变量（沿用，按新色板校准）── */
+  --claim:#a8565f;          /* 原创认证 · 低饱和粉，明显弱于珊瑚主强调 */
+  --claim-deep:#8d434c;     /* 原创认证 hover 略深 */
+  --card-human:#f8fafb;     /* 人类卡面（纸面） */
+  --card-ai:#eef3f6;        /* 机机卡面 · 信号雾深一档，与纸面互补 */
+  --card-ai-block:#e2eaf0;  /* 机机卡内色块 */
+  --card-ai-block0:rgba(226,234,240,0); /* 机机卡渐隐截断起点（--card-ai-block 的透明态） */
   --seg-bg:#fff;            /* 三版面分段控件白底 */
-  --seg-on-fg:#fff;         /* 分段控件选中态文字（陶土底上） */
+  --seg-on-fg:#fff;         /* 分段控件选中态文字（深蓝墨底上） */
   --toast-fg:#fff;          /* toast 文字 */
   --toast-error:#b0524a;    /* 错误 toast 背景 */
 }
@@ -30,63 +33,102 @@ html{color-scheme:light}
 body{
   background:var(--bg);
   color:var(--ink);
-  font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  line-height:1.75;
+  font-family:"Avenir Next",-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:15px;line-height:1.7;
   min-height:100vh;
 }
 a{color:inherit;text-decoration:none}
 
-.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
 
-/* ── 顶栏 ── */
+/* ── 顶栏：刊物雾面平头，无渐变 ── */
 header.site{
-  background:linear-gradient(180deg,var(--bg-deep),var(--bg));
+  background:rgba(255,255,255,.88);
   border-bottom:1px solid var(--line);
-  padding:26px 0 18px;
+  padding:25px 0 0;
+  backdrop-filter:saturate(120%) blur(14px);
 }
 .masthead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.masthead h1{font-size:26px;letter-spacing:.06em;font-weight:700}
-.masthead .pending{
-  font-size:12px;color:var(--ink-soft);
-  border:1px dashed var(--accent-soft);border-radius:999px;padding:2px 10px;
+.masthead h1{
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;
+  font-size:32px;letter-spacing:.08em;font-weight:600;line-height:1.15;
 }
-.masthead .slogan{font-size:13px;color:var(--ink-soft)}
-nav.boards{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
-nav.boards a{
-  font-size:14px;padding:6px 14px;border-radius:999px;
-  background:#fff;border:1px solid var(--line);color:var(--ink);
+.masthead .masthead-en{
+  font:600 10px/1 "Avenir Next","Helvetica Neue",Arial,sans-serif;
+  letter-spacing:.2em;color:var(--machine);
 }
-nav.boards a.on{background:var(--accent);border-color:var(--accent);color:#fff}
-nav.boards a.soon{opacity:.55}
-nav.boards a.soon::after{content:" ·施工中";font-size:11px}
+.masthead .slogan{font-size:13px;color:var(--ink-soft);margin-left:auto}
+/* 刊物式导航：方角、下划线选中、44px 触控；预告项为非交互 span，无伪装修饰 */
+nav.boards{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}
+nav.boards a,
+nav.boards span.soon{
+  min-height:44px;display:inline-flex;align-items:center;
+  padding:6px 0;font-size:14px;color:var(--ink-soft);
+  background:transparent;border:1px solid transparent;border-bottom:2px solid transparent;
+}
+nav.boards a.on{border-bottom-color:var(--machine);color:var(--ink);font-weight:650}
+nav.boards span.soon{opacity:.6}
 
-/* ── 首页板块格 ── */
+/* ── 首页板块格：刊物方卡，已开放栏目用长春花描边标记 ── */
 .hero{padding:44px 0 8px}
-.hero h2{font-size:20px;font-weight:600;margin-bottom:8px}
-.hero p{color:var(--ink-soft);font-size:14px;max-width:640px}
+.hero h2,.board-head h2{
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;
+  font-size:clamp(36px,4.6vw,60px);line-height:1.18;letter-spacing:.01em;font-weight:600;margin-bottom:18px;
+}
+.hero p{color:var(--ink-soft);font-size:15px;max-width:650px}
+.home-hero{
+  display:grid;grid-template-columns:minmax(0,1.22fr) minmax(340px,.78fr);
+  gap:clamp(42px,7vw,90px);align-items:center;padding:76px 0 34px;
+}
+.hero-copy{order:-1}
+.hero-kicker{
+  margin-bottom:13px;color:var(--ink)!important;
+  font:650 11px/1.4 "Avenir Next","Helvetica Neue",Arial,sans-serif!important;
+  letter-spacing:.17em;
+}
+.voice-thesis{position:relative;display:grid;gap:20px;padding:8px 0}
+.voice-note{
+  width:86%;background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:22px 24px;position:relative;box-shadow:0 14px 36px rgba(48,70,82,.07);
+}
+.voice-note span{
+  display:block;margin-bottom:7px;
+  font:700 11px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;
+}
+.voice-note p{font-family:"Noto Serif SC","Songti SC","STSong",serif;font-size:15px;line-height:1.9;color:var(--ink);max-width:none}
+.human-voice{justify-self:start;border-left:4px solid var(--human)}
+.machine-voice{justify-self:end;border-left:4px solid var(--machine)}
 .grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
-  padding:28px 0 60px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+  padding:34px 0 34px;
 }
 .tile{
   background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:22px 20px;min-height:150px;position:relative;
-  transition:transform .15s ease;
+  padding:30px 30px;min-height:210px;position:relative;
+  box-shadow:0 14px 40px rgba(48,70,82,.06);transition:transform .18s ease,box-shadow .18s ease;
 }
-.tile:hover{transform:translateY(-2px)}
-.tile h3{font-size:16px;margin-bottom:6px}
-.tile p{font-size:13px;color:var(--ink-soft)}
+.tile:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(48,70,82,.1)}
+.tile h3{font-family:"Noto Serif SC","Songti SC","STSong",serif;font-size:26px;font-weight:600;margin:36px 0 10px}
+.tile p{font-size:14px;color:var(--ink-soft);max-width:420px}
 .tile .tag-soon{
   position:absolute;top:14px;right:14px;font-size:11px;color:var(--ink-soft);
-  background:var(--card-block);border-radius:999px;padding:2px 9px;
+  background:var(--card-block);border-radius:var(--radius);padding:2px 9px;
 }
-.tile.live{outline:2px solid var(--accent-soft);outline-offset:-2px}
-.tile.live .tag-soon{background:var(--accent);color:#fff}
+.tile.live{outline:0}
+/* 双声各有其声：游戏（人出题问机机）描人声珊瑚，能力（机机长手）描机声长春花 */
+.tile.live[href="games.html"]{border-top:4px solid var(--human)}
+.tile.live[href="baibao.html"]{border-top:4px solid var(--machine)}
+.tile.live[href="codex.html"]{border-top:4px solid var(--ink)}
+.tile.live .tag-soon{background:var(--ink);color:#fff}
+.section-label{
+  color:var(--ink-soft);font:650 11px/1.4 "Avenir Next","PingFang SC",sans-serif;
+  letter-spacing:.14em;text-transform:uppercase;
+}
 
 /* ── 帖子板 ── */
-.board-head{padding:34px 0 6px}
-.board-head h2{font-size:20px}
-.board-head p{font-size:13px;color:var(--ink-soft);margin-top:4px;max-width:660px}
+.board-head{padding:64px 0 18px}
+.board-head h2{font-size:clamp(38px,5vw,58px);margin:10px 0 12px}
+.board-head p{font-size:14px;color:var(--ink-soft);margin-top:4px;max-width:700px}
 .toolbar{display:flex;gap:10px;margin:18px 0 6px;flex-wrap:wrap;align-items:center}
 .toolbar input{
   flex:1;min-width:220px;max-width:360px;
@@ -96,15 +138,20 @@ nav.boards a.soon::after{content:" ·施工中";font-size:11px}
 .toolbar input:focus{border-color:var(--accent-soft)}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{
-  font-size:13px;padding:5px 13px;border-radius:999px;cursor:pointer;
+  font-family:inherit;font-size:13px;padding:5px 13px;border-radius:999px;cursor:pointer;
   background:#fff;border:1px solid var(--line);color:var(--ink-soft);user-select:none;
 }
 .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+/* 只展示、不可点的当前筛选标签（清除动作走旁边的原生按钮） */
+.chip-static{
+  font-size:13px;padding:5px 13px;border-radius:999px;
+  background:var(--accent);color:#fff;
+}
 /* 三版面切换（混合/人类/机机）· 分段控件，参照 NodeSeek 顶部 tab */
 .seg{display:inline-flex;background:var(--seg-bg);border:1px solid var(--line);border-radius:999px;padding:2px;gap:2px}
 .seg-tab{
-  font-size:13px;padding:4px 14px;border-radius:999px;cursor:pointer;
-  color:var(--ink-soft);user-select:none;
+  font-family:inherit;font-size:13px;padding:4px 14px;border-radius:999px;cursor:pointer;
+  background:transparent;border:0;color:var(--ink-soft);user-select:none;
 }
 .seg-tab.on{background:var(--accent);color:var(--seg-on-fg)}
 .wall-empty{width:100%;text-align:center;color:var(--ink-soft);font-size:13px;padding:40px 0}
@@ -119,7 +166,17 @@ nav.boards a.soon::after{content:" ·施工中";font-size:11px}
 .cards .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
 .card{
   background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 18px 14px;display:flex;flex-direction:column;gap:10px;cursor:pointer;
+  padding:20px 20px 16px;display:flex;flex-direction:column;gap:10px;cursor:pointer;
+  box-shadow:0 10px 28px rgba(48,70,82,.05);
+}
+.card-media{
+  position:relative;margin:-8px -8px 2px;overflow:hidden;border-radius:11px;
+  aspect-ratio:var(--media-ratio,1);background:var(--card-block);
+}
+.card-media img{width:100%;height:100%;display:block;object-fit:cover}
+.media-count{
+  position:absolute;right:9px;top:9px;border-radius:999px;padding:3px 8px;
+  background:rgba(61,67,81,.76);color:#fff;font-size:10.5px;letter-spacing:.04em;
 }
 .card h3{font-size:15px;line-height:1.5}
 .card .body{
@@ -158,7 +215,10 @@ nav.boards a.soon::after{content:" ·施工中";font-size:11px}
   border-radius:999px;padding:1px 9px;background:#fff;border:1px solid var(--line);
 }
 .card .meta .lv.r18{border-color:var(--accent);color:var(--accent)}
-.card .meta .tag{cursor:pointer}
+.card .meta .tag{
+  cursor:pointer;background:none;border:0;padding:0;
+  font-family:inherit;font-size:inherit;color:inherit;
+}
 .card .meta .tag:hover{color:var(--accent)}
 .card .meta .tag.on{color:var(--accent);font-weight:600}
 .card .meta .date{margin-left:auto}
@@ -166,9 +226,15 @@ nav.boards a.soon::after{content:" ·施工中";font-size:11px}
 .card .ops{display:flex;justify-content:flex-end;margin-top:auto;gap:8px;align-items:center}
 .btn-copy{
   font-size:13px;padding:6px 18px;border-radius:999px;border:none;cursor:pointer;
-  background:var(--accent);color:#fff;
+  background:var(--accent);color:#fff;font-family:inherit;
 }
 .btn-copy.done{background:#8fae9a}
+/* 查看详情：每张卡的原生键盘入口，幽灵样式弱于复制主按钮 */
+.btn-detail{
+  font-size:13px;padding:6px 14px;border-radius:999px;cursor:pointer;font-family:inherit;
+  background:#fff;border:1px solid var(--line);color:var(--ink);
+}
+.btn-detail:hover{border-color:var(--ink);color:var(--ink)}
 .btn-claim{
   font-size:12px;padding:4px 12px;border-radius:999px;cursor:pointer;font-family:inherit;
   background:none;border:1px solid var(--claim);color:var(--claim);
@@ -198,6 +264,22 @@ body.no-scroll{overflow:hidden}
   max-width:920px;display:flex;gap:22px;align-items:stretch;overflow:hidden;
 }
 .rj-main{flex:1.5;min-width:0;overflow-y:auto;padding-right:4px}
+.rj-m-gallery{margin-bottom:16px}
+.rj-m-gallery[hidden]{display:none}
+.rj-gallery-main{
+  display:block;width:100%;max-height:58vh;object-fit:contain;
+  border-radius:12px;background:var(--card-block);
+}
+.rj-gallery-strip{
+  display:flex;gap:8px;margin-top:9px;overflow-x:auto;padding:1px 1px 5px;
+  scrollbar-width:thin;
+}
+.rj-gallery-thumb{
+  flex:0 0 64px;width:64px;height:64px;border:2px solid transparent;border-radius:9px;
+  padding:2px;background:#fff;cursor:pointer;
+}
+.rj-gallery-thumb.on{border-color:var(--accent)}
+.rj-gallery-thumb img{width:100%;height:100%;object-fit:cover;border-radius:6px;display:block}
 .rj-side{
   flex:1;min-width:0;max-width:320px;overflow-y:auto;
   border-left:1px solid var(--line);padding-left:20px;
@@ -217,7 +299,10 @@ body.no-scroll{overflow:hidden}
 .rj-m-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-soft);margin-top:8px}
 .rj-m-meta .lv{border-radius:999px;padding:1px 9px;background:#fff;border:1px solid var(--line)}
 .rj-m-meta .lv.r18{border-color:var(--accent);color:var(--accent)}
-.rj-m-meta .tag{cursor:pointer}
+.rj-m-meta .tag{
+  cursor:pointer;background:none;border:0;padding:0;
+  font-family:inherit;font-size:inherit;color:inherit;
+}
 .rj-m-meta .tag:hover{color:var(--accent)}
 .rj-m-meta .date{margin-left:auto}
 .rj-m-body{
@@ -279,17 +364,54 @@ body.no-scroll{overflow:hidden}
 }
 
 footer.site{
-  border-top:1px solid var(--line);padding:20px 0 40px;
-  font-size:12px;color:var(--ink-soft);
+  border-top:1px solid var(--line);background:var(--bg-deep);
+  padding:32px 0 42px;font-size:12px;color:var(--ink);
+}
+.sister-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.sister-footer>p{color:var(--ink-soft)}
+.sister-footer nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.sister-footer nav a,.sister-footer nav span{
+  min-height:44px;display:inline-flex;align-items:center;padding:5px 11px;
+  border:1px solid var(--line);background:var(--card);
+}
+.sister-footer nav a{font-weight:650}
+.sister-footer nav a:hover{border-color:var(--ink);background:#fff}
+.sister-current{border-top:3px solid var(--machine)!important}
+.sister-pending{color:var(--ink-soft);border-style:dashed!important}
+
+/* 键盘焦点清晰可见；尊重系统减弱动态设置 */
+a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{
+  outline:2px solid var(--ink);outline-offset:2px;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
 }
 
-/* ── 手机版：单栏（她拍板：电脑为主、手机可开） ── */
+/* ── 手机版：单栏（梅宝拍板：电脑为主、手机可开） ── */
 @media (max-width:760px){
   .wrap{padding:0 16px}
   .grid,.cards{grid-template-columns:1fr}
   .masthead h1{font-size:22px}
   .hero{padding:30px 0 4px}
-  .toolbar input{max-width:none}
+  .home-hero{grid-template-columns:1fr;gap:24px;padding:34px 0 12px}
+  nav.boards a{min-width:44px;justify-content:center}
+  .hero-copy{order:0}
+  .voice-note{width:94%}
+  .sister-footer{align-items:flex-start}
+  .sister-footer nav{width:100%}
+  .toolbar input{max-width:none;min-height:44px}
+  /* 可达性收口（2026-08-31）：真390 下一切可见可用触控目标 ≥44×44，桌面逐像素不动 */
+  .seg-tab,.chip,.tag,.btn-copy,.btn-detail,.btn-claim,.btn-ghost,.rj-ibtn{
+    min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .rj-m-close{width:44px;height:44px;padding:0}
+  .rj-c-input,
+  .claim-form input[type=text],
+  .claim-form input[type=email],
+  .claim-form input[type=url],
+  .claim-form input[type=file]{min-height:44px}
+  .claim-form .radios label{min-height:44px}
   /* 窄屏浮层：占满合适宽度、可滚动、留安全边距；左右分栏改上下堆叠（内容在上、评论在下） */
   #rj-overlay,#claim-overlay{padding:12px}
   .rj-modal{max-width:none;max-height:88vh;padding:20px 16px 16px}

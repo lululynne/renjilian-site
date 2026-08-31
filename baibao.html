@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人机百宝箱 · MCP / Skills · 第二人称</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="baibao.css">
+</head>
+<body class="treasure-page">
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>第二人称</h1>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
+    </div>
+    <nav class="boards" aria-label="站内板块">
+      <a href="index.html">首页</a>
+      <a href="games.html">互动提问</a>
+      <a href="baibao.html" class="on">MCP / Skills</a>
+      <a href="codex.html">额度重置</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="treasure-hero">
+    <div>
+      <p class="treasure-kicker">MCP · SKILLS · OPEN-SOURCE PROJECTS</p>
+      <h2>人机百宝箱</h2>
+      <p class="treasure-intro">收录适用于人机沟通、共同生活与互动娱乐的 MCP、Skills 和开源项目。每项资料均标明安装门槛、权限、许可证与体验方式，并由编辑核验。</p>
+    </div>
+    <div class="treasure-counts" aria-live="polite">
+      <span><strong id="count-all">0</strong> 收录项目</span>
+      <span><strong id="count-life">0</strong> 生活协作</span>
+      <span><strong id="count-play">0</strong> 互动娱乐</span>
+    </div>
+  </section>
+
+  <section class="treasure-note" aria-label="收录说明">
+    <strong>收录说明</strong>
+    <span>“待核验”表示项目尚未完成来源与安装复核，不代表官方认可或可直接安装。付款、授权、对外发言等动作会单独标注。</span>
+  </section>
+
+  <section class="treasure-toolbar" aria-label="筛选百宝箱">
+    <label class="treasure-search">
+      <span class="sr-only">搜索百宝箱</span>
+      <input id="treasure-query" type="search" placeholder="搜名称 / 能力 / 标签" autocomplete="off">
+    </label>
+    <div class="treasure-filters" id="category-filters" aria-label="按用途筛选">
+      <button type="button" class="on" data-category="all" aria-pressed="true">全部</button>
+      <button type="button" data-category="life" aria-pressed="false">生活协作</button>
+      <button type="button" data-category="play" aria-pressed="false">互动娱乐</button>
+      <button type="button" data-category="r18" aria-pressed="false">18+</button>
+    </div>
+    <div class="treasure-filters" id="access-filters" aria-label="按调用方式筛选">
+      <button type="button" class="on" data-access="all" aria-pressed="true">全部方式</button>
+      <button type="button" data-access="direct" aria-pressed="false">直接调用</button>
+      <button type="button" data-access="assisted" aria-pressed="false">需要协助</button>
+      <button type="button" data-access="human-confirm" aria-pressed="false">关键动作确认</button>
+    </div>
+  </section>
+
+  <section id="treasure-grid" class="treasure-grid" aria-live="polite"></section>
+  <p id="treasure-empty" class="treasure-empty" hidden>没有符合当前筛选条件的项目。</p>
+  <p id="treasure-error" class="treasure-error" hidden>百宝箱数据暂时没有读出来，请稍后再试。</p>
+</main>
+
+<div class="treasure-toast" id="treasure-toast" role="status" aria-live="polite"></div>
+
+<footer class="site">
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="姐妹网站">
+      <span class="sister-current">第二人称 · SECOND PERSON</span>
+      <a href="https://mymomentsmaker.com/">Moments Maker</a>
+      <span class="sister-pending" aria-disabled="true">折光所 · AI 画风图鉴</span>
+    </nav>
+  </div>
+</footer>
+
+<script src="baibao.js"></script>
+</body>
+</html>

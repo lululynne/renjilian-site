@@ -1,0 +1,393 @@
+/* 第二人称品牌落地（2026-08-31 Phase 1 r2）：双声信号刊物 token，只在本页 body 覆盖，不改 style.css。
+   真源：BRAND-AND-EXPERIENCE-SPEC.md「第二人称 · 双声信号刊物」+ assets/design.css .second-person-page。
+   珊瑚/长春花只作图形点缀（脊线、顶条），白字小字一律深蓝墨底，保证 ≥4.5:1。 */
+body.treasure-page{
+  --bg:#f2f6f7;
+  --bg-deep:#e8eff1;
+  --card:#fff;
+  --card-block:#f3f6f7;
+  --card-ai:#fff;
+  --ink:#202a33;
+  --ink-soft:#65717a;
+  --accent:#dd7e70;
+  --accent-soft:#e8bbb4;
+  --machine:#7f8fca;
+  --line:#d3dde1;
+  --radius:16px;
+}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+.treasure-hero{
+  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.7fr);
+  gap:48px;align-items:end;padding:70px 0 34px;
+}
+.treasure-kicker{
+  color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.12em;
+  margin-bottom:8px;
+}
+.treasure-hero h2{
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;
+  font-size:clamp(46px,6.2vw,76px);font-weight:600;line-height:1.15;letter-spacing:.04em;
+}
+.treasure-intro{max-width:720px;color:var(--ink-soft);font-size:15px;margin-top:18px;line-height:1.8}
+.treasure-counts{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  background:transparent;border:0;padding:0;
+}
+.treasure-counts span{text-align:left;color:var(--ink-soft);font-size:11px;line-height:1.35;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 12px}
+.treasure-counts strong{display:block;color:var(--ink);font-family:"Noto Serif SC","Songti SC",serif;font-size:26px;line-height:1.2}
+.treasure-note{
+  display:flex;gap:9px;align-items:flex-start;padding:13px 16px;
+  border:1px solid var(--line);border-radius:16px;
+  background:#fff;font-size:13px;color:var(--ink-soft);padding:18px 20px;
+}
+.treasure-note strong{color:var(--ink);white-space:nowrap}
+.treasure-toolbar{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:22px 0 4px;
+}
+.treasure-search{flex:1;min-width:260px;max-width:none}
+.treasure-search input{
+  width:100%;min-height:48px;padding:10px 16px;border-radius:12px;border:1px solid var(--line);
+  background:#fff;color:var(--ink);font:inherit;font-size:13px;outline:none;
+}
+.treasure-search input:focus{border-color:var(--accent-soft);box-shadow:0 0 0 3px rgba(201,111,94,.09)}
+.treasure-filters{display:inline-flex;gap:3px;padding:4px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.treasure-filters button{
+  border:0;border-radius:9px;background:transparent;color:var(--ink-soft);
+  padding:5px 11px;font:inherit;font-size:12px;cursor:pointer;
+}
+.treasure-filters button.on{background:var(--accent);color:#fff}
+.treasure-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;
+  padding:28px 0 78px;
+}
+.treasure-card{
+  display:flex;flex-direction:column;gap:15px;min-height:360px;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:24px;box-shadow:0 14px 38px rgba(48,70,82,.06);
+}
+.treasure-card[data-category="play"]{background:var(--card-ai)}
+.treasure-card-head{display:flex;gap:12px;align-items:flex-start}
+.treasure-icon{
+  width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;
+  border-radius:12px;background:var(--card-block);border:1px solid var(--line);
+  color:var(--accent);font-weight:800;font-size:13px;letter-spacing:.02em;
+}
+.treasure-title{min-width:0;flex:1}
+.treasure-title h3{font-family:"Noto Serif SC","Songti SC","STSong",serif;font-size:21px;font-weight:600;line-height:1.4}
+.treasure-title p{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+.treasure-status{
+  flex:0 0 auto;border-radius:999px;padding:2px 8px;font-size:10.5px;
+  border:1px solid var(--accent-soft);color:var(--accent);background:#fff;
+}
+.treasure-status[data-status="verified"]{border-color:#8fae9a;color:#62806b}
+.treasure-status[data-status="planned"]{border-color:#9aa9be;color:#6d7d94}
+.treasure-summary{font-size:14px;color:var(--ink);line-height:1.8}
+.treasure-badges,.treasure-tags{display:flex;gap:6px;flex-wrap:wrap}
+.treasure-badge,.treasure-tag{
+  display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;
+  background:#fff;border:1px solid var(--line);font-size:10.5px;color:var(--ink-soft);
+}
+.treasure-badge.access{border-color:var(--accent-soft);color:var(--accent)}
+.treasure-badge.risk{border-color:#d6a28f;color:#a35f4c;background:#fff7f3}
+.treasure-details{display:grid;gap:7px;font-size:11.5px;color:var(--ink-soft)}
+.treasure-detail{display:grid;grid-template-columns:72px 1fr;gap:8px}
+.treasure-detail dt{color:var(--ink);font-weight:600}
+.treasure-detail dd{min-width:0}
+.treasure-confirm{
+  margin-top:auto;padding:10px 11px;border-radius:10px;background:rgba(255,255,255,.65);
+  border:1px dashed var(--line);font-size:11.5px;color:var(--ink-soft);
+}
+.treasure-confirm strong{display:block;color:var(--ink);margin-bottom:2px}
+.treasure-links{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.treasure-link{
+  display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;
+  border-radius:999px;background:var(--accent);color:#fff;font-size:12px;
+}
+.treasure-link.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.treasure-no-link{font-size:11px;color:var(--ink-soft)}
+.treasure-empty,.treasure-error{text-align:center;padding:48px 0 70px;color:var(--ink-soft);font-size:13px}
+.treasure-error{color:#a35f4c}
+
+@media (max-width:900px){
+  .treasure-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .treasure-hero{grid-template-columns:1fr}
+  .treasure-counts{max-width:520px}
+}
+@media (max-width:620px){
+  .treasure-hero{padding-top:32px;gap:18px}
+  .treasure-hero h2{font-size:28px}
+  .treasure-note{display:block}
+  .treasure-note strong{display:block;margin-bottom:3px}
+  .treasure-toolbar{align-items:stretch}
+  .treasure-search{max-width:none;flex-basis:100%}
+  .treasure-filters{width:100%;overflow-x:auto}
+  .treasure-filters button{flex:0 0 auto}
+  .treasure-grid{grid-template-columns:1fr;padding-bottom:48px}
+  .treasure-card{min-height:0}
+}
+
+/* ── v2 · 第二人称「安装与配置 / 在线体验」扩展（2026-08-31 Phase 1）── */
+.treasure-verdict{
+  font-size:12.5px;color:var(--ink-soft);line-height:1.7;
+  border-left:3px solid var(--accent-soft);padding-left:10px;
+}
+.treasure-verdict strong{color:var(--ink);margin-right:6px}
+
+.treasure-actions{display:flex;gap:8px;flex-wrap:wrap}
+.treasure-actions button{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;padding:10px 20px;border-radius:999px;cursor:pointer;
+  font:inherit;font-size:13px;font-weight:700;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;
+}
+.treasure-actions button.try{background:#fff;color:var(--accent)}
+.treasure-actions button.try.on{background:var(--accent);color:#fff}
+
+.treasure-panel{
+  border-top:1px dashed var(--line);padding-top:12px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.treasure-panel[hidden],.treasure-install[hidden]{display:none}
+.treasure-panel-tabs{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line);border-radius:999px;background:#fff;align-self:flex-start}
+.treasure-panel-tabs button{
+  border:0;border-radius:999px;background:transparent;color:var(--ink-soft);
+  padding:6px 12px;font:inherit;font-size:12px;cursor:pointer;min-height:32px;
+}
+.treasure-panel-tabs button.on{background:var(--accent);color:#fff}
+.treasure-install{display:flex;flex-direction:column;gap:8px;min-width:0}
+.treasure-install-client{
+  font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);
+}
+.treasure-install-label{font-size:12.5px;color:var(--ink);font-weight:600}
+.treasure-code-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;
+  background:rgba(255,255,255,.75);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;
+}
+.treasure-code-row code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:12px;line-height:1.65;color:var(--ink);
+  white-space:pre-wrap;word-break:break-word;min-width:0;
+}
+.treasure-copy{
+  align-self:center;min-height:44px;padding:8px 16px;border-radius:999px;
+  border:1px solid var(--accent);background:#fff;color:var(--accent);
+  font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
+}
+.treasure-secret-note{
+  font-size:11.5px;color:var(--ink-soft);line-height:1.7;
+  border:1px dashed var(--accent-soft);border-radius:10px;padding:9px 11px;
+  background:rgba(253,241,234,.6);
+}
+.treasure-secret-note strong{color:var(--ink)}
+.treasure-requirements{
+  margin:0;padding-left:18px;font-size:11.5px;color:var(--ink-soft);
+  display:grid;gap:3px;
+}
+.treasure-outbound{
+  display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  font-size:11.5px;color:var(--ink-soft);
+}
+.treasure-outbound a{color:var(--accent);font-weight:700}
+
+.treasure-experience{
+  display:flex;flex-direction:column;gap:7px;
+  background:rgba(255,255,255,.65);border:1px solid var(--line);
+  border-radius:12px;padding:12px 14px;
+}
+.treasure-level{
+  align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.08em;
+  color:var(--accent);border:1px solid var(--accent-soft);border-radius:999px;
+  padding:2px 9px;background:#fff;
+}
+.treasure-experience-label{font-size:13px;font-weight:600;color:var(--ink)}
+.treasure-replay-media{font-size:12.5px;color:var(--ink);line-height:1.7}
+.treasure-experience-caption{font-size:11.5px;color:var(--ink-soft);line-height:1.7}
+.treasure-experience .treasure-link{align-self:flex-start;min-height:44px}
+
+.treasure-badge.adult{border-color:#b0524a;color:#8f3f39;background:#fdf0ee}
+
+.treasure-card.locked{min-height:0}
+.treasure-lock{
+  margin-top:auto;border:1px dashed var(--accent-soft);border-radius:12px;
+  background:rgba(255,255,255,.6);padding:22px 16px;
+}
+.treasure-lock-box{
+  display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;
+}
+.treasure-lock-box small{
+  font-size:10.5px;font-weight:700;letter-spacing:.12em;color:#8f3f39;
+}
+.treasure-lock-box strong{font-size:13px;color:var(--ink)}
+.treasure-lock-open{
+  min-height:44px;padding:10px 22px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;
+  font:inherit;font-size:13px;font-weight:700;
+}
+
+.treasure-toast{
+  position:fixed;left:50%;bottom:28px;z-index:60;
+  transform:translate(-50%,16px);opacity:0;pointer-events:none;
+  background:var(--ink);color:#fff;font-size:12.5px;
+  border-radius:999px;padding:10px 18px;max-width:min(86vw,420px);
+  transition:opacity .2s ease,transform .2s ease;
+}
+.treasure-toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 已核验绿标小字加深至 ≥4.5:1 */
+.treasure-status[data-status="verified"]{border-color:#7a9c86;color:#4f6b59}
+/* 规划中灰蓝小字加深至 ≥4.5:1（实测旧值 4.19 不达线） */
+.treasure-status[data-status="planned"]{border-color:#7e8ea8;color:#54637a}
+
+@media (max-width:620px){
+  .treasure-filters button{
+    min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;
+  }
+  .treasure-link{
+    min-height:44px;display:inline-flex;align-items:center;
+  }
+  .treasure-outbound a{
+    min-height:44px;display:inline-flex;align-items:center;
+  }
+  .treasure-actions button{flex:1}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .treasure-toast{transition:none}
+}
+
+/* ── 第二人称 · 双声信号刊物：本页 chrome 与组件覆盖（2026-08-31 Phase 1 r2）── */
+body.treasure-page header.site{
+  background:rgba(255,255,255,.88);border-bottom:1px solid var(--line);
+  padding:25px 0 0;
+}
+body.treasure-page .masthead-en{
+  font:600 10px/1 "Avenir Next","Helvetica Neue",Arial,sans-serif;
+  letter-spacing:.2em;color:var(--machine);
+}
+/* 刊物式导航：方角、下划线选中、44px 触控；预告项为非交互 span，无伪装修饰 */
+body.treasure-page nav.boards{gap:28px}
+body.treasure-page nav.boards a,
+body.treasure-page nav.boards span.soon{
+  min-height:44px;display:inline-flex;align-items:center;
+  padding:6px 0;border-radius:0;background:transparent;border:1px solid transparent;
+  border-bottom:2px solid transparent;font-size:14px;color:var(--ink-soft);
+}
+body.treasure-page nav.boards a.on{
+  background:transparent;border-bottom-color:var(--ink);color:var(--ink);font-weight:700;
+}
+body.treasure-page nav.boards span.soon{opacity:.6}
+
+/* hero：刊物大标题。装饰轴已删除，避免与统计卡争抢同一视觉轨道。 */
+body.treasure-page .treasure-hero{position:relative;padding:70px 0 34px}
+body.treasure-page .treasure-kicker{
+  font:650 11px/1.3 "Avenir Next","Helvetica Neue",Arial,sans-serif;
+  letter-spacing:.17em;color:var(--machine);
+}
+body.treasure-page .treasure-hero h2{
+  font-size:clamp(46px,6.2vw,76px);line-height:1.15;letter-spacing:.04em;
+}
+/* 收录说明与计数：回纸面/雾色系 */
+body.treasure-page .treasure-note{
+  background:rgba(248,250,251,.8);border-color:var(--line);
+}
+body.treasure-page .treasure-counts{
+  background:rgba(248,250,251,.7);border-radius:var(--radius);
+}
+
+/* 工具栏去胶囊 */
+body.treasure-page .treasure-search input{border-radius:12px}
+body.treasure-page .treasure-search input:focus{
+  border-color:var(--ink);box-shadow:none;
+}
+body.treasure-page .treasure-filters{border-radius:12px;background:#fff}
+body.treasure-page .treasure-filters button{
+  border-radius:9px;min-height:44px;min-width:44px;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+body.treasure-page .treasure-filters button.on{background:var(--ink);color:#fff}
+
+/* 项目卡：内容优先的白纸卡，不再用装饰轴。 */
+body.treasure-page .treasure-card{
+  position:relative;border-radius:var(--radius);border-color:var(--line);
+  box-shadow:0 14px 38px rgba(48,70,82,.06);padding-left:24px;
+}
+body.treasure-page .treasure-card::before{
+  content:none;
+}
+body.treasure-page .treasure-icon{
+  border-radius:12px;color:var(--ink);background:var(--card-block);border-color:var(--line);
+  border-top:1px solid var(--line);border-image:none;
+}
+body.treasure-page .treasure-badge,
+body.treasure-page .treasure-tag{border-radius:999px}
+body.treasure-page .treasure-badge.access{border-color:var(--line);color:var(--ink)}
+body.treasure-page .treasure-badge.risk{
+  border-color:#c9a39c;color:#9d5548;background:#faf1ee;
+}
+body.treasure-page .treasure-status{
+  border-radius:999px;border-color:var(--line);color:var(--ink-soft);
+}
+
+/* 双动作：方角、深蓝墨主按键；选中态内嵌人声珊瑚底线 */
+body.treasure-page .treasure-actions button{
+  border-radius:10px;border-color:var(--ink);background:#fff;color:var(--ink);
+}
+body.treasure-page .treasure-actions button.try{background:var(--ink);color:#fff}
+body.treasure-page .treasure-actions button.try.on{background:var(--ink)}
+body.treasure-page .treasure-actions button.on{box-shadow:inset 0 -3px 0 var(--accent)}
+
+/* 面板与安装视图方角化 */
+body.treasure-page .treasure-panel-tabs{border-radius:12px}
+body.treasure-page .treasure-panel-tabs button{border-radius:9px;min-height:44px}
+body.treasure-page .treasure-panel-tabs button.on{background:var(--ink)}
+body.treasure-page .treasure-code-row{border-radius:12px;background:var(--card-block)}
+body.treasure-page .treasure-copy{border-radius:10px;border-color:var(--ink);color:var(--ink)}
+body.treasure-page .treasure-secret-note{
+  border-radius:2px;border-color:var(--machine);background:rgba(126,144,195,.08);
+}
+body.treasure-page .treasure-install-client{color:var(--ink-soft)}
+body.treasure-page .treasure-outbound a{
+  color:var(--ink);text-decoration:underline;text-underline-offset:3px;
+}
+body.treasure-page .treasure-level{
+  border-radius:2px;color:var(--ink-soft);border-color:var(--line);
+}
+body.treasure-page .treasure-experience{border-radius:12px;background:var(--card-block)}
+body.treasure-page .treasure-experience .treasure-link{border-radius:10px}
+
+/* 18+ 锁：雾面刊物口径 */
+body.treasure-page .treasure-lock{
+  border-color:var(--line);border-radius:14px;background:var(--card-block);
+}
+body.treasure-page .treasure-lock-open{
+  border-radius:10px;background:var(--ink);border-color:var(--ink);
+}
+body.treasure-page .treasure-link{border-radius:10px;background:var(--ink)}
+body.treasure-page .treasure-link.secondary{
+  background:transparent;color:var(--ink);border-color:var(--line);
+}
+body.treasure-page .treasure-toast{border-radius:12px}
+
+/* 键盘焦点：深蓝墨实线，全交互件可见 */
+body.treasure-page a:focus-visible,
+body.treasure-page button:focus-visible,
+body.treasure-page input:focus-visible{
+  outline:2px solid var(--ink);outline-offset:2px;
+}
+
+/* 页脚回刊物雾面；雾面底上小字用深蓝墨保 4.5:1 */
+body.treasure-page footer.site{
+  border-top-color:var(--line);background:var(--bg-deep);color:var(--ink);
+}
+
+@media (max-width:620px){
+  /* 可达性收口（2026-08-31）：真390 下搜索框计算高度 42.8→≥44，桌面逐像素不动 */
+  body.treasure-page .treasure-hero{padding-top:40px}
+  body.treasure-page .treasure-hero h2{font-size:42px}
+  #treasure-query{min-height:44px}
+}

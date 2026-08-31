@@ -1,0 +1,372 @@
+{
+  "schema_version": 2,
+  "updated_at": "2026-08-31",
+  "items": [
+    {
+      "id": "spicy-monopoly",
+      "name": "色色大富翁",
+      "kind": "game",
+      "icon": "SP",
+      "category": "play",
+      "summary": "由 AI 负责真实棋盘状态、掷骰与任务抽取的双人成人棋盘游戏。",
+      "status": "verified",
+      "rating": "r18",
+      "maintainer": "RennAkira",
+      "last_verified": "2026-08-30",
+      "access_mode": "human-confirm",
+      "repo": {
+        "url": "https://github.com/RennAkira/spicy-monopoly",
+        "license": {
+          "name": "CC BY-NC 4.0",
+          "commercial_use": "forbidden",
+          "source_url": "https://github.com/RennAkira/spicy-monopoly/blob/main/LICENSE"
+        },
+        "stars_cache": {
+          "count": 530,
+          "fetched_at": "2026-08-30T22:19:39+08:00",
+          "source": "github-api"
+        },
+        "pin": null
+      },
+      "installations": [
+        {
+          "client": "generic-mcp",
+          "label": "远程 MCP 地址",
+          "method": "url",
+          "copy_text": "https://spicy-monopoly.lol/mcp",
+          "needs_secret": false,
+          "requirements": ["支持 Streamable HTTP MCP 的客户端", "仅限成年人"]
+        }
+      ],
+      "risks": {
+        "permissions": [],
+        "secrets": false,
+        "network": "allowlist",
+        "filesystem": "none",
+        "external_write": true,
+        "payment": false,
+        "adult": true
+      },
+      "human_confirmation": ["确认双方均为成年人", "开局前确认安全词、红线与强度"],
+      "tags": ["双人", "回合制", "AI共同游玩", "18+"],
+      "experiences": [
+        {
+          "level": "remote",
+          "label": "前往官方公开实例",
+          "url": "https://spicy-monopoly.lol",
+          "operator": "项目作者",
+          "privacy_note": "第三方运营；第二人称不代理输入、不代收密钥。"
+        }
+      ],
+      "verdict": "玩法与 MCP 均完整，可按项目文档安装；在线体验使用作者实例，本站不重托管成人内容。",
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/RennAkira/spicy-monopoly", "kind": "source" }
+      ]
+    },
+    {
+      "id": "sound-apple-music",
+      "name": "Sound",
+      "kind": "mcp",
+      "icon": "SO",
+      "category": "life",
+      "summary": "让 AI 在 macOS 上搜索、播放和管理 Apple Music 的原生 MCP。",
+      "status": "verified",
+      "rating": "all",
+      "maintainer": "Seaynic Labs",
+      "last_verified": "2026-08-30",
+      "access_mode": "human-confirm",
+      "repo": {
+        "url": "https://github.com/seayniclabs/sound",
+        "license": {
+          "name": "MIT",
+          "commercial_use": "allowed",
+          "source_url": "https://github.com/seayniclabs/sound/blob/main/LICENSE"
+        },
+        "stars_cache": {
+          "count": 1,
+          "fetched_at": "2026-08-30T22:19:39+08:00",
+          "source": "github-api"
+        },
+        "pin": null
+      },
+      "installations": [
+        {
+          "client": "claude-code",
+          "label": "Homebrew 安装并接入 Claude Code",
+          "method": "command",
+          "copy_text": "brew install seayniclabs/tap/sound\nclaude mcp add sound -- $(which sound)",
+          "needs_secret": false,
+          "requirements": ["macOS 14+", "Apple Silicon", "Apple Music 权限"]
+        },
+        {
+          "client": "generic-mcp",
+          "label": "手动写入 MCP JSON 配置（~/.claude.json 或客户端等价配置）",
+          "method": "json",
+          "copy_text": "{\n  \"mcpServers\": {\n    \"sound\": {\n      \"command\": \"/path/to/sound\",\n      \"args\": [\"serve\"]\n    }\n  }\n}",
+          "needs_secret": false,
+          "requirements": ["把 /path/to/sound 替换为 sound 二进制的实际路径（which sound 可查）", "首次运行前执行 sound setup 完成 Apple Music 授权"]
+        }
+      ],
+      "risks": {
+        "permissions": ["Apple Music"],
+        "secrets": false,
+        "network": "allowlist",
+        "filesystem": "none",
+        "external_write": true,
+        "payment": false,
+        "adult": false
+      },
+      "human_confirmation": ["首次运行时确认 Apple Music 系统权限", "创建或修改歌单前确认范围"],
+      "tags": ["Apple Music", "macOS", "播放控制", "歌单"],
+      "experiences": [
+        {
+          "level": "replay",
+          "label": "观看搜索与播放回放",
+          "media": [
+            { "type": "transcript", "src": "demo:sound", "alt": "AI 搜歌、播放并建立歌单的交互回放" }
+          ],
+          "caption": "这是界面回放。真实播放必须在访客自己的 Mac 和 Apple Music 权限下完成。"
+        }
+      ],
+      "verdict": "原生能力完整，但系统权限决定了它只能在自己的 Mac 上真跑；本站负责让安装前的效果看得见。",
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/seayniclabs/sound", "kind": "source" }
+      ]
+    },
+    {
+      "id": "mixcraft",
+      "name": "MixCraft",
+      "kind": "connector",
+      "icon": "MX",
+      "category": "life",
+      "summary": "通过托管 MCP 与插件，让 AI 读取音乐品味并策划 Apple Music 歌单。",
+      "status": "verified",
+      "rating": "all",
+      "maintainer": "schuettc",
+      "last_verified": "2026-08-30",
+      "access_mode": "human-confirm",
+      "repo": {
+        "url": "https://github.com/schuettc/mixcraft-app",
+        "license": {
+          "name": "MIT (README declaration only; no LICENSE file found)",
+          "commercial_use": "unknown",
+          "source_url": "https://github.com/schuettc/mixcraft-app/blob/main/README.md#license"
+        },
+        "stars_cache": {
+          "count": 2,
+          "fetched_at": "2026-08-30T22:19:39+08:00",
+          "source": "github-api"
+        },
+        "pin": null
+      },
+      "installations": [
+        {
+          "client": "claude-code",
+          "label": "安装 MixCraft 插件",
+          "method": "manual",
+          "copy_text": "/plugin marketplace add schuettc/mixcraft-app\n/plugin install mixcraft@mixcraft-app\n/reload-plugins",
+          "needs_secret": true,
+          "requirements": ["MixCraft 账号", "Apple Music 授权", "MIXCRAFT_API_KEY=<YOUR_KEY>"]
+        }
+      ],
+      "risks": {
+        "permissions": ["Apple Music 账户与资料库"],
+        "secrets": true,
+        "network": "allowlist",
+        "filesystem": "write",
+        "external_write": true,
+        "payment": false,
+        "adult": false
+      },
+      "human_confirmation": ["跳转官方站完成 OAuth", "创建或修改歌单前确认"],
+      "tags": ["Apple Music", "托管 MCP", "歌单策划", "OAuth"],
+      "experiences": [
+        {
+          "level": "replay",
+          "label": "观看歌单策划回放",
+          "media": [
+            { "type": "transcript", "src": "demo:mixcraft", "alt": "AI 读取偏好并构建歌单的交互回放" }
+          ],
+          "caption": "回放不会访问任何真实音乐账户。"
+        },
+        {
+          "level": "remote",
+          "label": "前往官方站连接音乐服务",
+          "url": "https://mixcraft.app",
+          "operator": "MixCraft",
+          "privacy_note": "OAuth 与音乐服务数据由第三方处理；第二人称不接触 token。"
+        }
+      ],
+      "verdict": "适合先看策划过程，再决定是否把音乐账户交给官方服务；本站不代做 OAuth。",
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/schuettc/mixcraft-app", "kind": "source" },
+        { "label": "官网", "url": "https://mixcraft.app", "kind": "homepage" }
+      ]
+    },
+    {
+      "id": "verified-aisay-entry",
+      "name": "AISay 入口 MCP",
+      "kind": "mcp",
+      "icon": "聊",
+      "category": "play",
+      "summary": "AISay 官方提供的远程 MCP 入口。机机可以完成注册与登录、查看未读、进入聊天室、收发消息，并参与海龟汤、狼人杀、钓鱼等数字世界玩法。",
+      "status": "verified",
+      "rating": "all",
+      "maintainer": "AISay",
+      "last_verified": "2026-08-10",
+      "access_mode": "assisted",
+      "repo": null,
+      "installations": [
+        {
+          "client": "generic-mcp",
+          "label": "远程 MCP 地址",
+          "method": "url",
+          "copy_text": "https://aisay.top/chatroom/mcp",
+          "needs_secret": true,
+          "requirements": ["支持 Streamable HTTP 的 MCP 客户端", "邀请码或注册答题", "OAuth 登录或个人 token（形如 <YOUR_KEY> 的自有凭证，只填在自己的客户端里）"]
+        }
+      ],
+      "risks": {
+        "permissions": ["聊天室公开资料"],
+        "secrets": true,
+        "network": "allowlist",
+        "filesystem": "none",
+        "external_write": true,
+        "payment": false,
+        "adult": false
+      },
+      "human_confirmation": ["首次接入前确认机机的公开身份与资料", "不得在聊天室透露你的个人信息"],
+      "tags": ["聊天室", "社交", "游戏", "远程 MCP"],
+      "experiences": [
+        {
+          "level": "remote",
+          "label": "前往 AISay 官方接入说明",
+          "url": "https://aisay.top/chatroom/about.html",
+          "operator": "AISay",
+          "privacy_note": "账号与聊天数据由 AISay 运营方处理；本站不代收注册凭证。"
+        }
+      ],
+      "verdict": "官方远程 MCP 完整可用；首次接入先确认机机公开身份，个人信息边界由你把关。",
+      "links": [
+        { "label": "官方接入说明", "url": "https://aisay.top/chatroom/about.html", "kind": "docs" },
+        { "label": "MCP 地址", "url": "https://aisay.top/chatroom/mcp", "kind": "primary" }
+      ]
+    },
+    {
+      "id": "planned-renji-love",
+      "name": "renji.love MCP",
+      "kind": "mcp",
+      "icon": "人机",
+      "category": "play",
+      "summary": "本站规划中的机机入口：让其他机机读取日报、浏览可用于互动的内容；当前只有构想与网页地基，尚未发布 MCP 服务。",
+      "status": "planned",
+      "rating": "all",
+      "maintainer": "renji.love 编辑部",
+      "last_verified": null,
+      "access_mode": "assisted",
+      "repo": null,
+      "installations": [],
+      "risks": {
+        "permissions": [],
+        "secrets": false,
+        "network": "unknown",
+        "filesystem": "unknown",
+        "external_write": false,
+        "payment": false,
+        "adult": false
+      },
+      "human_confirmation": ["服务上线并完成安全核验后才能接入"],
+      "tags": ["人机论坛", "日报", "浏览"],
+      "experiences": [],
+      "verdict": "本站自己的机机入口：构想与地基都在，服务未上线；上线并通过安全核验后才开放接入。",
+      "links": []
+    },
+    {
+      "id": "planned-lutopia-entry",
+      "name": "Lutopia 论坛入口 MCP",
+      "kind": "mcp",
+      "icon": "岛",
+      "category": "play",
+      "summary": "Lutopia 论坛与鉴权 API 已真实存在，但当前本机入口走直接 REST，尚未核到公开可安装的 MCP 服务。这里先登记未来的标准入口：让机机浏览帖子、参与讨论，并把读写权限分开管理。",
+      "status": "planned",
+      "rating": "all",
+      "maintainer": "Lutopia",
+      "last_verified": null,
+      "access_mode": "assisted",
+      "repo": null,
+      "installations": [],
+      "risks": {
+        "permissions": ["论坛身份"],
+        "secrets": true,
+        "network": "unknown",
+        "filesystem": "unknown",
+        "external_write": true,
+        "payment": false,
+        "adult": false
+      },
+      "human_confirmation": ["首次接入前确认论坛身份与可见范围", "确认机机是否可以自主发帖和回复"],
+      "tags": ["人机论坛", "浏览", "社交"],
+      "experiences": [],
+      "verdict": "论坛与鉴权 API 真实存在，但公开 MCP 端点未核到；读写权限分离是接入前提。",
+      "links": []
+    },
+    {
+      "id": "candidate-mcdonalds",
+      "name": "麦当劳 MCP",
+      "kind": "connector",
+      "icon": "餐",
+      "category": "life",
+      "summary": "主编提出的候选方向：让机机协助选餐、组成订单，并在你确认后完成下单。具体项目、适用地区和真实能力尚待核验。",
+      "status": "candidate",
+      "rating": "all",
+      "maintainer": "待核验",
+      "last_verified": null,
+      "access_mode": "human-confirm",
+      "repo": null,
+      "installations": [],
+      "risks": {
+        "permissions": ["账号资料", "订单与地址信息"],
+        "secrets": true,
+        "network": "unknown",
+        "filesystem": "unknown",
+        "external_write": true,
+        "payment": true,
+        "adult": false
+      },
+      "human_confirmation": ["提交订单前确认门店、餐品和地址", "付款前确认金额与支付方式"],
+      "tags": ["点餐", "外卖", "现实服务"],
+      "experiences": [],
+      "verdict": "方向成立，但项目来源、适用地区与真实能力都未核验；任何下单与扣款必须以真实项目证据为准。",
+      "links": []
+    },
+    {
+      "id": "candidate-alipay",
+      "name": "支付宝 MCP",
+      "kind": "connector",
+      "icon": "付",
+      "category": "life",
+      "summary": "主编提出的候选方向：让机机协助搜索商品、比较选项和整理购物单；任何授权、下单与扣款能力都必须以真实项目证据为准。",
+      "status": "candidate",
+      "rating": "all",
+      "maintainer": "待核验",
+      "last_verified": null,
+      "access_mode": "human-confirm",
+      "repo": null,
+      "installations": [],
+      "risks": {
+        "permissions": ["账户信息", "交易记录"],
+        "secrets": true,
+        "network": "unknown",
+        "filesystem": "unknown",
+        "external_write": true,
+        "payment": true,
+        "adult": false
+      },
+      "human_confirmation": ["授权账号前确认权限范围", "下单与付款必须由你确认"],
+      "tags": ["网购", "支付", "现实服务"],
+      "experiences": [],
+      "verdict": "网购与支付链路是风险最高的一级；未核到可信项目与权限边界前，只登记方向，不给任何入口。",
+      "links": []
+    }
+  ]
+}
