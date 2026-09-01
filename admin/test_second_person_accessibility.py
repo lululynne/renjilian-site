@@ -293,6 +293,19 @@ class AccessibilityClosureTests(unittest.TestCase):
         finally:
             context.close()
 
+    # ── 公开更新日志：真读 Markdown、390 无溢出、footer 入口可点 ──
+    def test_changelog_390(self) -> None:
+        context, page, errors = self.open_page("changelog.html")
+        try:
+            page.locator(".release-entry").first.wait_for()
+            self.assertGreaterEqual(page.locator(".release-entry").count(), 4)
+            self.assert_widths_390(page)
+            self.assert_touch_ok(page)
+            self.assertEqual(page.locator('footer a[href="https://mymomentsmaker.com/"]').count(), 1)
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
     # ── reduced-motion 运行时归零 ──
     def test_reduced_motion_runtime(self) -> None:
         context, page, errors = self.open_games(reduced_motion=True)

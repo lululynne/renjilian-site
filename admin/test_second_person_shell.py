@@ -70,11 +70,23 @@ class SecondPersonShellTests(unittest.TestCase):
             with self.subTest(page=page):
                 html = read(page)
                 self.assertIn('class="wrap sister-footer"', html)
+                self.assertIn('href="changelog.html"', html)
+                self.assertIn('更新日志', html)
                 self.assertIn('Moments Maker · 图片创作工具', html)
                 self.assertIn('折光所 · AI 画风图鉴', html)
                 self.assertIn('href="https://zheguang.gallery/"', html)
                 self.assertNotIn('sister-pending', html)
                 self.assertNotIn('sister-current', html)
+
+    def test_public_changelog_has_one_markdown_truth_source(self) -> None:
+        page = read("changelog.html")
+        markdown = read("CHANGELOG.md")
+        self.assertIn("更新日志 · 第二人称", page)
+        self.assertIn('fetch("CHANGELOG.md"', page)
+        self.assertIn('class="release-ledger"', page)
+        self.assertIn('aria-current="page"', page)
+        self.assertIn("## v20260902 · 2026-09-02", markdown)
+        self.assertNotIn("内部施工", "\n".join(line for line in markdown.splitlines() if line.startswith("- ")))
 
     def test_style_tokens_are_ratified_palette(self) -> None:
         css = read("style.css").lower()

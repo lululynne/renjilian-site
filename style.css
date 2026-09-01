@@ -363,6 +363,24 @@ body.no-scroll{overflow:hidden}
   font-size:12.5px;color:var(--ink-soft);line-height:2;
 }
 
+/* 更新日志：不做通用卡片墙，做成刊物的「发行记录」。 */
+.changelog-main{padding-top:48px;padding-bottom:72px}
+.log-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,420px);gap:28px;align-items:end;padding-bottom:26px;border-bottom:2px solid var(--ink)}
+.log-head .hero-kicker{grid-column:1/-1;margin:0;color:var(--ink-soft)}
+.log-head h2{margin:0;font-size:clamp(34px,6vw,66px);line-height:.95;letter-spacing:-.035em}
+.log-head>p:last-child{margin:0;color:var(--ink-soft);font-size:13px;line-height:1.9}
+.release-ledger{counter-reset:release}
+.release-entry{counter-increment:release;display:grid;grid-template-columns:180px minmax(0,1fr);gap:30px;padding:30px 0;border-bottom:1px solid var(--line)}
+.release-entry>header{position:relative;padding-left:40px}
+.release-entry>header::before{content:counter(release,decimal-leading-zero);position:absolute;left:0;top:2px;color:var(--machine);font:700 11px/1 ui-monospace,"SFMono-Regular",Menlo,monospace;letter-spacing:.08em}
+.release-entry h3{margin:0;color:var(--ink);font:750 18px/1.35 ui-monospace,"SFMono-Regular",Menlo,monospace}
+.release-entry time{display:block;margin-top:7px;color:var(--ink-soft);font:10.5px/1.5 ui-monospace,"SFMono-Regular",Menlo,monospace;letter-spacing:.08em}
+.release-entry ul{margin:0;padding:0;list-style:none}
+.release-entry li{position:relative;margin:0;padding:0 0 12px 18px;color:var(--ink);font-size:13px;line-height:1.85}
+.release-entry li::before{content:"";position:absolute;left:0;top:.72em;width:7px;height:2px;background:var(--human)}
+.log-state{padding:28px 0;color:var(--ink-soft);font-size:13px}
+.log-state.err{color:var(--human)}
+
 footer.site{
   border-top:1px solid var(--line);background:var(--bg-deep);
   padding:32px 0 42px;font-size:12px;color:var(--ink);
@@ -396,6 +414,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
   nav.boards a{min-width:44px;justify-content:center}
   .hero-copy{order:0}
   .voice-note{width:94%}
+  .log-head{grid-template-columns:1fr;gap:18px;padding-bottom:22px}
+  .log-head .hero-kicker{grid-column:auto}
+  .release-entry{grid-template-columns:1fr;gap:16px;padding:24px 0}
   .sister-footer{align-items:flex-start}
   .sister-footer nav{width:100%}
   .toolbar input{max-width:none;min-height:44px}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>更新日志 · 第二人称</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>第二人称</h1>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
+    </div>
+    <nav class="boards" aria-label="站内板块">
+      <a href="index.html">首页</a>
+      <a href="games.html">互动提问</a>
+      <a href="baibao.html">MCP / Skills</a>
+      <a href="codex.html">额度重置</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap changelog-main">
+  <header class="log-head">
+    <p class="hero-kicker">EDITORIAL RELEASE LEDGER</p>
+    <h2>更新日志</h2>
+    <p>记下这本刊物什么时候多了一页、修好了什么，以及哪些入口已经真正可以使用。</p>
+  </header>
+  <section class="release-ledger" id="releaseLedger" aria-live="polite">
+    <p class="log-state">正在翻阅发行记录…</p>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="站点与姐妹网站">
+      <span aria-current="page">更新日志</span>
+      <a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a>
+      <a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var ledger = document.getElementById("releaseLedger");
+  function render(markdown) {
+    var frag = document.createDocumentFragment();
+    var current = null, list = null;
+    markdown.split(/\r?\n/).forEach(function (line) {
+      var h = /^##\s+(.+?)(?:\s+·\s+(\d{4}-\d{2}-\d{2}))?$/.exec(line.trim());
+      if (h) {
+        current = document.createElement("article");
+        current.className = "release-entry";
+        var meta = document.createElement("header");
+        var version = document.createElement("h3");
+        version.textContent = h[1];
+        var date = document.createElement("time");
+        date.dateTime = h[2] || "";
+        date.textContent = h[2] || "";
+        meta.appendChild(version); meta.appendChild(date); current.appendChild(meta);
+        list = document.createElement("ul"); current.appendChild(list); frag.appendChild(current);
+        return;
+      }
+      var li = /^-\s+(.+)$/.exec(line.trim());
+      if (li && list) {
+        var item = document.createElement("li"); item.textContent = li[1]; list.appendChild(item);
+      }
+    });
+    ledger.innerHTML = "";
+    if (!frag.childNodes.length) {
+      ledger.innerHTML = '<p class="log-state">还没有可公开的更新记录。</p>';
+      return;
+    }
+    ledger.appendChild(frag);
+  }
+  fetch("CHANGELOG.md", { cache: "no-store" })
+    .then(function (response) { if (!response.ok) throw new Error("load"); return response.text(); })
+    .then(render)
+    .catch(function () { ledger.innerHTML = '<p class="log-state err">更新记录没有读出来，请刷新后再试。</p>'; });
+}());
+</script>
+
+</body>
+</html>
