@@ -72,6 +72,8 @@ class SecondPersonShellTests(unittest.TestCase):
                 self.assertIn('class="wrap sister-footer"', html)
                 self.assertIn('Moments Maker · 图片创作工具', html)
                 self.assertIn('折光所 · AI 画风图鉴', html)
+                self.assertIn('href="https://zheguang.gallery/"', html)
+                self.assertNotIn('sister-pending', html)
                 self.assertNotIn('sister-current', html)
 
     def test_style_tokens_are_ratified_palette(self) -> None:
