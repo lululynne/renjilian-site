@@ -183,6 +183,69 @@ td.k{color:var(--ink);width:28%;font-weight:600}
 .foot b{color:var(--muted)}
 .seal{margin-top:22px;display:flex;gap:9px;align-items:center;color:var(--faint);font-family:ui-monospace,monospace;font-size:8.5px;letter-spacing:.1em}
 .seal i{width:19px;height:19px;border:1px solid var(--faint);border-radius:50%;box-shadow:inset 0 0 0 3px #fff}
+
+/* 公开额度观察页 */
+.quota-hero{max-width:780px;padding-bottom:18px}
+.hero-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;color:var(--faint);font-size:11px}
+.source-state{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted)}
+.source-state::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mid)}
+.source-state.fresh::before{background:var(--ok)}
+.source-state.stale::before{background:var(--no)}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.summary-card{min-height:126px;padding:19px 21px;border:1px solid var(--line);border-radius:var(--r);background:#fff;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 16px 42px rgba(49,44,58,.045)}
+.summary-card.codex{border-top:3px solid #6f9d95}.summary-card.claude{border-top:3px solid #c08fa4}
+.summary-card span{font-size:11px;color:var(--faint)}
+.summary-card strong{font-family:"Noto Serif SC","Songti SC",serif;font-size:31px;font-weight:500;line-height:1.15;margin:8px 0 5px}
+.summary-card small{font-size:11.5px;color:var(--muted);line-height:1.55}
+.board-anchor{scroll-margin-top:82px}
+.metric-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{padding:15px 16px;border:1px solid var(--line);border-radius:13px;background:var(--paper)}
+.metric b{display:block;font-family:"Songti SC",serif;font-size:35px;font-weight:400;line-height:1;color:var(--ink)}
+.metric span{display:block;margin-top:7px;color:var(--faint);font-size:10.5px}
+.status-answer{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.status-answer strong{font-family:"Noto Serif SC","Songti SC",serif;font-size:22px;font-weight:500}
+.status-pill{display:inline-flex;align-items:center;justify-content:center;min-height:29px;padding:4px 11px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(111,146,128,.12);color:var(--ok)}
+.status-pill.wait{background:rgba(176,146,99,.13);color:var(--mid)}
+.status-pill.warn{background:rgba(194,129,143,.13);color:var(--no)}
+.source-line{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px;color:var(--faint);font-size:10.5px}
+.source-line a,.text-link{color:#6676aa;text-decoration:none;border-bottom:1px solid rgba(102,118,170,.3)}
+.source-line a:hover,.text-link:hover{border-bottom-color:#6676aa}
+.confidence{display:inline-flex;gap:6px;align-items:center;color:var(--faint);font-size:11px}
+.confidence i{width:8px;height:8px;border-radius:50%;background:var(--mid)}
+.tier-line{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.tier-word{font-family:"Noto Serif SC","Songti SC",serif;font-size:49px;line-height:1;font-weight:500;color:var(--ok)}
+.tier-copy{max-width:320px;color:var(--muted);font-size:12.5px;line-height:1.7}
+.level-track{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:2px}
+.level-track span{height:8px;border-radius:999px;background:#e5e9eb}
+.level-track[data-level="low"] span:first-child{background:var(--ok)}
+.level-track[data-level="medium"] span:nth-child(-n+2){background:var(--mid)}
+.level-track[data-level="high"] span{background:var(--no)}
+.signal-grid,.guide-grid,.tool-grid,.clock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.signal-rule,.guide-step,.tool-card,.clock-field{padding:15px;border:1px solid var(--line);border-radius:13px;background:var(--paper)}
+.signal-rule b,.guide-step b,.tool-card b,.clock-field b{display:block;font-size:12.5px;margin-bottom:6px}
+.signal-rule p,.guide-step p,.tool-card p,.clock-field p{margin:0;color:var(--muted);font-size:11.5px;line-height:1.7}
+.signal-rule.current{border-color:rgba(111,146,128,.6);box-shadow:inset 0 0 0 1px rgba(111,146,128,.13)}
+.guide-step em{display:grid;place-items:center;width:25px;height:25px;margin-bottom:9px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-style:normal}
+.action-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:2px}
+.action-link,.copy-btn,.clock-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 14px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:#fff;text-decoration:none;font-size:11.5px;font-weight:700;cursor:pointer}
+.action-link.secondary,.copy-btn.secondary,.clock-btn.secondary{border-color:var(--line);background:#fff;color:var(--muted)}
+.command-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.command-row code{flex:1;min-width:180px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:11px/1.5 ui-monospace,monospace;overflow-wrap:anywhere}
+.privacy-warning{padding:12px 14px;border-left:3px solid var(--mid);background:rgba(176,146,99,.08);color:var(--muted);font-size:11.5px;line-height:1.75}
+.clock-grid{grid-template-columns:1fr 1fr}
+.clock-field label{display:block;color:var(--muted);font-size:11px;margin:8px 0 5px}
+.clock-field input{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font:12px ui-monospace,monospace}
+.countdown{margin-top:9px;color:var(--ink);font-size:13px;font-variant-numeric:tabular-nums}
+.source-list{display:grid;gap:8px;margin-top:4px}
+.source-list a{display:flex;justify-content:space-between;gap:15px;padding:10px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--muted);font-size:11.5px}
+.source-list a:last-child{border-bottom:0}.source-list a span:last-child{color:var(--faint);white-space:nowrap}
+@media (max-width:780px){
+  .summary-grid,.signal-grid,.guide-grid,.tool-grid,.clock-grid{grid-template-columns:1fr}
+  .metric-row{grid-template-columns:1fr 1fr}
+  .summary-card{min-height:112px}
+  .source-line{align-items:flex-start;flex-direction:column}
+}
+@media (max-width:420px){.metric-row{grid-template-columns:1fr}.tier-word{font-size:42px}}
 </style>
 </head>
 <body>
@@ -205,190 +268,176 @@ td.k{color:var(--ink);width:28%;font-weight:600}
 
 <main class="wrap">
 
-  <section class="hero">
-    <p class="kicker">Quota · Reset · Watch</p>
-    <h1>额度什么时候回来</h1>
-    <p>用得凶的人都被卡过。这里把两家摊开讲：<b>OpenAI 的 Codex</b> 靠官方随手发，说来就来；<b>Anthropic 的 Claude</b> 到点自己回，不看运气。两家该问的问题都不一样，所以分开看。</p>
+  <section class="hero quota-hero">
+    <p class="kicker">公开额度观察</p>
+    <h1>先看官方，再决定要不要等</h1>
+    <p>这里分开追踪 <b>Codex</b> 与 <b>Claude Code</b> 的额外额度重置。公开公告与个人周期不是一回事：公告只认来源，自己的剩余额度只在自己的登录态里查看。</p>
+    <div class="hero-meta" aria-live="polite">
+      <span class="source-state" id="syncState">正在同步公开数据</span>
+      <span id="syncTime">页面尚未完成同步</span>
+    </div>
   </section>
 
-  <div class="mark">
+  <section class="summary-grid" aria-label="当前重置摘要">
+    <a class="summary-card codex" href="#codex-board">
+      <span>Codex · 未来 24 小时</span>
+      <strong id="codexSummary">读取中</strong>
+      <small id="codexSummaryNote">等待公开预测源</small>
+    </a>
+    <a class="summary-card claude" href="#claude-board">
+      <span>Claude · 额外重置概率</span>
+      <strong id="claudeSummary">低</strong>
+      <small id="claudeSummaryNote">没有官方重置公告时，默认按低处理</small>
+    </a>
+  </section>
+
+  <div class="mark board-anchor" id="codex-board">
     <span class="orb oa"><i>C</i></span>
-    <div><h2>Codex</h2><div class="sub">OpenAI · 同时覆盖 ChatGPT Work</div></div>
+    <div><h2>Codex</h2><div class="sub">公开预测 + Tibo 原帖核验</div></div>
   </div>
-  <p class="lede">
-    Codex 没有「几号回满」这回事。OpenAI 会因为查出用量 bug、服务扛不住、或者用户数过了某个坎，随时把所有付费用户的周额度清零重来。
-    消息一律先出现在 <b>Thibault Sottiaux</b>（大家叫他 Tibo，Codex 团队负责人）的 X 账号 <b>@thsottiaux</b> 上，官方渠道反而更慢。
-    所以这一块要回答的是：<b>今天会不会发？</b>
-  </p>
+  <p class="lede">Codex 的额外重置没有固定日历。这里读取公开预测模型与最近一次已确认公告；真正到账仍以 <b>@thsottiaux</b> 原帖和你自己的 Codex 用量页为准。</p>
 
   <section class="bench">
-
     <article class="p">
-      <span class="size">小 · 2×1</span>
-      <p class="p-kicker">Today</p>
-      <h3>今天会重置吗</h3>
-      <p class="lead">今天<b>还没有新的重置消息</b>。上一轮发生在 8 月 30 日凌晨 4:43。</p>
-      <div class="fc">
-        <div class="fc-n">
-          <div class="fc-big num">25%</div>
-          <div class="fc-cap">今天之内再来一次</div>
-          <p class="fc-2">两天之内 <b class="num">45%</b></p>
-        </div>
-        <div class="fc-c">
-          <svg viewBox="0 0 480 158" role="img" aria-label="未来 48 小时 Codex 重置概率：今天之内 25%，两天之内 45%；淡紫竖带是 OpenAI 历史上最常发布重置的早上 7 到 10 点">
-            <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#cab8d8" stop-opacity=".34"></stop>
-              <stop offset="1" stop-color="#cab8d8" stop-opacity="0"></stop>
-            </linearGradient></defs>
-            <line class="ax" x1="40" y1="120" x2="472" y2="120"></line>
-            <line class="axd" x1="40" y1="67.5" x2="472" y2="67.5"></line>
-            <line class="axd" x1="40" y1="15" x2="472" y2="15"></line>
-            <text class="tick" x="33" y="123" text-anchor="end">0</text>
-            <text class="tick" x="33" y="71" text-anchor="end">25%</text>
-            <text class="tick" x="33" y="18" text-anchor="end">50%</text>
-            <g id="bands"></g>
-            <path class="area" d="M40 120 C 130 118, 178 92, 255 67.5 S 402 36, 470 25.5 L470 120 Z"></path>
-            <path class="line" id="fcLine" d="M40 120 C 130 118, 178 92, 255 67.5 S 402 36, 470 25.5"></path>
-            <line class="nowline" x1="40" y1="12" x2="40" y2="124"></line>
-            <circle class="knot" cx="255" cy="67.5" r="4.5"></circle>
-            <text class="klab" x="255" y="55" text-anchor="middle">25%</text>
-            <circle class="knot" cx="470" cy="25.5" r="4.5"></circle>
-            <text class="klab" x="470" y="14" text-anchor="end">45%</text>
-            <text class="tick" x="40" y="137" text-anchor="start">现在</text>
-            <text class="tick" x="255" y="137" text-anchor="middle">今天之内</text>
-            <text class="tick" x="470" y="137" text-anchor="end">两天之内</text>
-            <text class="tick" id="peakNote" x="40" y="153" text-anchor="start"></text>
-          </svg>
-        </div>
+      <p class="p-kicker">当前预测</p>
+      <h3>今天会不会再重置</h3>
+      <div class="metric-row">
+        <div class="metric"><b id="codex24">—</b><span>未来 24 小时</span></div>
+        <div class="metric"><b id="codex48">—</b><span>未来 48 小时</span></div>
       </div>
-      <p class="note">这条曲线不准，别当真。预测模型还在试，准头跟按平均节奏瞎猜差不多；另一个追踪站同一时刻给的是 3%——两家差这么远，就说明谁都算不出来。曲线只说明一件事：<b>等得越久，等到的可能性越大。</b></p>
-      <div class="rule">
-        <span class="dot-live" aria-hidden="true"></span>
-        <p>上次重置 <b class="num">8 月 30 日凌晨 4:43</b>
-          <small>Tibo 发帖说「正在给所有 Codex 和 ChatGPT Work 付费用户重置额度」，追踪站把原帖直接镜像过来。发帖那一刻就是重置那一刻，这次没有时间差。</small></p>
+      <p class="note" id="codexForecastNote">预测是实验性方向信号，不是官方承诺。</p>
+      <div class="source-line">
+        <span class="confidence"><i></i><span id="codexConfidence">等待模型置信度</span></span>
+        <a href="https://codex-reset.com/forecast" target="_blank" rel="noopener noreferrer">查看预测方法</a>
       </div>
     </article>
 
     <article class="p">
-      <span class="size">中 · 2×1</span>
-      <p class="p-kicker">August</p>
-      <h3>八月重置了几次</h3>
-      <div class="count">
-        <div class="cn"><b class="num">8</b><span>次<br>全员重置</span></div>
-        <div class="cn"><b class="num tk">1</b><span>张券<br>还没用</span></div>
-        <div class="cn-note">八月里 OpenAI 一共清零重来了 <b>8</b> 次，平均隔 <b class="num">4.1</b> 天；另外发过 <b>1</b> 张重置券（8 月 22 日到手，现在还能用）。<b>9 月 1 号这两个数字归零，重新数。</b></div>
-      </div>
-      <div class="cal" aria-label="八月重置日历：1、8、11、13、24、25、27、30 日重置，22 日发券">
-        <div class="cal-row" id="cal"></div>
-        <div class="cal-key">
-          <span><i class="on"></i>重置</span>
-          <span><i class="tk"></i>发券</span>
-          <span><i class="now"></i>今天</span>
-          <span class="sc">8/1 — 8/31</span>
-        </div>
-      </div>
-      <div class="slab warm">
-        <h4>是否有可用重置券，只认你自己的账户页面</h4>
-        <p>重置券不是长期权益，也不会由这个公开页面替任何人判断。请登录自己的 ChatGPT 用量页面，查看 Codex 一栏是否出现可用提示。</p>
-        <p class="how">这个页面不读取、不保存，也不展示任何人的订阅档位、剩余额度或客户端记录。</p>
+      <p class="p-kicker">最近证据</p>
+      <h3>最近一次已确认重置</h3>
+      <div class="status-answer"><span class="status-pill" id="codexEventBadge">读取中</span><strong id="codexLastReset">—</strong></div>
+      <p class="body" id="codexEventSummary">正在读取最近一次公开公告。</p>
+      <div class="source-line">
+        <span id="codexUpdated">尚未同步</span>
+        <a id="codexOriginal" href="https://x.com/thsottiaux" target="_blank" rel="noopener noreferrer">查看 Tibo 原帖</a>
       </div>
     </article>
 
     <article class="p wide">
-      <span class="size">大 · 4×2</span>
-      <p class="p-kicker">Fact check</p>
-      <h3>网上流传的七条「Codex 重置规律」，哪些是真的</h3>
-      <div class="tw">
-        <table>
-          <caption>这七条在 X 上转得很广。逐条对着 Tibo 本人发过的帖子核了一遍：四条站得住，一条时间说得太乐观，两条查无实据。</caption>
-          <thead><tr><th>传的是什么</th><th>是真的吗</th><th>为什么这么判</th></tr></thead>
-          <tbody>
-            <tr><td class="k">用量统计出 bug，必重置</td><td><span class="tag t-ok">有据</span></td>
-              <td>最硬的一条。8 月 23 日 Tibo 公布查出三处多吃额度的毛病——长对话反复压缩时的图片、Computer History 的高位用量、自动给对话起标题的功能——随修复一起全员重置。另有一次原话是「还在排查，我先把所有人的额度重置了」。</td></tr>
-            <tr><td class="k">服务不稳定，必重置</td><td><span class="tag t-mid">大致有据</span></td>
-              <td>成立，但证据比第一条弱。有一次重置的说法是感谢团队「在我们扩张得比以往都快的时候把基础设施撑住了」——属这一类，但不是每次抖动都补。</td></tr>
-            <tr><td class="k">对家发布强力模型，必重置</td><td><span class="tag t-no">查无实据</span></td>
-              <td>找不到任何一次重置能和竞品发布对上号。更像事后往上套——重置本来就两三天一次，撞上谁发模型都不奇怪。</td></tr>
-            <tr><td class="k">对家发布次强模型，可能重置</td><td><span class="tag t-no">查无实据</span></td>
-              <td>同上。而且「可能」这个词让它没法被证伪，不适合拿来做判断。</td></tr>
-            <tr><td class="k">事情发生后 12 小时内重置</td><td><span class="tag t-mid">偏乐观</span></td>
-              <td>实测更接近 24 小时：8 月 23 日宣布，24 日才到手。按 12 小时蹲会扑空一轮，按一天算比较稳。</td></tr>
-            <tr><td class="k">用户数每涨一百万就重置</td><td><span class="tag t-ok">有据 · 已过期</span></td>
-              <td>这条最值钱，因为它曾经是公开承诺：Tibo 8 月 12 日重申过「每多 100 万活跃用户就重置一次，直到 1000 万」。注意上限是 1000 万，如今已经两千万，承诺本身过期了；但 1500 万和 2000 万这两个坎仍各发了一次（两千万那次发的是可自选时机的重置券）。规律还在，只是不再是承诺。</td></tr>
-            <tr><td class="k">纯福利，看 Tibo 心情</td><td><span class="tag t-ok">有据</span></td>
-              <td>这就是官方口径本身。有一次的原话是「Oops… I did it again，周末愉快」。追踪站给整件事的定性也是「不定期的善意重置」「是节奏，不是时刻表」。</td></tr>
-          </tbody>
-        </table>
+      <p class="p-kicker">查看自己的额度</p>
+      <h3>公共预测不能替你读取账户</h3>
+      <div class="guide-grid">
+        <div class="guide-step"><em>1</em><b>网页查看</b><p>登录 ChatGPT 的 Codex 用量页面，查看账户实际剩余与窗口时间。</p></div>
+        <div class="guide-step"><em>2</em><b>终端查看</b><p>打开 Codex CLI，输入 <code>/status</code>，以客户端返回的 5 小时与周窗口为准。</p></div>
+        <div class="guide-step"><em>3</em><b>重置券</b><p>是否有可用券只认账户页面。公开页不替任何人保存或判断券状态。</p></div>
+      </div>
+      <div class="action-row">
+        <a class="action-link" href="https://chatgpt.com/codex/cloud/settings/analytics#usage" target="_blank" rel="noopener noreferrer">打开 Codex 用量页</a>
+        <button class="copy-btn secondary" type="button" data-copy="/status">复制 /status</button>
+        <a class="action-link secondary" href="https://codexlimitwatch.com/" target="_blank" rel="noopener noreferrer">交叉查看另一模型</a>
       </div>
     </article>
-
   </section>
 
-  <div class="mark">
+  <div class="mark board-anchor" id="claude-board">
     <span class="orb an"><i>A</i></span>
-    <div><h2>Claude</h2><div class="sub">Anthropic · Claude Code 与 claude.ai 共用同一份额度</div></div>
+    <div><h2>Claude</h2><div class="sub">官方公告优先 · 周期额度另算</div></div>
   </div>
-  <p class="lede">
-    这里分开看两件事：<b>Anthropic 有没有公开宣布额外重置</b>，以及<b>你自己的订阅额度何时恢复</b>。
-    前者只认官方消息，后者只认你登录后的账户与 Claude Code 实时界面。
-  </p>
+  <p class="lede">Claude 也会发生额外重置。这里先看 Anthropic 官方开发账号有没有公开动作，再给低、中、高判断；你自己的 5 小时与周窗口只在自己的账户里查看。</p>
 
   <section class="bench">
-
     <article class="p">
-      <span class="size">小 · 2×1</span>
-      <p class="p-kicker">Two signals</p>
-      <h3>先分清周期恢复与额外重置</h3>
-      <p class="lead">周期额度看账户，<b>额外重置看官方公告</b>。</p>
-      <p class="body">
-        · <b>周期恢复</b>——属于你自己的订阅与使用窗口，登录后查看实时额度条和恢复时间。<br>
-        · <b>额外重置</b>——只有 Anthropic 的公开消息能够确认；没有公告时，不把猜测写成已经发生。
-      </p>
-      <div class="rule">
-        <span class="dot-live" aria-hidden="true"></span>
-        <p>当前公开页正在重新核对 Claude 官方信号
-          <small>确认之前不发布概率，不用任何私人账户经历代替公共证据。</small></p>
+      <p class="p-kicker">官方公告扫描</p>
+      <h3>最近有没有宣布额外重置</h3>
+      <div class="status-answer"><span class="status-pill wait" id="claudeEventBadge">未发现新公告</span><strong id="claudeLastReset">—</strong></div>
+      <p class="body" id="claudeEventSummary">正在读取 @ClaudeDevs 的公开重置档案。</p>
+      <div class="source-line">
+        <span id="claudeUpdated">尚未同步</span>
+        <a id="claudeOriginal" href="https://x.com/ClaudeDevs" target="_blank" rel="noopener noreferrer">查看 @ClaudeDevs</a>
       </div>
     </article>
 
     <article class="p">
-      <span class="size">中 · 2×1</span>
-      <p class="p-kicker">Check yours</p>
-      <h3>查看你自己的实时额度</h3>
-      <div class="slab cool">
-        <h4>只在你自己的登录态里查看</h4>
-        <p>打开 Claude 的账户用量页面，或查看 Claude Code 当前账户的用量界面。这里不会连接你的账户，也不会收集额度数据。</p>
-        <p class="how">具体入口与可信终端组件正在重新按官方文档核证，核清后会在这里给出公开链接。</p>
-      </div>
-      <p class="note"><b>隐私边界：</b>公开页不展示任何人的档位、剩余百分比、撞额时间、模型切换或本机记录。</p>
+      <p class="p-kicker">当前判断</p>
+      <h3>额外重置概率</h3>
+      <div class="tier-line"><strong class="tier-word" id="claudeTier">低</strong><p class="tier-copy" id="claudeTierReason">没有新的官方重置或补偿措辞。单纯等得久，不会自动把等级调高。</p></div>
+      <div class="level-track" id="claudeLevelTrack" data-level="low" aria-label="低、中、高三级判断"><span></span><span></span><span></span></div>
+      <p class="note">这是证据等级，不是承诺；官方明确宣布后，页面会直接给原帖，不再让概率代替事实。</p>
     </article>
 
     <article class="p wide">
-      <span class="size">大 · 4×2</span>
-      <p class="p-kicker">Side by side</p>
-      <h3>两家对着看</h3>
-      <div class="tw">
-        <table>
-          <caption>同样是「额度用完了怎么办」，两家的答案完全不同。搞混了就会白等。</caption>
-          <thead><tr><th>你关心的</th><th>OpenAI Codex</th><th>Anthropic Claude</th></tr></thead>
-          <tbody>
-            <tr><td class="k">公开页跟踪什么</td><td>OpenAI 公开发布的额外重置</td><td>Anthropic 公开发布的额外重置</td></tr>
-            <tr><td class="k">没有官方消息时</td><td>只能标为“未确认”</td><td>只能标为“未确认”</td></tr>
-            <tr><td class="k">个人额度看哪里</td><td>自己的 ChatGPT / Codex 用量界面</td><td>自己的 Claude 账户 / Claude Code 用量界面</td></tr>
-            <tr><td class="k">这个页面会读取什么</td><td>只读取公开来源</td><td>只读取公开来源</td></tr>
-            <tr><td class="k">这个页面不会展示什么</td><td>任何个人档位与本机记录</td><td>任何个人档位与本机记录</td></tr>
-          </tbody>
-        </table>
+      <p class="p-kicker">怎么判级</p>
+      <h3>什么会让 Claude 的等级升高</h3>
+      <div class="signal-grid">
+        <div class="signal-rule"><b>高：官方说了</b><p>@ClaudeDevs、@AnthropicAI 或官方状态页明确出现“重置、补偿、恢复额度”及时间窗口。</p></div>
+        <div class="signal-rule"><b>中：官方事件出现</b><p>官方承认用量故障、调整限额，或发布重大模型但尚未承诺重置。历史上这些事件偶尔伴随额度动作，不等于必然。</p></div>
+        <div class="signal-rule current"><b>低：只有外围猜测</b><p>竞品发布、社区传闻或等待时间都只能当旁证；没有 Anthropic 官方信号时保持低。</p></div>
       </div>
+      <p class="privacy-warning">竞品大模型发布可以进入观察清单，但不能单独把等级从低调到中。只有 Anthropic 同期出现扩容、故障或限额动作，才有升级依据。</p>
     </article>
 
+    <article class="p">
+      <p class="p-kicker">网页端</p>
+      <h3>查看自己的 Claude 额度条</h3>
+      <div class="guide-grid">
+        <div class="guide-step"><em>1</em><b>登录 Claude</b><p>使用自己的订阅账号进入 Claude 网页版。</p></div>
+        <div class="guide-step"><em>2</em><b>打开 Usage</b><p>进入 Settings → Usage，查看额度条、用量积分和账户当前提示。</p></div>
+        <div class="guide-step"><em>3</em><b>只认实时值</b><p>档位和限额会调整，截图与旧文章都不能代替此刻登录页。</p></div>
+      </div>
+      <div class="action-row"><a class="action-link" href="https://claude.ai/settings/usage" target="_blank" rel="noopener noreferrer">打开 Claude Usage</a><a class="action-link secondary" href="https://support.claude.com/en/articles/12429409-manage-usage-credits-for-paid-claude-plans" target="_blank" rel="noopener noreferrer">查看官方说明</a></div>
+    </article>
+
+    <article class="p">
+      <p class="p-kicker">Claude Code</p>
+      <h3>终端原生就能看</h3>
+      <p class="body">在 Claude Code 输入 <code>/usage</code> 查看订阅用量与窗口；底栏也会显示当前 Usage 与重置倒计时。不同版本显示字段可能不同，以你当前客户端为准。</p>
+      <div class="command-row"><code>/usage</code><button class="copy-btn secondary" type="button" data-copy="/usage">复制</button></div>
+      <p class="body">想把 5 小时与周额度常驻在底栏，先用官方命令让 Claude Code 生成状态条：</p>
+      <div class="command-row"><code>/statusline show 5-hour and weekly usage with reset countdowns</code><button class="copy-btn secondary" type="button" data-copy="/statusline show 5-hour and weekly usage with reset countdowns">复制</button></div>
+      <div class="source-line"><a href="https://code.claude.com/docs/en/whats-new/2026-w16" target="_blank" rel="noopener noreferrer">官方 /usage 文档</a><a href="https://code.claude.com/docs/en/statusline" target="_blank" rel="noopener noreferrer">官方状态条文档</a></div>
+    </article>
+
+    <article class="p wide">
+      <p class="p-kicker">第三方工具</p>
+      <h3>想要更完整的额度条，优先选默认不碰凭证的</h3>
+      <div class="tool-grid">
+        <div class="tool-card"><b>首选：Claude Code 原生</b><p><code>/usage</code> 与 <code>/statusline</code> 无需安装，也不增加供应链。</p></div>
+        <div class="tool-card"><b>推荐：Usage Statusline</b><p>开源状态条显示 5 小时、周额度与警告；默认本地、无需 API key。</p></div>
+        <div class="tool-card"><b>安装前要看</b><p>可选 remote meter 会读取现有 OAuth 凭证并访问 Anthropic API；不懂这条就不要开启。</p></div>
+      </div>
+      <div class="command-row"><code>npx claude-usage-statusline</code><button class="copy-btn secondary" type="button" data-copy="npx claude-usage-statusline">复制安装命令</button></div>
+      <div class="action-row"><a class="action-link" href="https://github.com/Scorpio3310/claude-code-usage-statusline" target="_blank" rel="noopener noreferrer">打开 GitHub 项目</a><a class="action-link secondary" href="https://github.com/benabraham/claude-code-status-line" target="_blank" rel="noopener noreferrer">查看另一款状态条</a></div>
+      <p class="privacy-warning">不要把 Claude 密码、API key 或 OAuth token 粘给第三方脚本。安装前先看源码；凡是读取 <code>.credentials.json</code> 或钥匙串的可选功能，确认请求只发往 <code>api.anthropic.com</code> 再启用。</p>
+    </article>
+
+    <article class="p wide">
+      <p class="p-kicker">仅保存在本机</p>
+      <h3>把 /usage 里的恢复时间记在这里</h3>
+      <p class="body">这两个时间只写进当前浏览器的 localStorage，不上传，也不会代表全球额外重置。</p>
+      <div class="clock-grid">
+        <div class="clock-field"><b>5 小时窗口</b><label for="fiveHourAt">下次恢复时间</label><input id="fiveHourAt" type="datetime-local"><div class="countdown" id="fiveHourCountdown">尚未设置</div></div>
+        <div class="clock-field"><b>周窗口</b><label for="weeklyAt">下次恢复时间</label><input id="weeklyAt" type="datetime-local"><div class="countdown" id="weeklyCountdown">尚未设置</div></div>
+      </div>
+      <div class="action-row"><button class="clock-btn" id="saveClocks" type="button">保存在这台设备</button><button class="clock-btn secondary" id="clearClocks" type="button">清除本地时间</button></div>
+    </article>
+
+    <article class="p wide">
+      <p class="p-kicker">来源与边界</p>
+      <h3>每个结论都能点回原处</h3>
+      <div class="source-list">
+        <a href="https://x.com/ClaudeDevs" target="_blank" rel="noopener noreferrer"><span>Anthropic 官方开发账号 · 重置与限额公告</span><span>@ClaudeDevs</span></a>
+        <a href="https://claude-resets.com/" target="_blank" rel="noopener noreferrer"><span>Claude 公告档案 · 每条链接回官方 X</span><span>第三方追踪</span></a>
+        <a href="https://code.claude.com/docs/en/statusline" target="_blank" rel="noopener noreferrer"><span>Claude Code 状态条能力</span><span>官方文档</span></a>
+        <a href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work" target="_blank" rel="noopener noreferrer"><span>Claude 用量与长度限制</span><span>官方帮助</span></a>
+      </div>
+      <p class="note">本页不连接 OpenAI 或 Anthropic 账户，不读取个人订阅数据。动态源失败或超过新鲜度门槛时，页面会明确降级，不把旧快照写成“今天”。</p>
+    </article>
   </section>
 
   <div class="foot">
-    <b>Codex 这部分的数据</b>来自 <a href="https://codex-reset.com/">codex-reset.com</a>（它把 Tibo 的帖子原样镜像过来，首页那行「N 分钟前」就是照帖子时间走的）和 <a href="https://codexlimitwatch.com/">codexlimitwatch.com</a>（另一套概率模型 + 原帖汇总）。八月那 8 次是从前者的公开时间线逐条去重后自己数的：原始记录有 13 条，其中「预告 + 到手 + 跟帖」属同一次的合并成一次；8 月 15 日那条原文是在说「订阅里的额度本来就够用」，不是宣布重置，不计入。<br>
-    <b>Claude 这部分</b>正在按 Anthropic 官方消息、账户用量页和 Claude Code 官方能力重新核证；核证完成前不发布私人经验或无来源断言。<br>
-    第三方追踪站只能辅助观察，不能替代官方公告；所有动态条目都必须显示来源与更新时间。
-    <div class="seal"><i></i>公开信息页 · 个人账户数据已移除 · 2026-09-03</div>
+    <b>数据边界：</b>Codex 预测来自 codex-reset.com 公开 API；Claude 事件来自 claude-resets.com 对 @ClaudeDevs 的公开档案，并保留原帖链接。两者都不是 OpenAI 或 Anthropic 官方产品，额外重置只有原帖能够确认。<br>
+    <b>隐私边界：</b>个人倒计时仅保存在当前浏览器；页面不会上传账户档位、剩余额度、恢复时刻或终端记录。
+    <div class="seal"><i></i>第二人称 · 公开额度观察 · 2026-09-03</div>
   </div>
 
 </main>
@@ -404,54 +453,7 @@ td.k{color:var(--ink);width:28%;font-weight:600}
   </div>
 </footer>
 
-<script>
-(function(){
-  var cal = document.getElementById('cal');
-  if (cal) {
-    var R = [1,8,11,13,24,25,27,30], TK = 22;
-    var t = new Date(), td = (t.getFullYear()===2026 && t.getMonth()===7) ? t.getDate() : 0;
-    for (var d=1; d<=31; d++){
-      var i = document.createElement('i');
-      if (R.indexOf(d)>=0) i.className='on'; else if (d===TK) i.className='tk';
-      if (d===td) i.className += ' now';
-      i.title = '8 月 '+d+' 日' + (R.indexOf(d)>=0 ? ' · 重置' : (d===TK ? ' · 发券到手' : ''));
-      cal.appendChild(i);
-    }
-  }
-  var ln = document.getElementById('fcLine');
-  if (ln) ln.style.setProperty('--len', ln.getTotalLength().toFixed(0));
-  var bands = document.getElementById('bands');
-  if (bands) {
-    var X0=40, X1=470, SPAN=48, now=new Date();
-    var hF = now.getHours() + now.getMinutes()/60, next=[];
-    for (var k=0;k<=2;k++){
-      var s0 = k*24+7-hF, s1 = k*24+10-hF;
-      if (s1>0 && s0<SPAN) next.push([Math.max(s0,0), Math.min(s1,SPAN), s0]);
-    }
-    var ns='http://www.w3.org/2000/svg';
-    next.forEach(function(b,ix){
-      var x = X0 + (b[0]/SPAN)*(X1-X0), w = ((b[1]-b[0])/SPAN)*(X1-X0);
-      var r = document.createElementNS(ns,'rect');
-      r.setAttribute('class','band'); r.setAttribute('x',x.toFixed(1)); r.setAttribute('y','12');
-      r.setAttribute('width',w.toFixed(1)); r.setAttribute('height','108'); r.setAttribute('rx','3');
-      bands.appendChild(r);
-      if (ix===0 && w>28){
-        var tx = document.createElementNS(ns,'text');
-        tx.setAttribute('class','bandlab'); tx.setAttribute('x',(x+w/2).toFixed(1));
-        tx.setAttribute('y','8'); tx.setAttribute('text-anchor','middle'); tx.textContent='高发';
-        bands.appendChild(tx);
-      }
-    });
-    var n = document.getElementById('peakNote');
-    if (n && next.length){
-      var l = next[0][2];
-      n.textContent = l>0
-        ? '淡紫＝OpenAI 最常发重置的早上 7–10 点，下一个窗口还有 '+Math.floor(l)+' 小时 '+Math.round((l%1)*60)+' 分'
-        : '淡紫＝OpenAI 最常发重置的早上 7–10 点，现在就在窗口里';
-    }
-  }
-})();
-</script>
+<script src="reset-board.js?v=20260903"></script>
 
 </body>
 </html>
