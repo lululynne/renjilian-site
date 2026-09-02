@@ -61,12 +61,16 @@
     setText("codexSummary", p24 + "%");
     setText("codexSummaryNote", "48 小时 " + p48 + "% · 实验性预测");
     setText("codexConfidence", "模型置信度：" + ({ low: "低", medium: "中", high: "高" }[data.confidence] || "未标注"));
-    setText("codexForecastNote", data.confidence_note || "公开模型给方向，不替代官方公告。");
+    setText("codexForecastNote", data.backtest && data.backtest.status === "experimental"
+      ? "实验模型还没有稳定超过基准，只能看方向，不能当作重置确认。"
+      : "公开模型给方向，不替代官方公告。");
     setText("codexLastReset", dateTime(data.last_reset_at));
     setText("codexUpdated", "预测更新 " + ageText(data.updated_at));
     var alert = data.latest_alert || {};
     setText("codexEventBadge", "已确认");
-    setText("codexEventSummary", alert.summary || "最近一次公开重置已经由来源站核验。");
+    setText("codexEventSummary", alert.summary
+      ? "公开源已确认这次属于额外额度重置；完整范围与措辞请查看原帖。"
+      : "最近一次公开重置已经由来源站核验。");
     safeXLink("codexOriginal", alert.url || (data.evidence && data.evidence[1] && data.evidence[1].href));
     return Date.now() - new Date(data.updated_at).getTime() <= 6 * 3600000;
   }
