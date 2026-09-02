@@ -288,16 +288,10 @@ td.k{color:var(--ink);width:28%;font-weight:600}
         </div>
       </div>
       <div class="slab warm">
-        <h4>那张重置券还在，没用掉</h4>
-        <p>8 月 21 日 Codex 用户数过两千万时发放，22 日到手。它不会自己生效，需要手动使用；<b>当前是否仍可用，以 ChatGPT 用量页面显示为准</b>，这里保留的是 8 月 30 日快照。</p>
-        <p class="how">在哪点：ChatGPT 用量页面的 Codex 那一栏，看到「reset available」点掉它。</p>
+        <h4>是否有可用重置券，只认你自己的账户页面</h4>
+        <p>重置券不是长期权益，也不会由这个公开页面替任何人判断。请登录自己的 ChatGPT 用量页面，查看 Codex 一栏是否出现可用提示。</p>
+        <p class="how">这个页面不读取、不保存，也不展示任何人的订阅档位、剩余额度或客户端记录。</p>
       </div>
-      <div class="kv">
-        <p style="width:100%;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-family:ui-monospace,monospace">你的 Codex 额度</p>
-        <p>档位 <b>Pro</b></p>
-        <p><b class="good">已经重置了</b> · 8 月 30 日 05:25 在客户端确认</p>
-      </div>
-      <p class="body">电脑里存的那些旧数字（23:10 还显示用掉 98%）只是没跟服务器通过话，<b>数字旧 ≠ 没重置</b>。看额度只认 Codex 客户端里敲 <code>/status</code> 的结果。</p>
     </article>
 
     <article class="p wide">
@@ -335,45 +329,38 @@ td.k{color:var(--ink);width:28%;font-weight:600}
     <div><h2>Claude</h2><div class="sub">Anthropic · Claude Code 与 claude.ai 共用同一份额度</div></div>
   </div>
   <p class="lede">
-    Claude 这边没有「今天会不会发」这个问题——Anthropic 不搞随手发放。额度按固定周期自己回，谁也不用刷 X 等消息。
-    所以这一块要回答的是另一个问题：<b>你的窗口几点到？</b>
+    这里分开看两件事：<b>Anthropic 有没有公开宣布额外重置</b>，以及<b>你自己的订阅额度何时恢复</b>。
+    前者只认官方消息，后者只认你登录后的账户与 Claude Code 实时界面。
   </p>
 
   <section class="bench">
 
     <article class="p">
       <span class="size">小 · 2×1</span>
-      <p class="p-kicker">Rhythm</p>
-      <h3>什么时候回</h3>
-      <p class="lead">不用等发放，<b>到点自己回</b>。</p>
+      <p class="p-kicker">Two signals</p>
+      <h3>先分清周期恢复与额外重置</h3>
+      <p class="lead">周期额度看账户，<b>额外重置看官方公告</b>。</p>
       <p class="body">
-        额度是两层叠着的：<br>
-        · <b>短的一层</b>——每隔几小时滚动一次，撞上了它会直接告诉你几点恢复（比如「resets 7pm」）。<br>
-        · <b>长的一层</b>——每周一个总量上限，用完了得等这一周过去。<br>
-        两层任意一层满了都会被拦，所以有时候明明「才聊了一会儿」也会撞墙——那是撞到了周上限，不是小时窗口。
+        · <b>周期恢复</b>——属于你自己的订阅与使用窗口，登录后查看实时额度条和恢复时间。<br>
+        · <b>额外重置</b>——只有 Anthropic 的公开消息能够确认；没有公告时，不把猜测写成已经发生。
       </p>
       <div class="rule">
         <span class="dot-live" aria-hidden="true"></span>
-        <p>好处是<b>心里有数</b>，不用刷 X、不用碰运气
-          <small>坏处是没有惊喜——不会有人半夜发帖说「大家额度清零重来」。想多用只能升档位或者买额外用量。</small></p>
+        <p>当前公开页正在重新核对 Claude 官方信号
+          <small>确认之前不发布概率，不用任何私人账户经历代替公共证据。</small></p>
       </div>
     </article>
 
     <article class="p">
       <span class="size">中 · 2×1</span>
-      <p class="p-kicker">Your account</p>
-      <h3>你自己的情况</h3>
-      <div class="kv">
-        <p>档位 <b>Max5</b>（新小号刚订阅，暂时升不了 Max20）</p>
-        <p style="width:100%">8 月 30 日 02:40 撞过一次：<b>Fable 5 用满</b>，换成 Opus 5 继续</p>
-        <p style="width:100%">更早那次撞的是短窗口，提示写着 <b>resets 7pm</b></p>
-      </div>
+      <p class="p-kicker">Check yours</p>
+      <h3>查看你自己的实时额度</h3>
       <div class="slab cool">
-        <h4>怎么查此刻还剩多少</h4>
-        <p>在 Claude Code 里敲 <code>/usage-credits</code>。撞上限时的报错里也会直接带这个命令。</p>
-        <p class="how">别凭感觉估。几个窗口同时开着会一起吃同一份额度，撞墙常比想象中早。</p>
+        <h4>只在你自己的登录态里查看</h4>
+        <p>打开 Claude 的账户用量页面，或查看 Claude Code 当前账户的用量界面。这里不会连接你的账户，也不会收集额度数据。</p>
+        <p class="how">具体入口与可信终端组件正在重新按官方文档核证，核清后会在这里给出公开链接。</p>
       </div>
-      <p class="note"><b>具体数字这里不写死</b>——每个档位的小时窗口和周上限会随官方调整变动，也跟你用哪个模型有关。以 <code>/usage-credits</code> 当场返回的为准，这一页只讲规则，不替官方报数。</p>
+      <p class="note"><b>隐私边界：</b>公开页不展示任何人的档位、剩余百分比、撞额时间、模型切换或本机记录。</p>
     </article>
 
     <article class="p wide">
@@ -385,12 +372,11 @@ td.k{color:var(--ink);width:28%;font-weight:600}
           <caption>同样是「额度用完了怎么办」，两家的答案完全不同。搞混了就会白等。</caption>
           <thead><tr><th>你关心的</th><th>OpenAI Codex</th><th>Anthropic Claude</th></tr></thead>
           <tbody>
-            <tr><td class="k">额度怎么回来</td><td>官方随手全员重置，说发就发</td><td>按固定周期自己回，没有额外发放</td></tr>
-            <tr><td class="k">该问什么</td><td>今天会不会发？</td><td>我的窗口几点到？</td></tr>
-            <tr><td class="k">能不能提前知道</td><td>不能。只能看 Tibo 发帖，最多按历史节奏估个概率</td><td>能。撞上限时直接告诉你几点恢复</td></tr>
-            <tr><td class="k">有没有「券」这种东西</td><td>有。用户数过坎时发重置券，自己挑时间点掉</td><td>没有。想多用只能升档位或买额外用量</td></tr>
-            <tr><td class="k">查真实剩余</td><td>Codex 客户端里敲 <code>/status</code></td><td>Claude Code 里敲 <code>/usage-credits</code></td></tr>
-            <tr><td class="k">最容易踩的坑</td><td>拿本地存的旧数字判断「还没重置」</td><td>忘了周上限，以为只有小时窗口</td></tr>
+            <tr><td class="k">公开页跟踪什么</td><td>OpenAI 公开发布的额外重置</td><td>Anthropic 公开发布的额外重置</td></tr>
+            <tr><td class="k">没有官方消息时</td><td>只能标为“未确认”</td><td>只能标为“未确认”</td></tr>
+            <tr><td class="k">个人额度看哪里</td><td>自己的 ChatGPT / Codex 用量界面</td><td>自己的 Claude 账户 / Claude Code 用量界面</td></tr>
+            <tr><td class="k">这个页面会读取什么</td><td>只读取公开来源</td><td>只读取公开来源</td></tr>
+            <tr><td class="k">这个页面不会展示什么</td><td>任何个人档位与本机记录</td><td>任何个人档位与本机记录</td></tr>
           </tbody>
         </table>
       </div>
@@ -400,9 +386,9 @@ td.k{color:var(--ink);width:28%;font-weight:600}
 
   <div class="foot">
     <b>Codex 这部分的数据</b>来自 <a href="https://codex-reset.com/">codex-reset.com</a>（它把 Tibo 的帖子原样镜像过来，首页那行「N 分钟前」就是照帖子时间走的）和 <a href="https://codexlimitwatch.com/">codexlimitwatch.com</a>（另一套概率模型 + 原帖汇总）。八月那 8 次是从前者的公开时间线逐条去重后自己数的：原始记录有 13 条，其中「预告 + 到手 + 跟帖」属同一次的合并成一次；8 月 15 日那条原文是在说「订阅里的额度本来就够用」，不是宣布重置，不计入。<br>
-    <b>Claude 这部分</b>只讲规则，不报具体数字：档位上限会随官方调整变动，以客户端 <code>/usage-credits</code> 当场返回的为准。<br>
-    两个追踪站都不是官方，概率自己标着「实验性」，只能事后确认、不能事前保证。快照时间 <span class="num">2026-08-30 05:5x</span>。下一步：加一条定时探针自动抓两家的数，让这一页的数字自己更新。
-    <div class="seal"><i></i>草稿版 v0 · 额度重置看板 · 2026-08-30 · 首页组件第一块砖</div>
+    <b>Claude 这部分</b>正在按 Anthropic 官方消息、账户用量页和 Claude Code 官方能力重新核证；核证完成前不发布私人经验或无来源断言。<br>
+    第三方追踪站只能辅助观察，不能替代官方公告；所有动态条目都必须显示来源与更新时间。
+    <div class="seal"><i></i>公开信息页 · 个人账户数据已移除 · 2026-09-03</div>
   </div>
 
 </main>
