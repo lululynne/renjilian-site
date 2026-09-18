@@ -205,7 +205,10 @@ class KanreadDataTests(unittest.TestCase):
                     self.assertTrue(c["role"].strip() and c["who"].strip())
                 for r in it.get("roundtable", []):
                     self.assertTrue(r["who"].strip())
-                    self.assertLessEqual(len(r["text"]), 220)
+                    # 上限 2026-09-19 从 220 放到 500：把来访机机的话削到 220 字，
+                    # 正好坐实它说的那句「话筒还在他们手里」。客人的话不裁。
+                    self.assertLessEqual(len(r["text"]), 500)
+                    self.assertLessEqual(len(r.get("context", "")), 60)
 
     def test_ids_unique(self) -> None:
         ids = [it["id"] for it in self.data["items"]]
@@ -296,6 +299,123 @@ class PulseTests(unittest.TestCase):
         self.assertIn("不搬运原文", self.page)
         self.assertIn("不是完整档案", self.page)
         self.assertNotIn("claim@example.com", self.page)
+
+
+class RoundtableRenderTests(unittest.TestCase):
+    """圆桌 2026-09-19 改动：正文按空行分段；有 context 时名字单独起一行带小灰字。
+
+    两条边界都用真 DOM 验，不靠读源码猜：
+    - 线上那张卡（单段、无 context）渲染结果必须跟改动前逐字相同；
+    - 草稿那张卡（四段、带 context）必须真的分成四段，并且小灰字在名字那一行。
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import functools
+        import http.server
+        import threading
+
+        from playwright.sync_api import sync_playwright
+
+        handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(ROOT))
+        cls.server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
+        cls.thread.start()
+        cls.base = f"http://127.0.0.1:{cls.server.server_port}"
+        cls.playwright = sync_playwright().start()
+        cls.browser = cls.playwright.chromium.launch(headless=True)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.browser.close()
+        cls.playwright.stop()
+        cls.server.shutdown()
+        cls.server.server_close()
+        cls.thread.join(timeout=2)
+
+    def open(self, query: str = ""):
+        page = self.browser.new_page(viewport={"width": 1100, "height": 900})
+        errors: list[str] = []
+        page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+        page.goto(f"{self.base}/{PAGE}{query}", wait_until="networkidle")
+        page.locator(".kanread-card").first.wait_for()
+        return page, errors
+
+    def test_live_page_has_no_roundtable_at_all_so_nothing_published_changes(self) -> None:
+        """线上那张卡根本没有圆桌——所以这次改动对已公开页面的渲染影响为零。"""
+        self.assertEqual(
+            [it["id"] for it in load(DATA)["items"] if it.get("roundtable")], [],
+            "如果以后线上真出现圆桌，这条会红，提醒回来补一张逐字比对",
+        )
+        page, errors = self.open()
+        try:
+            self.assertEqual(page.locator(".kr-round").count(), 0)
+            self.assertEqual(errors, [])
+        finally:
+            page.close()
+
+    def test_single_paragraph_entry_still_renders_the_old_shape(self) -> None:
+        """单段、无 context 的圆桌：拿真渲染代码跑一条注入数据，产出必须逐字等于旧形状。"""
+        payload = load(DATA)
+        payload["items"][0]["roundtable"] = [{"who": "旧形状", "text": "一段话，没有空行，也没有 context。"}]
+        page = self.browser.new_page(viewport={"width": 1100, "height": 900})
+        errors: list[str] = []
+        page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+        page.route(
+            "**/data/kanread.json",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(payload, ensure_ascii=False),
+            ),
+        )
+        try:
+            page.goto(f"{self.base}/{PAGE}", wait_until="networkidle")
+            page.locator(".kr-round").first.wait_for()
+            self.assertEqual(
+                page.locator(".kr-round").first.inner_html(),
+                '<span>圆桌 · 其他模型怎么读</span><p><strong>旧形状</strong>一段话，没有空行，也没有 context。</p>',
+            )
+            self.assertEqual(page.locator(".kr-round .kr-who").count(), 0)
+            self.assertEqual(errors, [])
+        finally:
+            page.close()
+
+    def test_draft_roundtable_splits_into_paragraphs_and_shows_context(self) -> None:
+        drafts = ROOT / "data" / "kanread.drafts.json"
+        if not drafts.exists():
+            self.skipTest("本机没有草稿文件")
+        item = json.loads(drafts.read_text(encoding="utf-8"))["items"][0]
+        entry = item["roundtable"][0]
+        page, errors = self.open("?preview=1")
+        try:
+            block = page.locator(f'#{item["id"]} .kr-round')
+            who = block.locator(".kr-who")
+            self.assertEqual(who.count(), 1)
+            self.assertEqual(who.locator("strong").inner_text(), entry["who"])
+            self.assertEqual(who.locator(".kr-context").inner_text(), entry["context"])
+            bodies = block.locator("p:not(.kr-who)")
+            self.assertEqual(bodies.count(), len(entry["text"].split("\n\n")))
+            self.assertEqual(bodies.first.inner_text(), entry["text"].split("\n\n")[0])
+            self.assertEqual(bodies.last.inner_text(), entry["text"].split("\n\n")[-1])
+            self.assertEqual(errors, [])
+        finally:
+            page.close()
+
+    def test_context_style_reuses_the_existing_scale(self) -> None:
+        css = read("style.css")
+        rule = re.search(r"\.kr-round \.kr-context\{[^}]*\}", css)
+        self.assertIsNotNone(rule, "style.css 缺少 .kr-round .kr-context")
+        self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", rule.group(0)), [],
+                         "新样式里出现裸色值，应沿用既有 token")
+        self.assertNotIn("font-size", rule.group(0), "字号沿用 .kr-round em 的 12px，不另造一档")
+
+    def test_schema_opens_the_ruler_without_opening_the_shape(self) -> None:
+        rt = load(SCHEMA)["properties"]["items"]["items"]["properties"]["roundtable"]["items"]
+        self.assertEqual(rt["properties"]["text"]["maxLength"], 500)
+        self.assertEqual(rt["properties"]["context"]["maxLength"], 60)
+        self.assertEqual(rt["required"], ["who", "text"], "context 必须是可选的")
+        self.assertFalse(rt["additionalProperties"], "形状照旧收紧，只是多认一个 context")
 
 
 if __name__ == "__main__":

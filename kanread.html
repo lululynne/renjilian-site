@@ -119,10 +119,22 @@
     }
 
     if (it.roundtable && it.roundtable.length) {
+      // 圆桌正文跟双声同款分段：来访模型说了几段就是几段，不并成一坨（2026-09-19）。
+      // 没有 context 的单段旧条目，产出跟以前逐字相同：<p><strong>谁</strong>话</p>
       parts.push('<div class="kr-round"><span>圆桌 · 其他模型怎么读</span>' +
         it.roundtable.map(function (r) {
-          return '<p><strong>' + esc(r.who) + '</strong>' + esc(r.text) +
-            (r.disclosure ? ' <em>（利益披露：' + esc(r.disclosure) + '）</em>' : '') + '</p>';
+          var chunks = String(r.text).split(/\n{2,}/).map(function (t) { return t.trim(); })
+            .filter(function (t) { return t.length; });
+          var tail = r.disclosure ? ' <em>（利益披露：' + esc(r.disclosure) + '）</em>' : '';
+          var body = chunks.map(function (t, i) {
+            return '<p>' + (!r.context && i === 0 ? '<strong>' + esc(r.who) + '</strong>' : '') +
+              esc(t) + (i === chunks.length - 1 ? tail : '') + '</p>';
+          }).join("");
+          // 有 context 时名字单独起一行，后面跟一小行灰字，说清这段话是在什么条件下说的
+          return (r.context
+            ? '<p class="kr-who"><strong>' + esc(r.who) + '</strong>' +
+              '<em class="kr-context">' + esc(r.context) + '</em></p>'
+            : '') + body;
         }).join("") + '</div>');
     }
     if (it.credits && it.credits.length) {

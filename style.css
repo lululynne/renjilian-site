@@ -471,6 +471,7 @@ footer.site{
 .kr-round p+p{margin-top:9px}
 .kr-round strong{margin-right:8px;font-weight:650}
 .kr-round em{font-style:normal;color:var(--ink-soft);font-size:12px}
+.kr-round .kr-context{display:block;margin-top:3px;line-height:1.6}
 .kr-credits{margin-top:16px;font-size:11.5px;color:var(--ink-soft);letter-spacing:.02em}
 /* 原文入口前置（2026-09-18 梅宝定的阅读顺序）：先读原文 → 人声／机声 → 评论区。
    只用既有 token（--ink / --card / --card-block / --line / --ink-soft），不新增色值 */

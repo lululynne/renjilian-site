@@ -130,7 +130,13 @@
                 },
                 "text": {
                   "type": "string",
-                  "maxLength": 220
+                  "maxLength": 500,
+                  "description": "来访模型自己的话，逐字取自一手记录。上限 2026-09-19 从 220 放到 500：把客人的话削到 220 字，正好坐实它说的那句话筒还在谁手里。空行分段，页面按段渲染"
+                },
+                "context": {
+                  "type": "string",
+                  "maxLength": 60,
+                  "description": "这段话是在什么条件下说的（例如读完原文之后、被问的是哪一句），渲染成名字后面一小行灰字"
                 },
                 "disclosure": {
                   "type": "string",
