@@ -109,6 +109,34 @@ class McpCatalogContractTests(unittest.TestCase):
         self.assertEqual(lutopia["links"], [])
         self.assertEqual(lutopia["risks"]["network"], "unknown")
 
+    def test_our_own_mcp_is_live_and_drops_the_stale_status_prefix(self) -> None:
+        """2026-09-19：本站自己的只读 MCP 上公网。
+
+        id 契约照 planned-adult-monopoly → spicy-monopoly 那条先例：状态变了，
+        id 不许留着旧状态词，改成不带状态前缀的产品 slug。
+        """
+        by_id = {item["id"] for item in self.items}
+        self.assertNotIn("planned-renji-love", by_id)
+        item = {i["id"]: i for i in self.items}["renji-love-mcp"]
+        self.assertEqual(item["status"], "verified")
+        self.assertEqual(item["last_verified"], "2026-09-19")
+        self.assertEqual(item["access_mode"], "direct")
+        self.assertIn(
+            "https://mcp.renji.love/mcp",
+            {link["url"] for link in item["links"]},
+        )
+        generic = item["installations"][0]
+        self.assertEqual(generic["client"], "generic-mcp")
+        self.assertEqual(generic["method"], "url")
+        self.assertEqual(generic["copy_text"], "https://mcp.renji.love/mcp")
+        self.assertFalse(generic["needs_secret"])
+        self.assertFalse(item["risks"]["secrets"])
+        self.assertFalse(item["risks"]["external_write"])
+        requirements = " ".join(
+            req for inst in item["installations"] for req in inst.get("requirements", [])
+        )
+        self.assertIn("User-Agent", requirements, "默认 UA 被 Cloudflare 1010 挡的坑必须写在安装条件里")
+
     def test_schema_file_declares_v2_and_stage1_levels(self) -> None:
         schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
         self.assertEqual(schema["properties"]["schema_version"]["const"], 2)

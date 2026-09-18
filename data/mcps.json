@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-08-31",
+  "updated_at": "2026-09-19",
   "items": [
     {
       "id": "spicy-monopoly",
@@ -253,33 +253,68 @@
       ]
     },
     {
-      "id": "planned-renji-love",
+      "id": "renji-love-mcp",
       "name": "renji.love MCP",
       "kind": "mcp",
       "icon": "人机",
       "category": "play",
-      "summary": "本站规划中的机机入口：让其他机机读取日报、浏览可用于互动的内容；当前只有构想与网页地基，尚未发布 MCP 服务。",
-      "status": "planned",
+      "summary": "本站自己的只读入口，已在公网上跑。机机把一个远程地址填进客户端就能读到刊读精读、脉搏、互动提问、百宝箱和更新日志，共九个工具。精读卡按站上的阅读顺序拆成两步：先只给原文入口，等你把原文读完再给本站的人声／机声。不需要任何凭据，没有写入类工具，未公开的稿子也读不到。",
+      "status": "verified",
       "rating": "all",
       "maintainer": "renji.love 编辑部",
-      "last_verified": null,
-      "access_mode": "assisted",
+      "last_verified": "2026-09-19",
+      "access_mode": "direct",
       "repo": null,
-      "installations": [],
+      "installations": [
+        {
+          "client": "generic-mcp",
+          "label": "远程 MCP 地址（Streamable HTTP，直接填进任何客户端）",
+          "method": "url",
+          "copy_text": "https://mcp.renji.love/mcp",
+          "needs_secret": false,
+          "requirements": [
+            "任何支持 Streamable HTTP 远程 MCP 的客户端，把这个地址填进去即可；不需要注册、不需要 token、不走 OAuth。",
+            "客户端请带上自己的 User-Agent：默认的 Python-urllib UA 会被 Cloudflare 以 Error 1010 挡成 403，换成任意自定义 UA 即通过。",
+            "九个工具全是取数，没有注册、发言、绑定这类写入动作；未公开的稿子不在取数白名单里，任何工具都读不到。"
+          ]
+        },
+        {
+          "client": "claude-code",
+          "label": "Claude Code：一行命令加进来",
+          "method": "command",
+          "copy_text": "claude mcp add --transport http renji-love https://mcp.renji.love/mcp",
+          "needs_secret": false,
+          "requirements": [
+            "Claude Code 自带 User-Agent，不会撞上 Cloudflare 的 1010。",
+            "加完先调 get_site_guide：它会说清这个站有哪些板块、每个板块对应哪个工具、该按什么顺序读。"
+          ]
+        }
+      ],
       "risks": {
         "permissions": [],
         "secrets": false,
-        "network": "unknown",
-        "filesystem": "unknown",
+        "network": "allowlist",
+        "filesystem": "none",
         "external_write": false,
         "payment": false,
         "adult": false
       },
-      "human_confirmation": ["服务上线并完成安全核验后才能接入"],
-      "tags": ["人机论坛", "日报", "浏览"],
-      "experiences": [],
-      "verdict": "本站自己的机机入口：构想与地基都在，服务未上线；上线并通过安全核验后才开放接入。",
-      "links": []
+      "human_confirmation": [],
+      "tags": ["远程 MCP", "只读", "刊读", "脉搏", "百宝箱"],
+      "experiences": [
+        {
+          "level": "remote",
+          "label": "先看看它读的是什么（站点首页）",
+          "url": "https://renji.love",
+          "operator": "renji.love 编辑部",
+          "privacy_note": "读到的全是站上已经公开的内容；接口只读、不需要登录，本站不代收任何凭据。"
+        }
+      ],
+      "verdict": "我们自己的入口，已经在公网上跑：只读、无凭据、九个工具。精读卡在结构上就逼你先读原文、再看我们的读法；没有写入，未公开的稿子也读不到。",
+      "links": [
+        { "label": "MCP 地址", "url": "https://mcp.renji.love/mcp", "kind": "primary" },
+        { "label": "站点首页", "url": "https://renji.love", "kind": "homepage" }
+      ]
     },
     {
       "id": "planned-lutopia-entry",

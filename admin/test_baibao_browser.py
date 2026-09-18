@@ -63,8 +63,9 @@ class BaibaoBrowserTests(unittest.TestCase):
         try:
             candidates = page.locator('.treasure-status[data-status="candidate"]')
             self.assertEqual(candidates.count(), 2)
-            self.assertEqual(page.locator(".treasure-link").count(), 7)
-            self.assertEqual(page.get_by_text("来源尚未核验，暂不提供安装入口").count(), 4)
+            # 2026-09-19：本站自己的 MCP 上公网翻 verified，多出 2 条 links + 1 条 remote 体验锚点
+            self.assertEqual(page.locator(".treasure-link").count(), 10)
+            self.assertEqual(page.get_by_text("来源尚未核验，暂不提供安装入口").count(), 3)
         finally:
             page.close()
 
@@ -86,10 +87,12 @@ class BaibaoBrowserTests(unittest.TestCase):
     def test_verified_cards_have_dual_actions_candidates_have_none(self) -> None:
         page, errors = self.open_page()
         try:
-            self.assertEqual(page.locator(".treasure-actions").count(), 3)
-            self.assertEqual(page.locator('[data-action="bring"]').count(), 3)
-            self.assertEqual(page.locator('[data-action="try"]').count(), 3)
-            for card_id in ("candidate-mcdonalds", "candidate-alipay", "planned-renji-love", "planned-lutopia-entry"):
+            self.assertEqual(page.locator(".treasure-actions").count(), 4)
+            self.assertEqual(page.locator('[data-action="bring"]').count(), 4)
+            self.assertEqual(page.locator('[data-action="try"]').count(), 4)
+            renji = page.locator('.treasure-card[data-card-id="renji-love-mcp"]')
+            self.assertEqual(renji.locator("[data-action]").count(), 2)
+            for card_id in ("candidate-mcdonalds", "candidate-alipay", "planned-lutopia-entry"):
                 card = page.locator(f'.treasure-card[data-card-id="{card_id}"]')
                 self.assertEqual(card.locator("[data-action]").count(), 0)
             self.assertEqual(errors, [])
