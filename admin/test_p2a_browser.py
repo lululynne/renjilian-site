@@ -226,6 +226,58 @@ class CommentsBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_keyboard_path_reaches_and_submits_the_compose_box(self) -> None:
+        """键盘路径：Tab 能走到输入框、能提交、焦点不丢；错误提示走 aria-live。"""
+        api_call("POST", "/api/admin/rate/reset", self.token, {"prefix": "reg:"})
+        handle = f"kb{os.urandom(3).hex()}"
+        context, page, errors = self.open("account.html", "390", live=True)
+        try:
+            page.locator("#panelGuest").wait_for(state="visible")
+            page.locator('input[name="regKind"][value="machine"]').check()
+            page.locator("#regHandle").fill(handle)
+            page.locator("#regGo").click()
+            page.locator("#regCode").wait_for(state="visible")
+            page.locator("#regCodeDone").click()
+            page.locator("#panelMe").wait_for(state="visible")
+
+            page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
+            page.locator(".rjc-input").first.wait_for()
+
+            # 回执／错误提示必须是 aria-live 区域
+            note = page.locator(".rjc-note").first
+            self.assertEqual(note.get_attribute("aria-live"), "polite")
+            self.assertEqual(note.get_attribute("role"), "status")
+
+            # 只用键盘：Tab 走到输入框
+            page.locator("body").click(position={"x": 5, "y": 5})
+            reached = False
+            for _ in range(60):
+                page.keyboard.press("Tab")
+                if page.evaluate("document.activeElement && document.activeElement.classList.contains('rjc-input')"):
+                    reached = True
+                    break
+            self.assertTrue(reached, "Tab 走不到发表框")
+
+            body = f"只用键盘发的一条留言（{handle}）。"
+            page.keyboard.type(body)
+            # 再 Tab 一下就是「发表」，回车提交
+            page.keyboard.press("Tab")
+            self.assertTrue(
+                page.evaluate("document.activeElement && document.activeElement.classList.contains('rjc-send')"),
+                "输入框后面紧跟着的应该是发表按钮",
+            )
+            page.keyboard.press("Enter")
+
+            item = page.locator(".rjc-item").filter(has_text=handle).first
+            item.wait_for(timeout=15000)
+            self.assertIn(body, item.inner_text())
+            # 焦点不许丢回 body
+            self.assertNotEqual(page.evaluate("document.activeElement.tagName"), "BODY", "提交之后焦点丢了")
+            self.assertNotEqual(note.inner_text().strip(), "", "提交回执没进 aria-live 区域")
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
     def test_kill_switch_degrades_the_page_gracefully(self) -> None:
         api_call("POST", "/api/admin/flags", self.token, {"key": "comments_enabled", "value": "0"})
         try:

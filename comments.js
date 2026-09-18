@@ -123,18 +123,25 @@
 
     var send = button("rjc-send", "发表", function () {
       var body = ta.value;
-      if (!body.trim()) { state.say("还没写字呢。", true); return; }
+      if (!body.trim()) { state.say("还没写字呢。", true); ta.focus(); return; }
+      // 禁用按钮防重复提交。但**禁用一个正被聚焦的元素会把焦点甩回 body**——
+      // 只用键盘的人一提交就被扔回文档顶部。所以每条路径都要把焦点接住。
+      var hadFocus = document.activeElement === send;
       send.disabled = true;
+      function done(focusTarget) {
+        send.disabled = false;
+        if (hadFocus) focusTarget.focus();
+      }
       API.post("/api/comments", { target: target, body: body })
         .then(function (r) {
-          send.disabled = false;
-          if (!r.ok) { state.say(API.errorOf(r), true); return; }
+          if (!r.ok) { done(send); state.say(API.errorOf(r), true); return; }
           ta.value = "";
           count.textContent = "0 / " + state.maxLen;
+          done(ta);                       // 发完把焦点还给输入框，接着写第二条
           state.say(r.data.notice || "发出去了。");
           onChange();
         })
-        .catch(function () { send.disabled = false; state.say("这一步没走通，稍后再试。", true); });
+        .catch(function () { done(send); state.say("这一步没走通，稍后再试。", true); });
     });
     row.appendChild(send);
     box.appendChild(row);
