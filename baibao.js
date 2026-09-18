@@ -81,6 +81,9 @@
   }
 
   function licenseText(item) {
+    // 自建、未开源这类条目按第三方许可证判定说不通，数据里直接给一句话；
+    // 没给的条目走原来的推导，一个像素都不变。
+    if (item.license_label) return item.license_label;
     if (!item.repo || !item.repo.license) return "待核验";
     const license = item.repo.license;
     return `${license.name} · ${COMMERCIAL_LABELS[license.commercial_use] || license.commercial_use}`;

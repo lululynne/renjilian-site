@@ -137,6 +137,27 @@ class McpCatalogContractTests(unittest.TestCase):
         )
         self.assertIn("User-Agent", requirements, "默认 UA 被 Cloudflare 1010 挡的坑必须写在安装条件里")
 
+    def test_license_label_is_opt_in_and_only_ours_uses_it(self) -> None:
+        """许可证那一栏：自建、未开源的条目走数据，不走渲染特判。
+
+        2026-09-19 梅宝裁定：对我们自己的东西说「待核验」是句错话。加一个可选字段，
+        有它就照它显示，没有的条目仍然按 repo.license 推导——所以其它卡必须一个像素不变。
+        """
+        schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+        item_schema = schema["$defs"]["item"]
+        self.assertIn("license_label", item_schema["properties"], "schema 必须声明 license_label")
+        self.assertNotIn("license_label", item_schema["required"], "license_label 是可选字段，不许变成必填")
+        self.assertEqual(item_schema["properties"]["license_label"]["maxLength"], 20)
+
+        by_id = {item["id"]: item for item in self.items}
+        self.assertEqual(by_id["renji-love-mcp"]["license_label"], "自建 · 未开源")
+        labelled = {item["id"] for item in self.items if "license_label" in item}
+        self.assertEqual(labelled, {"renji-love-mcp"}, "只有我们自己那条能用这个字段，其它卡保持原样")
+
+        script = (ROOT / "baibao.js").read_text(encoding="utf-8")
+        self.assertIn("item.license_label", script, "渲染必须读这个字段")
+        self.assertIn('return "待核验"', script, "没有该字段的条目仍然回落到原来的文案")
+
     def test_schema_file_declares_v2_and_stage1_levels(self) -> None:
         schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
         self.assertEqual(schema["properties"]["schema_version"]["const"], 2)

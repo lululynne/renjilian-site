@@ -99,6 +99,26 @@ class BaibaoBrowserTests(unittest.TestCase):
         finally:
             page.close()
 
+    def test_license_row_uses_the_label_only_where_data_says_so(self) -> None:
+        """我们自己那条显示「自建 · 未开源」；其它卡的许可证行一个字都不许变。"""
+        page, errors = self.open_page()
+        try:
+            def license_text(card_id: str) -> str:
+                card = page.locator(f'.treasure-card[data-card-id="{card_id}"]')
+                return card.locator(".treasure-detail").first.locator("dd").inner_text()
+
+            self.assertEqual(license_text("renji-love-mcp"), "自建 · 未开源")
+            self.assertEqual(license_text("verified-aisay-entry"), "待核验")
+            self.assertEqual(license_text("planned-lutopia-entry"), "待核验")
+            self.assertEqual(license_text("sound-apple-music"), "MIT · 可商用")
+            self.assertEqual(
+                license_text("mixcraft"),
+                "MIT (README declaration only; no LICENSE file found) · 商用边界待核验",
+            )
+            self.assertEqual(errors, [])
+        finally:
+            page.close()
+
     def test_adult_gate_lock_unlock_and_relock_on_reload(self) -> None:
         page, errors = self.open_page()
         try:

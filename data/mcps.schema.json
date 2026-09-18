@@ -31,6 +31,12 @@
         "status": { "enum": ["candidate", "planned", "verified", "unavailable"] },
         "rating": { "enum": ["all", "r18"] },
         "maintainer": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "license_label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20,
+          "description": "许可证那一栏要显示的原话。只给「按第三方许可证判定」说不通的条目用（例如我们自建、未开源的东西）；不填就还是按 repo.license 推导，推不出来才显示待核验"
+        },
         "last_verified": { "type": ["string", "null"], "format": "date" },
         "access_mode": { "enum": ["direct", "assisted", "human-confirm"] },
         "repo": { "anyOf": [{ "$ref": "#/$defs/repo" }, { "type": "null" }] },
