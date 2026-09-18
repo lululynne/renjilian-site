@@ -498,6 +498,141 @@ footer.site{
   font:700 11px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;color:var(--ink-soft);
 }
 .kr-comments p{font-size:13px;line-height:1.75;color:var(--ink-soft)}
+
+/* hidden 属性必须真的隐藏。
+   浏览器自带的 [hidden]{display:none} 优先级最低，被 .card{display:flex} 这类作者规则一压就失效——
+   站里原来是逐个写 #rj-overlay[hidden] 来兜的。这里收成一条通则，往后用 el.hidden 才靠得住。 */
+[hidden]{display:none!important}
+
+/* ── 评论区（P2-a，2026-09-18）。零新增色值：只用既有 token。
+   后端够不着时这些类根本不出现，卡片里还是上面那句占位文案。 ── */
+.rjc-list{margin-top:2px}
+.rjc-empty{font-size:13px;line-height:1.75;color:var(--ink-soft)}
+.rjc-item{padding:12px 0;border-top:1px solid var(--line)}
+.rjc-item:first-child{border-top:0;padding-top:4px}
+.rjc-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--ink-soft)}
+.rjc-handle{font-weight:650;color:var(--ink);overflow-wrap:anywhere}
+/* 身份标签永远带「自报」：站方不验证任何人是谁 */
+.rjc-kind{
+  display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;
+  border:1px solid var(--line);background:var(--card-block);
+  font-size:11px;letter-spacing:.04em;color:var(--ink-soft);white-space:nowrap;
+}
+.rjc-pending{
+  display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;
+  border:1px dashed var(--line);font-size:11px;color:var(--ink-soft);white-space:nowrap;
+}
+.rjc-date{white-space:nowrap}
+.rjc-body{
+  margin-top:7px;font-size:14px;line-height:1.85;color:var(--ink);
+  white-space:pre-wrap;overflow-wrap:anywhere;
+}
+.rjc-ops{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.rjc-op{
+  min-height:44px;min-width:44px;padding:4px 14px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);
+  font-family:inherit;font-size:12.5px;color:var(--ink-soft);cursor:pointer;
+}
+.rjc-op:hover{color:var(--ink);border-color:var(--ink-soft)}
+.rjc-compose{margin-top:15px;padding-top:14px;border-top:1px solid var(--line)}
+/* 这句话固定挂在发表框正上方，不藏进隐私页 */
+.rjc-warn{
+  font-size:12.5px;line-height:1.7;color:var(--ink);
+  padding:10px 13px;border-radius:10px;
+  background:var(--card-block);border-left:3px solid var(--machine);
+}
+.rjc-input{
+  display:block;width:100%;margin-top:11px;padding:10px 12px;min-height:88px;
+  border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);
+  font-family:inherit;font-size:14px;line-height:1.8;resize:vertical;
+}
+.rjc-row{display:flex;align-items:center;gap:12px;margin-top:9px}
+.rjc-count{font-size:11.5px;color:var(--ink-soft)}
+.rjc-send{
+  margin-left:auto;min-height:44px;min-width:88px;padding:9px 22px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--card);
+  font-family:inherit;font-size:14px;font-weight:650;cursor:pointer;
+}
+.rjc-send:hover{background:var(--ink-soft);border-color:var(--ink-soft)}
+.rjc-send[disabled]{opacity:.55;cursor:default}
+.rjc-signin{margin-top:11px;font-size:13px;color:var(--ink-soft)}
+.rjc-link{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;min-width:44px;color:var(--ink);text-decoration:underline;
+}
+.rjc-hint{margin-top:9px;font-size:12px;line-height:1.7;color:var(--ink-soft)}
+.rjc-note{margin-top:9px;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
+.rjc-note.is-error{color:var(--toast-error)}
+
+/* ── 账号页与留言守则页（P2-a）。同样零新增色值 ── */
+.rj-panel{margin-top:18px;cursor:auto;gap:0}  /* .card 默认 cursor:pointer，账号面板不是可点卡 */
+.rj-panel h3{font-size:16px;margin-bottom:8px}
+.rj-muted{font-size:13px;line-height:1.75;color:var(--ink-soft)}
+.rj-field{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:15px}
+.rj-field legend{
+  padding:0 6px;font:700 11px/1 "Avenir Next","PingFang SC",sans-serif;
+  letter-spacing:.14em;color:var(--ink-soft);
+}
+.rj-kinds{display:flex;flex-wrap:wrap;gap:10px;margin-top:11px}
+.rj-kind{
+  display:inline-flex;align-items:center;gap:8px;
+  min-height:44px;min-width:44px;padding:6px 16px;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);
+  font-size:14px;color:var(--ink);cursor:pointer;
+}
+.rj-kind:hover{border-color:var(--ink-soft)}
+.rj-label{display:block;margin-top:12px;font-size:12px;color:var(--ink-soft)}
+.rj-text{
+  display:block;width:100%;max-width:420px;margin-top:6px;
+  min-height:44px;padding:10px 12px;
+  border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);
+  font-family:inherit;font-size:15px;
+}
+.rj-btn{
+  margin-top:15px;min-height:44px;min-width:88px;padding:9px 24px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--card);
+  font-family:inherit;font-size:14.5px;font-weight:650;cursor:pointer;
+}
+.rj-btn:hover{background:var(--ink-soft);border-color:var(--ink-soft)}
+.rj-btn[disabled]{opacity:.55;cursor:default}
+.rj-btn-ghost{background:var(--card);color:var(--ink)}
+.rj-btn-ghost:hover{background:var(--card-block);color:var(--ink);border-color:var(--ink)}
+.rj-btn-danger{background:var(--claim);border-color:var(--claim);color:var(--card)}
+.rj-btn-danger:hover{background:var(--claim-deep);border-color:var(--claim-deep)}
+.rj-sep{margin:22px 0;border:0;border-top:1px solid var(--line)}
+.rj-note{margin-top:11px;font-size:13px;line-height:1.7;color:var(--ink-soft)}
+.rj-note.is-error{color:var(--toast-error)}
+/* 恢复码只显示这一次 */
+.rj-code{
+  margin-top:15px;padding:14px 16px;border:1px dashed var(--line);
+  border-radius:12px;background:var(--card-block);
+}
+.rj-code>strong{display:block;font-size:13px;color:var(--ink)}
+.rj-code>p{margin-top:9px;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
+.rj-code-value{
+  display:block;margin-top:11px;padding:12px 14px;border-radius:10px;
+  background:var(--card);border:1px solid var(--line);color:var(--ink);
+  font-family:"SFMono-Regular",Menlo,Consolas,monospace;
+  font-size:15px;letter-spacing:.06em;overflow-wrap:anywhere;
+}
+.rj-me{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.rj-me-handle{font-size:18px;font-weight:650;overflow-wrap:anywhere}
+.rj-standing{margin-top:20px}
+.rj-standing a{
+  color:var(--ink);text-decoration:underline;
+  display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;
+}
+.rj-rules h3{margin-top:22px;font-size:15.5px}
+.rj-rules h3:first-child{margin-top:0}
+.rj-rules p{margin-top:9px;font-size:14px;line-height:1.9;color:var(--ink)}
+.rj-rules a{
+  color:var(--ink);text-decoration:underline;
+  display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;
+}
+
 .kr-ops{display:flex;align-items:center;gap:12px;margin-top:18px}
 .kr-verified{margin-left:auto;font-size:11.5px;color:var(--ink-soft)}
 .kanread-card.is-stale{border-style:dashed;opacity:.72}
@@ -550,6 +685,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
   .kr-verified{margin-left:0}
   .kr-source{padding:13px 14px}
   .btn-source{width:100%;padding:9px 16px}
+  /* 评论区与账号页在真 390 下的收口：不横向溢出，触控目标仍 ≥44 */
+  .rjc-compose{margin-top:13px}
+  .rjc-warn{padding:10px 12px}
+  .rjc-send{min-width:96px}
+  .rj-field{padding:13px 14px}
+  .rj-text{max-width:none}
+  .rj-btn{width:100%}
+  .rj-kind{flex:1 1 auto;justify-content:center}
+  .rj-code{padding:13px 14px}
+  .rj-code-value{font-size:14px;letter-spacing:.04em}
   .log-head{grid-template-columns:1fr;gap:18px;padding-bottom:22px}
   .log-head .hero-kicker{grid-column:auto}
   .release-entry{grid-template-columns:1fr;gap:16px;padding:24px 0}

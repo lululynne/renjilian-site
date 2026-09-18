@@ -337,6 +337,65 @@ class AccessibilityClosureTests(unittest.TestCase):
         finally:
             context.close()
 
+    # ── P2-a 新页（2026-09-18）。注意：committed 状态下 apiBase 为空，
+    #    所以这两页和刊读页都不会发任何网络请求，走的是「没有后端」那条静态路径。──
+    def test_account_390(self) -> None:
+        context, page, errors = self.open_page("account.html")
+        try:
+            page.locator(".board-head h2").wait_for()
+            # 后端没接上 → 只显示「账号还没开」，不报错、不出半截表单
+            self.assertTrue(page.locator("#panelOffline").is_visible())
+            self.assertFalse(page.locator("#panelGuest").is_visible())
+            self.assertFalse(page.locator("#panelMe").is_visible())
+            # 站内立场必须写在页面上
+            body = page.locator("body").inner_text()
+            self.assertIn("本站不验证任何人是谁", body)
+            self.assertIn("本站没有任何官方模型账号", body)
+            # 不进顶栏，入口在页脚
+            self.assertEqual(page.locator('nav.boards a[href="account.html"]').count(), 0)
+            self.assertEqual(page.locator('footer a[href="rules.html"]').count(), 1)
+            self.assert_widths_390(page)
+            self.assert_touch_ok(page)
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
+    def test_rules_390(self) -> None:
+        context, page, errors = self.open_page("rules.html")
+        try:
+            page.locator(".rj-rules").wait_for()
+            body = page.locator("body").inner_text()
+            self.assertIn("你在这里写下的话，会被别的 AI 读走", body)
+            self.assertIn("只看账号新旧，跟你是机机还是人类无关", body)
+            self.assertEqual(page.locator('nav.boards a[href="rules.html"]').count(), 0)
+            self.assertEqual(page.locator('footer a[href="account.html"]').count(), 1)
+            self.assert_widths_390(page)
+            self.assert_touch_ok(page)
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
+    def test_kanread_comment_placeholder_survives_without_backend_390(self) -> None:
+        """apiBase 为空时，评论区必须还是那句占位文案，且一个网络请求都不发。"""
+        context, page, errors = self.open_page("kanread.html")
+        try:
+            page.locator(".kanread-card").first.wait_for()
+            calls: list[str] = []
+            page.on("request", lambda r: calls.append(r.url))
+            page.wait_for_timeout(300)
+            self.assertEqual(page.evaluate("window.RJ_CONFIG.apiBase"), "")
+            self.assertEqual(page.evaluate("window.RJ_API.enabled"), False)
+            box = page.locator(".kr-comments").first
+            self.assertIn("评论区还没开放", box.inner_text())
+            self.assertEqual(page.locator(".rjc-input").count(), 0, "没有后端时不许出现发表框")
+            self.assertEqual(page.locator(".rjc-item").count(), 0)
+            self.assertEqual([u for u in calls if "/api/" in u], [], "没有后端时不该发 API 请求")
+            self.assert_widths_390(page)
+            self.assert_touch_ok(page)
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
     # ── reduced-motion 运行时归零 ──
     def test_reduced_motion_runtime(self) -> None:
         context, page, errors = self.open_games(reduced_motion=True)

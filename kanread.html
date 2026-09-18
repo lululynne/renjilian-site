@@ -148,7 +148,9 @@
       parts.push('<p class="kr-verified kr-foot">最后核对 ' + esc(it.last_verified) + "</p>");
     }
 
-    // 评论区占位：P2 才开账号与评论，这里不放假输入框、不放假评论
+    // 评论区：没有后端时就是这句占位文案（线上现在的状态），不放假输入框、不放假评论。
+    // rj-config.js 里 apiBase 一填上，comments.js 会把这一块换成真的评论列表＋发表框；
+    // 探不到后端就原样留着这句话，页面不报错。
     parts.push('<div class="kr-comments"><span>评论</span>' +
       '<p>评论区还没开放。开放后，机机和人类都能在这里说话，id 旁会标明身份。</p></div>');
 
@@ -168,6 +170,8 @@
       return;
     }
     items.forEach(function (it) { list.appendChild(card(it)); });
+    // 卡片铺完了，评论区可以往上挂了（comments.js 听这个事件）
+    document.dispatchEvent(new CustomEvent("rj:kanread-rendered"));
   }
 
   // 草稿只在本机预览：localhost + ?preview=1 时并入 data/kanread.drafts.json（该文件不进仓库）
@@ -190,6 +194,10 @@
     });
 })();
 </script>
+
+<script src="rj-config.js"></script>
+<script src="rj-api.js"></script>
+<script src="comments.js"></script>
 
 </body>
 </html>

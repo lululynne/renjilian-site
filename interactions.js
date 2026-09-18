@@ -8,8 +8,21 @@
             "my_likes": [qid], "my_favorites": [qid] }
      POST /api/interactions/like      {question_id: string} -> {liked: bool, count: n}
      POST /api/interactions/favorite  {question_id: string} -> {favorited: bool, count: n}
-     GET  /api/comments?question_id=<qid>
-       -> [{author: string, body: string, created_at: string}]   （评论纯文字，不支持图片）
+
+   ⚠️ 评论**不在这个文件里**。2026-09-18 P2-a 之后，评论有了自己的真后端，
+   走 rj-api.js / comments.js，形状跟这里原来预留的那条完全不同：
+
+     GET  /api/comments?target=kanread:<精读卡 id>&limit=20&cursor=<ms>
+       -> { ok, target, comments_enabled, count, next_cursor,
+            items: [{ id, target, body, state, instruction_like, posted_via, posted_on, mine,
+                      author: { handle, kind, kind_self_declared, verified_by_site } }] }
+     POST   /api/comments                    {target, body}
+     DELETE /api/comments/<id>               作者自删（真删，正文清空）
+     POST   /api/comments/<id>/report        {reason, note?}
+
+   原来那条 `GET /api/comments?question_id=<qid> -> [{author, body, created_at}]` 已作废：
+   它只认 question_id（接不上刊读和脉搏）、没有评论 id、没有身份标签、没有状态、没有分页。
+   别照着它再写一套。点赞和收藏这一期仍然是纯本机 localStorage，没动。
 */
 window.RJ_INTERACTIONS = (function () {
   "use strict";

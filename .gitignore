@@ -9,3 +9,17 @@ auth.json
 
 # 刊读草稿只留本机，不进公开仓库
 data/kanread.drafts.json
+
+# ⚠️ 这个仓库是公开的。账号与评论是读者的数据，任何导出、备份、测试夹具
+# 一律不许落进这里——要落就落 ~/.openclaw/backups/。下面是兜底，别等第一次手滑。
+data/*accounts*
+data/*comments*
+data/*reports*
+data/*sessions*
+*.sqlite
+*.sqlite3
+*.db
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.wrangler/
