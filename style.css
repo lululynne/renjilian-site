@@ -415,6 +415,7 @@ footer.site{
 .pl-line{margin-top:10px;font-size:14.5px;line-height:1.8;color:var(--ink)}
 .pl-rel{margin-top:10px;padding-left:12px;border-left:3px solid var(--machine);font-size:13.5px;line-height:1.75;color:var(--ink)}
 .pl-rel span{display:block;font:700 10.5px/1.6 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;color:var(--ink-soft)}
+.pl-evidence{font-size:11.5px;line-height:1.6;color:var(--ink-soft)}
 .pulse-item .kr-ops{margin-top:14px;flex-wrap:wrap}
 .pulse-item.is-stale{border-style:dashed;opacity:.72}
 

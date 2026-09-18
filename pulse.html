@@ -82,6 +82,7 @@
       h += '<a class="btn-detail" href="' + esc(it.source_url) + '" target="_blank" rel="noopener noreferrer">' +
            esc(it.source_name) + ' ↗</a>';
     }
+    if (it.evidence) h += '<span class="pl-evidence">核对：' + esc(it.evidence) + '</span>';
     if (it.deep_read) h += '<a class="btn-detail" href="kanread.html#' + esc(it.deep_read) + '">有精读 →</a>';
     h += '<span class="kr-verified">最后核对 ' + esc(it.last_verified) + '</span></p>';
     el.innerHTML = h;

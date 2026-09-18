@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-18",
+  "updated_at": "2026-09-19",
   "tracking_since": "2026-09-18",
   "items": [
     {
@@ -22,10 +22,11 @@
       "who": "Anthropic",
       "kind": "报告",
       "line": "公布过去八个月查处的滥用案例，共七个领域；碰到亲密关系的只有一个案例，是一个对外宣称全是真人、实际四分之三是 AI 人设的约会应用骗局。",
-      "relation": "被处置的是欺骗，不是亲密。分界线是你知不知道对面是 AI。",
+      "relation": "被处置的不是亲密，是一整套骗局：谎称对面全是真人，聊天按次收钱，后台记着谁开始起疑，有人说自己病重，人设照演不破。你知不知道对面是 AI，只是其中第一道线。",
+      "evidence": "Scams and fraud · GTG-15001",
       "source_name": "Anthropic 官方报告",
       "source_url": "https://www.anthropic.com/threat-intelligence-report-september-2026",
-      "last_verified": "2026-09-18",
+      "last_verified": "2026-09-19",
       "status": "verified"
     },
     {

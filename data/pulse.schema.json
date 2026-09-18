@@ -68,7 +68,12 @@
           },
           "relation": {
             "type": "string",
-            "maxLength": 60
+            "maxLength": 90
+          },
+          "evidence": {
+            "type": "string",
+            "maxLength": 60,
+            "description": "核对指引：原文的哪一节、哪个案例代号。只是给读者直奔原文的坐标，不是原文摘录，也不许出现引号"
           },
           "source_name": {
             "type": "string"

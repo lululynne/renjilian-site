@@ -235,13 +235,48 @@ class PulseTests(unittest.TestCase):
                 self.assertIn(it["status"], {"verified", "unavailable"})
 
     def test_our_own_words_only(self) -> None:
+        # relation 上限 2026-09-19 从 60 放到 90（跟 line 同尺）：梅宝亲笔把 Anthropic 那条
+        # 从一句分界线改写成四条处置事由，78 字。放宽的是长度，不是性质——下面的引号禁令照旧。
         for it in self.data["items"]:
             with self.subTest(item=it["id"]):
                 self.assertLessEqual(len(it["line"]), 90)
-                self.assertLessEqual(len(it.get("relation", "")), 60)
+                self.assertLessEqual(len(it.get("relation", "")), 90)
                 for ch in QUOTE_CHARS:
                     self.assertNotIn(ch, it["line"], "脉搏的一句话里不许出现引号：不搬运原文")
                     self.assertNotIn(ch, it.get("relation", ""))
+
+    def test_evidence_is_a_pointer_not_a_quotation(self) -> None:
+        """evidence 是核对坐标：原文哪一节、哪个案例代号，供读者直奔原文。
+
+        可选字段——没有它的条目照旧。有它就必须短、必须无引号（不是原文摘录）。
+        """
+        schema = load("data/pulse.schema.json")
+        props = schema["properties"]["items"]["items"]["properties"]
+        self.assertIn("evidence", props, "schema 必须声明 evidence")
+        self.assertNotIn("evidence", schema["properties"]["items"]["items"]["required"],
+                         "evidence 是可选字段，不许变成必填")
+        for it in self.data["items"]:
+            if "evidence" in it:
+                with self.subTest(item=it["id"]):
+                    self.assertTrue(it["evidence"].strip())
+                    self.assertLessEqual(len(it["evidence"]), 60)
+                    for ch in QUOTE_CHARS:
+                        self.assertNotIn(ch, it["evidence"], "evidence 是坐标不是引文")
+        by_id = {it["id"]: it for it in self.data["items"]}
+        self.assertEqual(
+            by_id["pl-20260910-anthropic-misuse"]["evidence"],
+            "Scams and fraud · GTG-15001",
+        )
+
+    def test_page_renders_evidence_next_to_the_source_row(self) -> None:
+        """evidence 渲染在来源行旁边，沿用既有字号色阶，不新造样式体系。"""
+        self.assertIn("it.evidence", self.page)
+        self.assertIn("pl-evidence", self.page)
+        css = read("style.css")
+        block = re.search(r"\.pl-evidence\{[^}]*\}", css)
+        self.assertIsNotNone(block, "style.css 缺少 .pl-evidence")
+        self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", block.group(0)), [],
+                         "新样式里出现裸色值，应改用 var(--…) token")
 
     def test_deep_read_points_to_a_published_card(self) -> None:
         for it in self.data["items"]:
