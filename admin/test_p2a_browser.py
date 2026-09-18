@@ -84,6 +84,11 @@ class CommentsBrowserTests(unittest.TestCase):
         # 跑两轮就会撞上「同一 IP 每天 5 个号」。开跑前把注册桶清一下。
         # （闸门本身在 renji-api 的对抗测试里单独验过，不是在这里放水。）
         api_call("POST", "/api/admin/rate/reset", cls.token, {"prefix": "reg:"})
+        # 登录桶同理，而且更隐蔽：_flow 每个视宽登录一次＝每跑一遍烧 2 次，
+        # 上限是「同一 IP 每小时 20 次」的滑动窗口。一小时内跑到第 11 遍，
+        # 第 21 次登录就会 429，#panelMe 永远不出来——看着像偶发，其实是把
+        # 上一遍的计数带进了这一遍。桶不清，测试就不是独立的。
+        api_call("POST", "/api/admin/rate/reset", cls.token, {"prefix": "login:"})
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -106,6 +111,22 @@ class CommentsBrowserTests(unittest.TestCase):
     def shot(self, page, name: str) -> None:
         page.screenshot(path=str(SHOTS / f"{name}.png"), full_page=True)
 
+    def assert_mounted_once(self, page) -> None:
+        """每张卡的评论区只许挂一次。
+
+        挂两次的时候页面看着是好的（列表和发表框都在），但先挂的那次的列表已经被
+        后挂的那次从文档里摘掉了，而它的发表框还留着——按「发表」评论真的存进库、
+        回执也出来，列表却永远不动。所以这里不看「有没有」，看「是不是正好一个」。"""
+        counts = page.evaluate("""() => [...document.querySelectorAll('.kr-comments')].map(h => ({
+            notes: h.querySelectorAll('.rjc-note').length,
+            lists: h.querySelectorAll('.rjc-list').length,
+            composes: h.querySelectorAll('.rjc-compose').length,
+        }))""")
+        self.assertTrue(counts, "页面上一张精读卡都没有")
+        for i, c in enumerate(counts):
+            self.assertEqual(c, {"notes": 1, "lists": 1, "composes": 1},
+                             f"第 {i + 1} 张卡的评论区挂了不止一次：{c}")
+
     # ── 没有后端：跟现在一模一样 ──
     def test_without_backend_the_page_is_unchanged(self) -> None:
         for vp in VIEWPORTS:
@@ -119,6 +140,42 @@ class CommentsBrowserTests(unittest.TestCase):
                     self.assertEqual(errors, [])
                 finally:
                     context.close()
+
+    # ── start() 的两个入口同时点着，也只许挂一次 ──
+    def test_double_start_mounts_the_comment_box_only_once(self) -> None:
+        """comments.js 里 start() 有两个入口：DOMContentLoaded 之后的 setTimeout，
+        和 kanread.html 铺完卡片派的 rj:kanread-rendered。谁先到是不定的，两个都得留着；
+        而 data/kanread.json 恰好落在两者之间的那一次，两个入口会在同一次加载里都点着
+        （实测 80 次加载撞上 1 次，所以靠自然概率守不住）。
+
+        这里把那一跳排成必然：事件触发时，再排一个 setTimeout 把事件补派一次——
+        任务次序跟真实竞态一模一样。挂第二次会把先挂那次的 .rjc-list 从文档里摘掉，
+        而它的发表框要等自己的 refresh() 落地才追加、于是留在页面上连着一个脱离文档的列表：
+        读者按「发表」，评论真的进了库、回执也出来，列表却永远不动。"""
+        context = self.browser.new_context(viewport=VIEWPORTS["1280"])
+        context.add_init_script(
+            "document.addEventListener('rj:kanread-rendered', () => {"
+            "  if (window.__rjAgain) return;"
+            "  window.__rjAgain = true;"
+            "  setTimeout(() => document.dispatchEvent(new CustomEvent('rj:kanread-rendered')), 0);"
+            "}, true);"
+        )
+        page = context.new_page()
+        errors: list[str] = []
+        page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        try:
+            page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
+            page.locator(".rjc-list").first.wait_for()
+            self.assertTrue(page.evaluate("window.__rjAgain === true"), "补派那一次没跑到")
+            self.assert_mounted_once(page)
+            # 而且留在页面上的那个列表必须真的在文档里（不是被摘掉的那个）
+            self.assertTrue(page.evaluate(
+                "[...document.querySelectorAll('.rjc-list')]"
+                ".every(n => document.contains(n))"), "有列表被挂第二次时摘出了文档")
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
 
     # ── 接上后端：注册 → 留言（待审）→ 通过 → 公开 ──
     def test_full_flow_register_then_comment(self) -> None:
@@ -170,6 +227,7 @@ class CommentsBrowserTests(unittest.TestCase):
             # 去刊读发一条
             page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
             page.locator(".rjc-input").first.wait_for()
+            self.assert_mounted_once(page)
 
             # 那句话必须在发表框正上方
             warn = page.locator(".rjc-warn").first
@@ -242,6 +300,7 @@ class CommentsBrowserTests(unittest.TestCase):
 
             page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
             page.locator(".rjc-input").first.wait_for()
+            self.assert_mounted_once(page)
 
             # 回执／错误提示必须是 aria-live 区域
             note = page.locator(".rjc-note").first

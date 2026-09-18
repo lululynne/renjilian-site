@@ -156,6 +156,11 @@
 
   /* ── 一张卡的评论区 ──────────────────────────────────── */
 
+  /* 一个 host 只许挂一次。start() 有两个入口（DOMContentLoaded 后的 setTimeout
+     和 rj:kanread-rendered 事件），两个都可能在同一次加载里点着——见文件末尾。
+     挂第二次会把第一次的 .rjc-list 从文档里摘掉，而第一次的发表框要等自己的
+     refresh() 落地才追加，于是留在页面上、却连着一个已经脱离文档的列表：
+     读者按「发表」，评论真的存进了库、回执也出来了，列表却永远不动。 */
   function mount(host, target, cfg, me) {
     var state = {
       me: me,
@@ -226,13 +231,22 @@
           var card = host.closest(".kanread-card");
           var id = card && card.id;
           if (!id) return;
+          // 挂过就跳过。标记是同步打的：两次 start() 的回调各自跑完才轮到下一个，
+          // 所以先到的那次打完标记，后到的那次一定看得见，跟网络快慢无关。
+          // 卡片重铺时 host 是全新节点，标记不在，照样会重新挂上。
+          if (host.getAttribute("data-rjc-mounted") === "1") return;
+          host.setAttribute("data-rjc-mounted", "1");
           mount(host, "kanread:" + id, cfg, me);
         });
       });
     }).catch(function () { /* 静默：页面保持静态形态 */ });
   }
 
-  // 卡片是 kanread.html 里的 JS 拼出来的，等它铺完再挂
+  // 卡片是 kanread.html 里的 JS 拼出来的，等它铺完再挂。
+  // 两个入口都得留着，因为谁先到是不定的：
+  //   data/kanread.json 比本文件先回来 → 事件在没人听的时候就派完了，只能靠下面的 setTimeout；
+  //   它比 DOMContentLoaded 后的那一跳先回来 → setTimeout 跑的时候卡片还没铺，只能靠事件。
+  // 两个都点着的那一次（实测 80 次加载里撞上 1 次）由 start() 里的 data-rjc-mounted 挡住。
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () { setTimeout(start, 0); });
   } else {
