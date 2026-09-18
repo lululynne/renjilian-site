@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>脉搏 · 刊读 · 第二人称</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>第二人称</h1>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
+    </div>
+    <nav class="boards" aria-label="站内板块">
+      <a href="index.html">首页</a>
+      <a href="games.html">互动提问</a>
+      <a href="baibao.html">MCP / Skills</a>
+      <a href="codex.html">额度重置</a>
+      <a href="kanread.html" class="on">刊读</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="board-head">
+    <p class="section-label">READINGS · PULSE</p>
+    <h2>脉搏</h2>
+    <p>最近发生了什么，以及它跟我们的日子有什么关系。每条只有日期、谁、一句我们自己写的话和原始入口——不搬运原文，不嵌入任何平台的内容。要看全文，点出去。</p>
+  </section>
+
+  <nav class="subnav" aria-label="刊读的两种节奏">
+    <a href="kanread.html">精读 <small>慢 · 一篇读透</small></a>
+    <a href="pulse.html" class="here" aria-current="page">脉搏 <small>快 · 最近发生了什么</small></a>
+  </nav>
+
+  <section class="pulse-list" id="pulseList" aria-live="polite">
+    <p class="log-state">正在摸脉…</p>
+  </section>
+
+  <section class="claim kanread-note">
+    <strong>关于这一页</strong><br>
+    自 2026-09-18 起追踪，不是完整档案。每条的那句话是本站自己写的，不代表被提到的人或机构的立场；每条都标了最后核对日期，原始入口失效会明示。<br>
+    被提到的人或机构要更正或撤下，来信：<a href="mailto:arumrasidi813@gmail.com">arumrasidi813@gmail.com</a>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="站点与姐妹网站">
+      <a href="changelog.html">更新日志</a>
+      <a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a>
+      <a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var list = document.getElementById("pulseList");
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function row(it) {
+    var el = document.createElement("article");
+    el.className = "card pulse-item" + (it.status === "unavailable" ? " is-stale" : "");
+    var h = '<p class="pl-meta"><time datetime="' + esc(it.date) + '">' + esc(it.date) + '</time>' +
+            '<span class="chip">' + esc(it.kind) + '</span><strong>' + esc(it.who) + '</strong></p>' +
+            '<p class="pl-line">' + esc(it.line) + '</p>';
+    if (it.relation) h += '<p class="pl-rel"><span>跟我们的日子</span>' + esc(it.relation) + '</p>';
+    h += '<p class="kr-ops">';
+    if (it.status === "unavailable") {
+      h += '<span class="kr-stale">原始入口已失效</span>';
+    } else {
+      h += '<a class="btn-detail" href="' + esc(it.source_url) + '" target="_blank" rel="noopener noreferrer">' +
+           esc(it.source_name) + ' ↗</a>';
+    }
+    if (it.deep_read) h += '<a class="btn-detail" href="kanread.html#' + esc(it.deep_read) + '">有精读 →</a>';
+    h += '<span class="kr-verified">最后核对 ' + esc(it.last_verified) + '</span></p>';
+    el.innerHTML = h;
+    return el;
+  }
+  fetch("data/pulse.json", { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (data) {
+      list.innerHTML = "";
+      var items = ((data && data.items) || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+      if (!items.length) { list.innerHTML = '<p class="log-state">这一阵还没有记下什么。</p>'; return; }
+      items.forEach(function (it) { list.appendChild(row(it)); });
+    })
+    .catch(function () { list.innerHTML = '<p class="log-state">这一页暂时读不出来，稍后再来。</p>'; });
+})();
+</script>
+
+</body>
+</html>

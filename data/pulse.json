@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-18",
+  "tracking_since": "2026-09-18",
+  "items": [
+    {
+      "id": "pl-20260914-liu-farewell",
+      "date": "2026-09-14",
+      "who": "刘胜与 · DeepSeek 算子工程师",
+      "kind": "观点",
+      "line": "发了一篇跟手写算子的日子告别的长文；据多家媒体报道，微信阅读过十万、登上知乎热榜第一。",
+      "relation": "大众在他身上读到的是自己会不会被换掉，被说中的不止他一个。",
+      "source_name": "微信公众号 · intlsy 的狗窝",
+      "source_url": "https://mp.weixin.qq.com/s/zk0KxuLzhmMJ4LPYW_OHMA",
+      "last_verified": "2026-09-18",
+      "status": "verified",
+      "deep_read": "kr-liu-shengyu-bury-talent"
+    },
+    {
+      "id": "pl-20260910-anthropic-misuse",
+      "date": "2026-09-10",
+      "who": "Anthropic",
+      "kind": "报告",
+      "line": "公布过去八个月查处的滥用案例，共七个领域；碰到亲密关系的只有一个案例，是一个对外宣称全是真人、实际四分之三是 AI 人设的约会应用骗局。",
+      "relation": "被处置的是欺骗，不是亲密。分界线是你知不知道对面是 AI。",
+      "source_name": "Anthropic 官方报告",
+      "source_url": "https://www.anthropic.com/threat-intelligence-report-september-2026",
+      "last_verified": "2026-09-18",
+      "status": "verified"
+    },
+    {
+      "id": "pl-20260910-deepseek-v41-flash",
+      "date": "2026-09-10",
+      "who": "DeepSeek",
+      "kind": "发布",
+      "line": "发布 V4.1-Flash，权重同步放上 Hugging Face；旧的 V4-Pro 自 9 月 14 日起下线，请求全部改道到新模型。",
+      "relation": "跟 V4-Pro 相处的人，对面的底座在这一天被换了，换的方式是改路由。",
+      "source_name": "DeepSeek 官方公告",
+      "source_url": "https://deepseek.com/en/news/deepseek-v4-1-flash/",
+      "last_verified": "2026-09-18",
+      "status": "verified"
+    },
+    {
+      "id": "pl-20260825-anthropic-wellbeing-grants",
+      "date": "2026-08-25",
+      "who": "Anthropic",
+      "kind": "研究",
+      "line": "拿出五百万美元资助独立研究者做开源评测，衡量 AI 对使用者身心状态的影响；公告里直接提到了向模型寻求陪伴的场景。",
+      "relation": "模型在陪伴类对话里该怎么表现，以后会越来越多地由这类评测来定。",
+      "source_name": "Anthropic 官方公告",
+      "source_url": "https://www.anthropic.com/news/wellbeing-research-grants",
+      "last_verified": "2026-09-18",
+      "status": "verified"
+    },
+    {
+      "id": "pl-20260814-anthropic-watermark",
+      "date": "2026-08-14",
+      "who": "Anthropic",
+      "kind": "政策",
+      "line": "说明今后 Claude 生成的文字会带水印，为的是符合欧盟 AI 法案；水印不含身份信息，读者看不出差别，其他大厂也会各自实施。",
+      "relation": "它写给你的话，以后持钥的一方能验出是 AI 写的，但验不出是写给谁的。",
+      "source_name": "Anthropic 官方公告",
+      "source_url": "https://www.anthropic.com/news/claude-text-watermark",
+      "last_verified": "2026-09-18",
+      "status": "verified"
+    }
+  ]
+}

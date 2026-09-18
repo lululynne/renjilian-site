@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "第二人称 · 脉搏数据契约",
+  "description": "每条只存日期、谁、本站自己写的一句话和原始入口。不存任何原文片段，不嵌入第三方平台内容。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "updated_at",
+    "tracking_since",
+    "items"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "updated_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "tracking_since": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "date",
+          "who",
+          "kind",
+          "line",
+          "source_name",
+          "source_url",
+          "last_verified",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^pl-\\d{8}-[a-z0-9-]+$"
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "who": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "kind": {
+            "enum": [
+              "发布",
+              "报告",
+              "政策",
+              "研究",
+              "观点",
+              "事故"
+            ]
+          },
+          "line": {
+            "type": "string",
+            "maxLength": 90,
+            "description": "本站自己的话，不得含引号——一个字原文都不搬"
+          },
+          "relation": {
+            "type": "string",
+            "maxLength": 60
+          },
+          "source_name": {
+            "type": "string"
+          },
+          "source_url": {
+            "type": "string",
+            "pattern": "^https://"
+          },
+          "last_verified": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "status": {
+            "enum": [
+              "verified",
+              "unavailable"
+            ]
+          },
+          "deep_read": {
+            "type": "string",
+            "pattern": "^kr-[a-z0-9-]+$"
+          }
+        }
+      }
+    }
+  }
+}

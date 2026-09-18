@@ -317,8 +317,22 @@ class AccessibilityClosureTests(unittest.TestCase):
             self.assert_widths_390(page)
             self.assert_touch_ok(page)
             self.assertEqual(page.locator('footer a[href="https://mymomentsmaker.com/"]').count(), 1)
-            # 刊读自己不进顶栏
-            self.assertEqual(page.locator('nav.boards a[href="kanread.html"]').count(), 0)
+            # 刊读已开放，进顶栏；脉搏只走子栏
+            self.assertEqual(page.locator('nav.boards a[href="kanread.html"]').count(), 1)
+            self.assertEqual(page.locator('nav.boards a[href="pulse.html"]').count(), 0)
+            self.assertEqual(page.locator('nav.subnav a').count(), 2)
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
+    def test_pulse_390(self) -> None:
+        context, page, errors = self.open_page("pulse.html")
+        try:
+            page.locator(".pulse-item").first.wait_for()
+            self.assertGreaterEqual(page.locator(".pulse-item").count(), 3)
+            self.assert_widths_390(page)
+            self.assert_touch_ok(page)
+            self.assertEqual(page.locator("iframe").count(), 0)
             self.assertEqual(errors, [])
         finally:
             context.close()

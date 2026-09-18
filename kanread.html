@@ -20,6 +20,7 @@
       <a href="games.html">互动提问</a>
       <a href="baibao.html">MCP / Skills</a>
       <a href="codex.html">额度重置</a>
+      <a href="kanread.html" class="on">刊读</a>
     </nav>
   </div>
 </header>
@@ -30,6 +31,11 @@
     <h2>刊读</h2>
     <p>把外面的报告和长文，读成「我们怎么共同生活」的问题。每篇只留摘要和两段旁白，正文永远在原处——要看全文，点出去。</p>
   </section>
+
+  <nav class="subnav" aria-label="刊读的两种节奏">
+    <a href="kanread.html" class="here" aria-current="page">精读 <small>慢 · 一篇读透</small></a>
+    <a href="pulse.html">脉搏 <small>快 · 最近发生了什么</small></a>
+  </nav>
 
   <section class="kanread-list" id="kanreadList" aria-live="polite">
     <p class="log-state">正在翻页…</p>
@@ -74,6 +80,7 @@
   function card(it) {
     var art = document.createElement("article");
     art.className = "card kanread-card" + (it.status === "unavailable" ? " is-stale" : "");
+    art.id = it.id;
 
     var parts = [];
     parts.push('<h3>' + esc(it.title) + '</h3>');

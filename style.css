@@ -396,6 +396,28 @@ footer.site{
 .sister-footer nav a:hover{border-color:var(--ink);background:#fff}
 .sister-pending{color:var(--ink-soft);border-style:dashed!important}
 
+/* ── 刊读子栏（精读｜脉搏）与脉搏列表（2026-09-18）。零新增色值 ── */
+.subnav{display:flex;gap:10px;margin:4px 0 22px;flex-wrap:wrap}
+.subnav a{
+  display:inline-flex;align-items:baseline;gap:8px;min-height:44px;padding:9px 18px;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);
+  color:var(--ink-soft);font-size:14px;text-decoration:none;
+}
+.subnav a small{font-size:11.5px;color:var(--ink-soft)}
+.subnav a.here{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:650}
+.subnav a.here small{color:#fff;opacity:.78}
+.pulse-list{display:flex;flex-direction:column;gap:14px;max-width:760px;padding:2px 0 10px}
+.pulse-item{padding:18px 22px 16px}
+.pl-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft)}
+.pl-meta time{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.pl-meta .chip{cursor:default;font-size:11.5px;padding:2px 10px;min-height:0;min-width:0}
+.pl-meta strong{color:var(--ink);font-weight:650;font-size:13px}
+.pl-line{margin-top:10px;font-size:14.5px;line-height:1.8;color:var(--ink)}
+.pl-rel{margin-top:10px;padding-left:12px;border-left:3px solid var(--machine);font-size:13.5px;line-height:1.75;color:var(--ink)}
+.pl-rel span{display:block;font:700 10.5px/1.6 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;color:var(--ink-soft)}
+.pulse-item .kr-ops{margin-top:14px;flex-wrap:wrap}
+.pulse-item.is-stale{border-style:dashed;opacity:.72}
+
 /* ── 首页「本周刊读」横条（2026-09-18）：一条窄卡，不抢三块瓦片的位 ── */
 .kanread-strip{
   display:flex;align-items:center;gap:20px;
@@ -490,6 +512,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
   .voice-note{width:94%}
   /* 下架回路那个邮箱链接也是触控目标，按 44 收口 */
   .kanread-note a{display:inline-flex;align-items:center;min-height:44px}
+  .pulse-item{padding:16px 16px 14px}
+  .pl-meta .chip{min-height:0;min-width:0}
   .kanread-strip{flex-direction:column;align-items:flex-start;gap:10px;padding:18px 18px}
   .ks-go{min-height:44px;display:inline-flex;align-items:center}
   .kanread-card{padding:22px 18px 18px}

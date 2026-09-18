@@ -15,8 +15,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ("index.html", "games.html", "baibao.html", "codex.html")
-REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html"}
+# 2026-09-18：刊读（kanread）第一篇上线后成为已开放栏目，登记为真实路由并进顶栏；
+# 脉搏（pulse）是刊读的子页，只走刊读页内的子栏，不占顶栏。规矩没变：未开放的不进公开导航。
+PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html")
+REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html"}
 NAV_BLOCK = re.compile(r'<nav class="boards".*?</nav>', re.S)
 ANCHOR = re.compile(r'<a\b[^>]*\bhref="([^"]*)"')
 

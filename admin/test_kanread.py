@@ -18,7 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 PAGE = "kanread.html"
 DATA = "data/kanread.json"
 SCHEMA = "data/kanread.schema.json"
-REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html"}
+REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html"}
+ALL_PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "changelog.html", "kanread.html", "pulse.html")
+QUOTE_CHARS = "「」『』“”‘’\"'"
 NAV_BLOCK = re.compile(r'<nav class="boards".*?</nav>', re.S)
 ANCHOR = re.compile(r'<a\b[^>]*\bhref="([^"]*)"')
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -43,30 +45,30 @@ class KanreadShellTests(unittest.TestCase):
         self.assertNotIn("施工中", html)
         self.assertNotIn('href="#"', html)
 
-    def test_nav_only_real_routes_and_kanread_stays_out(self) -> None:
-        nav = NAV_BLOCK.search(read(PAGE))
-        self.assertIsNotNone(nav, "kanread 缺少 nav.boards")
-        hrefs = ANCHOR.findall(nav.group(0))
-        self.assertTrue(hrefs)
-        for href in hrefs:
-            self.assertIn(href, REAL_ROUTES, f"导航出现非真实路由 {href}")
-        # 刊读攒够卡量之前不进公开导航（沿用 09-01 立下的规矩）
-        self.assertNotIn("kanread.html", nav.group(0))
+    def test_kanread_is_in_every_top_nav_and_pulse_is_not(self) -> None:
+        """刊读第一篇上线后进顶栏；脉搏是刊读的子页，只走子栏，不占顶栏。"""
+        for page in ALL_PAGES:
+            with self.subTest(page=page):
+                nav = NAV_BLOCK.search(read(page))
+                self.assertIsNotNone(nav, f"{page} 缺少 nav.boards")
+                hrefs = ANCHOR.findall(nav.group(0))
+                self.assertIn("kanread.html", hrefs)
+                self.assertNotIn("pulse.html", hrefs)
+                for href in hrefs:
+                    self.assertIn(href, REAL_ROUTES, f"{page} 导航出现非真实路由 {href}")
 
-    def test_kanread_entry_is_a_strip_not_a_nav_item(self) -> None:
-        """首页可以有一条刊读入口，但刊读不进任何一页的顶栏。
-
-        壳刚建好、还没有内容时这里断言的是「谁都不许链它」；
-        2026-09-18 第一篇装上后放开首页那一条横条，顶栏那道线不动。
-        """
-        idx = read("index.html")
-        self.assertIn('class="kanread-strip"', idx)
-        self.assertIn('href="kanread.html"', idx)
-        self.assertNotIn("kanread.html", NAV_BLOCK.search(idx).group(0))
-        for page in ("games.html", "baibao.html", "codex.html", "changelog.html"):
+    def test_subnav_links_both_rhythms(self) -> None:
+        for page, here in (("kanread.html", "kanread.html"), ("pulse.html", "pulse.html")):
             with self.subTest(page=page):
                 html = read(page)
-                self.assertNotIn("kanread.html", html)
+                sub = re.search(r'<nav class="subnav".*?</nav>', html, re.S)
+                self.assertIsNotNone(sub)
+                self.assertEqual(set(ANCHOR.findall(sub.group(0))), {"kanread.html", "pulse.html"})
+                self.assertRegex(sub.group(0), rf'href="{here}" class="here"')
+
+    def test_home_keeps_the_strip(self) -> None:
+        idx = read("index.html")
+        self.assertIn('class="kanread-strip"', idx)
 
     def test_sister_footer(self) -> None:
         html = read(PAGE)
@@ -152,6 +154,57 @@ class KanreadDataTests(unittest.TestCase):
     def test_ids_unique(self) -> None:
         ids = [it["id"] for it in self.data["items"]]
         self.assertEqual(len(ids), len(set(ids)))
+
+
+class PulseTests(unittest.TestCase):
+    """脉搏：只存日期、谁、本站自己的一句话和原始入口——一个字原文都不搬，不嵌第三方平台。"""
+
+    def setUp(self) -> None:
+        self.data = load("data/pulse.json")
+        self.page = read("pulse.html")
+        self.published = {it["id"] for it in load(DATA)["items"] if it["status"] == "verified"}
+
+    def test_envelope(self) -> None:
+        self.assertEqual(set(self.data), {"schema_version", "updated_at", "tracking_since", "items"})
+        self.assertRegex(self.data["tracking_since"], DATE)
+
+    def test_items_are_sourced_and_dated(self) -> None:
+        for it in self.data["items"]:
+            with self.subTest(item=it["id"]):
+                self.assertRegex(it["id"], r"^pl-\d{8}-[a-z0-9-]+$")
+                self.assertRegex(it["date"], DATE)
+                self.assertRegex(it["last_verified"], DATE)
+                self.assertTrue(it["source_url"].startswith("https://"))
+                self.assertIn(it["kind"], {"发布", "报告", "政策", "研究", "观点", "事故"})
+                self.assertIn(it["status"], {"verified", "unavailable"})
+
+    def test_our_own_words_only(self) -> None:
+        for it in self.data["items"]:
+            with self.subTest(item=it["id"]):
+                self.assertLessEqual(len(it["line"]), 90)
+                self.assertLessEqual(len(it.get("relation", "")), 60)
+                for ch in QUOTE_CHARS:
+                    self.assertNotIn(ch, it["line"], "脉搏的一句话里不许出现引号：不搬运原文")
+                    self.assertNotIn(ch, it.get("relation", ""))
+
+    def test_deep_read_points_to_a_published_card(self) -> None:
+        for it in self.data["items"]:
+            if "deep_read" in it:
+                with self.subTest(item=it["id"]):
+                    self.assertIn(it["deep_read"], self.published, "只能链到已公开的精读卡，草稿不许露")
+
+    def test_ids_unique(self) -> None:
+        ids = [it["id"] for it in self.data["items"]]
+        self.assertEqual(len(ids), len(set(ids)))
+
+    def test_page_embeds_nothing_third_party(self) -> None:
+        low = self.page.lower()
+        for bad in ("<iframe", "platform.twitter.com", "platform.x.com", "pbs.twimg.com", "<script src="):
+            self.assertNotIn(bad, low)
+        self.assertIn('target="_blank" rel="noopener noreferrer"', self.page)
+        self.assertIn("不搬运原文", self.page)
+        self.assertIn("不是完整档案", self.page)
+        self.assertNotIn("claim@example.com", self.page)
 
 
 if __name__ == "__main__":
