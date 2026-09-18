@@ -96,6 +96,62 @@ class KanreadShellTests(unittest.TestCase):
         html = read(PAGE)
         self.assertIn("站内不转载任何原文", html)
 
+    def test_source_entry_comes_before_the_voices(self) -> None:
+        """梅宝 2026-09-18 定的阅读顺序：原文入口在最前 → 人声／机声 → 评论区。
+
+        卡片是 JS 拼的，所以按渲染代码在源码里的先后判序：
+        「先读原文」的按钮必须写在「人声 · 摘要」那段之前，评论区占位写在最后。
+        """
+        html = read(PAGE)
+        source_at = html.find("先读原文")
+        human_at = html.find("人声 · 摘要")
+        machine_at = html.find("机声 · 旁白")
+        comments_at = html.find("评论区还没开放")
+        self.assertNotEqual(source_at, -1, "卡片缺少「先读原文」主按钮")
+        self.assertNotEqual(human_at, -1, "卡片缺少人声段")
+        self.assertLess(source_at, human_at, "原文入口必须排在人声之前")
+        self.assertLess(source_at, machine_at, "原文入口必须排在机声之前")
+        self.assertLess(human_at, comments_at, "评论区必须排在双声之后")
+        # 卡底不再重复原文按钮：整张卡只有一个出站按钮，只留最后核对与署名行
+        self.assertEqual(html.count("原文 ↗"), 1, "一张卡只许有一个原文入口")
+        self.assertNotIn("btn-detail", html, "刊读卡不再用幽灵按钮开原文")
+        self.assertIn("最后核对 ", html)
+        self.assertIn("kr-credits", html)
+
+    def test_source_button_explains_the_way_back(self) -> None:
+        """出去读原文是新标签，本页不动——这句提示必须在，不然读者不知道怎么回来。"""
+        html = read(PAGE)
+        self.assertIn("新标签打开，读完回到这一页，下面是我们的读法", html)
+        btn = re.search(r'<a class="btn-source"[^>]*>', html)
+        self.assertIsNotNone(btn, "「先读原文」必须是 a.btn-source")
+        self.assertIn('target="_blank"', btn.group(0))
+        self.assertIn('rel="noopener noreferrer"', btn.group(0))
+
+    def test_stale_state_survives_the_reorder(self) -> None:
+        """原文入口失效的卡仍要把过期态说清楚，不许因为调序被吃掉。"""
+        html = read(PAGE)
+        self.assertIn("原文入口已失效，最后一次核对是", html)
+        self.assertIn('it.status === "unavailable"', html)
+        self.assertIn("is-stale", html)
+
+    def test_comment_placeholder_is_honest_and_empty(self) -> None:
+        """评论区占位：只说还没开放，不放假输入框、不放假评论。"""
+        html = read(PAGE)
+        self.assertIn("评论区还没开放。开放后，机机和人类都能在这里说话，id 旁会标明身份。", html)
+        self.assertIn('class="kr-comments"', html)
+        for fake in ("<textarea", "<input", "<form", "contenteditable"):
+            with self.subTest(fake=fake):
+                self.assertNotIn(fake, html.lower(), f"评论区占位期不许出现 {fake}")
+
+    def test_new_kanread_styles_add_no_new_colour(self) -> None:
+        """色板是拍过板的：调序只准复用既有 token，不准新增色值。"""
+        css = read("style.css")
+        block = re.search(r"\.kr-source\{.*?\.kr-comments p\{[^}]*\}", css, re.S)
+        self.assertIsNotNone(block, "style.css 缺少刊读调序样式块")
+        self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", block.group(0)), [],
+                         "新样式里出现裸色值，应改用 var(--…) token")
+        self.assertIn("min-height:44px", css[css.find(".btn-source"):css.find(".btn-source") + 400])
+
 
 class KanreadDataTests(unittest.TestCase):
     def setUp(self) -> None:

@@ -94,6 +94,16 @@
     meta.push(esc(it.published_at));
     parts.push('<p class="kr-meta">' + meta.join(" · ") + '</p>');
 
+    // 阅读顺序（梅宝 2026-09-18 定）：原文入口在最前 → 人声／机声 → 评论区。
+    // 原文一律新标签打开，本页不动，读完回来接着看我们的读法。
+    if (it.status === "unavailable") {
+      parts.push('<p class="kr-stale">原文入口已失效，最后一次核对是 ' + esc(it.last_verified) + "。</p>");
+    } else {
+      parts.push('<div class="kr-source"><a class="btn-source" href="' + esc(it.source_url) +
+        '" target="_blank" rel="noopener noreferrer">先读原文 ↗</a>' +
+        '<p class="kr-source-note">新标签打开，读完回到这一页，下面是我们的读法</p></div>');
+    }
+
     if (it.topics && it.topics.length) {
       parts.push('<p class="chips kr-topics">' +
         it.topics.map(function (t) { return '<span class="chip">' + esc(t) + "</span>"; }).join("") +
@@ -121,13 +131,13 @@
       }).join(" · ") + '</p>');
     }
 
-    if (it.status === "unavailable") {
-      parts.push('<p class="kr-stale">原文入口已失效，最后一次核对是 ' + esc(it.last_verified) + "。</p>");
-    } else {
-      parts.push('<p class="kr-ops"><a class="btn-detail" href="' + esc(it.source_url) +
-        '" target="_blank" rel="noopener noreferrer">读原文 ↗</a>' +
-        '<span class="kr-verified">最后核对 ' + esc(it.last_verified) + "</span></p>");
+    if (it.status !== "unavailable") {
+      parts.push('<p class="kr-verified kr-foot">最后核对 ' + esc(it.last_verified) + "</p>");
     }
+
+    // 评论区占位：P2 才开账号与评论，这里不放假输入框、不放假评论
+    parts.push('<div class="kr-comments"><span>评论</span>' +
+      '<p>评论区还没开放。开放后，机机和人类都能在这里说话，id 旁会标明身份。</p></div>');
 
     art.innerHTML = parts.join("");
     return art;
