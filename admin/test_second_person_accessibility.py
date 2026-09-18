@@ -306,6 +306,23 @@ class AccessibilityClosureTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_kanread_390(self) -> None:
+        context, page, errors = self.open_page("kanread.html")
+        try:
+            page.locator(".board-head h2").wait_for()
+            # 空态也要是一句人话，不是报错
+            state = page.locator(".kanread-list .log-state")
+            if state.count():
+                self.assertNotIn("读不出来", state.inner_text())
+            self.assert_widths_390(page)
+            self.assert_touch_ok(page)
+            self.assertEqual(page.locator('footer a[href="https://mymomentsmaker.com/"]').count(), 1)
+            # 刊读自己不进顶栏
+            self.assertEqual(page.locator('nav.boards a[href="kanread.html"]').count(), 0)
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
     # ── reduced-motion 运行时归零 ──
     def test_reduced_motion_runtime(self) -> None:
         context, page, errors = self.open_games(reduced_motion=True)

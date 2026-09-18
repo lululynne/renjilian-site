@@ -6,3 +6,6 @@ __pycache__/
 admin/*.bak*
 auth.json
 *.credentials.json
+
+# 刊读草稿只留本机，不进公开仓库
+data/kanread.drafts.json

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>刊读 · 第二人称</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>第二人称</h1>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
+    </div>
+    <nav class="boards" aria-label="站内板块">
+      <a href="index.html">首页</a>
+      <a href="games.html">互动提问</a>
+      <a href="baibao.html">MCP / Skills</a>
+      <a href="codex.html">额度重置</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="board-head">
+    <p class="section-label">READINGS</p>
+    <h2>刊读</h2>
+    <p>把外面的报告和长文，读成「我们怎么共同生活」的问题。每篇只留摘要和两段旁白，正文永远在原处——要看全文，点出去。</p>
+  </section>
+
+  <section class="kanread-list" id="kanreadList" aria-live="polite">
+    <p class="log-state">正在翻页…</p>
+  </section>
+
+  <section class="claim kanread-note">
+    <strong>关于摘要与旁白</strong><br>
+    站内不转载任何原文。列出的是标题、作者、发表日期和官方入口，摘要与旁白都是本站自己写的，署名「机声」的那段是本站旁白，不代表原作者或任何机构的立场。<br>
+    若你是文中被引述的作者，来信即可署名、更正或撤下：<a href="mailto:arumrasidi813@gmail.com">arumrasidi813@gmail.com</a>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="站点与姐妹网站">
+      <a href="changelog.html">更新日志</a>
+      <a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a>
+      <a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var list = document.getElementById("kanreadList");
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function paras(s) {
+    // 双声正文按空行分段；内容已转义，这里只做段落切分
+    return String(s).split(/\n{2,}/).map(function (t) {
+      return "<p>" + esc(t.trim()) + "</p>";
+    }).join("");
+  }
+
+  function card(it) {
+    var art = document.createElement("article");
+    art.className = "card kanread-card" + (it.status === "unavailable" ? " is-stale" : "");
+
+    var parts = [];
+    parts.push('<h3>' + esc(it.title) + '</h3>');
+    if (it.title_original && it.title_original !== it.title) {
+      parts.push('<p class="kr-original">' + esc(it.title_original) + '</p>');
+    }
+
+    var meta = [];
+    if (it.author) meta.push(esc(it.author));
+    meta.push(esc(it.source_name));
+    meta.push(esc(it.published_at));
+    parts.push('<p class="kr-meta">' + meta.join(" · ") + '</p>');
+
+    if (it.topics && it.topics.length) {
+      parts.push('<p class="chips kr-topics">' +
+        it.topics.map(function (t) { return '<span class="chip">' + esc(t) + "</span>"; }).join("") +
+        "</p>");
+    }
+    if (it.hook) parts.push('<p class="kr-hook">' + esc(it.hook) + "</p>");
+    if (it.human_voice) {
+      parts.push('<div class="kr-voice kr-human"><span>人声 · 摘要</span>' + paras(it.human_voice) + "</div>");
+    }
+    if (it.machine_voice) {
+      parts.push('<div class="kr-voice kr-machine"><span>' +
+        esc(it.machine_byline || "机声 · 旁白") + "</span>" + paras(it.machine_voice) + "</div>");
+    }
+
+    if (it.roundtable && it.roundtable.length) {
+      parts.push('<div class="kr-round"><span>圆桌 · 其他模型怎么读</span>' +
+        it.roundtable.map(function (r) {
+          return '<p><strong>' + esc(r.who) + '</strong>' + esc(r.text) +
+            (r.disclosure ? ' <em>（利益披露：' + esc(r.disclosure) + '）</em>' : '') + '</p>';
+        }).join("") + '</div>');
+    }
+    if (it.credits && it.credits.length) {
+      parts.push('<p class="kr-credits">' + it.credits.map(function (c) {
+        return esc(c.role) + " " + esc(c.who);
+      }).join(" · ") + '</p>');
+    }
+
+    if (it.status === "unavailable") {
+      parts.push('<p class="kr-stale">原文入口已失效，最后一次核对是 ' + esc(it.last_verified) + "。</p>");
+    } else {
+      parts.push('<p class="kr-ops"><a class="btn-detail" href="' + esc(it.source_url) +
+        '" target="_blank" rel="noopener noreferrer">读原文 ↗</a>' +
+        '<span class="kr-verified">最后核对 ' + esc(it.last_verified) + "</span></p>");
+    }
+
+    art.innerHTML = parts.join("");
+    return art;
+  }
+
+  function render(data) {
+    list.innerHTML = "";
+    var items = (data && data.items) || [];
+    items = items.filter(function (it) { return it.status !== "draft"; });
+    if (!items.length) {
+      var p = document.createElement("p");
+      p.className = "log-state";
+      p.textContent = "第一篇还在写。";
+      list.appendChild(p);
+      return;
+    }
+    items.forEach(function (it) { list.appendChild(card(it)); });
+  }
+
+  // 草稿只在本机预览：localhost + ?preview=1 时并入 data/kanread.drafts.json（该文件不进仓库）
+  var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname) && /[?&]preview=1/.test(location.search);
+  fetch("data/kanread.json", { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (data) {
+      if (!local) return data;
+      return fetch("data/kanread.drafts.json", { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : { items: [] }; })
+        .then(function (dr) {
+          (dr.items || []).forEach(function (it) { it.status = "verified"; it.title = "【草稿预览】" + it.title; });
+          data.items = (data.items || []).concat(dr.items || []);
+          return data;
+        }).catch(function () { return data; });
+    })
+    .then(render)
+    .catch(function () {
+      list.innerHTML = '<p class="log-state">这一页暂时读不出来，稍后再来。</p>';
+    });
+})();
+</script>
+
+</body>
+</html>

@@ -210,7 +210,7 @@ nav.boards span.soon{opacity:.6}
   content:"";position:absolute;left:0;right:0;bottom:0;height:58px;pointer-events:none;
   background:linear-gradient(180deg,rgba(247,227,216,0),var(--card-block));
 }
-.card .meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-soft)}
+.card .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--ink-soft)}
 .card .meta .lv{
   border-radius:999px;padding:1px 9px;background:#fff;border:1px solid var(--line);
 }
@@ -296,7 +296,7 @@ body.no-scroll{overflow:hidden}
 }
 .rj-m-close:hover{color:var(--accent)}
 .rj-m-title{font-size:17px;line-height:1.5;padding-right:28px}
-.rj-m-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-soft);margin-top:8px}
+.rj-m-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--ink-soft);margin-top:8px}
 .rj-m-meta .lv{border-radius:999px;padding:1px 9px;background:#fff;border:1px solid var(--line)}
 .rj-m-meta .lv.r18{border-color:var(--accent);color:var(--accent)}
 .rj-m-meta .tag{
@@ -396,6 +396,66 @@ footer.site{
 .sister-footer nav a:hover{border-color:var(--ink);background:#fff}
 .sister-pending{color:var(--ink-soft);border-style:dashed!important}
 
+/* ── 首页「本周刊读」横条（2026-09-18）：一条窄卡，不抢三块瓦片的位 ── */
+.kanread-strip{
+  display:flex;align-items:center;gap:20px;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin-top:8px;text-decoration:none;color:var(--ink);
+  box-shadow:0 12px 32px rgba(48,70,82,.05);
+  transition:transform .18s ease,box-shadow .18s ease;
+  border-left:4px solid var(--machine);
+}
+.kanread-strip:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(48,70,82,.09)}
+.ks-label{
+  flex:0 0 auto;
+  font:650 11px/1.4 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.17em;color:var(--ink-soft);
+}
+.ks-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.ks-body strong{
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;font-size:16px;font-weight:600;line-height:1.5;
+}
+.ks-body em{font-style:normal;font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+.ks-go{flex:0 0 auto;font-size:13px;color:var(--ink-soft)}
+.kanread-strip:hover .ks-go{color:var(--ink)}
+
+/* ── 刊读 READINGS：外链精读卡（2026-09-18）。只用拍板色 token，不新增颜色 ── */
+.kanread-list{display:flex;flex-direction:column;gap:20px;max-width:760px;padding:6px 0 10px}
+.kanread-card{padding:26px 28px 22px}
+.kanread-card h3{font-size:19px;line-height:1.5;font-family:"Noto Serif SC","Songti SC","STSong",serif}
+.kr-original{margin-top:4px;font-size:12.5px;color:var(--ink-soft);font-style:italic}
+.kr-meta{margin-top:10px;font-size:11.5px;color:var(--ink-soft)}
+.kr-topics{margin-top:12px}
+.kr-topics .chip{cursor:default;font-size:11.5px;padding:3px 11px}
+.kr-hook{
+  margin-top:16px;font-family:"Noto Serif SC","Songti SC","STSong",serif;
+  font-size:15.5px;line-height:1.8;color:var(--ink);
+}
+.kr-voice{
+  margin-top:14px;background:var(--card-block);border-radius:12px;
+  padding:14px 16px;border-left:4px solid var(--line);
+}
+.kr-voice span{
+  display:block;margin-bottom:7px;
+  font:700 11px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;color:var(--ink-soft);
+}
+.kr-voice p{font-size:14px;line-height:1.85;color:var(--ink)}
+.kr-voice p+p{margin-top:11px}
+.kr-human{border-left-color:var(--human)}
+.kr-machine{border-left-color:var(--machine)}
+.kr-round{margin-top:14px;padding:14px 16px;border:1px dashed var(--line);border-radius:12px}
+.kr-round span{display:block;margin-bottom:8px;font:700 11px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;color:var(--ink-soft)}
+.kr-round p{font-size:13.5px;line-height:1.8;color:var(--ink)}
+.kr-round p+p{margin-top:9px}
+.kr-round strong{margin-right:8px;font-weight:650}
+.kr-round em{font-style:normal;color:var(--ink-soft);font-size:12px}
+.kr-credits{margin-top:16px;font-size:11.5px;color:var(--ink-soft);letter-spacing:.02em}
+.kr-ops{display:flex;align-items:center;gap:12px;margin-top:18px}
+.kr-verified{margin-left:auto;font-size:11.5px;color:var(--ink-soft)}
+.kanread-card.is-stale{border-style:dashed;opacity:.72}
+.kr-stale{margin-top:16px;font-size:12.5px;color:var(--ink-soft)}
+.kanread-note{margin-top:26px}
+.kanread-note a{color:var(--ink);text-decoration:underline}
+
 /* 键盘焦点清晰可见；尊重系统减弱动态设置 */
 a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{
   outline:2px solid var(--ink);outline-offset:2px;
@@ -405,15 +465,38 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
 }
 
 /* ── 手机版：单栏（梅宝拍板：电脑为主、手机可开） ── */
+@keyframes rj-sheet{from{transform:translateY(14px);opacity:.6}to{transform:none;opacity:1}}
+
 @media (max-width:760px){
   .wrap{padding:0 16px}
   .grid,.cards{grid-template-columns:1fr}
   .masthead h1{font-size:22px}
   .hero{padding:30px 0 4px}
   .home-hero{grid-template-columns:1fr;gap:24px;padding:34px 0 12px}
-  nav.boards a{min-width:44px;justify-content:center}
+  /* boards 顶栏横滑（梅宝 09-18 版面架构图：移动端 boards 横滑）
+     负 margin 抵掉 .wrap 的 16px 侧padding，让首尾项能滑到屏幕边 */
+  nav.boards{
+    flex-wrap:nowrap;overflow-x:auto;gap:22px;
+    margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;
+    scrollbar-width:none;-ms-overflow-style:none;
+    scroll-snap-type:x proximity;overscroll-behavior-x:contain;
+  }
+  nav.boards::-webkit-scrollbar{display:none}
+  nav.boards a,nav.boards span.soon{
+    flex:0 0 auto;white-space:nowrap;min-width:44px;justify-content:center;
+    scroll-snap-align:start;
+  }
   .hero-copy{order:0}
   .voice-note{width:94%}
+  /* 下架回路那个邮箱链接也是触控目标，按 44 收口 */
+  .kanread-note a{display:inline-flex;align-items:center;min-height:44px}
+  .kanread-strip{flex-direction:column;align-items:flex-start;gap:10px;padding:18px 18px}
+  .ks-go{min-height:44px;display:inline-flex;align-items:center}
+  .kanread-card{padding:22px 18px 18px}
+  .kanread-card h3{font-size:17px}
+  .kr-voice{padding:13px 14px}
+  .kr-ops{flex-wrap:wrap;gap:10px}
+  .kr-verified{margin-left:0}
   .log-head{grid-template-columns:1fr;gap:18px;padding-bottom:22px}
   .log-head .hero-kicker{grid-column:auto}
   .release-entry{grid-template-columns:1fr;gap:16px;padding:24px 0}
@@ -433,10 +516,17 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
   .claim-form input[type=file]{min-height:44px}
   .claim-form .radios label{min-height:44px}
   /* 窄屏浮层：占满合适宽度、可滚动、留安全边距；左右分栏改上下堆叠（内容在上、评论在下） */
-  #rj-overlay,#claim-overlay{padding:12px}
-  .rj-modal{max-width:none;max-height:88vh;padding:20px 16px 16px}
+  #rj-overlay,#claim-overlay{padding:0;align-items:stretch}
+  .rj-modal{
+    max-width:none;width:100%;height:100dvh;max-height:100dvh;
+    border:none;border-radius:0;
+    padding:calc(18px + env(safe-area-inset-top)) 16px calc(18px + env(safe-area-inset-bottom));
+    animation:rj-sheet .2s ease;
+  }
   .rj-modal.rj-split{flex-direction:column;gap:14px;overflow-y:auto}
-  .rj-main{overflow:visible;padding-right:0}
+  /* 全屏后主栏按内容取高，短内容不再在中段撑出空洞 */
+  .rj-main{flex:0 0 auto;overflow:visible;padding-right:0}
+  .rj-side{flex:0 0 auto}
   .rj-side{
     max-width:none;overflow:visible;border-left:none;padding-left:0;
     border-top:1px solid var(--line);padding-top:14px;
