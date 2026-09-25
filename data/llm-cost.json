@@ -350,6 +350,48 @@
       "notes": "与 GLM Coding Plan 分两行展示（梅宝 2026-09-24）。 美国价为美区 App Store 同一 App 的官方标价；全球均价按口径仍不做（国内产品）。"
     },
     {
+      "id": "cursor-pro",
+      "vendor": "Anysphere / Cursor",
+      "product": "Cursor（Pro）",
+      "prices": {
+        "cn": {
+          "amount": 134.25,
+          "currency": "CNY",
+          "unit": "month",
+          "derived_from": "us",
+          "fx_usd_cny": 6.7126,
+          "fx_date": "2026-09-24",
+          "source_url": "https://cursor.com/pricing",
+          "as_of": "2026-09-25",
+          "note": "网页产品、只有美元统一标价，中国大陆无官方人民币渠道；此值为美国官方价 $20 按 2026-09-24 ECB 中间价 6.7126 折算，非人民币标价。"
+        },
+        "us": {
+          "amount": 20,
+          "currency": "USD",
+          "unit": "month",
+          "source_url": "https://cursor.com/pricing",
+          "as_of": "2026-09-25",
+          "note": "官网定价页原文「Individual … $20 / mo. Pro Pro+ Ultra」（2026-09-25 抓取，raw/web-cursor.com-pricing.html）；同页 Pro+ $60、Ultra $200、Teams $40/user，不含税。"
+        }
+      },
+      "global_avg": {
+        "amount": null,
+        "currency": "CNY",
+        "method": "multi_region_mean",
+        "regions": [],
+        "region_count": 0,
+        "channel": "web_console",
+        "fx_date": "2026-09-24",
+        "fx_usd_cny": 6.7126,
+        "checked": "2026-09-25",
+        "note": "官网统一美元标价，未公开多地区店面表，不作全球均价。"
+      },
+      "sparkline": [],
+      "status": "verified",
+      "last_verified": "2026-09-25",
+      "notes": "代表档 Pro；Hobby 免费。与 09-24 web-only 调研（02-调查报告/global-avg-webonly）一致。"
+    },
+    {
       "id": "glm-coding-plan",
       "vendor": "智谱 / Z.ai",
       "product": "GLM Coding Plan",
@@ -556,12 +598,6 @@
       ],
       "note": "已拆成三条 draft 入库（Token Plan / Desktop 会员 / Claw）；勿再并成单一「MiMo 会员」。矩阵 as_of 2026-09-24。",
       "status": "done"
-    },
-    {
-      "id": "cursor",
-      "product": "Cursor",
-      "status": "todo",
-      "note": "web-only，已调研未终审入库"
     }
   ],
   "history_note": "sparkline 只在攒够真实官方价周采样后填入；空数组=还没有历史，页面画一条平线。",

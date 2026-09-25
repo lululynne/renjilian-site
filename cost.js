@@ -17,7 +17,7 @@
       navSetups: "机友怎么配",
       navSetupsSmall: "月订阅配置 × 设备",
       secSubs: "月订阅对照",
-      ledeSubs: "中国价、美国价都是各自官方渠道的标价。国外模型在中国大陆没有官方渠道的，中国价一栏显示美国官方价按当期汇率折算的人民币，前面带 ≈。全球均价 = 各国家和地区官方订阅价折成人民币后的平均。曲线要等攒够真实的周采样才会画出来，现在是一条平线。",
+      ledeSubs: "中国价、美国价都是各自官方渠道的标价。国外模型在中国大陆没有官方渠道的，中国价一栏显示美国官方价按当期汇率折算的人民币，前面带 ≈。全球均价 = 各国家和地区官方订阅价折成人民币后的平均，均价旁标了统计的地区数。曲线要等攒够真实的周采样才会画出来，现在是一条平线。",
       thProduct: "产品",
       thCn: "中国价",
       thUs: "美国价",
@@ -59,6 +59,8 @@
       whoReal: "机友",
       draftHint: "草稿占位，勿引用",
       derivedTag: "折算",
+      avgScope: "{n} 区",
+      avgScopeHint: "全球均价统计了 {n} 个国家和地区的官方 App Store 店面价，折成人民币后平均",
       hiddenCostTitle: "看不见的那部分账",
       hiddenCost: "海外大模型的订阅费只是明面上的一半：走官方渠道订阅，通常还要一套能连通海外服务的网络环境、一个海外 Apple ID、一张海外信用卡，往往不止一样；再加上地区可用性和支付方式的限制，总体使用成本和门槛都高于国内可以直接订阅的大模型。上表的折算价只换算了订阅费本身，不含这些隐性成本。",
       derivedHintUs: "中国大陆无官方渠道：美国官方价按汇率折算",
@@ -76,7 +78,7 @@
       navSetups: "How readers set up",
       navSetupsSmall: "Monthly plans × devices",
       secSubs: "Monthly plans",
-      ledeSubs: "China and US prices are each vendor’s official list price. Where a foreign model has no official channel in mainland China, the China column shows the US price converted to CNY at the current rate, marked with ≈. Global average = mean of official prices across countries and regions, converted to CNY. Sparklines appear only once real weekly samples accumulate; until then they are flat.",
+      ledeSubs: "China and US prices are each vendor’s official list price. Where a foreign model has no official channel in mainland China, the China column shows the US price converted to CNY at the current rate, marked with ≈. Global average = mean of official prices across countries and regions, converted to CNY; the region count sits next to each average. Sparklines appear only once real weekly samples accumulate; until then they are flat.",
       thProduct: "Product",
       thCn: "China price",
       thUs: "US price",
@@ -118,6 +120,8 @@
       whoReal: "Reader",
       draftHint: "Draft placeholder, do not cite",
       derivedTag: "converted",
+      avgScope: "{n} regions",
+      avgScopeHint: "Global average across official App Store storefronts in {n} countries and regions, converted to CNY",
       hiddenCostTitle: "The part of the bill you don’t see",
       hiddenCost: "For overseas models the subscription fee is only half the story: subscribing through official channels usually also takes a network setup that can reach overseas services, an overseas Apple ID, an overseas credit card, and often more than one of these; regional availability and payment limits add friction on top. Overall cost and hurdles run higher than for domestic models you can subscribe to directly. The converted prices above cover the fee only, not these hidden costs.",
       derivedHintUs: "No official channel in mainland China: US price converted at the current rate",
@@ -173,7 +177,9 @@
     if (!g || g.amount == null) return '<span class="muted">—</span>';
     var cur = g.currency === "CNY" ? "¥" : (g.currency + " ");
     var n = Number(g.amount);
-    return '<span class="num">' + esc(cur + (Number.isInteger(n) ? String(n) : n.toFixed(0))) + "</span>";
+    var rc = Number(g.region_count || 0);
+    var scope = rc > 0 ? '<span class="avg-scope" title="' + esc(t("avgScopeHint").replace("{n}", String(rc))) + '">' + esc(t("avgScope").replace("{n}", String(rc))) + "</span>" : "";
+    return '<span class="num">' + esc(cur + (Number.isInteger(n) ? String(n) : n.toFixed(0))) + "</span>" + scope;
   }
 
   function statusBadge(st) {
