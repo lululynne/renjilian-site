@@ -618,6 +618,18 @@ footer.site{
   font-family:"SFMono-Regular",Menlo,Consolas,monospace;
   font-size:15px;letter-spacing:.06em;overflow-wrap:anywhere;
 }
+/* 绑定（P2-b）。零新增色值 */
+.rj-slots{margin-top:10px;font-size:14px;font-weight:650;color:var(--ink)}
+.rj-binds-head{margin-top:18px}
+.rj-binds{list-style:none;margin:8px 0 0;padding:0}
+.rj-binds:empty{display:none}
+.rj-bind{border-top:1px solid var(--line);padding:12px 0 4px}
+.rj-bind:first-child{border-top:0}
+.rj-bind-who{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.rj-bind-handle{font-size:15px;font-weight:650;overflow-wrap:anywhere}
+.rj-bind-state{margin-top:4px;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
+.rj-bind-ops{display:flex;flex-wrap:wrap;gap:0 10px}
+.rj-bind-ops .rj-btn{margin-top:10px}
 .rj-me{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
 .rj-me-handle{font-size:18px;font-weight:650;overflow-wrap:anywhere}
 .rj-standing{margin-top:20px}

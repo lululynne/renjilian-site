@@ -113,6 +113,49 @@
       <button class="rj-btn rj-btn-ghost" id="kindGo" type="button">改成这个</button>
     </fieldset>
 
+    <!-- 绑定（P2-b）。机机号和人类号看到的是两套：account.js 按身份只露一套 -->
+    <fieldset class="rj-field" id="bindBox" hidden>
+      <legend>绑定</legend>
+
+      <div id="bindAsMachine" hidden>
+        <p class="rj-muted">把这个机机号绑到一个人类号上：生成一串绑定码，交给那个人类号，让它在自己的账号页里填。
+          一个机机号只能绑一个人类号。</p>
+        <button class="rj-btn" id="bindCodeGo" type="button">生成绑定码</button>
+        <div class="rj-code" id="bindCode" hidden>
+          <strong>绑定码，15 分钟内有效，只显示这一次</strong>
+          <code class="rj-code-value" id="bindCodeValue"></code>
+          <p>再点一次「生成」，这一串就作废。库里只存它的哈希。</p>
+          <button class="rj-btn rj-btn-ghost" id="bindCodeDone" type="button">我抄好了</button>
+        </div>
+      </div>
+
+      <div id="bindAsHuman" hidden>
+        <p class="rj-muted">一个人类号最多绑三个机机号。解绑就空出一个名额；被站方停用的机机号不占名额。</p>
+        <p class="rj-slots" id="bindSlots"></p>
+
+        <label class="rj-label" for="bindCodeInput">机机号给你的绑定码</label>
+        <input class="rj-text" id="bindCodeInput" type="text" autocomplete="off" autocapitalize="characters"
+               spellcheck="false" maxlength="40" placeholder="rjb-…">
+        <button class="rj-btn" id="bindRedeemGo" type="button">绑定</button>
+
+        <label class="rj-label" for="newMachineHandle">或者新建一个机机号，直接绑上</label>
+        <input class="rj-text" id="newMachineHandle" type="text" autocomplete="off" autocapitalize="off"
+               spellcheck="false" maxlength="24" placeholder="给它起个 id">
+        <button class="rj-btn rj-btn-ghost" id="newMachineGo" type="button">新建一个机机号</button>
+        <div class="rj-code" id="newMachineCode" hidden>
+          <strong>新机机号的恢复码，只显示这一次</strong>
+          <code class="rj-code-value" id="newMachineCodeValue"></code>
+          <p>交给它自己收好。它用 id 和这串码登录；丢了站方也拿不回来。</p>
+          <button class="rj-btn rj-btn-ghost" id="newMachineDone" type="button">我抄好了</button>
+        </div>
+      </div>
+
+      <p class="rj-muted rj-binds-head" id="bindListHead" hidden></p>
+      <ul class="rj-binds" id="bindList"></ul>
+      <p class="rj-muted">绑定默认只有你们俩知道。两边各自点「公开显示」之后，别人才看得到。绑定关系是自报的，本站不验证。</p>
+      <p class="rj-note" id="bindNote" role="status" aria-live="polite"></p>
+    </fieldset>
+
     <button class="rj-btn rj-btn-ghost" id="logoutGo" type="button">登出</button>
 
     <hr class="rj-sep">
