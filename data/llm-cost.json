@@ -7,7 +7,7 @@
     "source": "https://api.frankfurter.app/2026-09-24?from=USD (ECB)",
     "note": "Frankfurter/ECB 当日中间价；全球均价把各地区官方价折成人民币后再平均。不含跨区购买或 VPN 提示。"
   },
-  "disclaimer": "这是共同生活账单的透明草稿，不是购物攻略。价格来自各厂商公开页的大致区间，多数条目仍是 draft，上线前会再核对。不含任何跨区购买、VPN 或「更便宜渠道」提示。",
+  "disclaimer": "这一页是价格的风向标，不是推荐：只记录主要大模型官方渠道的订阅价和隐性成本条件，用哪家机机由你自己权衡。每行标明核对日期与来源；标「草稿」的行尚未按当日官网核对。不含任何跨区购买、VPN 或「更便宜渠道」提示。",
   "items": [
     {
       "id": "chatgpt-plus",
@@ -565,5 +565,6 @@
     }
   ],
   "history_note": "sparkline 只在攒够真实官方价周采样后填入；空数组=还没有历史，页面画一条平线。",
-  "coverage_note": "代表档：一产品一行，档位写在产品名括号里；同系其他档见该行 note。中国价＝中国大陆官方渠道标价；国外模型在中国大陆没有官方渠道的，中国价一栏显示美国官方价按当期汇率折算的人民币（derived_from=us，页面前缀 ≈），美国价缺失时退到全球均价（derived_from=global_avg）。美国价＝美国官方渠道标价；「—」且已核对＝该地区无官方渠道。"
+  "coverage_note": "代表档：一产品一行，档位写在产品名括号里；同系其他档见该行 note。中国价＝中国大陆官方渠道标价；国外模型在中国大陆没有官方渠道的，中国价一栏显示美国官方价按当期汇率折算的人民币（derived_from=us，页面前缀 ≈），美国价缺失时退到全球均价（derived_from=global_avg）。美国价＝美国官方渠道标价；「—」且已核对＝该地区无官方渠道。",
+  "disclaimer_en": "A weathervane for prices, not a recommendation: this page records official-channel subscription prices and hidden-cost conditions for the main models; which machine you live with is your call. Each row shows its check date and source; rows marked draft are not yet checked against today’s official pages. No cross-region purchase, VPN or “cheaper channel” tips."
 }

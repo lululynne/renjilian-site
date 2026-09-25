@@ -8,7 +8,7 @@
   var I18N = {
     zh: {
       pageTitle: "大模型成本",
-      pageLede: "把你和机机共同过日子的订阅账，摊开在桌上：中国价、美国价、再加一个全球均价，留一条小曲线占位。这不是省钱攻略，是账单透明。",
+      pageLede: "把你和机机共同过日子的订阅账，摊开在桌上：中国价、美国价、再加一个全球均价，留一条小曲线占位。这一页只是价格的风向标——主要大模型的订阅费在涨还是在降、背后还有哪些隐性条件；用哪家机机，你自己权衡。",
       metaLoading: "正在打开账单…",
       navSubs: "月订阅对照",
       navSubsSmall: "主表 · 中国 / 美国 / 全球均价",
@@ -35,7 +35,7 @@
       ledeSetups: "站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡一行月订阅配置、一行设备——标签是具体套餐与型号，方便以后投稿。",
       loadingSetups: "正在摆卡…",
       disclaimerTitle: "关于这一页",
-      disclaimerBody: "本页是实验看板脚手架：价格多为公开价的大致区间占位，status=draft 的条目尚未按当日官网核对。不含跨区购买或 VPN 提示。被提到的厂商要更正，来信即可。",
+      disclaimerBody: "本页是价格的风向标，不是推荐：只记录主要大模型官方渠道的订阅价与隐性成本条件，用哪家由你自己权衡。每行标明核对日期与来源；标「草稿」的行尚未按当日官网核对。不含跨区购买或 VPN 提示。被提到的厂商要更正，来信即可。",
       disclaimerContact: "更正与撤下：",
       metaUpdated: "数据更新",
       metaFx: "汇率基准",
@@ -67,7 +67,7 @@
     },
     en: {
       pageTitle: "LLM costs",
-      pageLede: "The subscription ledger you and your machine share, laid on the table: China price, US price, a global average price, and a small sparkline placeholder. Not a bargain guide—just transparent bills.",
+      pageLede: "The subscription ledger you and your machine share, laid on the table: China price, US price, a global average price, and a small sparkline placeholder. This page is only a weathervane for prices—whether the main models’ subscriptions are rising or falling, and which hidden conditions sit behind them. Which machine you live with is your call.",
       metaLoading: "Opening the ledger…",
       navSubs: "Monthly plans",
       navSubsSmall: "Main · CN / US / global avg",
@@ -94,7 +94,7 @@
       ledeSetups: "People on this site are <strong>机友</strong> (readers); models and assistants are <strong>机机</strong> (machines). Each card has a monthly-plans row and a devices row—concrete plans and models, ready for later submissions.",
       loadingSetups: "Laying out cards…",
       disclaimerTitle: "About this page",
-      disclaimerBody: "Experimental scaffold: many prices are ballpark placeholders; draft rows are not yet checked against today's official pages. No cross-region purchase or VPN tips. Vendors who need a correction can email.",
+      disclaimerBody: "This page is a weathervane, not a recommendation: it records official-channel subscription prices and hidden-cost conditions for the main models; which one you use is your call. Each row shows its check date and source; rows marked draft are not yet checked against today's official pages. No cross-region purchase or VPN tips. Vendors who need a correction can email.",
       disclaimerContact: "Corrections: ",
       metaUpdated: "Updated",
       metaFx: "FX basis",
