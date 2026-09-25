@@ -32,7 +32,20 @@
 .cost-panel{
   background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   box-shadow:0 14px 40px rgba(48,70,82,.06);padding:18px 18px 8px;margin:18px 0 28px;
-  overflow-x:auto;
+  position:relative;
+}
+.cost-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* 窄屏：产品列钉在左边，右缘渐隐提示还能横滑 */
+.cost-table th:first-child,.cost-table td:first-child{
+  position:sticky;left:0;z-index:1;background:var(--card);
+  box-shadow:1px 0 0 var(--line);
+}
+@media (max-width:900px){
+  .cost-panel::after{
+    content:"";position:absolute;top:1px;right:1px;bottom:1px;width:34px;pointer-events:none;
+    border-radius:0 var(--radius) var(--radius) 0;
+    background:linear-gradient(90deg, rgba(255,255,255,0), var(--card) 85%);
+  }
 }
 .cost-table{
   width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px;
@@ -183,6 +196,7 @@
     <h3 data-i18n="secSubs">月订阅对照</h3>
     <p class="lede" data-i18n="ledeSubs">全球均价 = 各国家和地区官方订阅价折成人民币后的平均，统计范围在页脚说明。还没收齐多地区价格的行显示「—」。曲线要等攒够真实的周采样才会画出来，现在是一条平线。</p>
     <div class="cost-panel">
+      <div class="cost-scroll" tabindex="0" role="region" aria-label="月订阅对照表，可横向滚动">
       <table class="cost-table" id="subTable" aria-describedby="subDisclaimer">
         <thead>
           <tr>
@@ -198,6 +212,7 @@
           <tr><td colspan="6" class="muted" data-i18n="loadingSubs">正在翻账本…</td></tr>
         </tbody>
       </table>
+      </div>
     </div>
   </section>
 
@@ -205,6 +220,7 @@
     <h3 data-i18n="secApi">API 参考单价</h3>
     <p class="lede" data-i18n="ledeApi">按每 100 万 tokens 的公开参考价。币种以厂商标价为准；多数仍是 draft。</p>
     <div class="cost-panel">
+      <div class="cost-scroll" tabindex="0" role="region" aria-label="API 参考单价表，可横向滚动">
       <table class="cost-table" id="apiTable">
         <thead>
           <tr>
@@ -218,6 +234,7 @@
           <tr><td colspan="4" class="muted" data-i18n="loadingApi">正在对照单价…</td></tr>
         </tbody>
       </table>
+      </div>
     </div>
   </section>
 
