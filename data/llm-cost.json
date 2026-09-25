@@ -41,7 +41,7 @@
         "amount": 145.1,
         "region_count": 164,
         "sold_count": 208,
-        "note": "App Store IAP 多店面均价；已排除 US-redirect 店面。found=164 / sold=208。"
+        "note": "App Store IAP 多店面均价；已排除重定向到其他店面的条目。found=164 / sold=208。"
       },
       "sparkline": [],
       "status": "draft",
@@ -96,7 +96,7 @@
           "amount": 148,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://one.google.com/about/google-ai-premium/",
+          "source_url": "https://one.google.com/about/google-ai-plans/",
           "as_of": "2026-09-24",
           "note": "占位：区域价约 ¥148 量级，未当日核对。"
         },
@@ -104,7 +104,7 @@
           "amount": 19.99,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://one.google.com/about/google-ai-premium/",
+          "source_url": "https://one.google.com/about/google-ai-plans/",
           "as_of": "2026-09-24",
           "note": "公开标价约 $19.99/月。"
         }
@@ -119,12 +119,12 @@
         "amount": 141.79,
         "region_count": 162,
         "sold_count": 163,
-        "note": "对应 Google AI Pro 月订阅（旧 AI Premium ≈$20 档的继任）。found=162 / sold=163；已排除 US-redirect。"
+        "note": "对应 Google AI Pro 月订阅（旧 AI Premium ≈$20 档的继任）。found=162 / sold=163；已排除重定向到其他店面的条目。"
       },
       "sparkline": [],
       "status": "draft",
       "last_verified": "2026-09-24",
-      "notes": "产品名随 Google One 套餐迭代，上线前再对官网。 产品线已更名为 Google AI Plus／Pro／Ultra；本行按 Pro（原 ~$20 AI Premium 继任）计全球均价。"
+      "notes": "产品名随 Google One 套餐迭代，上线前再对官网。 产品线已更名为 Google AI Plus／Pro／Ultra；本行按 Pro（原 ~$20 AI Premium 继任）计全球均价。 行 id 沿用旧名 gemini-ai-premium 仅作稳定键，产品名以 Google AI Pro 为准。"
     },
     {
       "id": "supergrok",
@@ -159,7 +159,7 @@
         "fx_date": "2026-09-24",
         "fx_usd_cny": 6.7126,
         "checked": "2026-09-24",
-        "note": "App Store SuperGrok 月费多店面均价；已排除跳转美区店面。found=153 / sold=155。"
+        "note": "App Store SuperGrok 月费多店面均价；已排除重定向到其他店面的条目。found=153 / sold=155。"
       },
       "sparkline": [],
       "status": "draft",
@@ -261,14 +261,14 @@
     },
     {
       "id": "qwen-membership",
-      "vendor": "阿里云",
-      "product": "通义千问会员",
+      "vendor": "阿里巴巴 / 通义",
+      "product": "千问办公助理会员",
       "prices": {
         "cn": {
           "amount": 39,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://tongyi.aliyun.com/",
+          "source_url": "https://tongyi.aliyun.com/qianwen/",
           "as_of": "2026-09-24",
           "note": "占位：常见入门会员约 ¥39/月量级。"
         },
@@ -276,7 +276,7 @@
           "amount": null,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://tongyi.aliyun.com/",
+          "source_url": "https://tongyi.aliyun.com/qianwen/",
           "as_of": "2026-09-24",
           "note": "占位：以 CN 产品为主。"
         }
@@ -296,7 +296,7 @@
       "sparkline": [],
       "status": "draft",
       "last_verified": "2026-09-24",
-      "notes": "产品名与档位随通义改版，上线前核对。"
+      "notes": "产品名与档位随通义改版，上线前核对。 档位：高级／精英／旗舰（App 内会员页）；通义星尘不是这条。"
     },
     {
       "id": "zhipu-qingyan",

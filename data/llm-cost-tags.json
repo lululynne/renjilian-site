@@ -27,7 +27,7 @@
       "tone": "coral",
       "source": "https://chatgpt.com/pricing/",
       "official": true,
-      "note": "个人档官方只有月付"
+      "note": "Go／Plus 个人档官方只有月付（FAQ）；Pro 的计费周期未在 09-24 调查中确认，暂只列月费。"
     },
     {
       "id": "sub-claude-pro-monthly",
@@ -147,7 +147,8 @@
       "label_en": "MiMo Token Plan Lite monthly",
       "tone": "ink",
       "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
-      "official": true
+      "official": true,
+      "note": "标价为 Token Plan 本体，不含 MiMo Claw；Claw 为独立加购（见主表 mimo-claw 行）。"
     },
     {
       "id": "sub-mimo-standard-monthly",
@@ -155,7 +156,8 @@
       "label_en": "MiMo Token Plan Standard monthly",
       "tone": "ink",
       "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
-      "official": true
+      "official": true,
+      "note": "标价为 Token Plan 本体，不含 MiMo Claw；Claw 为独立加购（见主表 mimo-claw 行）。"
     },
     {
       "id": "sub-mimo-pro-monthly",
@@ -163,7 +165,8 @@
       "label_en": "MiMo Token Plan Pro monthly",
       "tone": "ink",
       "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
-      "official": true
+      "official": true,
+      "note": "标价为 Token Plan 本体，不含 MiMo Claw；Claw 为独立加购（见主表 mimo-claw 行）。"
     },
     {
       "id": "sub-mimo-max-monthly",
@@ -171,7 +174,8 @@
       "label_en": "MiMo Token Plan Max monthly",
       "tone": "ink",
       "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
-      "official": true
+      "official": true,
+      "note": "标价为 Token Plan 本体，不含 MiMo Claw；Claw 为独立加购（见主表 mimo-claw 行）。"
     },
     {
       "id": "sub-mimo-standard-yearly",
@@ -179,7 +183,8 @@
       "label_en": "MiMo Token Plan Standard yearly",
       "tone": "ink",
       "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
-      "official": true
+      "official": true,
+      "note": "标价为 Token Plan 本体，不含 MiMo Claw；Claw 为独立加购（见主表 mimo-claw 行）。"
     },
     {
       "id": "sub-qwen-advanced-monthly",
@@ -338,7 +343,8 @@
       "label_en": "Perplexity Pro monthly",
       "tone": "sky",
       "source": "https://www.perplexity.ai/hub/pricing",
-      "official": true
+      "official": true,
+      "note": "档名来自官方帮助中心（官方定价页当日被拦，置信 medium），上线前复核。"
     },
     {
       "id": "sub-perplexity-pro-yearly",
@@ -346,7 +352,8 @@
       "label_en": "Perplexity Pro yearly",
       "tone": "sky",
       "source": "https://www.perplexity.ai/hub/pricing",
-      "official": true
+      "official": true,
+      "note": "档名来自官方帮助中心（官方定价页当日被拦，置信 medium），上线前复核。"
     },
     {
       "id": "sub-perplexity-max-monthly",
@@ -354,7 +361,8 @@
       "label_en": "Perplexity Max monthly",
       "tone": "sky",
       "source": "https://www.perplexity.ai/hub/pricing",
-      "official": true
+      "official": true,
+      "note": "档名来自官方帮助中心（官方定价页当日被拦，置信 medium），上线前复核。"
     },
     {
       "id": "sub-cursor-pro-monthly",
@@ -395,7 +403,7 @@
       "tone": "graphite",
       "source": "https://x.ai/pricing",
       "official": true,
-      "note": "x.ai/pricing JS 档名；US App Store IAP 亦列 SuperGrok Lite。未在公开价表确认独立年费 SKU"
+      "note": "x.ai/pricing JS 档名；US App Store IAP 亦列 SuperGrok Lite。未在公开价表确认独立年费 SKU；同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
     },
     {
       "id": "sub-supergrok-monthly",
@@ -403,7 +411,8 @@
       "label_en": "SuperGrok monthly",
       "tone": "graphite",
       "source": "https://x.ai/pricing",
-      "official": true
+      "official": true,
+      "note": "同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
     },
     {
       "id": "sub-supergrok-yearly",
@@ -412,7 +421,7 @@
       "tone": "graphite",
       "source": "https://apps.apple.com/us/app/grok-ai-assistant/id6670324846",
       "official": true,
-      "note": "US App Store IAP 列出同名 SuperGrok $300（另有 $30 月费）；x.ai planPrices 仅见 monthly 键"
+      "note": "US App Store IAP 列出同名 SuperGrok $300（另有 $30 月费）；x.ai planPrices 仅见 monthly 键；同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
     },
     {
       "id": "sub-supergrok-plus-monthly",
@@ -421,7 +430,7 @@
       "tone": "graphite",
       "source": "https://x.ai/pricing",
       "official": true,
-      "note": "未在公开价表确认独立年费 SKU"
+      "note": "未在公开价表确认独立年费 SKU；同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
     },
     {
       "id": "sub-supergrok-heavy-monthly",
@@ -429,7 +438,8 @@
       "label_en": "SuperGrok Heavy monthly",
       "tone": "graphite",
       "source": "https://x.ai/pricing",
-      "official": true
+      "official": true,
+      "note": "同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
     },
     {
       "id": "sub-supergrok-heavy-yearly",
@@ -438,7 +448,7 @@
       "tone": "graphite",
       "source": "https://docs.x.ai/grok/faq",
       "official": true,
-      "note": "docs.x.ai FAQ 原文提及 SuperGrok Heavy yearly subscription"
+      "note": "docs.x.ai FAQ 原文提及 SuperGrok Heavy yearly subscription；同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
     },
     {
       "id": "sub-x-premium-monthly",
