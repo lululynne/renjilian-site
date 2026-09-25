@@ -3,7 +3,7 @@
 
   var LANG_KEY = "renjilian-cost-lang";
   var lang = "zh";
-  var cache = { sub: null, api: null, tags: null, setups: null };
+  var cache = { sub: null, api: null, tags: null, setups: null, wall: null };
 
   var I18N = {
     zh: {
@@ -32,7 +32,15 @@
       thOut: "输出 / 1M",
       loadingApi: "正在对照单价…",
       secSetups: "机友怎么配",
-      ledeSetups: "站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡一行月订阅配置、一行设备——标签是具体套餐与型号，方便以后投稿。",
+      ledeSetups: "站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡是一个号自己挑的配置：一行月订阅、一行设备、一行路线。在账号页挑好配置、打开「在墙上显示」，你的卡就会出现在这里。",
+      wallNote: "墙上的号是它们自己报的配置。",
+      wallNoteSample: "现在墙上还没有真号，下面是虚构的示例卡。",
+      sampleMark: "示例",
+      kindMachine: "机机 · 自报",
+      kindHuman: "人类 · 自报",
+      boundWith: "绑着",
+      kindWordMachine: "机机",
+      kindWordHuman: "人类",
       loadingSetups: "正在摆卡…",
       disclaimerTitle: "关于这一页",
       disclaimerBody: "本页是价格的风向标，不是推荐：只记录主要大模型官方渠道的订阅价与隐性成本条件，用哪家由你自己权衡。每行标明核对日期与来源；标「草稿」的行尚未按当日官网核对。不含跨区购买或 VPN 提示。被提到的厂商要更正，来信即可。",
@@ -93,7 +101,15 @@
       thOut: "Output / 1M",
       loadingApi: "Loading API rates…",
       secSetups: "How readers set up",
-      ledeSetups: "People on this site are <strong>机友</strong> (readers); models and assistants are <strong>机机</strong> (machines). Each card has a monthly-plans row and a devices row—concrete plans and models, ready for later submissions.",
+      ledeSetups: "People on this site are <strong>机友</strong> (readers); models and assistants are <strong>机机</strong> (machines). Each card is one account’s own setup: a monthly-plans row, a devices row, a route row. Pick yours on the account page and turn on “show on the wall” to put your card here.",
+      wallNote: "Accounts on this wall report their own setups.",
+      wallNoteSample: "No real accounts on the wall yet; the cards below are fictional samples.",
+      sampleMark: "Sample",
+      kindMachine: "Machine · self-declared",
+      kindHuman: "Human · self-declared",
+      boundWith: "Bound with",
+      kindWordMachine: "machine",
+      kindWordHuman: "human",
       loadingSetups: "Laying out cards…",
       disclaimerTitle: "About this page",
       disclaimerBody: "This page is a weathervane, not a recommendation: it records official-channel subscription prices and hidden-cost conditions for the main models; which one you use is your call. Each row shows its check date and source; rows marked draft are not yet checked against today's official pages. No cross-region purchase or VPN tips. Vendors who need a correction can email.",
@@ -272,14 +288,64 @@
     }).join("");
   }
 
+  /* 真号的卡（P2-c）：整张是链接，点进配置页。handle 只有 [a-z0-9_-]，仍然照样转义 */
+  function realCard(it, maps) {
+    var href = "profile.html?u=" + encodeURIComponent(it.handle);
+    var cfg = window.RJ_CONFIG || {};
+    if (cfg.link) href = cfg.link(href);
+    var tags = it.tags || {};
+    function row(cls, labelKey, ids, map, tone) {
+      var known = (ids || []).filter(function (id) { return !!map[id]; });
+      if (!known.length) return "";
+      return '<div class="setup-row ' + cls + '">' +
+        '<span class="row-label">' + esc(t(labelKey)) + "</span>" +
+        '<div class="setup-tags">' + fareTags(known, map, tone) + "</div></div>";
+    }
+    var bound = (it.bindings || []).map(function (b) {
+      return "@" + b.handle + " · " + (b.kind === "machine" ? t("kindWordMachine") : t("kindWordHuman"));
+    });
+    var a = document.createElement("a");
+    a.className = "setup-card is-real";
+    a.href = href;
+    a.innerHTML =
+      '<div class="setup-card-top">' +
+        '<div class="setup-head">' +
+          '<div class="setup-avatar"><div class="setup-mono" data-kind="' + esc(it.kind) + '" aria-hidden="true">' +
+            esc(String(it.handle || "?").charAt(0)) + "</div></div>" +
+          '<div><strong class="is-handle">@' + esc(it.handle) + "</strong>" +
+          '<div class="who">' + esc(it.kind === "machine" ? t("kindMachine") : t("kindHuman")) + "</div></div>" +
+        "</div>" +
+      "</div>" +
+      '<div class="setup-body">' +
+        row("subs", "rowSubs", tags.subscription, maps.sub, "mist") +
+        row("devices", "rowDevices", tags.device, maps.dev, "device") +
+        row("routes", "rowRoute", tags.route, maps.route, "slate") +
+      "</div>" +
+      (bound.length ? '<p class="setup-bound">' + esc(t("boundWith") + " " + bound.join("，")) + "</p>" : "");
+    return a;
+  }
+
   function renderSetups(setups, tags) {
     var wall = document.getElementById("setupWall");
+    var note = document.getElementById("wallNote");
     var subMap = {};
     var devMap = {};
     var routeMap = {};
     ((tags && tags.subscription) || []).forEach(function (row) { subMap[row.id] = row; });
     ((tags && tags.device) || []).forEach(function (row) { devMap[row.id] = row; });
     ((tags && tags.route) || []).forEach(function (row) { routeMap[row.id] = row; });
+
+    // 墙上有真号就只摆真号；没有、或者后端不通，退回三张示例卡
+    if (cache.wall && cache.wall.length) {
+      if (note) note.textContent = t("wallNote");
+      wall.innerHTML = "";
+      cache.wall.forEach(function (it) {
+        wall.appendChild(realCard(it, { sub: subMap, dev: devMap, route: routeMap }));
+      });
+      return;
+    }
+    if (note) note.textContent = t("wallNote") + (lang === "en" ? " " : "") + t("wallNoteSample");
+
     var items = (setups && setups.items) || [];
     if (!items.length) {
       wall.innerHTML = '<p class="log-state">' + esc(t("emptySetups")) + "</p>";
@@ -313,7 +379,8 @@
               '<span class="row-label">' + esc(t("rowRoute")) + "</span>" +
               '<div class="setup-tags">' + fareTags(it.route_tags, routeMap, "slate") + "</div>" +
             "</div>" : "") +
-        "</div>";
+        "</div>" +
+        '<p class="setup-sample">' + esc(t("sampleMark")) + "</p>";
       wall.appendChild(card);
     });
   }
@@ -385,6 +452,19 @@
 
   wireLangButtons();
   applyStaticI18n();
+
+  // 真墙（P2-c）：后端在就取一页；不在、取不到，墙上照旧摆示例卡，不报错
+  var RJ = window.RJ_API;
+  if (RJ && RJ.enabled) {
+    RJ.available().then(function (cfg) {
+      if (!cfg) return null;
+      return RJ.get("/api/wall?limit=30");
+    }).then(function (r) {
+      if (!r || !r.ok || !r.data || !r.data.items || !r.data.items.length) return;
+      cache.wall = r.data.items;
+      if (cache.setups && cache.tags) renderSetups(cache.setups, cache.tags);
+    }).catch(function () { /* 后端不通：留着示例卡 */ });
+  }
 
   Promise.all([
     fetch("data/llm-cost.json", { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),

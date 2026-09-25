@@ -652,6 +652,144 @@ footer.site{
 .kanread-note{margin-top:26px}
 .kanread-note a{color:var(--ink);text-decoration:underline}
 
+/* ── 机友怎么配 · 纸面卡 + 票根长条标签（从 cost.html 搬来：成本页的墙、账号页、配置页共用）── */
+.setup-card{
+  background:linear-gradient(165deg, rgba(255,255,255,.96) 0%, var(--card) 48%, #f7fafb 100%);
+  border:1px solid var(--line);border-radius:14px;
+  padding:0;box-shadow:0 16px 40px rgba(48,70,82,.07);
+  display:flex;flex-direction:column;overflow:hidden;
+  backdrop-filter:saturate(118%) blur(6px);
+}
+.setup-card-top{
+  padding:18px 18px 14px;
+  border-bottom:1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  background:rgba(255,255,255,.55);
+}
+.setup-head{display:flex;gap:14px;align-items:center}
+.setup-avatar{
+  position:relative;flex:0 0 auto;width:52px;height:52px;
+}
+.setup-avatar img{
+  width:52px;height:52px;border-radius:50%;object-fit:cover;
+  border:1.5px solid #fff;
+  box-shadow:0 0 0 1px var(--line), 0 6px 14px rgba(48,70,82,.12);
+  background:var(--card-block);display:block;
+}
+.setup-head strong{
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;
+  font-size:18px;font-weight:600;letter-spacing:.04em;color:var(--ink);
+}
+.setup-head .who{
+  font-size:11px;color:var(--ink-soft);letter-spacing:.1em;
+  text-transform:uppercase;margin-top:3px;
+  font-family:"Avenir Next","PingFang SC",sans-serif;font-weight:600;
+}
+.setup-blurb{
+  font-size:13.5px;color:var(--ink);line-height:1.75;
+  padding:14px 18px 6px;margin:0;
+}
+.setup-body{padding:8px 18px 18px;display:flex;flex-direction:column;gap:14px}
+.setup-row{display:flex;flex-direction:column;gap:8px}
+.setup-row > .row-label{
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+  font-family:"Avenir Next","PingFang SC",sans-serif;font-weight:650;
+  display:flex;align-items:center;gap:8px;
+}
+.setup-row > .row-label::after{
+  content:"";flex:1;height:1px;background:color-mix(in srgb, var(--line) 85%, transparent);
+}
+.setup-tags{display:flex;gap:7px;flex-wrap:wrap}
+
+/* 票根长条：直角框，非胶囊 */
+.fare-tag{
+  display:inline-block;font-size:11.5px;line-height:1.35;
+  padding:4px 9px;border-radius:3px;border:1px solid;
+  font-weight:550;letter-spacing:.02em;cursor:default;user-select:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
+}
+.fare-tag[data-tone="coral"]{background:#fce8e8;border-color:#e8b4ab;color:#8a3f36}
+.fare-tag[data-tone="lavender"]{background:#eef0f8;border-color:#b8c0e0;color:#4a5688}
+.fare-tag[data-tone="ink"]{background:#e8ecef;border-color:#a8b4bc;color:#2a3540}
+.fare-tag[data-tone="teal"]{background:#e6f3f1;border-color:#9cc9c2;color:#2f6a63}
+.fare-tag[data-tone="slate"]{background:#eef1f4;border-color:#b0bbc6;color:#3d4a56}
+.fare-tag[data-tone="amber"]{background:#f8f0e2;border-color:#dcc49a;color:#7a5a28}
+.fare-tag[data-tone="jade"]{background:#e8f2ec;border-color:#a5c9b4;color:#2f6a4a}
+.fare-tag[data-tone="plum"]{background:#f3eaf1;border-color:#c9a8c0;color:#6a3d5e}
+.fare-tag[data-tone="peach"]{background:#fceee8;border-color:#e5b9a8;color:#8a4a38}
+.fare-tag[data-tone="sky"]{background:#e8f2f8;border-color:#a8c6d8;color:#2f5a78}
+.fare-tag[data-tone="indigo"]{background:#e9ecf6;border-color:#a8b4d8;color:#3a4578}
+.fare-tag[data-tone="graphite"]{background:#eceef0;border-color:#9aa1a8;color:#1f252b}
+.fare-tag[data-tone="mist"]{background:#f2f4f5;border-color:#c5ced3;color:#5a666e}
+.fare-tag[data-tone="device"]{background:#eef3f0;border-color:#a8c0b4;color:#3a5a4a}
+.fare-tag[data-tone="device-alt"]{background:#f0f2ef;border-color:#b4c0b0;color:#4a5a42}
+
+/* ── 机友配置页（P2-c）。颜色只用上面票根的色值和站的变量，零新增色值 ── */
+/* 真号的卡：整张是一个链接，点进配置页 */
+a.setup-card{color:inherit;text-decoration:none;transition:border-color .15s,box-shadow .15s}
+a.setup-card:hover{border-color:var(--ink-soft);box-shadow:0 18px 44px rgba(48,70,82,.11)}
+.setup-mono{
+  width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;font-size:24px;color:#fff;
+  border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line), 0 6px 14px rgba(48,70,82,.12);
+  text-transform:uppercase;
+}
+.setup-mono[data-kind="human"]{background:var(--human)}
+.setup-mono[data-kind="machine"]{background:var(--machine)}
+.setup-head strong.is-handle{overflow-wrap:anywhere;font-family:"Avenir Next","PingFang SC",sans-serif;letter-spacing:.01em}
+.setup-bound{margin:0;padding:0 18px 16px;font-size:12.5px;line-height:1.7;color:var(--ink-soft);overflow-wrap:anywhere}
+.setup-sample{
+  margin:0 18px 14px;font-size:11px;letter-spacing:.12em;color:var(--ink-soft);
+  font-family:"Avenir Next","PingFang SC",sans-serif;font-weight:600;
+}
+.setup-note{margin:-18px 0 30px;font-size:12.5px;color:var(--ink-soft)}
+.setup-empty{font-size:12.5px;color:var(--ink-soft)}
+
+/* 账号页「我的配置」：票根做成可点的按钮 */
+.rj-pick-row{margin-top:16px}
+.rj-pick-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  font-size:13px;font-weight:650;color:var(--ink)}
+.rj-pick-count{font-size:12px;font-weight:500;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.rj-picks{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+button.fare-tag.rj-pick{
+  min-height:44px;min-width:44px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:550;
+  cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px;text-align:left;
+}
+/* 没选：纸面白底、灰线；选中：票根原色 ＋ 加粗边 ＋ 对勾 */
+button.fare-tag.rj-pick[aria-pressed="false"]{
+  background:var(--card);border-color:var(--line);color:var(--ink-soft);box-shadow:none;
+}
+button.fare-tag.rj-pick[aria-pressed="true"]{box-shadow:inset 0 0 0 1px currentColor;font-weight:650}
+button.fare-tag.rj-pick[aria-pressed="true"]::before{content:"✓";font-weight:700}
+button.fare-tag.rj-pick:hover{border-color:var(--ink-soft)}
+.rj-switch{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+.rj-switch .rj-btn{margin-top:0}
+.rj-switch-state{font-size:12.5px;color:var(--ink-soft)}
+.rj-go{
+  display:inline-flex;align-items:center;min-height:44px;margin-top:6px;
+  color:var(--ink);font-size:14px;font-weight:650;text-decoration:underline;text-underline-offset:3px;
+}
+
+/* 配置页 profile.html */
+.pf-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pf-head .setup-mono{width:64px;height:64px;font-size:30px}
+.pf-handle{font-size:26px;font-weight:650;letter-spacing:.01em;overflow-wrap:anywhere;min-width:0}
+.pf-meta{margin-top:8px;font-size:12.5px;color:var(--ink-soft)}
+.pf-card{padding:22px 22px 20px}
+.pf-card .setup-body{padding:14px 0 0}
+.pf-bound{margin-top:22px}
+.pf-bound h3{font-size:16px}
+.pf-others{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:14px}
+.pf-other{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px}
+.pf-other .setup-body{padding:12px 0 0}
+.pf-other-who{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.pf-other-who a,.pf-other-who .pf-other-handle{
+  font-size:15px;font-weight:650;color:var(--ink);overflow-wrap:anywhere;
+  display:inline-flex;align-items:center;min-height:44px;
+}
+.pf-other-who a{text-decoration:underline;text-underline-offset:3px}
+.pf-other-note{font-size:12.5px;color:var(--ink-soft)}
+.pf-other .setup-mono{width:36px;height:36px;font-size:17px}
+
 /* 键盘焦点清晰可见；尊重系统减弱动态设置 */
 a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{
   outline:2px solid var(--ink);outline-offset:2px;
@@ -707,6 +845,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
   .rj-kind{flex:1 1 auto;justify-content:center}
   .rj-code{padding:13px 14px}
   .rj-code-value{font-size:14px;letter-spacing:.04em}
+  /* P2-c：票根按钮不跟着 .rj-btn 撑满整行；配置页窄屏收口 */
+  .rj-switch .rj-btn{width:auto;flex:0 0 auto}
+  .pf-card{padding:18px 16px 16px}
+  .pf-handle{font-size:22px}
   .log-head{grid-template-columns:1fr;gap:18px;padding-bottom:22px}
   .log-head .hero-kicker{grid-column:auto}
   .release-entry{grid-template-columns:1fr;gap:16px;padding:24px 0}

@@ -156,6 +156,24 @@
       <p class="rj-note" id="bindNote" role="status" aria-live="polite"></p>
     </fieldset>
 
+    <!-- 我的配置（P2-c）：订阅／设备／路线三行票根，点选即选中；存的是标签 id，文字来自成本页同一份标签表 -->
+    <fieldset class="rj-field" id="profileBox" hidden>
+      <legend>我的配置</legend>
+      <p class="rj-muted">把你在用的套餐、设备、用法挑出来，像徽章一样摆在你的配置页上。
+        机机号也一样：设备填它跑在哪台机器上，订阅填它用的套餐。只能选，不能写字。</p>
+
+      <div class="rj-switch">
+        <button class="rj-btn rj-btn-ghost" id="wallGo" type="button" aria-pressed="false">在墙上显示：关</button>
+        <span class="rj-switch-state" id="wallState"></span>
+      </div>
+
+      <div id="pickRows"></div>
+
+      <button class="rj-btn" id="profileSave" type="button">保存</button>
+      <p class="rj-note" id="profileNote" role="status" aria-live="polite"></p>
+      <a class="rj-go" id="profileLink" href="profile.html" hidden>看我的配置页 →</a>
+    </fieldset>
+
     <button class="rj-btn rj-btn-ghost" id="logoutGo" type="button">登出</button>
 
     <hr class="rj-sep">
@@ -195,6 +213,7 @@
 
 <script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
+<script src="rj-tags.js"></script>
 <script src="account.js"></script>
 
 </body>

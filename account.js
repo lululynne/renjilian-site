@@ -1,5 +1,6 @@
 /* 账号页。注册（先选身份，再起 id）→ 恢复码只显示一次 → 登录／登出／改身份／注销。
    P2-b 起多一块「绑定」：机机号生成绑定码；人类号填码、或直接新建机机号（最多三个）。
+   P2-c 起多一块「我的配置」：三行票根多选（订阅／设备／路线）＋「在墙上显示」开关。
 
    后端够不着时只显示「账号还没开」那一块，不报错。 */
 (function () {
@@ -45,6 +46,7 @@
     if (pick) pick.checked = true;
     wireMe();
     paintBindings(me.kind);
+    paintProfile(me);
   }
 
   /* ── 没登录 ── */
@@ -288,6 +290,144 @@
     $("newMachineDone").addEventListener("click", function () {
       $("newMachineCodeValue").textContent = "";
       show($("newMachineCode"), false);
+    });
+  }
+
+  /* ── 我的配置（P2-c） ── */
+
+  var TAGS = window.RJ_TAGS;
+  var POOL_HEAD = { subscription: "订阅", device: "设备", route: "路线" };
+  var prof = null;          // { handle, wall, limits, picked: {pool: [id…]} }
+  var profWired = false;
+
+  function profileHref() {
+    var href = "profile.html?u=" + encodeURIComponent(prof.handle);
+    return CFG.link ? CFG.link(href) : href;
+  }
+
+  function paintWall() {
+    var btn = $("wallGo");
+    btn.textContent = prof.wall ? "在墙上显示：开" : "在墙上显示：关";
+    btn.setAttribute("aria-pressed", prof.wall ? "true" : "false");
+    $("wallState").textContent = prof.wall
+      ? "别人在成本页的墙上、在你的配置页上看得到。"
+      : "现在只有你自己看得到。";
+    if (prof.wall) showLink();
+  }
+
+  function showLink() {
+    $("profileLink").href = profileHref();
+    show($("profileLink"), true);
+  }
+
+  function countText(pool) {
+    return prof.picked[pool].length + " / " + prof.limits[pool];
+  }
+
+  function renderPicks() {
+    var host = $("pickRows");
+    while (host.firstChild) host.removeChild(host.firstChild);
+    TAGS.POOLS.forEach(function (pool) {
+      var row = el("div", "rj-pick-row");
+      row.setAttribute("data-pool", pool);
+      var head = el("div", "rj-pick-head");
+      head.appendChild(el("span", null, POOL_HEAD[pool]));
+      var cnt = el("span", "rj-pick-count", countText(pool));
+      head.appendChild(cnt);
+      row.appendChild(head);
+      var wrap = el("div", "rj-picks");
+      wrap.setAttribute("role", "group");
+      wrap.setAttribute("aria-label", POOL_HEAD[pool] + "，最多选 " + prof.limits[pool] + " 个");
+      (TAGS.lists[pool] || []).forEach(function (t) {
+        var b = el("button", "fare-tag rj-pick", TAGS.label(t.id));
+        b.type = "button";
+        b.setAttribute("data-tone", TAGS.tone(t.id, pool));
+        b.setAttribute("data-tag", t.id);
+        b.setAttribute("aria-pressed", prof.picked[pool].indexOf(t.id) !== -1 ? "true" : "false");
+        b.addEventListener("click", function () {
+          var list = prof.picked[pool];
+          var at = list.indexOf(t.id);
+          if (at !== -1) {
+            list.splice(at, 1);
+          } else {
+            if (list.length >= prof.limits[pool]) {
+              say($("profileNote"), POOL_HEAD[pool] + "最多选 " + prof.limits[pool] + " 个，先取消一个。", true);
+              return;
+            }
+            list.push(t.id);
+          }
+          b.setAttribute("aria-pressed", at === -1 ? "true" : "false");
+          cnt.textContent = countText(pool);
+          say($("profileNote"), "改了，还没保存。");
+        });
+        wrap.appendChild(b);
+      });
+      row.appendChild(wrap);
+      host.appendChild(row);
+    });
+  }
+
+  function paintProfile(me) {
+    show($("profileBox"), true);
+    wireProfile();
+    Promise.all([TAGS.load(), API.get("/api/me/profile")]).then(function (pack) {
+      var r = pack[1];
+      if (!r.ok) { say($("profileNote"), API.errorOf(r), true); return; }
+      var d = r.data;
+      prof = {
+        handle: d.handle || me.handle,
+        wall: !!d.wall_public,
+        limits: d.limits || { subscription: 8, device: 6, route: 3 },
+        picked: {
+          subscription: (d.tags && d.tags.subscription) || [],
+          device: (d.tags && d.tags.device) || [],
+          route: (d.tags && d.tags.route) || []
+        }
+      };
+      renderPicks();
+      paintWall();
+    }).catch(function () { say($("profileNote"), "配置没取到，稍后再试。", true); });
+  }
+
+  function wireProfile() {
+    if (profWired) return;
+    profWired = true;
+
+    $("profileSave").addEventListener("click", function () {
+      if (!prof) return;
+      busy($("profileSave"), true);
+      API.put("/api/me/profile", {
+        subscription: prof.picked.subscription,
+        device: prof.picked.device,
+        route: prof.picked.route
+      }).then(function (r) {
+        busy($("profileSave"), false);
+        if (!r.ok) {
+          // 逐条错误：后端说是哪一池第几个，照原话摆出来
+          var errs = (r.data && r.data.errors) || [];
+          say($("profileNote"), errs.length > 1
+            ? errs.map(function (e) { return e.error; }).join(" ")
+            : API.errorOf(r), true);
+          return;
+        }
+        prof.picked = r.data.tags;
+        prof.wall = !!r.data.wall_public;
+        say($("profileNote"), r.data.notice || "存好了。");
+        paintWall();
+        showLink();
+      }).catch(function () { busy($("profileSave"), false); say($("profileNote"), "这一步没走通，稍后再试。", true); });
+    });
+
+    $("wallGo").addEventListener("click", function () {
+      if (!prof) return;
+      busy($("wallGo"), true);
+      API.patch("/api/me/profile/visibility", { wall_public: !prof.wall }).then(function (r) {
+        busy($("wallGo"), false);
+        if (!r.ok) { say($("profileNote"), API.errorOf(r), true); return; }
+        prof.wall = !!r.data.wall_public;
+        say($("profileNote"), r.data.notice || "改好了。");
+        paintWall();
+      }).catch(function () { busy($("wallGo"), false); say($("profileNote"), "这一步没走通，稍后再试。", true); });
     });
   }
 })();

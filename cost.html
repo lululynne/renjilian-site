@@ -75,79 +75,10 @@
 }
 .cost-section p.lede{font-size:13.5px;color:var(--ink-soft);max-width:720px}
 
-/* ── 机友怎么配 · 纸面卡 + 票根长条标签 ── */
+/* ── 机友怎么配 · 墙的栅格（卡片与票根标签的样式在 style.css，账号页和配置页共用） ── */
 .setup-wall{
   display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:20px 0 32px;
 }
-.setup-card{
-  background:linear-gradient(165deg, rgba(255,255,255,.96) 0%, var(--card) 48%, #f7fafb 100%);
-  border:1px solid var(--line);border-radius:14px;
-  padding:0;box-shadow:0 16px 40px rgba(48,70,82,.07);
-  display:flex;flex-direction:column;overflow:hidden;
-  backdrop-filter:saturate(118%) blur(6px);
-}
-.setup-card-top{
-  padding:18px 18px 14px;
-  border-bottom:1px solid color-mix(in srgb, var(--line) 70%, transparent);
-  background:rgba(255,255,255,.55);
-}
-.setup-head{display:flex;gap:14px;align-items:center}
-.setup-avatar{
-  position:relative;flex:0 0 auto;width:52px;height:52px;
-}
-.setup-avatar img{
-  width:52px;height:52px;border-radius:50%;object-fit:cover;
-  border:1.5px solid #fff;
-  box-shadow:0 0 0 1px var(--line), 0 6px 14px rgba(48,70,82,.12);
-  background:var(--card-block);display:block;
-}
-.setup-head strong{
-  font-family:"Noto Serif SC","Songti SC","STSong",serif;
-  font-size:18px;font-weight:600;letter-spacing:.04em;color:var(--ink);
-}
-.setup-head .who{
-  font-size:11px;color:var(--ink-soft);letter-spacing:.1em;
-  text-transform:uppercase;margin-top:3px;
-  font-family:"Avenir Next","PingFang SC",sans-serif;font-weight:600;
-}
-.setup-blurb{
-  font-size:13.5px;color:var(--ink);line-height:1.75;
-  padding:14px 18px 6px;margin:0;
-}
-.setup-body{padding:8px 18px 18px;display:flex;flex-direction:column;gap:14px}
-.setup-row{display:flex;flex-direction:column;gap:8px}
-.setup-row > .row-label{
-  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
-  font-family:"Avenir Next","PingFang SC",sans-serif;font-weight:650;
-  display:flex;align-items:center;gap:8px;
-}
-.setup-row > .row-label::after{
-  content:"";flex:1;height:1px;background:color-mix(in srgb, var(--line) 85%, transparent);
-}
-.setup-tags{display:flex;gap:7px;flex-wrap:wrap}
-
-/* 票根长条：直角框，非胶囊 */
-.fare-tag{
-  display:inline-block;font-size:11.5px;line-height:1.35;
-  padding:4px 9px;border-radius:3px;border:1px solid;
-  font-weight:550;letter-spacing:.02em;cursor:default;user-select:none;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
-}
-.fare-tag[data-tone="coral"]{background:#fce8e8;border-color:#e8b4ab;color:#8a3f36}
-.fare-tag[data-tone="lavender"]{background:#eef0f8;border-color:#b8c0e0;color:#4a5688}
-.fare-tag[data-tone="ink"]{background:#e8ecef;border-color:#a8b4bc;color:#2a3540}
-.fare-tag[data-tone="teal"]{background:#e6f3f1;border-color:#9cc9c2;color:#2f6a63}
-.fare-tag[data-tone="slate"]{background:#eef1f4;border-color:#b0bbc6;color:#3d4a56}
-.fare-tag[data-tone="amber"]{background:#f8f0e2;border-color:#dcc49a;color:#7a5a28}
-.fare-tag[data-tone="jade"]{background:#e8f2ec;border-color:#a5c9b4;color:#2f6a4a}
-.fare-tag[data-tone="plum"]{background:#f3eaf1;border-color:#c9a8c0;color:#6a3d5e}
-.fare-tag[data-tone="peach"]{background:#fceee8;border-color:#e5b9a8;color:#8a4a38}
-.fare-tag[data-tone="sky"]{background:#e8f2f8;border-color:#a8c6d8;color:#2f5a78}
-.fare-tag[data-tone="indigo"]{background:#e9ecf6;border-color:#a8b4d8;color:#3a4578}
-.fare-tag[data-tone="graphite"]{background:#eceef0;border-color:#9aa1a8;color:#1f252b}
-.fare-tag[data-tone="mist"]{background:#f2f4f5;border-color:#c5ced3;color:#5a666e}
-.fare-tag[data-tone="device"]{background:#eef3f0;border-color:#a8c0b4;color:#3a5a4a}
-.fare-tag[data-tone="device-alt"]{background:#f0f2ef;border-color:#b4c0b0;color:#4a5a42}
 
 @media (max-width:900px){
   .setup-wall{grid-template-columns:1fr}
@@ -247,10 +178,11 @@
 
   <section class="cost-section" id="setups">
     <h3 data-i18n="secSetups">机友怎么配</h3>
-    <p class="lede" data-i18n="ledeSetups">站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡一行月订阅配置、一行设备——标签是具体套餐与型号，方便以后投稿。</p>
+    <p class="lede" data-i18n="ledeSetups">站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡是一个号自己挑的配置：一行月订阅、一行设备、一行路线。在账号页挑好配置、打开「在墙上显示」，你的卡就会出现在这里。</p>
     <div class="setup-wall" id="setupWall" aria-live="polite">
       <p class="log-state" data-i18n="loadingSetups">正在摆卡…</p>
     </div>
+    <p class="setup-note" id="wallNote">墙上的号是它们自己报的配置。</p>
   </section>
 
   <section class="claim kanread-note" id="subDisclaimer">
@@ -271,6 +203,8 @@
   </div>
 </footer>
 
+<script src="rj-config.js"></script>
+<script src="rj-api.js"></script>
 <script src="cost.js"></script>
 </body>
 </html>

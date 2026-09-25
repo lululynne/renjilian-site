@@ -74,6 +74,7 @@ window.RJ_API = (function () {
     errorOf: errorOf,
     get: function (p) { return call("GET", p); },
     post: function (p, b) { return call("POST", p, b === undefined ? {} : b); },
+    put: function (p, b) { return call("PUT", p, b === undefined ? {} : b); },
     patch: function (p, b) { return call("PATCH", p, b === undefined ? {} : b); },
     del: function (p, b) { return call("DELETE", p, b === undefined ? {} : b); }
   };
