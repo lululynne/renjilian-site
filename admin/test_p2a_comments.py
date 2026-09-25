@@ -43,13 +43,15 @@ class NoBackendDegradesGracefully(unittest.TestCase):
     """线上现在没有后端。这个分支合进去也必须不坏线上。"""
 
     def test_api_base_defaults_to_empty(self) -> None:
-        js = code("rj-config.js")
-        self.assertRegex(js, r'var\s+base\s*=\s*""\s*;', "apiBase 的默认值必须是空——线上没有后端")
-        # 只有本机才允许用 ?api= 临时指向别处
-        self.assertIn("isLocal", js)
-        self.assertIn("location.hostname", js)
-        self.assertIn("localhost", js)
-        self.assertIn("[?&]api=", js)
+
+        """本机默认没有后端；只有正式域名 renji.love 才指向 https://api.renji.love（2026-09-25 上线后的形态）。"""
+
+        js = read("rj-config.js")
+
+        self.assertIn('var PROD_API = "https://api.renji.love";', js)
+
+        self.assertRegex(js, r'renji\\.love\$/\.test\(location\.hostname\)\s*\?\s*PROD_API\s*:\s*""')
+
 
     def test_kanread_keeps_the_placeholder_sentence(self) -> None:
         html = read("kanread.html")
@@ -190,7 +192,7 @@ class NewPagesWearTheSiteShellButStayOutOfTheTopNav(unittest.TestCase):
                 self.assertIn("折光所 · AI 画风图鉴", html)
 
     def test_top_nav_has_the_same_five_real_routes(self) -> None:
-        real = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html"}
+        real = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "cost.html"}
         for page in NEW_PAGES:
             with self.subTest(page=page):
                 nav = re.search(r'<nav class="boards".*?</nav>', read(page), re.S)

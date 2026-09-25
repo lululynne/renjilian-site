@@ -8,7 +8,10 @@
    将来上线：改成 "https://api.renji.love"（同站不同源，会话 cookie 走 SameSite=Lax）。 */
 window.RJ_CONFIG = (function () {
   "use strict";
-  var base = "";
+  // 2026-09-25 上线：站在 renji.love，API 在 api.renji.love（同站不同源，SameSite=Lax）。
+  // 只在正式域名下指向线上后端；本机（127.0.0.1 / localhost）默认仍是「没有后端」，联调用 ?api= 指过去。
+  var PROD_API = "https://api.renji.love";
+  var base = /^(www\.)?renji\.love$/.test(location.hostname) ? PROD_API : "";
 
   // 只在本机允许用查询参数临时指向别处，方便联调和自动化测试；线上域名下这一段不生效
   var isLocal = /^(127\.0\.0\.1|localhost|\[::1\])$/.test(location.hostname);
