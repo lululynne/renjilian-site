@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-24",
+  "updated_at": "2026-09-25",
   "fx_updated_at": "2026-09-24",
   "fx": {
     "usd_cny": 6.7126,
@@ -15,20 +15,20 @@
       "product": "ChatGPT Plus",
       "prices": {
         "cn": {
-          "amount": 148,
+          "amount": null,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://openai.com/chatgpt/pricing/",
-          "as_of": "2026-09-24",
-          "note": "占位：常见公开区间约 ¥148/月（应用商店区域价可能浮动），未在本机当日核对。"
+          "source_url": "https://apps.apple.com/cn/app/id6448311069",
+          "as_of": "2026-09-25",
+          "note": "该地区无官方渠道：App Store 中国区该 App 页面 404；未见中国大陆官方人民币标价。"
         },
         "us": {
-          "amount": 20,
+          "amount": 19.99,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://openai.com/chatgpt/pricing/",
-          "as_of": "2026-09-24",
-          "note": "公开标价约 $20/月；以官网与账单为准。"
+          "source_url": "https://apps.apple.com/us/app/id6448311069",
+          "as_of": "2026-09-25",
+          "note": "App Store 美国区 IAP「ChatGPT Plus」$19.99（月）；同列表另有 ChatGPT Go $8.00、Pro 5x $100.00、Pro 20x $200.00。官网 chatgpt.com/pricing 未能取到（403），网页价未核。"
         }
       },
       "global_avg": {
@@ -44,8 +44,8 @@
         "note": "App Store IAP 多店面均价；已排除重定向到其他店面的条目。found=164 / sold=208。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "脚手架占位价，status=draft；曲线等有真实周采样后再画。"
     },
     {
@@ -54,20 +54,20 @@
       "product": "Claude Pro",
       "prices": {
         "cn": {
-          "amount": 144,
+          "amount": null,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://www.anthropic.com/pricing",
-          "as_of": "2026-09-24",
-          "note": "占位：无独立 CN 标价时，用 US$20×7.2 折算展示，非官方人民币价。"
+          "source_url": "https://apps.apple.com/cn/app/id6473753684",
+          "as_of": "2026-09-25",
+          "note": "该地区无官方渠道：App Store 中国区该 App 页面 404；Anthropic 支持地区列表未列中国大陆。"
         },
         "us": {
           "amount": 20,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://www.anthropic.com/pricing",
-          "as_of": "2026-09-24",
-          "note": "公开标价约 $20/月。"
+          "source_url": "https://claude.com/pricing",
+          "as_of": "2026-09-25",
+          "note": "官网 Pro 按月 $20（年付折合 $17/月、$200 预付）。App Store 美国区 IAP「Claude Pro - Monthly」$20.00 一致。"
         }
       },
       "global_avg": {
@@ -83,30 +83,30 @@
         "note": "App Store IAP 多店面均价。found=159 / sold=185。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "CN 侧为汇率折算占位，非正式人民币订阅价。"
     },
     {
       "id": "gemini-ai-premium",
       "vendor": "Google",
-      "product": "Google AI Pro（原 AI Premium）",
+      "product": "Google AI Pro",
       "prices": {
         "cn": {
-          "amount": 148,
+          "amount": null,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://one.google.com/about/google-ai-plans/",
-          "as_of": "2026-09-24",
-          "note": "占位：区域价约 ¥148 量级，未当日核对。"
+          "source_url": "https://apps.apple.com/cn/app/id6477489729",
+          "as_of": "2026-09-25",
+          "note": "该地区无官方渠道：App Store 中国区 Gemini 页面 404；Google AI Pro 可用国家列表未列中国大陆。"
         },
         "us": {
           "amount": 19.99,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://one.google.com/about/google-ai-plans/",
-          "as_of": "2026-09-24",
-          "note": "公开标价约 $19.99/月。"
+          "source_url": "https://apps.apple.com/us/app/id6477489729",
+          "as_of": "2026-09-25",
+          "note": "App Store 美国区 IAP「Google AI Pro (5 TB)」$19.99（月）；同列表 Plus $4.99、Ultra $199.99。one.google.com 价格为 JS 渲染，未取到正文价。"
         }
       },
       "global_avg": {
@@ -122,9 +122,9 @@
         "note": "对应 Google AI Pro 月订阅（旧 AI Premium ≈$20 档的继任）。found=162 / sold=163；已排除重定向到其他店面的条目。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
-      "notes": "产品名随 Google One 套餐迭代，上线前再对官网。 产品线已更名为 Google AI Plus／Pro／Ultra；本行按 Pro（原 ~$20 AI Premium 继任）计全球均价。 行 id 沿用旧名 gemini-ai-premium 仅作稳定键，产品名以 Google AI Pro 为准。"
+      "status": "verified",
+      "last_verified": "2026-09-25",
+      "notes": "产品名随 Google One 套餐迭代，上线前再对官网。 产品线已更名为 Google AI Plus／Pro／Ultra；本行按 Pro（原 ~$20 AI Premium 继任）计全球均价。 原名 Google One AI Premium；行 id 沿用旧名 gemini-ai-premium 仅作稳定键，产品名以 Google AI Pro 为准。"
     },
     {
       "id": "supergrok",
@@ -135,17 +135,17 @@
           "amount": null,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://apps.apple.com/app/grok/id6670324846",
-          "as_of": "2026-09-24",
-          "note": "中国大陆 App Store 本轮未单独列出 SuperGrok 月费；台湾区约 NT$990。以官网／当地商店为准。"
+          "source_url": "https://apps.apple.com/cn/app/id6670324846",
+          "as_of": "2026-09-25",
+          "note": "该地区无官方渠道：App Store 中国区 Grok 页面 404。"
         },
         "us": {
           "amount": 30,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://apps.apple.com/us/app/grok-ai/id6670324846",
-          "as_of": "2026-09-24",
-          "note": "App Store SuperGrok 月费约 $30；另有 Lite $10、Plus $100、Heavy $300。网页订阅价可能不同。"
+          "source_url": "https://apps.apple.com/us/app/id6670324846",
+          "as_of": "2026-09-25",
+          "note": "App Store 美国区 IAP「SuperGrok」$30.00（月；另有 $300.00 年付）；Lite $10.00、Plus $100.00、Heavy $300.00。x.ai/pricing 403，网页价未核。"
         }
       },
       "global_avg": {
@@ -162,8 +162,8 @@
         "note": "App Store SuperGrok 月费多店面均价；已排除重定向到其他店面的条目。found=153 / sold=155。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "权益／额度分池（梅宝 2026-09-24）：同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）额度同一池；Grok Bot 额度为单独一池，两边分开算。勿写成「开一份到处通用」。Lite／Plus／Heavy 见备注与配置墙标签。",
       "entitlements": {
         "membership": "SuperGrok（一份会员）",
@@ -190,17 +190,17 @@
           "amount": 0,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://www.deepseek.com/",
-          "as_of": "2026-09-24",
-          "note": "占位：对话端常见免费额度；重度与 API 另计。"
+          "source_url": "https://apps.apple.com/cn/app/id6737597349",
+          "as_of": "2026-09-25",
+          "note": "无付费会员：App Store 中国区页面无「App内购买」栏；付费仅 API 预充（见 API 表）。"
         },
         "us": {
           "amount": 0,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://www.deepseek.com/",
-          "as_of": "2026-09-24",
-          "note": "占位：与 CN 一致按免费对话展示。"
+          "source_url": "https://apps.apple.com/us/app/id6737597349",
+          "as_of": "2026-09-25",
+          "note": "无付费会员：App Store 美国区页面无「In-App Purchases」栏；付费仅 API 预充。"
         }
       },
       "global_avg": {
@@ -216,30 +216,30 @@
         "note": "无付费会员，不适用"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "API 单价见 llm-cost-api.json；此处只记订阅／对话账单感。"
     },
     {
       "id": "kimi-membership",
       "vendor": "月之暗面",
-      "product": "Kimi 会员",
+      "product": "Kimi 会员（Moderato）",
       "prices": {
         "cn": {
-          "amount": 49,
+          "amount": 99,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://kimi.moonshot.cn/",
-          "as_of": "2026-09-24",
-          "note": "占位：公开会员档常见约 ¥49/月量级，档位可能调整。"
+          "source_url": "https://apps.apple.com/cn/app/id6474233312",
+          "as_of": "2026-09-25",
+          "note": "代表档 Moderato（App Store 中国区 IAP ¥99.00/月）；同列表 Andante ¥49.00、Allegretto ¥199.00、Allegro ¥699.00。"
         },
         "us": {
-          "amount": null,
+          "amount": 19,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://kimi.moonshot.cn/",
-          "as_of": "2026-09-24",
-          "note": "占位：未见稳定公开 US 订阅标价，avg 仅用 CN。"
+          "source_url": "https://apps.apple.com/us/app/id6474233312",
+          "as_of": "2026-09-25",
+          "note": "代表档 Moderato（App Store 美国区 IAP $19.00/月）；同列表 Allegretto $39.00、Allegro $99.00、Vivace $199.00（海外无 Andante）。"
         }
       },
       "global_avg": {
@@ -255,30 +255,30 @@
         "note": "以 Moderato 月订阅为中档代表均价（found=154）。Andante 基本仅中国价（found=1）；另有 Allegretto／Allegro。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "脚手架占位，未当日打开会员页核对。"
     },
     {
       "id": "qwen-membership",
       "vendor": "阿里巴巴 / 通义",
-      "product": "千问办公助理会员",
+      "product": "千问办公助理会员（高级套餐）",
       "prices": {
         "cn": {
-          "amount": 39,
+          "amount": 19,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://tongyi.aliyun.com/qianwen/",
-          "as_of": "2026-09-24",
-          "note": "占位：常见入门会员约 ¥39/月量级。"
+          "source_url": "https://apps.apple.com/cn/app/id6466733523",
+          "as_of": "2026-09-25",
+          "note": "App Store 中国区 IAP「工作助理· 高级套餐· 连续包月」¥19.00（入门档）；同列表 精英套餐 ¥49.00；旗舰档本页未列。另有「千问创作」会员 ¥48/¥188 为另一条线。"
         },
         "us": {
           "amount": null,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://tongyi.aliyun.com/qianwen/",
-          "as_of": "2026-09-24",
-          "note": "占位：以 CN 产品为主。"
+          "source_url": "https://apps.apple.com/us/app/id6466733523",
+          "as_of": "2026-09-25",
+          "note": "该地区无官方渠道：App Store 美国区该 App 页面 404。海外 Qwen 为另一产品，未计入本行。"
         }
       },
       "global_avg": {
@@ -294,30 +294,30 @@
         "note": "千问办公助理为国内产品；海外对应 Qwen，全球均价另行按 Qwen 官方／国际渠道收集。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "产品名与档位随通义改版，上线前核对。 档位：高级／精英／旗舰（App 内会员页）；通义星尘不是这条。"
     },
     {
       "id": "zhipu-qingyan",
       "vendor": "智谱",
-      "product": "智谱清言",
+      "product": "智谱清言（VIP 连续包月）",
       "prices": {
         "cn": {
           "amount": 79,
           "currency": "CNY",
           "unit": "month",
           "source_url": "https://apps.apple.com/cn/app/%E6%99%BA%E8%B0%B1%E6%B8%85%E8%A8%80-%E4%B8%80%E7%AB%99%E5%BC%8F%E8%A7%A3%E6%94%BEai%E7%94%9F%E4%BA%A7%E5%8A%9B/id6450893458",
-          "as_of": "2026-09-24",
-          "note": "中国区 App Store「连续包月会员」约 ¥79；SVIP 连续包月约 ¥229。国内消费产品。"
+          "as_of": "2026-09-25",
+          "note": "App Store 中国区 IAP「连续包月会员」¥79.00；同列表 清言SVIP连续包月 ¥229.00、清言月卡会员 ¥119.00。"
         },
         "us": {
-          "amount": null,
+          "amount": 9.99,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://chatglm.cn/",
-          "as_of": "2026-09-24",
-          "note": "国内产品，无美国官网对等会员标价；海外开发者线见 GLM Coding Plan 行。"
+          "source_url": "https://apps.apple.com/us/app/id6450893458",
+          "as_of": "2026-09-25",
+          "note": "App Store 美国区同一 App 在售，IAP「连续包月会员」$9.99；同列表 清言SVIP连续包月 $29.99。（原稿写「无美国对等标价」，本次在美区商店抓到官方标价。）"
         }
       },
       "global_avg": {
@@ -333,9 +333,9 @@
         "note": "国内消费产品，不作全球均价；海外对应见 GLM Coding Plan 行。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
-      "notes": "与 GLM Coding Plan 分两行展示（梅宝 2026-09-24）。"
+      "status": "verified",
+      "last_verified": "2026-09-25",
+      "notes": "与 GLM Coding Plan 分两行展示（梅宝 2026-09-24）。 美国价为美区 App Store 同一 App 的官方标价；全球均价按口径仍不做（国内产品）。"
     },
     {
       "id": "glm-coding-plan",
@@ -348,7 +348,7 @@
           "unit": "month",
           "source_url": "https://bigmodel.cn/glm-coding?plantype=personal",
           "as_of": "2026-09-24",
-          "note": "国内站 Lite 月费约 ¥118；另有 Pro ¥538、Max ¥1078。与智谱清言会员不同产品。"
+          "note": "未能取到：bigmodel.cn 套餐页为 JS 渲染（HTML 4 KB 无价），docs.bigmodel.cn 套餐文档无价格；保持原 draft 值。（原稿说明：国内站 Lite 月费约 ¥118；另有 Pro ¥538、Max ¥1078。与智谱清言会员不同产品。）"
         },
         "us": {
           "amount": 18,
@@ -356,7 +356,7 @@
           "unit": "month",
           "source_url": "https://z.ai/subscribe",
           "as_of": "2026-09-24",
-          "note": "国际站 Lite 约 $18/月；另有 Pro $80、Max $168。结账页为准，仍 draft。"
+          "note": "未能取到渲染页价：z.ai/subscribe 为 JS 渲染。官方前端 JS 中 V3 套餐数组 Lite 月付 money:18,oldMoney:18（Pro 80、Max 168），另有 V2 数组 Lite money:16.2,oldMoney:18，具体展示哪套取决于前端开关；保持 draft 待人工看结账页。（原稿说明：国际站 Lite 约 $18/月；另有 Pro $80、Max $168。结账页为准，仍 draft。）"
         }
       },
       "global_avg": {
@@ -386,16 +386,16 @@
           "currency": "CNY",
           "unit": "month",
           "source_url": "https://apps.apple.com/cn/app/%E8%B1%86%E5%8C%85-%E7%94%9F%E6%B4%BB%E5%B7%A5%E4%BD%9C-ai-%E5%8A%A9%E6%89%8B/id6459478672",
-          "as_of": "2026-09-24",
-          "note": "App Store 中国区 IAP「专业版 · 标准套餐（连续包月）」¥68；同页还有加强¥200、高级/专业¥500（连续包月）。描述文案：标准版68／加强版200／专业版500。仍标 draft，待人工终审。"
+          "as_of": "2026-09-25",
+          "note": "App Store 中国区 IAP「专业版 · 标准套餐 · 连续包月」¥68.00；同列表 加强套餐 ¥200.00、高级套餐 ¥500.00（连续包月）。"
         },
         "us": {
           "amount": null,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://www.doubao.com/",
-          "as_of": "2026-09-24",
-          "note": "暂未发现与豆包同名的海外消费订阅线；海外品牌为 Dola（原 Cici），本轮未核实到公开付费会员矩阵。"
+          "source_url": "https://apps.apple.com/us/app/id6459478672",
+          "as_of": "2026-09-25",
+          "note": "该地区无官方渠道：App Store 美国区该 App 页面 404。"
         }
       },
       "global_avg": {
@@ -411,30 +411,30 @@
         "note": "国内产品；海外是否有对应线待确认——本轮暂未发现同名海外消费订阅，不作全球均价。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "中国价已按 App Store CN IAP+订阅声明更新为标准套餐¥68/月（另有加强¥200、专业/高级¥500）；status 仍为 draft。全球均价不适用。"
     },
     {
       "id": "mimo-token-plan",
       "vendor": "小米",
-      "product": "MiMo Token Plan",
+      "product": "MiMo Token Plan（Lite）",
       "prices": {
         "cn": {
           "amount": 39,
           "currency": "CNY",
           "unit": "month",
           "source_url": "https://mimo.mi.com/docs/zh-CN/price/token-plan",
-          "as_of": "2026-09-24",
-          "note": "代表档 Lite ¥39/月；同系 Standard/Pro/Max = ¥99 / ¥329 / ¥659（个人连续包月）。来源官方 Token Plan 定价页。"
+          "as_of": "2026-09-25",
+          "note": "代表档 Lite ¥39/月；同系 Standard/Pro/Max = ¥99 / ¥329 / ¥659（个人版月度套餐）。"
         },
         "us": {
           "amount": 6,
           "currency": "USD",
           "unit": "month",
-          "source_url": "https://mimo.mi.com/docs/zh-CN/price/token-plan",
-          "as_of": "2026-09-24",
-          "note": "代表档 Lite $6/月；同系 Standard/Pro/Max = $16 / $50 / $100。"
+          "source_url": "https://mimo.mi.com/docs/en-US/price/token-plan",
+          "as_of": "2026-09-25",
+          "note": "代表档 Lite $6/月；同系 Standard/Pro/Max = $16 / $50 / $100（官方同页美元标价）。"
         }
       },
       "global_avg": {
@@ -450,30 +450,30 @@
         "note": "多档统一标价订阅，未做多地区店面均价；见矩阵拆行。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "不含 Desktop；Platform 可叠 Claw、Studio 默认含 Claw；标价本身≠已含 Claw。全矩阵：/workspace/home/outbox/mimo-product-matrix-20260924.md + .json。米末复核数字一致。"
     },
     {
       "id": "mimo-desktop",
       "vendor": "小米",
-      "product": "MiMo Desktop 会员",
+      "product": "MiMo Desktop 会员（入门 / Starter）",
       "prices": {
         "cn": {
           "amount": 59,
           "currency": "CNY",
           "unit": "month",
           "source_url": "https://mimo.xiaomimimo.com/pricing/",
-          "as_of": "2026-09-24",
-          "note": "代表档入门 ¥59/月；同系进阶/高阶/尊享 = ¥179 / ¥599 / ¥1199。来源 Desktop 定价页/CN products API。"
+          "as_of": "2026-09-25",
+          "note": "定价页为 JS 渲染；价格取自该页调用的官方商品接口 mimo-server-cn.xiaomimimo.com/api/pay/products：入门 ¥59（连续包月）；进阶/高阶/尊享 = ¥179 / ¥599 / ¥1199。"
         },
         "us": {
           "amount": 20,
           "currency": "USD",
           "unit": "month",
           "source_url": "https://mimo-ai.xiaomimimo.com/pricing/",
-          "as_of": "2026-09-24",
-          "note": "代表档 Starter $20/月；同系 Plus/Pro/Ultra = $60 / $200 / $400。"
+          "as_of": "2026-09-25",
+          "note": "国际定价页为 JS 渲染；价格取自官方商品接口 mimo-server-sgp.xiaomimimo.com/api/pay/products：Starter $20（monthly）；Plus/Pro/Ultra = $60 / $200 / $400。该接口为国际（新加坡集群）统一美元价，非美国专属页。"
         }
       },
       "global_avg": {
@@ -489,8 +489,8 @@
         "note": "CN/海外各一套统一标价，暂不作全球均价。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "不含 Token Plan、不是 Claw；UltraSpeed 仅高阶/尊享。与 Token Plan / Claw 分三行。米末复核数字一致。"
     },
     {
@@ -503,16 +503,16 @@
           "currency": "CNY",
           "unit": "month",
           "source_url": "https://mimo.mi.com/docs/zh-CN/news/latest/mimoclaw",
-          "as_of": "2026-09-24",
-          "note": "限时标价 ¥19.9/月；首次特惠约 ¥14.9/月（新闻页）。年包限时 ¥233.8。"
+          "as_of": "2026-09-25",
+          "note": "官方新闻页限时优惠 ¥19.9/月（年 ¥233.8）；首次特惠 ¥14.9/月。均为限时价。"
         },
         "us": {
           "amount": null,
           "currency": "USD",
           "unit": "month",
           "source_url": "https://mimo.mi.com/docs/en-US/news/latest/mimoclaw",
-          "as_of": "2026-09-24",
-          "note": "海外尚未开通（Overseas subscriptions not yet available）。"
+          "as_of": "2026-09-25",
+          "note": "海外尚未开通（官方原文 Overseas subscriptions are not yet available）。"
         }
       },
       "global_avg": {
@@ -528,8 +528,8 @@
         "note": "仅 CN 限时价；海外未开，不作全球均价。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
+      "status": "verified",
+      "last_verified": "2026-09-25",
       "notes": "独立加购；梅宝未购买，机友勿与 Token Plan 混算。米末复核数字一致。"
     }
   ],
@@ -552,5 +552,6 @@
       "note": "web-only，已调研未终审入库"
     }
   ],
-  "history_note": "sparkline 只在攒够真实官方价周采样后填入；空数组=还没有历史，页面画一条平线。"
+  "history_note": "sparkline 只在攒够真实官方价周采样后填入；空数组=还没有历史，页面画一条平线。",
+  "coverage_note": "代表档：一产品一行，档位写在产品名括号里；同系其他档见该行 note。中国价＝中国大陆官方渠道标价，美国价＝美国官方渠道标价；「—」且已核对＝该地区无官方渠道。"
 }

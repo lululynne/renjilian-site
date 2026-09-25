@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-24",
+  "updated_at": "2026-09-25",
   "disclaimer": "API 单价仅供对照：按每 100 万 tokens 的公开参考价整理。多数为 draft，上线前按各厂商定价页再核。单位价格会变，不构成报价承诺。",
   "unit": "per_1M_tokens",
   "items": [
@@ -8,73 +8,109 @@
       "id": "api-gpt-4o",
       "vendor": "OpenAI",
       "model": "GPT-4o",
-      "input": { "amount": 2.5, "currency": "USD" },
-      "output": { "amount": 10, "currency": "USD" },
-      "source_url": "https://openai.com/api/pricing/",
-      "as_of": "2026-09-24",
-      "status": "draft",
-      "last_verified": "2026-09-24",
-      "notes": "占位的大致价；以官网当日为准。"
+      "input": {
+        "amount": 2.5,
+        "currency": "USD"
+      },
+      "output": {
+        "amount": 10,
+        "currency": "USD"
+      },
+      "source_url": "https://developers.openai.com/api/docs/pricing",
+      "as_of": "2026-09-25",
+      "status": "verified",
+      "last_verified": "2026-09-25",
+      "notes": "Standard 档 gpt-4o 输入 $2.50 / 输出 $10.00（缓存输入 $1.25）；openai.com/api/pricing 返回 403，改用官方开发者文档定价页（openai.com/api/pricing 已跳转至此域）。"
     },
     {
       "id": "api-claude-sonnet",
       "vendor": "Anthropic",
-      "model": "Claude Sonnet",
-      "input": { "amount": 3, "currency": "USD" },
-      "output": { "amount": 15, "currency": "USD" },
-      "source_url": "https://www.anthropic.com/pricing",
-      "as_of": "2026-09-24",
-      "status": "draft",
-      "last_verified": "2026-09-24",
-      "notes": "占位：具体子型号（如 4 / 3.5）价差以官网为准。"
+      "model": "Claude Sonnet 5",
+      "input": {
+        "amount": 2,
+        "currency": "USD"
+      },
+      "output": {
+        "amount": 10,
+        "currency": "USD"
+      },
+      "source_url": "https://claude.com/pricing",
+      "as_of": "2026-09-25",
+      "status": "verified",
+      "last_verified": "2026-09-25",
+      "notes": "按当前 Sonnet 旗舰 Sonnet 5 计：Input $2 / MTok、Output $10 / MTok。同页 Sonnet 4.6 / 4.5 仍为 $3 / $15。模型名本行保持「Claude Sonnet」。"
     },
     {
       "id": "api-gemini-flash",
       "vendor": "Google",
-      "model": "Gemini Flash",
-      "input": { "amount": 0.15, "currency": "USD" },
-      "output": { "amount": 0.6, "currency": "USD" },
-      "source_url": "https://ai.google.dev/pricing",
-      "as_of": "2026-09-24",
-      "status": "draft",
-      "last_verified": "2026-09-24",
-      "notes": "占位：Flash 系列公开参考价量级。"
+      "model": "Gemini 3.8 Flash",
+      "input": {
+        "amount": 0.75,
+        "currency": "USD"
+      },
+      "output": {
+        "amount": 3.75,
+        "currency": "USD"
+      },
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "as_of": "2026-09-25",
+      "status": "verified",
+      "last_verified": "2026-09-25",
+      "notes": "按当前最新 Flash「Gemini 3.8 Flash」(gemini-3.8-flash) 付费档计：输入 $0.75、输出 $3.75（含 thinking），为 2026-12-31 前的价格，2027-01-01 起 $1.50 / $7.50。旧 Gemini 2.5 Flash 为 $0.30 / $2.50。"
     },
     {
       "id": "api-deepseek-chat",
       "vendor": "DeepSeek",
-      "model": "DeepSeek Chat",
-      "input": { "amount": 0.27, "currency": "USD" },
-      "output": { "amount": 1.1, "currency": "USD" },
-      "source_url": "https://api-docs.deepseek.com/quick_start/pricing",
-      "as_of": "2026-09-24",
-      "status": "draft",
-      "last_verified": "2026-09-24",
-      "notes": "占位：官网常以人民币标价，此处折成 USD 大致对照。"
+      "model": "DeepSeek（deepseek-flash）",
+      "input": {
+        "amount": 2,
+        "currency": "CNY"
+      },
+      "output": {
+        "amount": 8,
+        "currency": "CNY"
+      },
+      "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+      "as_of": "2026-09-25",
+      "status": "verified",
+      "last_verified": "2026-09-25",
+      "notes": "官方已改名：deepseek-chat 已于 2026-07-24 停用（更新日志），现名 deepseek-flash（DeepSeek-V4.1-Flash）。按人民币官方页高峰时段：输入（缓存未命中）2元、输出 8元；空闲时段半价 1元 / 4元。"
     },
     {
       "id": "api-qwen-plus",
       "vendor": "阿里云",
       "model": "通义千问 Plus",
-      "input": { "amount": 0.8, "currency": "CNY" },
-      "output": { "amount": 2, "currency": "CNY" },
+      "input": {
+        "amount": 0.8,
+        "currency": "CNY"
+      },
+      "output": {
+        "amount": 2,
+        "currency": "CNY"
+      },
       "source_url": "https://help.aliyun.com/zh/model-studio/model-pricing",
-      "as_of": "2026-09-24",
-      "status": "draft",
-      "last_verified": "2026-09-24",
-      "notes": "占位：阿里云百炼公开价量级，币种为 CNY。"
+      "as_of": "2026-09-25",
+      "status": "verified",
+      "last_verified": "2026-09-25",
+      "notes": "华北2（北京）qwen-plus，0<Token≤128K：输入 0.8 元、输出 2 元（非思考模式；思考模式输出 8 元）。新一代 qwen3.7-plus 为 2 元 / 8 元。"
     },
     {
       "id": "api-glm-4",
       "vendor": "智谱",
       "model": "GLM-4",
-      "input": { "amount": 1, "currency": "CNY" },
-      "output": { "amount": 1, "currency": "CNY" },
+      "input": {
+        "amount": 1,
+        "currency": "CNY"
+      },
+      "output": {
+        "amount": 1,
+        "currency": "CNY"
+      },
       "source_url": "https://open.bigmodel.cn/pricing",
       "as_of": "2026-09-24",
       "status": "draft",
       "last_verified": "2026-09-24",
-      "notes": "占位：具体子型号与缓存价另计。"
+      "notes": "未能核实：open.bigmodel.cn/pricing 为 JS 渲染；官方文档定价页已无「GLM-4」这一模型行（现有 GLM-4-Plus 5/5 元、GLM-4-Long 1/1 元、GLM-4-Air-250414 0.5/0.5 元；旗舰现名 GLM-5.3 8/28 元）。原值与哪个子型号对应无法确认，保持 draft。（原稿：占位：具体子型号与缓存价另计。）"
     }
   ]
 }
