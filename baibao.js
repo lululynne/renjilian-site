@@ -241,6 +241,7 @@
     card.dataset.category = item.category;
     card.dataset.rating = item.rating || "all";
     card.dataset.cardId = item.id;
+    card.id = item.id;   // 别的板块用 baibao.html#<id> 链过来
     const locked = item.rating === "r18" && !state.adultUnlocked.has(item.id);
 
     const head = node("div", "treasure-card-head");
@@ -312,6 +313,9 @@
       card.append(links);
     } else if (links.childElementCount) {
       card.append(links);
+    }
+    if (Array.isArray(item.related) && item.related.length && window.RJ_RELATED) {
+      card.append(window.RJ_RELATED.node(item.related));
     }
     return card;
   }
@@ -422,6 +426,7 @@
       document.getElementById("count-life").textContent = String(state.items.filter((item) => item.category === "life").length);
       document.getElementById("count-play").textContent = String(state.items.filter((item) => item.category === "play").length);
       render();
+      if (window.RJ_RELATED) window.RJ_RELATED.scrollToHash();
     })
     .catch(() => {
       grid.replaceChildren();

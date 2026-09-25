@@ -39,7 +39,13 @@
       "source_name": "DeepSeek 官方公告",
       "source_url": "https://deepseek.com/en/news/deepseek-v4-1-flash/",
       "last_verified": "2026-09-18",
-      "status": "verified"
+      "status": "verified",
+      "related": [
+        {
+          "kind": "reading",
+          "id": "kr-liu-shengyu-bury-talent"
+        }
+      ]
     },
     {
       "id": "pl-20260825-anthropic-wellbeing-grants",

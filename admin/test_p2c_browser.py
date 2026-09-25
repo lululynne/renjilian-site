@@ -300,6 +300,55 @@ class ProfileWallBrowserTests(_Base):
             hctx.close()
             mctx.close()
 
+    def test_comment_handle_links_only_when_profile_is_public(self) -> None:
+        """1-核（2026-09-26）：留言上的 handle 只有开了公开配置（在墙上）才链到配置页；
+        留言框旁挂「留言守则」，没登录时挂「登录／注册」。整页零 console error（不许拿 404 去探）。"""
+        tag = os.urandom(3).hex()
+        pub, priv = f"cw{tag}", f"cn{tag}"
+        target = "kanread:kr-liu-shengyu-bury-talent"
+        api_call("POST", "/api/admin/rate/reset", self.token, {"prefix": "cmt"})
+        ids = {}
+        for handle, publish in ((pub, True), (priv, False)):
+            ctx, page, errors = self.open(f"account.html?api={API}")
+            try:
+                self.register(page, "human", handle)
+                if publish:
+                    self.pick(page, "sub-claude-pro-monthly")
+                    self.save_and_publish(page)
+                r = self.fetch_in(page, "POST", "/api/comments", {"target": target, "body": f"读完这篇想起手写的日子 {tag}"})
+                self.assertEqual(r["status"], 200, r)
+                ids[handle] = r["data"]["id"]
+                api_call("POST", f"/api/admin/comments/{ids[handle]}/approve", self.token, {})
+                self.assertEqual(errors, [])
+            finally:
+                ctx.close()
+
+        gctx, gpage, gerr = self.open(f"kanread.html?api={API}")
+        try:
+            item = gpage.locator(f'.rjc-item[data-id="{ids[pub]}"]')
+            item.wait_for()
+            link = item.locator("a.rjc-handle-link")
+            link.wait_for()
+            self.assertIn(f"profile.html?u={pub}", link.get_attribute("href"))
+            self.assertEqual(link.inner_text(), f"@{pub}")
+            other = gpage.locator(f'.rjc-item[data-id="{ids[priv]}"]')
+            other.wait_for()
+            gpage.wait_for_timeout(300)
+            self.assertEqual(other.locator("a.rjc-handle-link").count(), 0, "没公开配置的号不许链出去")
+            self.assertEqual(other.locator("span.rjc-handle").inner_text(), f"@{priv}")
+            # 框旁两链
+            compose = gpage.locator(".rjc-compose").first
+            self.assertEqual(compose.locator("a.rjc-rules").get_attribute("href"), "rules.html")
+            self.assertIn("account.html", compose.locator("a.rjc-account").get_attribute("href"))
+            self.assertEqual(compose.locator("a.rjc-account").inner_text(), "登录／注册")
+            self.assertEqual(gpage.locator('nav.boards a[href^="account.html"]').count(), 0)
+            for sel in ("a.rjc-rules", "a.rjc-account", "a.rjc-handle-link"):
+                box = gpage.locator(sel).first.bounding_box()
+                self.assertGreaterEqual(box["height"], 44, sel)
+            self.assertEqual(gerr, [], f"游客页 console 有错：{gerr}")
+        finally:
+            gctx.close()
+
     def test_limit_error_is_spoken_and_nothing_extra_selected(self) -> None:
         ctx, page, errors = self.open(f"account.html?api={API}")
         try:

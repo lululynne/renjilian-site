@@ -315,6 +315,10 @@
       "links": [
         { "label": "MCP 地址", "url": "https://mcp.renji.love/mcp", "kind": "primary" },
         { "label": "站点首页", "url": "https://renji.love", "kind": "homepage" }
+      ],
+      "related": [
+        { "kind": "reading", "id": "kr-liu-shengyu-bury-talent" },
+        { "kind": "cost", "id": "claude-pro" }
       ]
     },
     {

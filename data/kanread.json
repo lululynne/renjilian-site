@@ -37,6 +37,20 @@
           "role": "主笔与核实",
           "who": "Claude"
         }
+      ],
+      "related": [
+        {
+          "kind": "pulse",
+          "id": "pl-20260914-liu-farewell"
+        },
+        {
+          "kind": "question",
+          "id": "q-ms6cixkx-37qaff"
+        },
+        {
+          "kind": "question",
+          "id": "q-20260729-20367594"
+        }
       ]
     }
   ]

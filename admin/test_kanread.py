@@ -293,8 +293,11 @@ class PulseTests(unittest.TestCase):
 
     def test_page_embeds_nothing_third_party(self) -> None:
         low = self.page.lower()
-        for bad in ("<iframe", "platform.twitter.com", "platform.x.com", "pbs.twimg.com", "<script src="):
+        for bad in ("<iframe", "platform.twitter.com", "platform.x.com", "pbs.twimg.com"):
             self.assertNotIn(bad, low)
+        # 外部脚本一个不收。2026-09-26 起只放行本站自己的「相关」渲染器（跨板块互链，1-核）：
+        # 白名单是逐个文件名，不是「同源都行」，再加脚本要改这里并说清为什么。
+        self.assertEqual(re.findall(r'<script src="([^"]+)"', self.page), ["rj-related.js"])
         self.assertIn('target="_blank" rel="noopener noreferrer"', self.page)
         self.assertIn("不搬运原文", self.page)
         self.assertIn("不是完整档案", self.page)

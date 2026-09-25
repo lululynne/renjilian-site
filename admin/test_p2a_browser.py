@@ -271,7 +271,7 @@ class CommentsBrowserTests(unittest.TestCase):
             anon_page.locator(".rjc-item").first.wait_for()
             self.assertIn(body, anon_page.locator(".kr-comments").first.inner_text())
             self.assertEqual(anon_page.locator(".rjc-input").count(), 0, "没登录不该有发表框")
-            self.assertIn("去注册或登录", anon_page.locator(".rjc-signin").first.inner_text())
+            self.assertIn("登录／注册", anon_page.locator(".rjc-signin").first.inner_text())
             anon_page.screenshot(path=str(SHOTS / f"kanread-anonymous-{vp}.png"), full_page=True)
             anon.close()
 

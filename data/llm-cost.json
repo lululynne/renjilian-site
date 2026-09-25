@@ -91,7 +91,13 @@
       "sparkline": [],
       "status": "verified",
       "last_verified": "2026-09-25",
-      "notes": "CN 侧为汇率折算占位，非正式人民币订阅价。"
+      "notes": "CN 侧为汇率折算占位，非正式人民币订阅价。",
+      "related": [
+        {
+          "kind": "tool",
+          "id": "renji-love-mcp"
+        }
+      ]
     },
     {
       "id": "gemini-ai-premium",

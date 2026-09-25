@@ -18,7 +18,13 @@ ROOT = Path(__file__).resolve().parents[1]
 # 2026-09-18：刊读（kanread）第一篇上线后成为已开放栏目，登记为真实路由并进顶栏；
 # 脉搏（pulse）是刊读的子页，只走刊读页内的子栏，不占顶栏。规矩没变：未开放的不进公开导航。
 # 2026-09-25：大模型成本（cost）以实验看板身份进顶栏，同额度重置一档；价格行未核对前 status=draft，由 test_cost_board 守。
-PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "cost.html")
+# 2026-09-26（1-核）：外壳测试扩到全部 11 页＋隐私说明页；工具页（日志／账号／配置页／守则／隐私）不进顶栏、顶栏无选中态。
+PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "cost.html",
+         "changelog.html", "account.html", "profile.html", "rules.html", "privacy.html")
+TOOL_PAGES = {"changelog.html", "account.html", "profile.html", "rules.html", "privacy.html"}
+# 统一页脚：这四个站内入口按这个次序，当前页用 <span aria-current="page">，再接两个姐妹站
+FOOTER_LINKS = (("changelog.html", "更新日志"), ("account.html", "账号"),
+                ("privacy.html", "隐私说明"), ("rules.html", "留言守则"))
 REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "cost.html"}
 NAV_BLOCK = re.compile(r'<nav class="boards".*?</nav>', re.S)
 ANCHOR = re.compile(r'<a\b[^>]*\bhref="([^"]*)"')
@@ -50,8 +56,8 @@ class SecondPersonShellTests(unittest.TestCase):
                     self.assertIn(href, REAL_ROUTES, f"{page} 导航出现非真实路由 {href}")
                 self.assertNotIn('href="#"', html)
                 self.assertNotIn("施工中", html)
-                # 每页恰好一个 aria-current 选中态
-                self.assertEqual(nav.group(0).count('class="on"'), 1)
+                # 板块页恰好一个选中态；工具页不在顶栏里，就一个都没有
+                self.assertEqual(nav.group(0).count('class="on"'), 0 if page in TOOL_PAGES else 1)
 
     def test_unopened_items_do_not_pollute_navigation(self) -> None:
         for page in PAGES:
@@ -73,7 +79,6 @@ class SecondPersonShellTests(unittest.TestCase):
             with self.subTest(page=page):
                 html = read(page)
                 self.assertIn('class="wrap sister-footer"', html)
-                self.assertIn('href="changelog.html"', html)
                 self.assertIn('更新日志', html)
                 self.assertIn('Moments Maker · 图片创作工具', html)
                 self.assertIn('折光所 · AI 画风图鉴', html)
@@ -94,13 +99,32 @@ class SecondPersonShellTests(unittest.TestCase):
 
     def test_account_entry_lives_in_every_footer(self) -> None:
         """账号不进顶栏（P2-a 定的），入口在页脚——那页脚就得每页都有它，不然读者找不到注册在哪（2026-09-25 梅宝亲撞）。"""
-        for page in PAGES + ("changelog.html",):
+        for page in PAGES:
             with self.subTest(page=page):
                 html = read(page)
                 footer = html[html.find("<footer"):]
-                self.assertEqual(footer.count('href="account.html"'), 1, f"{page} 页脚缺账号入口")
+                if page == "account.html":
+                    self.assertIn('<span aria-current="page">账号</span>', footer)
+                else:
+                    self.assertEqual(footer.count('href="account.html"'), 1, f"{page} 页脚缺账号入口")
                 nav = NAV_BLOCK.search(html)
                 self.assertNotIn("account.html", nav.group(0), f"{page} 顶栏不该有账号")
+
+    def test_footer_is_the_same_on_every_page(self) -> None:
+        """统一页脚：更新日志｜账号｜隐私说明｜留言守则＋两个姐妹站，次序一致，当前页不链自己。"""
+        for page in PAGES:
+            with self.subTest(page=page):
+                html = read(page)
+                footer = html[html.find("<footer"):html.find("</footer>")]
+                nav = footer[footer.find('<nav aria-label="站点与姐妹网站">'):]
+                entries = re.findall(r'<(a|span)\b([^>]*)>([^<]+)</\1>', nav)
+                expect = []
+                for href, label in FOOTER_LINKS:
+                    expect.append(("span", ' aria-current="page"', label) if href == page
+                                  else ("a", f' href="{href}"', label))
+                expect += [("a", ' href="https://mymomentsmaker.com/"', "Moments Maker · 图片创作工具"),
+                           ("a", ' href="https://zheguang.gallery/"', "折光所 · AI 画风图鉴")]
+                self.assertEqual(entries, expect)
 
     def test_public_changelog_has_one_markdown_truth_source(self) -> None:
         page = read("changelog.html")

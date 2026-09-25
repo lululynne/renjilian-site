@@ -20,7 +20,7 @@
 .cost-lang button{
   font:550 11.5px/1 "Avenir Next","PingFang SC",sans-serif;
   letter-spacing:.06em;padding:6px 11px;border:0;background:transparent;
-  color:var(--ink-soft);cursor:pointer;min-height:0;min-width:0;
+  color:var(--ink-soft);cursor:pointer;min-height:44px;min-width:44px;  /* 触控 44px：1-核把成本页纳入 390 触控门时补上 */
 }
 .cost-lang button + button{border-left:1px solid var(--line)}
 .cost-lang button.on{background:var(--ink);color:#fff}
@@ -182,7 +182,7 @@
   <section class="cost-section" id="setups">
     <h3 data-i18n="secSetups">机友怎么配</h3>
     <p class="lede" data-i18n="ledeSetups">站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡是一个号自己挑的配置：一行月订阅、一行设备、一行路线。在账号页挑好配置、打开「在墙上显示」，你的卡就会出现在这里。</p>
-    <p class="cost-cta-row"><a class="cost-cta" href="account.html" data-i18n="wallCta">去账号页挑配置，上墙 →</a></p>
+    <p class="cost-cta-row"><a class="cost-cta" id="wallCta" href="account.html" data-i18n="wallCtaGuest">没号？注册后挑好配置就能上墙 →</a></p>
     <div class="setup-wall" id="setupWall" aria-live="polite">
       <p class="log-state" data-i18n="loadingSetups">正在摆卡…</p>
     </div>
@@ -203,6 +203,7 @@
       <a href="changelog.html">更新日志</a>
       <a href="account.html">账号</a>
       <a href="privacy.html">隐私说明</a>
+      <a href="rules.html">留言守则</a>
       <a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a>
       <a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a>
     </nav>
@@ -211,6 +212,7 @@
 
 <script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
+<script src="rj-related.js"></script>
 <script src="cost.js"></script>
 </body>
 </html>

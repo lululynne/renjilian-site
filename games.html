@@ -66,6 +66,7 @@
       <a href="changelog.html">更新日志</a>
       <a href="account.html">账号</a>
       <a href="privacy.html">隐私说明</a>
+      <a href="rules.html">留言守则</a>
       <a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a>
       <a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a>
     </nav>
@@ -85,7 +86,7 @@ const CARD_LONG_MAX  = 460;
 const CLAIM_MAIL_TO  = "arumrasidi813@gmail.com";
 
 let QUESTIONS = [];
-fetch("data/questions.json?v=" + Date.now()).then(r => r.json()).then(d => { QUESTIONS = d; render(); });
+fetch("data/questions.json?v=" + Date.now()).then(r => r.json()).then(d => { QUESTIONS = d; render(); openFromHash(); });
 
 const cardsEl = document.getElementById("cards");
 const INTER = window.RJ_INTERACTIONS;   // 点赞/收藏统一走这个模块（见 interactions.js 顶部注释）
@@ -588,6 +589,22 @@ document.getElementById("fav-chip").addEventListener("click", () => {
   document.getElementById("fav-chip").setAttribute("aria-pressed", favOnly ? "true" : "false");
   render();
 });
+
+/* 按 id 深链（裁定 v1.1 · 跨板块互链）：games.html#q-… 打开就直接弹那张卡的详情浮层。
+   焦点回到那张卡自己的「查看详情」按钮（卡片被筛选挡住时就落回页面，不报错）。
+   Esc／×／点遮罩照常关闭。只认 q- 开头、确实存在的 id。 */
+function openFromHash(){
+  const id = decodeURIComponent((location.hash || "").slice(1));
+  if(!/^q-[A-Za-z0-9-]+$/.test(id)) return;
+  const q = QUESTIONS.find(x => x.id === id);
+  if(!q) return;
+  const card = [...cardsEl.querySelectorAll("article.card")].find(el => el.dataset.qid === id);
+  const trigger = card ? card.querySelector(".btn-detail") : null;
+  if(card) card.scrollIntoView({block: "center"});
+  if(!claimOverlay.hidden) closeClaim();
+  openModal(q, trigger);
+}
+window.addEventListener("hashchange", openFromHash);
 
 render();
 </script>

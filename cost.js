@@ -67,6 +67,7 @@
       whoReal: "机友",
       draftHint: "草稿占位，勿引用",
       wallCta: "去账号页挑配置，上墙 →",
+      wallCtaGuest: "没号？注册后挑好配置就能上墙 →",
       derivedTag: "折算",
       avgScope: "{n} 区",
       avgScopeHint: "全球均价统计了 {n} 个国家和地区的官方 App Store 店面价，折成人民币后平均",
@@ -74,7 +75,8 @@
       hiddenCost: "海外大模型的订阅费只是明面上的一半：走官方渠道订阅，通常还要一套能连通海外服务的网络环境、一个海外 Apple ID、一张海外信用卡，往往不止一样；再加上地区可用性和支付方式的限制，总体使用成本和门槛都高于国内可以直接订阅的大模型。上表的折算价只换算了订阅费本身，不含这些隐性成本。",
       derivedHintUs: "中国大陆无官方渠道：美国官方价按汇率折算",
       derivedHintAvg: "中国大陆无官方渠道：取全球均价",
-      sparkAria: "价格走势占位"
+      sparkAria: "价格走势占位",
+      related: "相关"
     },
     en: {
       pageTitle: "LLM costs",
@@ -137,6 +139,7 @@
       whoReal: "Reader",
       draftHint: "Draft placeholder, do not cite",
       wallCta: "Pick your setup on the account page →",
+      wallCtaGuest: "No account? Sign up, pick your setup, and you’re on the wall →",
       derivedTag: "converted",
       avgScope: "{n} regions",
       avgScopeHint: "Global average across official App Store storefronts in {n} countries and regions, converted to CNY",
@@ -144,7 +147,8 @@
       hiddenCost: "For overseas models the subscription fee is only half the story: subscribing through official channels usually also takes a network setup that can reach overseas services, an overseas Apple ID, an overseas credit card, and often more than one of these; regional availability and payment limits add friction on top. Overall cost and hurdles run higher than for domestic models you can subscribe to directly. The converted prices above cover the fee only, not these hidden costs.",
       derivedHintUs: "No official channel in mainland China: US price converted at the current rate",
       derivedHintAvg: "No official channel in mainland China: global average shown",
-      sparkAria: "Price sparkline placeholder"
+      sparkAria: "Price sparkline placeholder",
+      related: "Related"
     }
   };
 
@@ -233,7 +237,7 @@
     }
     body.innerHTML = items.map(function (it) {
       var draft = it.status !== "verified";
-      return '<tr class="' + (draft ? "is-draft" : "") + '"' + (draft ? ' title="' + esc(t("draftHint")) + '"' : "") + ">" +
+      return '<tr id="' + esc(it.id) + '" class="' + (draft ? "is-draft" : "") + '"' + (draft ? ' title="' + esc(t("draftHint")) + '"' : "") + ">" +
         "<td><span class=\"product\">" + esc(it.product) + "</span>" +
         '<span class="vendor">' + esc(it.vendor) + "</span></td>" +
         '<td class="num">' + money(it.prices && it.prices.cn) + "</td>" +
@@ -243,6 +247,14 @@
         "<td>" + statusBadge(it.status) + "</td>" +
         "</tr>";
     }).join("");
+    // 「相关」挂在产品名那一格底下（只有已核对、带 related 的行才有）
+    if (window.RJ_RELATED) {
+      items.forEach(function (it) {
+        if (it.status !== "verified" || !it.related || !it.related.length) return;
+        var row = document.getElementById(it.id);
+        if (row) row.cells[0].appendChild(window.RJ_RELATED.node(it.related, { label: t("related") }));
+      });
+    }
   }
 
   function apiMoney(side) {
@@ -466,6 +478,15 @@
       cache.wall = r.data.items;
       if (cache.setups && cache.tags) renderSetups(cache.setups, cache.tags);
     }).catch(function () { /* 后端不通：留着示例卡 */ });
+    // 墙按钮：默认对没号的人说清楚「先注册」；已登录的号换成「去挑配置」
+    RJ.available().then(function (cfg) {
+      return cfg ? RJ.me() : null;
+    }).then(function (me) {
+      var cta = document.getElementById("wallCta");
+      if (!me || !cta) return;
+      cta.setAttribute("data-i18n", "wallCta");
+      cta.textContent = t("wallCta");
+    }).catch(function () { /* 探不到就保持没号的那句 */ });
   }
 
   Promise.all([
@@ -479,6 +500,7 @@
     cache.tags = pack[2];
     cache.setups = pack[3];
     rerender();
+    if (window.RJ_RELATED) window.RJ_RELATED.scrollToHash();   // cost.html#<行 id> 从别的板块链过来
   }).catch(function () {
     document.getElementById("costMeta").innerHTML =
       '<span class="log-state err" style="padding:0">' + esc(t("failMeta")) + "</span>" +

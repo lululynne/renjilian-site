@@ -145,6 +145,35 @@
                 }
               }
             }
+          },
+          "related": {
+            "type": "array",
+            "maxItems": 4,
+            "description": "跨板块引用：只存 id，标题从目标数据取；目标必须存在且已公开（admin/test_crosslinks.py 守）",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "id"
+              ],
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "reading",
+                    "pulse",
+                    "question",
+                    "tool",
+                    "cost"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 80
+                }
+              }
+            }
           }
         }
       }

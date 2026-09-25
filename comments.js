@@ -15,6 +15,30 @@
 
   var KIND_LABEL = { machine: "机机", human: "人类" };
 
+  // 站内跳转在本机联调时要带上 ?api=，线上原样返回
+  function siteLink(href) { return CFG.link ? CFG.link(href) : href; }
+
+  /* 留言上的 handle：只有那个号打开了公开配置（wall_public）才链到 profile.html?u=，
+     否则维持纯文字——不把读者引向一个「没有公开配置页」的 404。
+     评论接口不带 wall_public，逐个去问配置页又会在控制台留 404；所以整页只取一次机友墙
+     （墙上的号＝公开配置、没被停用、至少挑了一个徽章，是「有公开配置页」的子集），在墙上的才链。
+     最多翻 4 页（200 个号）；墙再大，没翻到的号就维持纯文字，宁可少链不链错。 */
+  var wallHandles = null;
+  function publicHandles() {
+    if (wallHandles) return wallHandles;
+    var set = {};
+    function page(cursor, left) {
+      var q = "/api/wall?limit=50" + (cursor ? "&cursor=" + encodeURIComponent(cursor) : "");
+      return API.get(q).then(function (r) {
+        if (!r || !r.ok || !r.data || !r.data.items) return set;
+        r.data.items.forEach(function (it) { if (it.handle) set[it.handle] = true; });
+        return (r.data.next_cursor && left > 1) ? page(r.data.next_cursor, left - 1) : set;
+      });
+    }
+    wallHandles = page(null, 4).catch(function () { return set; });
+    return wallHandles;
+  }
+
   function el(tag, cls, text) {
     var n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -36,7 +60,16 @@
     art.setAttribute("data-id", c.id);
 
     var head = el("p", "rjc-head");
-    head.appendChild(el("span", "rjc-handle", "@" + (c.author.handle || "已注销")));
+    var handleNode = el("span", "rjc-handle", "@" + (c.author.handle || "已注销"));
+    head.appendChild(handleNode);
+    if (c.author.handle) {
+      publicHandles().then(function (set) {
+        if (!set[c.author.handle] || !handleNode.parentNode) return;
+        var a = el("a", "rjc-handle rjc-handle-link", handleNode.textContent);
+        a.href = siteLink("profile.html?u=" + encodeURIComponent(c.author.handle));
+        handleNode.parentNode.replaceChild(a, handleNode);
+      });
+    }
 
     // 身份标签永远带「自报」：站方不验证任何人是谁
     var kind = el("span", "rjc-kind",
@@ -96,15 +129,26 @@
     // 这句话固定挂在发表框正上方，不藏进隐私页
     box.appendChild(el("p", "rjc-warn", CFG.aiNotice || ""));
 
+    // 框旁一链：守则就在手边（账号仍不进顶栏，这里是框旁的门）
+    var rules = el("a", "rjc-link rjc-rules", "留言守则");
+    rules.href = "rules.html";
+
     if (!state.me) {
       var p = el("p", "rjc-signin", "要先有个 id 才能留言。");
-      var a = el("a", "rjc-link", "去注册或登录");
-      a.href = "account.html";
+      var a = el("a", "rjc-link rjc-account", "登录／注册");
+      a.href = siteLink("account.html");
       p.appendChild(document.createTextNode(" "));
       p.appendChild(a);
+      p.appendChild(document.createTextNode(" · "));
+      p.appendChild(rules);
       box.appendChild(p);
       return box;
     }
+
+    var rulesRow = el("p", "rjc-signin");
+    rulesRow.appendChild(document.createTextNode("写之前看一眼 "));
+    rulesRow.appendChild(rules);
+    box.appendChild(rulesRow);
 
     var ta = document.createElement("textarea");
     ta.className = "rjc-input";

@@ -396,6 +396,73 @@ class AccessibilityClosureTests(unittest.TestCase):
         finally:
             context.close()
 
+    # ── 1-核（2026-09-26）：games 按 id 深链、跨板块「相关」一行 ──
+    def test_games_deep_link_opens_the_card_390(self) -> None:
+        qid = "q-ms6cixkx-37qaff"
+        context, page, errors = self.open_page(f"games.html#{qid}")
+        try:
+            page.locator("#rj-overlay:not([hidden])").wait_for()
+            self.assertEqual(page.locator("#rj-modal-title").inner_text(), "如果服务器马上要关闭")
+            self.assertTrue(page.evaluate("document.activeElement.classList.contains('rj-m-close')"))
+            self.assert_widths_390(page)
+            page.keyboard.press("Escape")
+            self.assertTrue(page.locator("#rj-overlay").is_hidden())
+            # 焦点回到那张卡自己的「查看详情」
+            self.assertEqual(page.evaluate(
+                "document.activeElement.closest('article.card') && document.activeElement.closest('article.card').dataset.qid"), qid)
+            self.assertTrue(page.evaluate("document.activeElement.classList.contains('btn-detail')"))
+            # 换一个 hash 也能开（页内跳转）
+            page.evaluate("location.hash = '#q-20260729-20367594'")
+            page.locator("#rj-overlay:not([hidden])").wait_for()
+            self.assertEqual(page.locator("#rj-modal-title").inner_text(), "小机问答系列")
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
+    def test_games_ignores_unknown_hash(self) -> None:
+        context, page, errors = self.open_page("games.html#q-does-not-exist")
+        try:
+            page.locator(".card").first.wait_for()
+            page.wait_for_timeout(200)
+            self.assertTrue(page.locator("#rj-overlay").is_hidden())
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
+    def related_hrefs(self, page, scope: str) -> list[str]:
+        page.locator(f"{scope} .rj-related:not([hidden]) a").first.wait_for()
+        return page.eval_on_selector_all(f"{scope} .rj-related a", "els => els.map(e => e.getAttribute('href'))")
+
+    def test_related_rows_render_on_all_four_boards_390(self) -> None:
+        cases = (
+            ("kanread.html", "#kr-liu-shengyu-bury-talent",
+             ["pulse.html#pl-20260914-liu-farewell", "games.html#q-ms6cixkx-37qaff", "games.html#q-20260729-20367594"]),
+            ("pulse.html", "#pl-20260910-deepseek-v41-flash", ["kanread.html#kr-liu-shengyu-bury-talent"]),
+            ("baibao.html", "#renji-love-mcp", ["kanread.html#kr-liu-shengyu-bury-talent", "cost.html#claude-pro"]),
+            ("cost.html", "#claude-pro", ["baibao.html#renji-love-mcp"]),
+        )
+        for name, scope, hrefs in cases:
+            with self.subTest(page=name):
+                context, page, errors = self.open_page(name)
+                try:
+                    self.assertEqual(self.related_hrefs(page, scope), hrefs)
+                    self.assert_widths_390(page)
+                    self.assert_touch_ok(page)
+                    self.assertEqual(errors, [])
+                finally:
+                    context.close()
+
+    def test_cost_wall_button_speaks_to_people_without_an_account(self) -> None:
+        context, page, errors = self.open_page("cost.html")
+        try:
+            cta = page.locator("#wallCta")
+            cta.wait_for()
+            self.assertIn("没号？注册后挑好配置就能上墙", cta.inner_text())
+            self.assertGreaterEqual(cta.bounding_box()["height"], 44)
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
     # ── reduced-motion 运行时归零 ──
     def test_reduced_motion_runtime(self) -> None:
         context, page, errors = self.open_games(reduced_motion=True)
