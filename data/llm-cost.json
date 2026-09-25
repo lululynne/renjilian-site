@@ -15,12 +15,15 @@
       "product": "ChatGPT Plus",
       "prices": {
         "cn": {
-          "amount": null,
+          "amount": 134.18,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://apps.apple.com/cn/app/id6448311069",
+          "source_url": "https://apps.apple.com/us/app/id6448311069",
           "as_of": "2026-09-25",
-          "note": "该地区无官方渠道：App Store 中国区该 App 页面 404；未见中国大陆官方人民币标价。"
+          "note": "中国大陆无官方渠道；此值为美国官方价 $19.99 按 2026-09-24 ECB 中间价 6.7126 折算，非人民币标价。原备注：该地区无官方渠道：App Store 中国区该 App 页面 404；未见中国大陆官方人民币标价。",
+          "derived_from": "us",
+          "fx_usd_cny": 6.7126,
+          "fx_date": "2026-09-24"
         },
         "us": {
           "amount": 19.99,
@@ -54,12 +57,15 @@
       "product": "Claude Pro",
       "prices": {
         "cn": {
-          "amount": null,
+          "amount": 134.25,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://apps.apple.com/cn/app/id6473753684",
+          "source_url": "https://claude.com/pricing",
           "as_of": "2026-09-25",
-          "note": "该地区无官方渠道：App Store 中国区该 App 页面 404；Anthropic 支持地区列表未列中国大陆。"
+          "note": "中国大陆无官方渠道；此值为美国官方价 $20 按 2026-09-24 ECB 中间价 6.7126 折算，非人民币标价。原备注：该地区无官方渠道：App Store 中国区该 App 页面 404；Anthropic 支持地区列表未列中国大陆。",
+          "derived_from": "us",
+          "fx_usd_cny": 6.7126,
+          "fx_date": "2026-09-24"
         },
         "us": {
           "amount": 20,
@@ -93,12 +99,15 @@
       "product": "Google AI Pro",
       "prices": {
         "cn": {
-          "amount": null,
+          "amount": 134.18,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://apps.apple.com/cn/app/id6477489729",
+          "source_url": "https://apps.apple.com/us/app/id6477489729",
           "as_of": "2026-09-25",
-          "note": "该地区无官方渠道：App Store 中国区 Gemini 页面 404；Google AI Pro 可用国家列表未列中国大陆。"
+          "note": "中国大陆无官方渠道；此值为美国官方价 $19.99 按 2026-09-24 ECB 中间价 6.7126 折算，非人民币标价。原备注：该地区无官方渠道：App Store 中国区 Gemini 页面 404；Google AI Pro 可用国家列表未列中国大陆。",
+          "derived_from": "us",
+          "fx_usd_cny": 6.7126,
+          "fx_date": "2026-09-24"
         },
         "us": {
           "amount": 19.99,
@@ -132,12 +141,15 @@
       "product": "SuperGrok",
       "prices": {
         "cn": {
-          "amount": null,
+          "amount": 201.38,
           "currency": "CNY",
           "unit": "month",
-          "source_url": "https://apps.apple.com/cn/app/id6670324846",
+          "source_url": "https://apps.apple.com/us/app/id6670324846",
           "as_of": "2026-09-25",
-          "note": "该地区无官方渠道：App Store 中国区 Grok 页面 404。"
+          "note": "中国大陆无官方渠道；此值为美国官方价 $30 按 2026-09-24 ECB 中间价 6.7126 折算，非人民币标价。原备注：该地区无官方渠道：App Store 中国区 Grok 页面 404。",
+          "derived_from": "us",
+          "fx_usd_cny": 6.7126,
+          "fx_date": "2026-09-24"
         },
         "us": {
           "amount": 30,
@@ -553,5 +565,5 @@
     }
   ],
   "history_note": "sparkline 只在攒够真实官方价周采样后填入；空数组=还没有历史，页面画一条平线。",
-  "coverage_note": "代表档：一产品一行，档位写在产品名括号里；同系其他档见该行 note。中国价＝中国大陆官方渠道标价，美国价＝美国官方渠道标价；「—」且已核对＝该地区无官方渠道。"
+  "coverage_note": "代表档：一产品一行，档位写在产品名括号里；同系其他档见该行 note。中国价＝中国大陆官方渠道标价；国外模型在中国大陆没有官方渠道的，中国价一栏显示美国官方价按当期汇率折算的人民币（derived_from=us，页面前缀 ≈），美国价缺失时退到全球均价（derived_from=global_avg）。美国价＝美国官方渠道标价；「—」且已核对＝该地区无官方渠道。"
 }

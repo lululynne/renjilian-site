@@ -64,6 +64,8 @@
 .cost-table .muted{color:var(--ink-soft);font-size:12.5px}
 .cost-table tr.is-draft td.num{color:var(--ink-soft);font-style:italic}
 .cost-table tr.is-draft .product{color:var(--ink-soft)}
+.cost-hidden{margin:14px 0 0}
+.cost-table .derived-tag{display:inline-block;margin-left:6px;font-size:10px;letter-spacing:.06em;padding:1px 5px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);vertical-align:1px}
 .cost-spark{display:block;width:88px;height:28px}
 .cost-section{margin:36px 0 10px}
 .cost-section h3{
@@ -194,7 +196,7 @@
 
   <section class="cost-section" id="subs">
     <h3 data-i18n="secSubs">月订阅对照</h3>
-    <p class="lede" data-i18n="ledeSubs">全球均价 = 各国家和地区官方订阅价折成人民币后的平均，统计范围在页脚说明。还没收齐多地区价格的行显示「—」。曲线要等攒够真实的周采样才会画出来，现在是一条平线。</p>
+    <p class="lede" data-i18n="ledeSubs">全球均价 = 各国家和地区官方订阅价折成人民币后的平均，统计范围在页脚说明。国外模型在中国大陆没有官方渠道的，中国价一栏显示美国官方价按当期汇率折算的人民币，前面带 ≈。曲线要等攒够真实的周采样才会画出来，现在是一条平线。</p>
     <div class="cost-panel">
       <div class="cost-scroll" tabindex="0" role="region" aria-label="月订阅对照表，可横向滚动">
       <table class="cost-table" id="subTable" aria-describedby="subDisclaimer">
@@ -214,6 +216,10 @@
       </table>
       </div>
     </div>
+    <aside class="claim kanread-note cost-hidden" aria-labelledby="hiddenCostTitle">
+      <strong id="hiddenCostTitle" data-i18n="hiddenCostTitle">看不见的那部分账</strong><br>
+      <span data-i18n="hiddenCost">海外大模型的订阅费只是明面上的一半：走官方渠道订阅，通常还要一套能连通海外服务的网络环境、一个海外 Apple ID、一张海外信用卡，往往不止一样；再加上地区可用性和支付方式的限制，总体使用成本和门槛都高于国内可以直接订阅的大模型。上表的折算价只换算了订阅费本身，不含这些隐性成本。</span>
+    </aside>
   </section>
 
   <section class="cost-section" id="api">

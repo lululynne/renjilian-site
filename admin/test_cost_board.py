@@ -63,6 +63,32 @@ class CostBoardDataTests(unittest.TestCase):
                         self.assertTrue(str(side.get("source_url", "")).startswith("http"), f"{it['id']}.{region} 缺官方来源")
                         self.assertEqual(side.get("as_of"), it["last_verified"], f"{it['id']}.{region} as_of 与 last_verified 不一致")
 
+    def test_derived_china_prices_are_labelled_and_traceable(self) -> None:
+        """梅宝 09-25 定：国外模型没有中国大陆官方渠道的，中国价一栏放美国价折算的人民币（退而求其次放全球均价）。
+        折算值必须带 derived_from、汇率与汇率日期，且汇率等于顶层 fx；换算结果与 us×fx 相差不超过 0.01。"""
+        fx = self.subs["fx"]["usd_cny"]
+        derived = 0
+        for it in self.subs["items"]:
+            cn = it["prices"]["cn"]
+            if not cn.get("derived_from"):
+                continue
+            derived += 1
+            with self.subTest(row=it["id"]):
+                self.assertIn(cn["derived_from"], ("us", "global_avg"))
+                self.assertEqual(cn["currency"], "CNY")
+                self.assertEqual(cn.get("fx_usd_cny"), fx)
+                self.assertEqual(cn.get("fx_date"), self.subs["fx_updated_at"])
+                self.assertTrue(str(cn.get("source_url", "")).startswith("http"))
+                if cn["derived_from"] == "us":
+                    us = it["prices"]["us"]
+                    self.assertAlmostEqual(cn["amount"], round(us["amount"] * fx, 2), delta=0.01)
+                else:
+                    self.assertEqual(cn["amount"], it["global_avg"]["amount"])
+        self.assertGreater(derived, 0, "国外模型的中国价折算行一行都没有")
+        js = (ROOT / "cost.js").read_text(encoding="utf-8")
+        for key in ("derivedTag", "derivedHintUs", "derivedHintAvg"):
+            self.assertEqual(js.count(f"{key}:"), 2, f"i18n 键 {key} 中英两包都要有")
+
     def test_no_fake_sparkline_without_history_source(self) -> None:
         """没有真实历史来源前，sparkline 必须为空（页面画平线），不许拿占位数组冒充行情。"""
         for it in self.subs["items"]:
@@ -134,7 +160,7 @@ class CostBoardDataTests(unittest.TestCase):
         for name in ("llm-cost.json", "llm-cost-api.json", "llm-cost-tags.json", "llm-cost-setups.json"):
             self.assertIn(f"data/{name}", js)
         self.assertIn('id="langZh"', html); self.assertIn('id="langEn"', html)
-        for key in ("rowRoute", "whoReal", "draftHint"):
+        for key in ("rowRoute", "whoReal", "draftHint", "hiddenCostTitle", "hiddenCost"):
             self.assertEqual(js.count(f"{key}:"), 2, f"i18n 键 {key} 中英两包都要有")
         self.assertIn('href="cost.html" class="on"', html)
         for page in ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "changelog.html"):
