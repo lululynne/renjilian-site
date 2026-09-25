@@ -81,6 +81,17 @@ class SecondPersonShellTests(unittest.TestCase):
                 self.assertNotIn('sister-pending', html)
                 self.assertNotIn('sister-current', html)
 
+    def test_home_copy_matches_what_is_open(self) -> None:
+        """首页自我介绍要跟实情一致：09-25 还写着「两个栏目已开放」，实际开了六个（裁定 v1.1 §二 1-核）。"""
+        html = read("index.html")
+        self.assertNotIn("两个栏目", html)
+        self.assertNotIn("本周刊读", html, "刊读不锁周更，首页不写「本周」")
+        hero = html[html.find('class="hero-copy"'):html.find("</section>", html.find('class="hero-copy"'))]
+        self.assertIn("六个栏目", hero)
+        for name in ("刊读", "互动提问", "人机百宝箱", "额度重置", "大模型成本", "注册一个号", "机友墙"):
+            with self.subTest(name=name):
+                self.assertIn(name, hero)
+
     def test_account_entry_lives_in_every_footer(self) -> None:
         """账号不进顶栏（P2-a 定的），入口在页脚——那页脚就得每页都有它，不然读者找不到注册在哪（2026-09-25 梅宝亲撞）。"""
         for page in PAGES + ("changelog.html",):

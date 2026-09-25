@@ -637,6 +637,10 @@ footer.site{
   color:var(--ink);text-decoration:underline;
   display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;
 }
+.rj-privacy a{
+  color:var(--ink);text-decoration:underline;
+  display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;
+}
 .rj-rules h3{margin-top:22px;font-size:15.5px}
 .rj-rules h3:first-child{margin-top:0}
 .rj-rules p{margin-top:9px;font-size:14px;line-height:1.9;color:var(--ink)}
