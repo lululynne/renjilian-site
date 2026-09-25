@@ -65,6 +65,9 @@
 .cost-table tr.is-draft td.num{color:var(--ink-soft);font-style:italic}
 .cost-table tr.is-draft .product{color:var(--ink-soft)}
 .cost-hidden{margin:14px 0 0}
+.cost-cta-row{margin:6px 0 4px}
+.cost-cta{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--ink);border-radius:6px;color:var(--ink);text-decoration:none;font:600 13px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.04em}
+.cost-cta:hover{background:var(--ink);color:#fff}
 .cost-table .avg-scope{display:block;font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em;margin-top:2px}
 .cost-table .derived-tag{display:inline-block;margin-left:6px;font-size:10px;letter-spacing:.06em;padding:1px 5px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);vertical-align:1px}
 .cost-spark{display:block;width:88px;height:28px}
@@ -179,6 +182,7 @@
   <section class="cost-section" id="setups">
     <h3 data-i18n="secSetups">机友怎么配</h3>
     <p class="lede" data-i18n="ledeSetups">站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡是一个号自己挑的配置：一行月订阅、一行设备、一行路线。在账号页挑好配置、打开「在墙上显示」，你的卡就会出现在这里。</p>
+    <p class="cost-cta-row"><a class="cost-cta" href="account.html" data-i18n="wallCta">去账号页挑配置，上墙 →</a></p>
     <div class="setup-wall" id="setupWall" aria-live="polite">
       <p class="log-state" data-i18n="loadingSetups">正在摆卡…</p>
     </div>
@@ -197,6 +201,7 @@
     <p>同一组作者，三种共同生活的入口</p>
     <nav aria-label="站点与姐妹网站">
       <a href="changelog.html">更新日志</a>
+      <a href="account.html">账号</a>
       <a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a>
       <a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a>
     </nav>

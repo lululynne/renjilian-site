@@ -81,6 +81,16 @@ class SecondPersonShellTests(unittest.TestCase):
                 self.assertNotIn('sister-pending', html)
                 self.assertNotIn('sister-current', html)
 
+    def test_account_entry_lives_in_every_footer(self) -> None:
+        """账号不进顶栏（P2-a 定的），入口在页脚——那页脚就得每页都有它，不然读者找不到注册在哪（2026-09-25 梅宝亲撞）。"""
+        for page in PAGES + ("changelog.html",):
+            with self.subTest(page=page):
+                html = read(page)
+                footer = html[html.find("<footer"):]
+                self.assertEqual(footer.count('href="account.html"'), 1, f"{page} 页脚缺账号入口")
+                nav = NAV_BLOCK.search(html)
+                self.assertNotIn("account.html", nav.group(0), f"{page} 顶栏不该有账号")
+
     def test_public_changelog_has_one_markdown_truth_source(self) -> None:
         page = read("changelog.html")
         markdown = read("CHANGELOG.md")
