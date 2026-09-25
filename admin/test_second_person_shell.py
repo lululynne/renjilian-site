@@ -17,8 +17,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 # 2026-09-18：刊读（kanread）第一篇上线后成为已开放栏目，登记为真实路由并进顶栏；
 # 脉搏（pulse）是刊读的子页，只走刊读页内的子栏，不占顶栏。规矩没变：未开放的不进公开导航。
-PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html")
-REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html"}
+# 2026-09-25：大模型成本（cost）以实验看板身份进顶栏，同额度重置一档；价格行未核对前 status=draft，由 test_cost_board 守。
+PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "cost.html")
+REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "cost.html"}
 NAV_BLOCK = re.compile(r'<nav class="boards".*?</nav>', re.S)
 ANCHOR = re.compile(r'<a\b[^>]*\bhref="([^"]*)"')
 

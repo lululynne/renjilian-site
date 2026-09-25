@@ -119,6 +119,7 @@ nav.boards span.soon{opacity:.6}
 .tile.live[href="games.html"]{border-top:4px solid var(--human)}
 .tile.live[href="baibao.html"]{border-top:4px solid var(--machine)}
 .tile.live[href="codex.html"]{border-top:4px solid var(--ink)}
+.tile.live[href="cost.html"]{border-top:4px solid var(--machine)}
 .tile.live .tag-soon{background:var(--ink);color:#fff}
 .section-label{
   color:var(--ink-soft);font:650 11px/1.4 "Avenir Next","PingFang SC",sans-serif;

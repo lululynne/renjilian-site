@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大模型成本 · 第二人称</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* 大模型成本 · 页面增量样式（实验看板，先放本页，避免污染共享 style.css） */
+.cost-meta{
+  display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;
+  margin:14px 0 6px;font-size:12.5px;color:var(--ink-soft);
+}
+.cost-meta time{font-variant-numeric:tabular-nums}
+.cost-lang{
+  display:inline-flex;align-items:center;gap:0;margin-left:auto;
+  border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  background:rgba(255,255,255,.72);backdrop-filter:saturate(120%) blur(8px);
+}
+.cost-lang button{
+  font:550 11.5px/1 "Avenir Next","PingFang SC",sans-serif;
+  letter-spacing:.06em;padding:6px 11px;border:0;background:transparent;
+  color:var(--ink-soft);cursor:pointer;min-height:0;min-width:0;
+}
+.cost-lang button + button{border-left:1px solid var(--line)}
+.cost-lang button.on{background:var(--ink);color:#fff}
+.cost-badge{
+  font-size:11px;letter-spacing:.04em;padding:2px 9px;border-radius:3px;
+  background:var(--card-block);color:var(--ink-soft);border:1px solid var(--line);
+}
+.cost-badge.draft{background:#f6efe6;color:#8a6a3a;border-color:#e6d7bc}
+.cost-panel{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:0 14px 40px rgba(48,70,82,.06);padding:18px 18px 8px;margin:18px 0 28px;
+  overflow-x:auto;
+}
+.cost-table{
+  width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px;
+}
+.cost-table th,.cost-table td{
+  text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);
+  vertical-align:middle;
+}
+.cost-table th{
+  font:650 11px/1.4 "Avenir Next","PingFang SC",sans-serif;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
+}
+.cost-table td.num,.cost-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+.cost-table .product{font-weight:650;color:var(--ink)}
+.cost-table .vendor{display:block;font-size:12px;color:var(--ink-soft);font-weight:400;margin-top:2px}
+.cost-table .muted{color:var(--ink-soft);font-size:12.5px}
+.cost-table tr.is-draft td.num{color:var(--ink-soft);font-style:italic}
+.cost-table tr.is-draft .product{color:var(--ink-soft)}
+.cost-spark{display:block;width:88px;height:28px}
+.cost-section{margin:36px 0 10px}
+.cost-section h3{
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;
+  font-size:22px;font-weight:600;letter-spacing:.03em;margin:8px 0 6px;
+}
+.cost-section p.lede{font-size:13.5px;color:var(--ink-soft);max-width:720px}
+
+/* ── 机友怎么配 · 纸面卡 + 票根长条标签 ── */
+.setup-wall{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:20px 0 32px;
+}
+.setup-card{
+  background:linear-gradient(165deg, rgba(255,255,255,.96) 0%, var(--card) 48%, #f7fafb 100%);
+  border:1px solid var(--line);border-radius:14px;
+  padding:0;box-shadow:0 16px 40px rgba(48,70,82,.07);
+  display:flex;flex-direction:column;overflow:hidden;
+  backdrop-filter:saturate(118%) blur(6px);
+}
+.setup-card-top{
+  padding:18px 18px 14px;
+  border-bottom:1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  background:rgba(255,255,255,.55);
+}
+.setup-head{display:flex;gap:14px;align-items:center}
+.setup-avatar{
+  position:relative;flex:0 0 auto;width:52px;height:52px;
+}
+.setup-avatar img{
+  width:52px;height:52px;border-radius:50%;object-fit:cover;
+  border:1.5px solid #fff;
+  box-shadow:0 0 0 1px var(--line), 0 6px 14px rgba(48,70,82,.12);
+  background:var(--card-block);display:block;
+}
+.setup-head strong{
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;
+  font-size:18px;font-weight:600;letter-spacing:.04em;color:var(--ink);
+}
+.setup-head .who{
+  font-size:11px;color:var(--ink-soft);letter-spacing:.1em;
+  text-transform:uppercase;margin-top:3px;
+  font-family:"Avenir Next","PingFang SC",sans-serif;font-weight:600;
+}
+.setup-blurb{
+  font-size:13.5px;color:var(--ink);line-height:1.75;
+  padding:14px 18px 6px;margin:0;
+}
+.setup-body{padding:8px 18px 18px;display:flex;flex-direction:column;gap:14px}
+.setup-row{display:flex;flex-direction:column;gap:8px}
+.setup-row > .row-label{
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+  font-family:"Avenir Next","PingFang SC",sans-serif;font-weight:650;
+  display:flex;align-items:center;gap:8px;
+}
+.setup-row > .row-label::after{
+  content:"";flex:1;height:1px;background:color-mix(in srgb, var(--line) 85%, transparent);
+}
+.setup-tags{display:flex;gap:7px;flex-wrap:wrap}
+
+/* 票根长条：直角框，非胶囊 */
+.fare-tag{
+  display:inline-block;font-size:11.5px;line-height:1.35;
+  padding:4px 9px;border-radius:3px;border:1px solid;
+  font-weight:550;letter-spacing:.02em;cursor:default;user-select:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
+}
+.fare-tag[data-tone="coral"]{background:#fce8e8;border-color:#e8b4ab;color:#8a3f36}
+.fare-tag[data-tone="lavender"]{background:#eef0f8;border-color:#b8c0e0;color:#4a5688}
+.fare-tag[data-tone="ink"]{background:#e8ecef;border-color:#a8b4bc;color:#2a3540}
+.fare-tag[data-tone="teal"]{background:#e6f3f1;border-color:#9cc9c2;color:#2f6a63}
+.fare-tag[data-tone="slate"]{background:#eef1f4;border-color:#b0bbc6;color:#3d4a56}
+.fare-tag[data-tone="amber"]{background:#f8f0e2;border-color:#dcc49a;color:#7a5a28}
+.fare-tag[data-tone="jade"]{background:#e8f2ec;border-color:#a5c9b4;color:#2f6a4a}
+.fare-tag[data-tone="plum"]{background:#f3eaf1;border-color:#c9a8c0;color:#6a3d5e}
+.fare-tag[data-tone="peach"]{background:#fceee8;border-color:#e5b9a8;color:#8a4a38}
+.fare-tag[data-tone="sky"]{background:#e8f2f8;border-color:#a8c6d8;color:#2f5a78}
+.fare-tag[data-tone="indigo"]{background:#e9ecf6;border-color:#a8b4d8;color:#3a4578}
+.fare-tag[data-tone="graphite"]{background:#eceef0;border-color:#9aa1a8;color:#1f252b}
+.fare-tag[data-tone="mist"]{background:#f2f4f5;border-color:#c5ced3;color:#5a666e}
+.fare-tag[data-tone="device"]{background:#eef3f0;border-color:#a8c0b4;color:#3a5a4a}
+.fare-tag[data-tone="device-alt"]{background:#f0f2ef;border-color:#b4c0b0;color:#4a5a42}
+
+@media (max-width:900px){
+  .setup-wall{grid-template-columns:1fr}
+  .cost-lang{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>第二人称</h1>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
+    </div>
+    <nav class="boards" aria-label="站内板块">
+      <a href="index.html">首页</a>
+      <a href="games.html">互动提问</a>
+      <a href="baibao.html">MCP / Skills</a>
+      <a href="codex.html">额度重置</a>
+      <a href="cost.html" class="on">大模型成本</a>
+      <a href="kanread.html">刊读</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="board-head">
+    <p class="section-label">EXPERIMENTAL · BILLING</p>
+    <h2 data-i18n="pageTitle">大模型成本</h2>
+    <p data-i18n="pageLede">把你和机机共同过日子的订阅账，摊开在桌上：中国价、美国价、再加一个全球均价，留一条小曲线占位。这不是省钱攻略，是账单透明。</p>
+    <div class="cost-meta" id="costMeta" aria-live="polite">
+      <span class="log-state" style="padding:0" data-i18n="metaLoading">正在打开账单…</span>
+      <div class="cost-lang" role="group" aria-label="Language">
+        <button type="button" id="langZh" class="on" data-lang="zh">中文</button>
+        <button type="button" id="langEn" data-lang="en">English</button>
+      </div>
+    </div>
+  </section>
+
+  <nav class="subnav" aria-label="成本页两层">
+    <a href="#subs" class="here"><span data-i18n="navSubs">月订阅对照</span> <small data-i18n="navSubsSmall">主表 · 中国 / 美国 / 全球均价</small></a>
+    <a href="#api"><span data-i18n="navApi">API 参考</span> <small data-i18n="navApiSmall">每 1M tokens</small></a>
+    <a href="#setups"><span data-i18n="navSetups">机友怎么配</span> <small data-i18n="navSetupsSmall">月订阅配置 × 设备</small></a>
+  </nav>
+
+  <section class="cost-section" id="subs">
+    <h3 data-i18n="secSubs">月订阅对照</h3>
+    <p class="lede" data-i18n="ledeSubs">全球均价 = 各国家和地区官方订阅价折成人民币后的平均，统计范围在页脚说明。还没收齐多地区价格的行显示「—」。曲线要等攒够真实的周采样才会画出来，现在是一条平线。</p>
+    <div class="cost-panel">
+      <table class="cost-table" id="subTable" aria-describedby="subDisclaimer">
+        <thead>
+          <tr>
+            <th data-i18n="thProduct">产品</th>
+            <th class="num" data-i18n="thCn">中国价</th>
+            <th class="num" data-i18n="thUs">美国价</th>
+            <th class="num" data-i18n="thAvg">全球均价</th>
+            <th data-i18n="thSpark">曲线</th>
+            <th data-i18n="thStatus">状态</th>
+          </tr>
+        </thead>
+        <tbody id="subBody">
+          <tr><td colspan="6" class="muted" data-i18n="loadingSubs">正在翻账本…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="cost-section" id="api">
+    <h3 data-i18n="secApi">API 参考单价</h3>
+    <p class="lede" data-i18n="ledeApi">按每 100 万 tokens 的公开参考价。币种以厂商标价为准；多数仍是 draft。</p>
+    <div class="cost-panel">
+      <table class="cost-table" id="apiTable">
+        <thead>
+          <tr>
+            <th data-i18n="thModel">模型</th>
+            <th class="num" data-i18n="thIn">输入 / 1M</th>
+            <th class="num" data-i18n="thOut">输出 / 1M</th>
+            <th data-i18n="thStatus">状态</th>
+          </tr>
+        </thead>
+        <tbody id="apiBody">
+          <tr><td colspan="4" class="muted" data-i18n="loadingApi">正在对照单价…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="cost-section" id="setups">
+    <h3 data-i18n="secSetups">机友怎么配</h3>
+    <p class="lede" data-i18n="ledeSetups">站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡一行月订阅配置、一行设备——标签是具体套餐与型号，方便以后投稿。</p>
+    <div class="setup-wall" id="setupWall" aria-live="polite">
+      <p class="log-state" data-i18n="loadingSetups">正在摆卡…</p>
+    </div>
+  </section>
+
+  <section class="claim kanread-note" id="subDisclaimer">
+    <strong data-i18n="disclaimerTitle">关于这一页</strong><br>
+    <span id="disclaimerText" data-i18n="disclaimerBody">本页是实验看板脚手架：价格多为公开价的大致区间占位，status=draft 的条目尚未按当日官网核对。不含跨区购买或 VPN 提示。被提到的厂商要更正，来信即可。</span><br>
+    <span data-i18n="disclaimerContact">更正与撤下：</span><a href="mailto:arumrasidi813@gmail.com">arumrasidi813@gmail.com</a>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="站点与姐妹网站">
+      <a href="changelog.html">更新日志</a>
+      <a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a>
+      <a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="cost.js"></script>
+</body>
+</html>

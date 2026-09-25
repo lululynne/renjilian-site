@@ -18,8 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PAGE = "kanread.html"
 DATA = "data/kanread.json"
 SCHEMA = "data/kanread.schema.json"
-REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html"}
-ALL_PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "changelog.html", "kanread.html", "pulse.html")
+REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "cost.html"}
+ALL_PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "changelog.html", "kanread.html", "pulse.html", "cost.html")
 QUOTE_CHARS = "「」『』“”‘’\"'"
 NAV_BLOCK = re.compile(r'<nav class="boards".*?</nav>', re.S)
 ANCHOR = re.compile(r'<a\b[^>]*\bhref="([^"]*)"')

@@ -1,0 +1,562 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-24",
+  "subscription": [
+    {
+      "id": "sub-chatgpt-go-monthly",
+      "label": "ChatGPT Go 月费",
+      "label_en": "ChatGPT Go monthly",
+      "tone": "coral",
+      "source": "https://chatgpt.com/pricing/",
+      "official": true,
+      "note": "个人档官方只有月付"
+    },
+    {
+      "id": "sub-chatgpt-plus-monthly",
+      "label": "ChatGPT Plus 月费",
+      "label_en": "ChatGPT Plus monthly",
+      "tone": "coral",
+      "source": "https://chatgpt.com/pricing/",
+      "official": true,
+      "note": "个人档官方只有月付"
+    },
+    {
+      "id": "sub-chatgpt-pro-monthly",
+      "label": "ChatGPT Pro 月费",
+      "label_en": "ChatGPT Pro monthly",
+      "tone": "coral",
+      "source": "https://chatgpt.com/pricing/",
+      "official": true,
+      "note": "个人档官方只有月付"
+    },
+    {
+      "id": "sub-claude-pro-monthly",
+      "label": "Claude Pro 月费",
+      "label_en": "Claude Pro monthly",
+      "tone": "lavender",
+      "source": "https://claude.com/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-claude-pro-yearly",
+      "label": "Claude Pro 年费",
+      "label_en": "Claude Pro yearly",
+      "tone": "lavender",
+      "source": "https://claude.com/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-claude-max-5x-monthly",
+      "label": "Claude Max 5x 月费",
+      "label_en": "Claude Max 5x monthly",
+      "tone": "lavender",
+      "source": "https://claude.com/pricing",
+      "official": true,
+      "note": "Max 官方只有月付"
+    },
+    {
+      "id": "sub-claude-max-20x-monthly",
+      "label": "Claude Max 20x 月费",
+      "label_en": "Claude Max 20x monthly",
+      "tone": "lavender",
+      "source": "https://claude.com/pricing",
+      "official": true,
+      "note": "Max 官方只有月付"
+    },
+    {
+      "id": "sub-google-ai-plus-monthly",
+      "label": "Google AI Plus 月费",
+      "label_en": "Google AI Plus monthly",
+      "tone": "teal",
+      "source": "https://one.google.com/about/google-ai-plans/",
+      "official": true,
+      "note": "原 Google One AI Premium 已改名"
+    },
+    {
+      "id": "sub-google-ai-pro-monthly",
+      "label": "Google AI Pro 月费",
+      "label_en": "Google AI Pro monthly",
+      "tone": "teal",
+      "source": "https://one.google.com/about/google-ai-plans/",
+      "official": true
+    },
+    {
+      "id": "sub-google-ai-pro-yearly",
+      "label": "Google AI Pro 年费",
+      "label_en": "Google AI Pro yearly",
+      "tone": "teal",
+      "source": "https://one.google.com/about/google-ai-plans/",
+      "official": true
+    },
+    {
+      "id": "sub-google-ai-ultra-monthly",
+      "label": "Google AI Ultra 月费",
+      "label_en": "Google AI Ultra monthly",
+      "tone": "teal",
+      "source": "https://one.google.com/about/google-ai-plans/",
+      "official": true
+    },
+    {
+      "id": "sub-kimi-andante-monthly",
+      "label": "Kimi Andante 月费",
+      "label_en": "Kimi Andante monthly",
+      "tone": "amber",
+      "source": "https://www.kimi.com/zh-hans/help/membership/membership-pricing",
+      "official": true,
+      "note": "官方周期叫连续包月"
+    },
+    {
+      "id": "sub-kimi-moderato-monthly",
+      "label": "Kimi Moderato 月费",
+      "label_en": "Kimi Moderato monthly",
+      "tone": "amber",
+      "source": "https://www.kimi.com/zh-hans/help/membership/membership-pricing",
+      "official": true,
+      "note": "官方周期叫连续包月"
+    },
+    {
+      "id": "sub-kimi-allegretto-monthly",
+      "label": "Kimi Allegretto 月费",
+      "label_en": "Kimi Allegretto monthly",
+      "tone": "amber",
+      "source": "https://www.kimi.com/zh-hans/help/membership/membership-pricing",
+      "official": true,
+      "note": "官方周期叫连续包月"
+    },
+    {
+      "id": "sub-kimi-allegro-monthly",
+      "label": "Kimi Allegro 月费",
+      "label_en": "Kimi Allegro monthly",
+      "tone": "amber",
+      "source": "https://www.kimi.com/zh-hans/help/membership/membership-pricing",
+      "official": true,
+      "note": "官方周期叫连续包月"
+    },
+    {
+      "id": "sub-kimi-allegretto-yearly",
+      "label": "Kimi Allegretto 年费",
+      "label_en": "Kimi Allegretto yearly",
+      "tone": "amber",
+      "source": "https://www.kimi.com/zh-hans/help/membership/membership-pricing",
+      "official": true,
+      "note": "官方周期叫连续包年"
+    },
+    {
+      "id": "sub-mimo-lite-monthly",
+      "label": "MiMo Token Plan Lite 月费",
+      "label_en": "MiMo Token Plan Lite monthly",
+      "tone": "ink",
+      "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
+      "official": true
+    },
+    {
+      "id": "sub-mimo-standard-monthly",
+      "label": "MiMo Token Plan Standard 月费",
+      "label_en": "MiMo Token Plan Standard monthly",
+      "tone": "ink",
+      "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
+      "official": true
+    },
+    {
+      "id": "sub-mimo-pro-monthly",
+      "label": "MiMo Token Plan Pro 月费",
+      "label_en": "MiMo Token Plan Pro monthly",
+      "tone": "ink",
+      "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
+      "official": true
+    },
+    {
+      "id": "sub-mimo-max-monthly",
+      "label": "MiMo Token Plan Max 月费",
+      "label_en": "MiMo Token Plan Max monthly",
+      "tone": "ink",
+      "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
+      "official": true
+    },
+    {
+      "id": "sub-mimo-standard-yearly",
+      "label": "MiMo Token Plan Standard 年费",
+      "label_en": "MiMo Token Plan Standard yearly",
+      "tone": "ink",
+      "source": "https://mimo.mi.com/docs/zh-CN/quick-start/faq/token-plan/Plans&Pricing",
+      "official": true
+    },
+    {
+      "id": "sub-qwen-advanced-monthly",
+      "label": "千问办公助理 高级 月费",
+      "label_en": "Qwen Office Assistant Advanced monthly",
+      "tone": "jade",
+      "source": "千问 App 内会员页（未有公开网页）",
+      "official": true,
+      "note": "英文为我们的译名，官方只有中文档名"
+    },
+    {
+      "id": "sub-qwen-elite-monthly",
+      "label": "千问办公助理 精英 月费",
+      "label_en": "Qwen Office Assistant Elite monthly",
+      "tone": "jade",
+      "source": "千问 App 内会员页（未有公开网页）",
+      "official": true,
+      "note": "英文为我们的译名，官方只有中文档名"
+    },
+    {
+      "id": "sub-qwen-flagship-monthly",
+      "label": "千问办公助理 旗舰 月费",
+      "label_en": "Qwen Office Assistant Flagship monthly",
+      "tone": "jade",
+      "source": "千问 App 内会员页（未有公开网页）",
+      "official": true,
+      "note": "英文为我们的译名，官方只有中文档名"
+    },
+    {
+      "id": "sub-zhipu-vip-monthly",
+      "label": "智谱清言 VIP 月费",
+      "label_en": "Zhipu Qingyan VIP monthly",
+      "tone": "plum",
+      "source": "https://chatglm.cn/",
+      "official": true
+    },
+    {
+      "id": "sub-zhipu-svip-monthly",
+      "label": "智谱清言 SVIP 月费",
+      "label_en": "Zhipu Qingyan SVIP monthly",
+      "tone": "plum",
+      "source": "https://chatglm.cn/",
+      "official": true
+    },
+    {
+      "id": "sub-glm-coding-lite-monthly",
+      "label": "GLM Coding Plan Lite 月费",
+      "label_en": "GLM Coding Plan Lite monthly",
+      "tone": "plum",
+      "source": "https://docs.bigmodel.cn/cn/coding-plan/overview",
+      "official": true,
+      "note": "与智谱清言 VIP/SVIP 不同；CN open.bigmodel.cn / intl z.ai 档名同为 Lite/Pro/Max"
+    },
+    {
+      "id": "sub-glm-coding-lite-quarterly",
+      "label": "GLM Coding Plan Lite 季费",
+      "label_en": "GLM Coding Plan Lite quarterly",
+      "tone": "plum",
+      "source": "https://zcode.z.ai/en/docs/configuration",
+      "official": true,
+      "note": "官方订阅周期含 Quarterly / 包季"
+    },
+    {
+      "id": "sub-glm-coding-lite-yearly",
+      "label": "GLM Coding Plan Lite 年费",
+      "label_en": "GLM Coding Plan Lite yearly",
+      "tone": "plum",
+      "source": "https://docs.z.ai/devpack/transition",
+      "official": true,
+      "note": "官方订阅周期含 Yearly / Annual Plan / 包年"
+    },
+    {
+      "id": "sub-glm-coding-pro-monthly",
+      "label": "GLM Coding Plan Pro 月费",
+      "label_en": "GLM Coding Plan Pro monthly",
+      "tone": "plum",
+      "source": "https://docs.bigmodel.cn/cn/coding-plan/overview",
+      "official": true,
+      "note": "与智谱清言 VIP/SVIP 不同；CN/intl 档名同为 Pro"
+    },
+    {
+      "id": "sub-glm-coding-pro-quarterly",
+      "label": "GLM Coding Plan Pro 季费",
+      "label_en": "GLM Coding Plan Pro quarterly",
+      "tone": "plum",
+      "source": "https://zcode.z.ai/en/docs/configuration",
+      "official": true,
+      "note": "官方订阅周期含 Quarterly / 包季"
+    },
+    {
+      "id": "sub-glm-coding-pro-yearly",
+      "label": "GLM Coding Plan Pro 年费",
+      "label_en": "GLM Coding Plan Pro yearly",
+      "tone": "plum",
+      "source": "https://docs.z.ai/devpack/transition",
+      "official": true,
+      "note": "官方订阅周期含 Yearly / Annual Plan / 包年"
+    },
+    {
+      "id": "sub-glm-coding-max-monthly",
+      "label": "GLM Coding Plan Max 月费",
+      "label_en": "GLM Coding Plan Max monthly",
+      "tone": "plum",
+      "source": "https://docs.bigmodel.cn/cn/coding-plan/overview",
+      "official": true,
+      "note": "与智谱清言 VIP/SVIP 不同；CN/intl 档名同为 Max"
+    },
+    {
+      "id": "sub-glm-coding-max-quarterly",
+      "label": "GLM Coding Plan Max 季费",
+      "label_en": "GLM Coding Plan Max quarterly",
+      "tone": "plum",
+      "source": "https://zcode.z.ai/en/docs/configuration",
+      "official": true,
+      "note": "官方订阅周期含 Quarterly / 包季"
+    },
+    {
+      "id": "sub-glm-coding-max-yearly",
+      "label": "GLM Coding Plan Max 年费",
+      "label_en": "GLM Coding Plan Max yearly",
+      "tone": "plum",
+      "source": "https://docs.z.ai/devpack/transition",
+      "official": true,
+      "note": "官方订阅周期含 Yearly / Annual Plan / 包年"
+    },
+    {
+      "id": "sub-doubao-standard-monthly",
+      "label": "豆包标准套餐 月费",
+      "label_en": "Doubao Standard monthly",
+      "tone": "peach",
+      "source": "https://www.doubao.com/",
+      "official": true,
+      "note": "英文为我们的译名"
+    },
+    {
+      "id": "sub-doubao-plus-monthly",
+      "label": "豆包加强套餐 月费",
+      "label_en": "Doubao Plus monthly",
+      "tone": "peach",
+      "source": "https://www.doubao.com/",
+      "official": true,
+      "note": "英文为我们的译名"
+    },
+    {
+      "id": "sub-doubao-premium-monthly",
+      "label": "豆包高级套餐 月费",
+      "label_en": "Doubao Premium monthly",
+      "tone": "peach",
+      "source": "https://www.doubao.com/",
+      "official": true,
+      "note": "英文为我们的译名"
+    },
+    {
+      "id": "sub-perplexity-pro-monthly",
+      "label": "Perplexity Pro 月费",
+      "label_en": "Perplexity Pro monthly",
+      "tone": "sky",
+      "source": "https://www.perplexity.ai/hub/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-perplexity-pro-yearly",
+      "label": "Perplexity Pro 年费",
+      "label_en": "Perplexity Pro yearly",
+      "tone": "sky",
+      "source": "https://www.perplexity.ai/hub/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-perplexity-max-monthly",
+      "label": "Perplexity Max 月费",
+      "label_en": "Perplexity Max monthly",
+      "tone": "sky",
+      "source": "https://www.perplexity.ai/hub/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-cursor-pro-monthly",
+      "label": "Cursor Pro 月费",
+      "label_en": "Cursor Pro monthly",
+      "tone": "indigo",
+      "source": "https://cursor.com/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-cursor-pro-yearly",
+      "label": "Cursor Pro 年费",
+      "label_en": "Cursor Pro yearly",
+      "tone": "indigo",
+      "source": "https://cursor.com/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-cursor-pro-plus-monthly",
+      "label": "Cursor Pro+ 月费",
+      "label_en": "Cursor Pro+ monthly",
+      "tone": "indigo",
+      "source": "https://cursor.com/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-cursor-ultra-monthly",
+      "label": "Cursor Ultra 月费",
+      "label_en": "Cursor Ultra monthly",
+      "tone": "indigo",
+      "source": "https://cursor.com/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-supergrok-lite-monthly",
+      "label": "SuperGrok Lite 月费",
+      "label_en": "SuperGrok Lite monthly",
+      "tone": "graphite",
+      "source": "https://x.ai/pricing",
+      "official": true,
+      "note": "x.ai/pricing JS 档名；US App Store IAP 亦列 SuperGrok Lite。未在公开价表确认独立年费 SKU"
+    },
+    {
+      "id": "sub-supergrok-monthly",
+      "label": "SuperGrok 月费",
+      "label_en": "SuperGrok monthly",
+      "tone": "graphite",
+      "source": "https://x.ai/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-supergrok-yearly",
+      "label": "SuperGrok 年费",
+      "label_en": "SuperGrok yearly",
+      "tone": "graphite",
+      "source": "https://apps.apple.com/us/app/grok-ai-assistant/id6670324846",
+      "official": true,
+      "note": "US App Store IAP 列出同名 SuperGrok $300（另有 $30 月费）；x.ai planPrices 仅见 monthly 键"
+    },
+    {
+      "id": "sub-supergrok-plus-monthly",
+      "label": "SuperGrok Plus 月费",
+      "label_en": "SuperGrok Plus monthly",
+      "tone": "graphite",
+      "source": "https://x.ai/pricing",
+      "official": true,
+      "note": "未在公开价表确认独立年费 SKU"
+    },
+    {
+      "id": "sub-supergrok-heavy-monthly",
+      "label": "SuperGrok Heavy 月费",
+      "label_en": "SuperGrok Heavy monthly",
+      "tone": "graphite",
+      "source": "https://x.ai/pricing",
+      "official": true
+    },
+    {
+      "id": "sub-supergrok-heavy-yearly",
+      "label": "SuperGrok Heavy 年费",
+      "label_en": "SuperGrok Heavy yearly",
+      "tone": "graphite",
+      "source": "https://docs.x.ai/grok/faq",
+      "official": true,
+      "note": "docs.x.ai FAQ 原文提及 SuperGrok Heavy yearly subscription"
+    },
+    {
+      "id": "sub-x-premium-monthly",
+      "label": "X Premium 月费",
+      "label_en": "X Premium monthly",
+      "tone": "graphite",
+      "source": "https://docs.x.ai/grok/faq",
+      "official": true,
+      "note": "X 平台订阅（非 SuperGrok SKU）；关联后可获 Grok 相关权益，与 grok.com SuperGrok 分账"
+    },
+    {
+      "id": "sub-x-premium-plus-monthly",
+      "label": "X Premium+ 月费",
+      "label_en": "X Premium+ monthly",
+      "tone": "graphite",
+      "source": "https://docs.x.ai/grok/faq",
+      "official": true,
+      "note": "X 平台订阅（非 SuperGrok SKU）；FAQ 称 X Premium+ access 需关联 X 账号。年费未在本次成功抓取的官方页确认，故未加年费标签"
+    }
+  ],
+  "device": [
+    {
+      "id": "dev-mba-m4",
+      "label": "MacBook Air M4",
+      "label_en": "MacBook Air M4",
+      "tone": "device"
+    },
+    {
+      "id": "dev-mbp-m4",
+      "label": "MacBook Pro M4",
+      "label_en": "MacBook Pro M4",
+      "tone": "device"
+    },
+    {
+      "id": "dev-mac-mini-m4",
+      "label": "Mac mini M4",
+      "label_en": "Mac mini M4",
+      "tone": "device"
+    },
+    {
+      "id": "dev-iphone-17-pro",
+      "label": "iPhone 17 Pro",
+      "label_en": "iPhone 17 Pro",
+      "tone": "device"
+    },
+    {
+      "id": "dev-iphone-16",
+      "label": "iPhone 16",
+      "label_en": "iPhone 16",
+      "tone": "device"
+    },
+    {
+      "id": "dev-ipad-pro-m4",
+      "label": "iPad Pro M4",
+      "label_en": "iPad Pro M4",
+      "tone": "device"
+    },
+    {
+      "id": "dev-legion-y7000p",
+      "label": "联想拯救者 Y7000P",
+      "label_en": "Lenovo Legion Y7000P",
+      "tone": "device-alt"
+    },
+    {
+      "id": "dev-xiaomi-14",
+      "label": "小米 14",
+      "label_en": "Xiaomi 14",
+      "tone": "device-alt"
+    },
+    {
+      "id": "dev-pixel-9",
+      "label": "Pixel 9",
+      "label_en": "Pixel 9",
+      "tone": "device-alt"
+    },
+    {
+      "id": "dev-surface-laptop",
+      "label": "Surface Laptop 7",
+      "label_en": "Surface Laptop 7",
+      "tone": "device-alt"
+    },
+    {
+      "id": "dev-thinkpad-x1",
+      "label": "ThinkPad X1 Carbon",
+      "label_en": "ThinkPad X1 Carbon",
+      "tone": "device-alt"
+    },
+    {
+      "id": "dev-ipad-air-m2",
+      "label": "iPad Air M2",
+      "label_en": "iPad Air M2",
+      "tone": "device"
+    }
+  ],
+  "tiers_source": "/workspace/home/outbox/llm-official-plan-tiers-20260924.md (as_of 2026-09-24)",
+  "route": [
+    {
+      "id": "route-deepseek-free",
+      "label": "DeepSeek 免费对话",
+      "label_en": "DeepSeek free chat",
+      "tone": "slate",
+      "official": true,
+      "note": "DeepSeek 没有付费会员，付费只有 API 预充 路线标签：说明用法，不是套餐。"
+    },
+    {
+      "id": "route-api-only",
+      "label": "只用 API",
+      "label_en": "API only",
+      "tone": "slate",
+      "note": " 路线标签：说明用法，不是套餐。"
+    },
+    {
+      "id": "route-free-tier",
+      "label": "几乎只用免费档",
+      "label_en": "Mostly free tier",
+      "tone": "slate",
+      "note": " 路线标签：说明用法，不是套餐。"
+    }
+  ],
+  "note_route": "route 是「怎么用」的路线标签（只用 API／几乎只用免费档／DeepSeek 免费对话），与 subscription 套餐分池，卡片上单独一行。"
+}
