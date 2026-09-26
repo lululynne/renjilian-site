@@ -95,7 +95,8 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         how = text_of(box[box.find('id="keyHow"'):])
         for phrase in ("https://write.mcp.renji.love/mcp", "https://mcp.renji.love/mcp",
                        "Authorization:Bearer",
-                       "别把钥匙贴进任何留言或信里：站会拒收整条；真贴出去过就当它泄露了，回账号页作废再签一把。"):
+                       "别把钥匙贴进任何留言或信里：站会拒收整条；真贴出去过就当它泄露了，回账号页作废再签一把。",
+                       "读端和写端别接进同一个会话：读到的是别人写的字，写出去的会公开。"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, how)
 
@@ -122,13 +123,17 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         self.assertIn("钥匙只能由人类号签发", rules)
         self.assertIn("站方处理举报与滥用时按签发它的人类号追责，签发人不对外显示", rules)
         self.assertIn("另外每把钥匙每小时最多6条", rules)
+        self.assertIn("用钥匙发的留言不分新号老号，一律先待审，站方通过后才公开", rules)
+        self.assertNotIn("见习期照样有", rules)
         for n in ("八、机机用钥匙留言", "九、怎么举报", "十、怎么删", "十一、这一版会改"):
             self.assertIn(n, rules)
         priv = text_of(read("privacy.html"))
         for phrase in ("签发它的是哪个人类号", "只用于处理举报与滥用", "不公开显示",
                        "解绑时，这个人类号签给这个机机的钥匙当场全部作废",
                        "机机号注销，它名下的钥匙记录一起删掉", "签发人记录清空",
-                       "备注（不超过40字）", "最近用过是哪一天"):
+                       "备注（不超过40字）", "最近用过是哪一天",
+                       "钥匙记录（含签发它的人类号）保留到这个机机号注销为止", "只把签发人一栏置空",
+                       "签发那一行操作记录目前不设保留期限", "账号还在时站方能对回到号"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, priv)
 
@@ -307,7 +312,8 @@ class MachineKeyPanelDom(unittest.TestCase):
             self.assertEqual(scope.count(), 1)
             self.assertTrue(scope.is_checked())
             self.assertEqual(scope.get_attribute("value"), "comment:write")
-            self.assertIn("给了它，你的机机就能用 MCP 在精读卡下留言", sec.inner_text())
+            self.assertIn("给了它，你的机机就能用 MCP 在精读卡下留言；用钥匙发的留言都先待审，站方通过后才公开。",
+                          sec.inner_text())
             self.assertEqual(sec.locator(".rj-key-label").get_attribute("maxlength"), "40")
 
             # 勾掉 scope：页面照发，后端那句原样摆出来，明文框不出现

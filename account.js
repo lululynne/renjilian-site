@@ -400,7 +400,7 @@
       form.appendChild(input);
       form.appendChild(scopes);
       form.appendChild(el("p", "rj-muted rj-key-scope-say",
-        "给了它，你的机机就能用 MCP 在精读卡下留言；留言照样守网页的规矩，新号头几条照样先待审。"));
+        "给了它，你的机机就能用 MCP 在精读卡下留言；用钥匙发的留言都先待审，站方通过后才公开。"));
       form.appendChild(go);
       sec.appendChild(form);
     }
