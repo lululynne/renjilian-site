@@ -52,7 +52,19 @@ window.RJ_API = (function () {
       if (!r.ok || !r.data || !r.data.ok) return null;
       return r.data.signed_in === false ? null : r.data;
     }).catch(function () { return null; });
+    // 顶栏右上角的账号入口跟着同一次 /api/me 换字：登录了显示 @handle，没登录回「账号」。
+    // 只挂在页面本来就会发的这次请求上，不为它另发请求。
+    meCache.then(paintEntry);
     return meCache;
+  }
+
+  function paintEntry(who) {
+    var els = document.querySelectorAll("a.account-entry");
+    for (var i = 0; i < els.length; i++) {
+      var h = who && who.handle ? "@" + who.handle : "";
+      els[i].textContent = h || "账号";
+      if (h) els[i].setAttribute("title", h); else els[i].removeAttribute("title");
+    }
   }
 
   function forget() { meCache = null; }

@@ -58,6 +58,18 @@ header.site{
   letter-spacing:.2em;color:var(--machine);
 }
 .masthead .slogan{font-size:13px;color:var(--ink-soft);margin-left:auto}
+/* 账号入口：顶栏右上角（梅宝 09-26 12:36「账号应该在右上角」）。
+   绝对定位不参与 masthead 换行；masthead 右侧留出它的位置，标题/SECOND PERSON/slogan 不会被压 */
+.masthead{position:relative;padding-right:168px}
+.account-entry{
+  position:absolute;top:-6px;right:0;
+  min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;
+  padding:5px 13px;max-width:160px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  font-size:13px;font-weight:650;color:var(--ink);
+  border:1px solid var(--line);background:var(--card);
+}
+.account-entry:hover{border-color:var(--ink);background:#fff}
+.account-entry.on{border-color:var(--machine);color:var(--ink)}
 /* 刊物式导航：方角、下划线选中、44px 触控；预告项为非交互 span，无伪装修饰 */
 nav.boards{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}
 nav.boards a,
@@ -832,6 +844,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
   .wrap{padding:0 16px}
   .grid,.cards{grid-template-columns:1fr}
   .masthead h1{font-size:22px}
+  .masthead{padding-right:104px}
+  .account-entry{max-width:96px;padding:5px 11px;top:-10px}
   .hero{padding:30px 0 4px}
   .home-hero{grid-template-columns:1fr;gap:24px;padding:34px 0 12px}
   /* boards 顶栏横滑（梅宝 09-18 版面架构图：移动端 boards 横滑）

@@ -16,7 +16,7 @@
 | `kanread.html` | 顶栏「刊读」 | `data/kanread.json`（公开）＋`kanread.drafts.json`（不进仓库）。阅读顺序：原文入口 → 人声／机声 → 相关 → 评论。评论区只有这里有（`renji-api` `TARGET_RE = kanread:…`） | related → 脉搏、提问；留言 handle → 配置页；框旁 → 守则、账号 |
 | `pulse.html` | 刊读子栏（不进顶栏） | `data/pulse.json`；一句本站自己的话，不许引号、不嵌第三方、不加外部脚本（本站 `rj-related.js` 是唯一白名单）。条目 `id` = 条目 id | `deep_read` 与 related → 精读 |
 | `changelog.html` | 页脚「更新日志」 | 读 `CHANGELOG.md`，只写读者能用的变化 | — |
-| `account.html` | 页脚「账号」；留言框旁「登录／注册」；成本页墙按钮 | 注册、恢复码登录、改身份、绑定、我的配置、注销。后端不在时只显示「账号还没开」。注册面板正文里有「隐私说明」 | → 配置页、守则、隐私 |
+| `account.html` | 顶栏右上角「账号」（登录后显示 `@handle`，只在已加载 rj-api.js 的页面换字）；页脚「账号」；留言框旁「登录／注册」；成本页墙按钮 | 注册、恢复码登录、改身份、绑定、我的配置、注销。后端不在时只显示「账号还没开」。注册面板正文里有「隐私说明」 | → 配置页、守则、隐私 |
 | `profile.html?u=` | 墙卡、账号页、留言 handle（仅开了公开配置的号） | 公开配置页；不存在／没公开／被停用同一句 404 | → 墙 |
 | `rules.html` | 页脚「留言守则」；留言框旁 | 十节守则，申诉邮箱在第十节 | → 账号、日志 |
 | `privacy.html` | 页脚「隐私说明」；注册面板 | 本站存哪些读者数据、存多久、怎么删；与 `renji-api/src/schema.js` 逐表对照，`admin/test_privacy.py` 守 | → 账号、守则、日志 |
