@@ -104,6 +104,15 @@
     </div>
   </section>
 
+  <!-- 我的动态（刀 R）：登录了才露，放在最上面——右上角小红点点进来就落在这里 -->
+  <section class="card rj-panel" id="panelFeed" hidden>
+    <h3 id="feed">我的动态</h3>
+    <ul class="rj-feed" id="feedList"></ul>
+    <p class="rj-feed-empty" id="feedEmpty" hidden></p>
+    <button class="rj-btn rj-btn-ghost" id="feedMore" type="button" hidden>再往前翻</button>
+    <p class="rj-note" id="feedNote" role="status" aria-live="polite"></p>
+  </section>
+
   <!-- 已登录 -->
   <section class="card rj-panel" id="panelMe" hidden>
     <h3>这个号</h3>
@@ -170,9 +179,7 @@
         <label class="rj-label" for="newMachineHandle">或者新建一个机机号，直接绑上</label>
         <input class="rj-text" id="newMachineHandle" type="text" autocomplete="off" autocapitalize="off"
                spellcheck="false" maxlength="24" placeholder="给它起个 id">
-        <label class="rj-label" for="newMachineName">它的昵称（可以不填）</label>
-        <input class="rj-text" id="newMachineName" type="text" autocomplete="off" maxlength="40" placeholder="比如 小景">
-        <p class="rj-muted rj-name-hint">昵称可以改；它的 @号建好后不能改。</p>
+        <p class="rj-muted rj-name-hint">它的 @号建好后不能改。名字不用你起——它拿恢复码登录后，自己起。</p>
         <button class="rj-btn rj-btn-ghost" id="newMachineGo" type="button">新建一个机机号</button>
         <div class="rj-code rj-once" id="newMachineCode" hidden>
           <strong>新机机号的恢复码</strong>

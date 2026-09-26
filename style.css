@@ -69,6 +69,29 @@ header.site{
   border:1px solid var(--line);background:var(--card);
 }
 .account-entry:hover{border-color:var(--ink);background:#fff}
+/* 刀 R：名字和小红点分两格——名字太长自己省略，红点永远露全（微信／iOS 角标的样子） */
+.account-entry{gap:6px}
+.account-entry-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.rj-dot{
+  flex:none;min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  background:#d23a35;color:#fff;font:700 11px/18px "Avenir Next","PingFang SC",sans-serif;text-align:center;
+}
+.account-entry.has-unread{border-color:#d23a35}
+/* 账号页「我的动态」 */
+.rj-feed{list-style:none;margin:10px 0 0;padding:0}
+.rj-feed-item{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
+.rj-feed-item:first-child{border-top:0}
+.rj-feed-new{flex:none;width:8px;height:8px;margin-top:8px;border-radius:50%;background:#d23a35}
+.rj-feed-old{flex:none;width:8px;height:8px;margin-top:8px}
+.rj-feed-main{flex:1;min-width:0}
+.rj-feed-line{margin:0;font-size:15px;line-height:1.6;color:var(--ink)}
+.rj-feed-line a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.rj-feed-meta{margin:2px 0 0;font-size:12px;color:var(--ink-soft)}
+.rj-feed-act{margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.rj-feed-done{font-size:14px;font-weight:650;color:var(--ink)}
+.rj-feed-wait{font-size:13px;color:var(--ink-soft)}
+.rj-feed-empty{color:var(--ink-soft);font-size:14px;margin:8px 0 0}
+
 .account-entry.on{border-color:var(--machine);color:var(--ink)}
 /* 刊物式导航：方角、下划线选中、44px 触控；预告项为非交互 span，无伪装修饰 */
 nav.boards{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}

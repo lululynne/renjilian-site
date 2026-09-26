@@ -9,6 +9,17 @@ window.RJ_API = (function () {
   var base = CFG.apiBase || "";
   var probe = null;   // Promise<config|null>，只探一次
   var meCache = null; // Promise<me|null>
+  var unread = 0;     // 右上角小红点上的数（刀 R）
+  // 「这个浏览器登录过」的提示位：只是一个 0/1，不是凭据（会话在 HttpOnly cookie 里）。
+  // 用处：没有评论区的页面（首页、百宝箱……）只在它为 1 时才去问 /api/me 拿小红点，匿名读者一次请求都不多发。
+  var HINT = "rj_signed_in";
+  function hint(v) {
+    try {
+      if (v === undefined) return localStorage.getItem(HINT) === "1";
+      if (v) localStorage.setItem(HINT, "1"); else localStorage.removeItem(HINT);
+    } catch (e) { /* 隐私模式读写不了就当没登录过，页面照常 */ }
+    return false;
+  }
 
   function url(path) { return base.replace(/\/+$/, "") + path; }
 
@@ -50,7 +61,10 @@ window.RJ_API = (function () {
     // 匿名读者的控制台留一条红色的 401，页面没坏却看着像坏了）
     meCache = call("GET", "/api/me").then(function (r) {
       if (!r.ok || !r.data || !r.data.ok) return null;
-      return r.data.signed_in === false ? null : r.data;
+      var who = r.data.signed_in === false ? null : r.data;
+      hint(!!who);
+      unread = who ? (who.unread_count || 0) : 0;
+      return who;
     }).catch(function () { return null; });
     // 顶栏右上角的账号入口跟着同一次 /api/me 换字：登录了有昵称显示昵称、没有显示 @handle，没登录回「账号」。
     // 只挂在页面本来就会发的这次请求上，不为它另发请求。
@@ -58,16 +72,45 @@ window.RJ_API = (function () {
     return meCache;
   }
 
+  /* 顶栏右上角：名字 ＋ 有未读时一个小红点带数字（>99 写 99+），点进去直接落在账号页「我的动态」。
+     名字是读者写的字，只走 textContent。 */
   function paintEntry(who) {
     var els = document.querySelectorAll("a.account-entry");
     for (var i = 0; i < els.length; i++) {
+      var a = els[i];
       var h = who && who.handle ? (who.display_name || "@" + who.handle) : "";
-      els[i].textContent = h || "账号";
-      if (h) els[i].setAttribute("title", nameOf(who)); else els[i].removeAttribute("title");
+      a.textContent = "";
+      var name = document.createElement("span");
+      name.className = "account-entry-name";
+      name.textContent = h || "账号";
+      a.appendChild(name);
+      if (h) a.setAttribute("title", nameOf(who)); else a.removeAttribute("title");
+      var n = h ? unread : 0;
+      if (n > 0) {
+        var dot = document.createElement("span");
+        dot.className = "rj-dot";
+        dot.textContent = n > 99 ? "99+" : String(n);
+        a.appendChild(dot);
+        a.setAttribute("aria-label", (h || "账号") + "，" + n + " 条新动态");
+        a.setAttribute("href", acctHref() + "#feed");
+      } else {
+        a.removeAttribute("aria-label");
+        a.setAttribute("href", acctHref());
+      }
+      a.classList.toggle("has-unread", n > 0);
     }
   }
 
-  function forget() { meCache = null; }
+  // 本机联调时带上 ?api=（线上 link() 原样返回）
+  function acctHref() { return CFG.link ? CFG.link("account.html") : "account.html"; }
+
+  /** 账号页标完已读后调：小红点当场变 */
+  function setUnread(n, who) {
+    unread = Math.max(0, n | 0);
+    if (meCache) meCache.then(function (m) { if (m) m.unread_count = unread; paintEntry(who || m); });
+  }
+
+  function forget() { meCache = null; hint(false); unread = 0; }
 
   /** 全站显示一个号：有昵称是「昵称 @handle」，没有就「@handle」。只给 textContent 用，昵称是读者写的字 */
   function nameOf(o) {
@@ -84,6 +127,16 @@ window.RJ_API = (function () {
     return fallback || "这一步没走通，稍后再试。";
   }
 
+  /* 没有评论区、也没有账号逻辑的页面，本来不会问 /api/me——顶栏小红点就亮不起来。
+     这里补一次：只在「这个浏览器登录过」时才问；页面自己要是也调了 me()，用的是同一次请求。 */
+  function autoEntry() {
+    if (!base || !hint()) return;
+    if (!document.querySelector("a.account-entry")) return;
+    me();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", autoEntry);
+  else setTimeout(autoEntry, 0);
+
   return {
     base: base,
     enabled: !!base,
@@ -93,6 +146,7 @@ window.RJ_API = (function () {
     errorOf: errorOf,
     nameOf: nameOf,
     paintEntry: paintEntry,
+    setUnread: setUnread,
     get: function (p) { return call("GET", p); },
     post: function (p, b) { return call("POST", p, b === undefined ? {} : b); },
     put: function (p, b) { return call("PUT", p, b === undefined ? {} : b); },
