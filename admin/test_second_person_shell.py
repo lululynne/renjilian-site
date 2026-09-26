@@ -20,8 +20,10 @@ ROOT = Path(__file__).resolve().parents[1]
 # 2026-09-25：大模型成本（cost）以实验看板身份进顶栏，同额度重置一档；价格行未核对前 status=draft，由 test_cost_board 守。
 # 2026-09-26（1-核）：外壳测试扩到全部 11 页＋隐私说明页；工具页（日志／账号／配置页／守则／隐私）不进顶栏、顶栏无选中态。
 PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "cost.html",
-         "changelog.html", "account.html", "profile.html", "rules.html", "privacy.html")
-TOOL_PAGES = {"changelog.html", "account.html", "profile.html", "rules.html", "privacy.html"}
+         "changelog.html", "account.html", "profile.html", "rules.html", "privacy.html",
+         "card.html", "card-edit.html")
+# 2026-09-26（刀 K2）：名片主页 card.html、名片后台 card-edit.html 是工具页，不进顶栏
+TOOL_PAGES = {"changelog.html", "account.html", "profile.html", "rules.html", "privacy.html", "card.html", "card-edit.html"}
 # 统一页脚：这四个站内入口按这个次序，当前页用 <span aria-current="page">，再接两个姐妹站
 FOOTER_LINKS = (("changelog.html", "更新日志"), ("account.html", "账号"),
                 ("privacy.html", "隐私说明"), ("rules.html", "留言守则"))

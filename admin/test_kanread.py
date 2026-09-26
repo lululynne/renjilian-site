@@ -297,7 +297,8 @@ class PulseTests(unittest.TestCase):
             self.assertNotIn(bad, low)
         # 外部脚本一个不收。2026-09-26 起只放行本站自己的「相关」渲染器（跨板块互链，1-核）：
         # 白名单是逐个文件名，不是「同源都行」，再加脚本要改这里并说清为什么。
-        self.assertEqual(re.findall(r'<script src="([^"]+)"', self.page), ["rj-related.js"])
+        # 刀 R 起再加顶栏小红点那两份（rj-config.js、rj-api.js：只在这个浏览器登录过时问一次 /api/me）。
+        self.assertEqual(re.findall(r'<script src="([^"]+)"', self.page), ["rj-related.js", "rj-config.js", "rj-api.js"])
         self.assertIn('target="_blank" rel="noopener noreferrer"', self.page)
         self.assertIn("不搬运原文", self.page)
         self.assertIn("不是完整档案", self.page)

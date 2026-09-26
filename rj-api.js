@@ -98,7 +98,33 @@ window.RJ_API = (function () {
         a.setAttribute("href", acctHref());
       }
       a.classList.toggle("has-unread", n > 0);
+      cardEntry(a, who);
     }
+  }
+
+  /* 顶栏右上角「我的名片」（刀 K2）：登录了才有，挨在「账号」左边，点进自己的名片主页。
+     不写进各页 HTML：没登录的读者看不到它，也不多发任何请求。 */
+  function cardEntry(acct, who) {
+    var head = acct.parentNode;
+    if (!head) return;
+    var c = head.querySelector("a.card-entry");
+    if (!who || !who.handle) {
+      if (c) c.parentNode.removeChild(c);
+      head.style.paddingRight = "";
+      return;
+    }
+    if (!c) {
+      c = document.createElement("a");
+      c.className = "card-entry";
+      c.textContent = "我的名片";
+      head.insertBefore(c, acct);
+    }
+    c.setAttribute("href", cardHref(who.handle));
+    var here = /(^|\/)card(-edit)?\.html$/.test(location.pathname);
+    c.classList.toggle("on", here && (location.pathname.indexOf("card-edit") >= 0 || new RegExp("[?&]u=" + who.handle + "(&|$)").test(location.search)));
+    // 两个入口并排：名片挨在账号左边；masthead 右侧留出两个的位置，标题和 slogan 不被压
+    c.style.right = (acct.offsetWidth + 6) + "px";
+    head.style.paddingRight = (acct.offsetWidth + c.offsetWidth + 14) + "px";
   }
 
   // 本机联调时带上 ?api=（线上 link() 原样返回）
@@ -117,6 +143,44 @@ window.RJ_API = (function () {
     if (!o || !o.handle) return "";
     var dn = typeof o.display_name === "string" ? o.display_name.trim() : "";
     return (dn ? dn + " " : "") + "@" + o.handle;
+  }
+
+
+  /* ── 全站署名（刀 K2）：名字可点，直达这个号的名片主页 card.html?u=<handle>。
+     梅宝 09-26 23:44：「爸爸你的名字做个链接可以点进去，不要点id也可以」→ 可点的是显示名（整块热区），
+     @id 灰字跟在后面不另成链，一处一个入口；没有显示名时 @id 本身可点；号已注销／停用不成链，写「已离开」。
+     名字是读者写的字，只走 textContent。 */
+  var HANDLE_RE = /^[a-z0-9_-]{1,40}$/;
+  function cardHref(h) {
+    var href = "card.html?u=" + encodeURIComponent(h);
+    return CFG.link ? CFG.link(href) : href;
+  }
+  function nameNode(o, opts) {
+    opts = opts || {};
+    var wrap = document.createElement("span");
+    wrap.className = "rj-who" + (opts.cls ? " " + opts.cls : "");
+    if (!o || !o.handle || !HANDLE_RE.test(o.handle) || o.gone) {
+      var g = document.createElement("span");
+      g.className = "rj-who-gone";
+      g.textContent = opts.goneText || "已离开";
+      wrap.appendChild(g);
+      return wrap;
+    }
+    var dn = typeof o.display_name === "string" ? o.display_name.trim() : "";
+    var a = document.createElement("a");
+    a.className = "rj-who-link" + (opts.linkCls ? " " + opts.linkCls : "");
+    a.href = cardHref(o.handle);
+    a.textContent = dn || "@" + o.handle;
+    a.setAttribute("title", nameOf(o) + " 的名片");
+    wrap.appendChild(a);
+    if (dn) {
+      wrap.appendChild(document.createTextNode(" "));
+      var id = document.createElement("span");
+      id.className = "rj-who-id";
+      id.textContent = "@" + o.handle;
+      wrap.appendChild(id);
+    }
+    return wrap;
   }
 
   /** 从返回里取一句能给人看的错误话；后端的文案本来就是人话，取不到再兜底 */
@@ -145,12 +209,25 @@ window.RJ_API = (function () {
     forget: forget,
     errorOf: errorOf,
     nameOf: nameOf,
+    nameNode: nameNode,
+    cardHref: cardHref,
     paintEntry: paintEntry,
     setUnread: setUnread,
     get: function (p) { return call("GET", p); },
     post: function (p, b) { return call("POST", p, b === undefined ? {} : b); },
     put: function (p, b) { return call("PUT", p, b === undefined ? {} : b); },
     patch: function (p, b) { return call("PATCH", p, b === undefined ? {} : b); },
-    del: function (p, b) { return call("DELETE", p, b === undefined ? {} : b); }
+    del: function (p, b) { return call("DELETE", p, b === undefined ? {} : b); },
+    /** 传一张图（刀 K2 名片头像／背景）：请求体就是图片本身，content-type 是图片类型 */
+    upload: function (p, blob, type) {
+      return fetch(url(p), { method: "POST", credentials: "include", cache: "no-store",
+        headers: { "content-type": type || blob.type }, body: blob }).then(function (r) {
+        return r.text().then(function (t) {
+          var data = null;
+          try { data = t ? JSON.parse(t) : null; } catch (e) { data = null; }
+          return { status: r.status, ok: r.ok, data: data };
+        });
+      });
+    }
   };
 })();

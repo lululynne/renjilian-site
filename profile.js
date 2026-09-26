@@ -78,13 +78,8 @@
       var li = el("li", "pf-other");
       var who = el("div", "pf-other-who");
       who.appendChild(mono(o.kind, o.handle));
-      if (o.profile_public) {
-        var a = el("a", null, API.nameOf(o));
-        a.href = link("profile.html?u=" + encodeURIComponent(o.handle));
-        who.appendChild(a);
-      } else {
-        who.appendChild(el("span", "pf-other-handle", API.nameOf(o)));
-      }
+      // 署名可点（刀 K2）：名字直达它的名片主页
+      who.appendChild(API.nameNode(o));
       who.appendChild(el("span", "rjc-kind", (KIND_LABEL[o.kind] || o.kind) + " · 自报"));
       li.appendChild(who);
       if (o.profile_public && o.tags) {

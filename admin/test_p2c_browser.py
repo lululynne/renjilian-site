@@ -330,15 +330,16 @@ class ProfileWallBrowserTests(_Base):
         try:
             item = gpage.locator(f'.rjc-item[data-id="{ids[pub]}"]')
             item.wait_for()
+            # 刀 K2 起：全站署名一律可点，直达名片主页 card.html（没挂名片的是「空屋」，不再看配置页公不公开）
             link = item.locator("a.rjc-handle-link")
             link.wait_for()
-            self.assertIn(f"profile.html?u={pub}", link.get_attribute("href"))
+            self.assertIn(f"card.html?u={pub}", link.get_attribute("href"))
             self.assertEqual(link.inner_text(), f"@{pub}")
             other = gpage.locator(f'.rjc-item[data-id="{ids[priv]}"]')
             other.wait_for()
-            gpage.wait_for_timeout(300)
-            self.assertEqual(other.locator("a.rjc-handle-link").count(), 0, "没公开配置的号不许链出去")
-            self.assertEqual(other.locator("span.rjc-handle").inner_text(), f"@{priv}")
+            olink = other.locator("a.rjc-handle-link")
+            self.assertIn(f"card.html?u={priv}", olink.get_attribute("href"))
+            self.assertEqual(olink.inner_text(), f"@{priv}")
             # 框旁两链
             compose = gpage.locator(".rjc-compose").first
             self.assertEqual(compose.locator("a.rjc-rules").get_attribute("href"), "rules.html")

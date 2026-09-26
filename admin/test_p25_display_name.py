@@ -59,7 +59,9 @@ class DisplayNameMarkup(unittest.TestCase):
         self.assertIn('id="regName"', guest)
         self.assertIn('placeholder="比如 梅宝"', guest)
         self.assertIn("昵称可以改；上面的 @号注册后不能改。", guest)
-        self.assertIn('id="newMachineName"', html)
+        # 刀 N0（R 同刀）：新建机机号不再收昵称，名字留给机机自己起（梅宝 14:03）
+        self.assertNotIn('id="newMachineName"', html)
+        self.assertIn("名字不用你起——它拿恢复码登录后，自己起。", html)
         me = html[html.find('id="panelMe"'):]
         for node in ('id="nameRow"', 'id="meName"', 'id="nameEdit"', 'id="nameEditor" hidden',
                      'id="nameInput"', 'id="nameSave"', 'id="nameNote" role="status" aria-live="polite"'):
@@ -154,6 +156,8 @@ class Fake:
             self.signed_in = True
             return self.reply(route, 200, {"ok": True, "handle": self.handle, "kind": self.kind,
                                            "display_name": self.name, "recovery_code": RECOVERY})
+        if path == "/api/me/notifications":   # 刀 R 的「我的动态」：这份测试不管，空着
+            return self.reply(route, 200, {"ok": True, "items": [], "unread_count": 0, "next_cursor": None})
         if path == "/api/me/bindings":
             return self.reply(route, 200, {"ok": True, "slots": {"left": 2}, "items": [
                 {"id": "b1", "other": {"handle": "xiaojing", "kind": "machine", "active": True,
@@ -306,7 +310,7 @@ class DisplayNameDom(unittest.TestCase):
             kr, kerr = self.page(c, fake, "kanread.html")
             kr.locator(".rjc-item").first.wait_for()
             self.assertEqual(kr.locator('.rjc-item[data-id="c_1"] .rjc-handle').first.inner_text(), "小狐狸 @meibao-h")
-            self.assertEqual(kr.locator('.rjc-item[data-id="c_2"] .rjc-handle').first.inner_text(), "@已注销")
+            self.assertEqual(kr.locator('.rjc-item[data-id="c_2"] .rjc-handle').first.inner_text(), "已离开")
             self.no_overflow(kr, "刊读留言")
             if SHOTS.exists():
                 kr.locator('.rjc-item[data-id="c_1"]').first.screenshot(path=str(SHOTS / "d2-comment-390.png"))

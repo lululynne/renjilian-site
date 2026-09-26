@@ -66,8 +66,12 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         self.assertIn('id="keyBox"', me)
 
     def test_terms_sentence(self) -> None:
-        self.assertIn("钥匙180天到期；每个机机同时最多5把；解绑、停用或注销都会让它当场作废；签发人本站只在后台记着，不公开。",
-                      text_of(key_box_html()))
+        # 刀 K2：待办「机机钥匙那栏的人话改法」——一把＝一个地方的通行证、丢了只作废那一把、两种码长相区分
+        t = text_of(key_box_html())
+        self.assertIn("一把钥匙＝它在一个地方用的通行证：电脑一把、手机一把，一只最多同时5把；丢了只作废那一把，别的照常用。", t)
+        self.assertIn("钥匙180天到期；解绑、停用或注销，它的钥匙当场全部作废。", t)
+        self.assertIn("rjr-开头的是你开号、登录用的恢复码", t)
+        self.assertIn("rj_m_开头的才是给机机干活的钥匙", t)
 
     @unittest.skipUnless((API_SRC / "config.js").exists(), "renji-api 不在本机")
     def test_numbers_match_backend_config(self) -> None:
@@ -76,7 +80,7 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         label_max = re.search(r"MTOKEN_LABEL_MAX:\s*(\d+)", cfg).group(1)
         self.assertIn(f"钥匙{ttl}天到期", text_of(key_box_html()))
         max_active = re.search(r"MTOKEN_MAX_ACTIVE:\s*(\d+)", cfg).group(1)
-        self.assertIn(f"每个机机同时最多{max_active}把", text_of(key_box_html()))
+        self.assertIn(f"一只最多同时{max_active}把", text_of(key_box_html()))
         per_hour = re.search(r"COMMENT_PER_HOUR_PER_TOKEN:\s*(\d+)", cfg).group(1)
         self.assertIn(f"另外每把钥匙每小时最多{per_hour}条", text_of(read("rules.html")))
         self.assertIn(f"备注（不超过{label_max}字）", text_of(read("privacy.html")))
@@ -151,7 +155,7 @@ def env(k: dict) -> dict:
 class FakeBackend:
     """按回执 A 第二节的契约回话。数字和日期故意用不会是今天算出来的值（2031 年），证明页面照抄不自己算。"""
 
-    ISSUE_400 = "权限范围现在只有 comment:write 一种。"
+    ISSUE_400 = "权限范围只有 comment:write 和 profile:write 两种。"
     NOTICE = "这把钥匙只显示这一次，交给你的机机自己收好。丢了就作废再签一把，站方也拿不回来。"
     TOKEN = "rj_m_" + "abcdefghijk" * 5 + "mnpqr"
 
@@ -197,6 +201,8 @@ class FakeBackend:
                                            "kind": self.kind, "probation_remaining": 0})
         if path == "/api/me/bindings":
             return self.reply(route, 200, {"ok": True, "items": self.bindings, "slots": {"left": 1}})
+        if path == "/api/me/notifications":   # 刀 R 的「我的动态」：这份测试不管，空着
+            return self.reply(route, 200, {"ok": True, "items": [], "unread_count": 0, "next_cursor": None})
         if path == "/api/me/profile":
             return self.reply(route, 200, {"ok": True, "handle": self.handle, "wall_public": False,
                                            "tags": {}, "limits": {"subscription": 8, "device": 6, "route": 3}})
@@ -208,7 +214,8 @@ class FakeBackend:
         if path == "/api/machine-tokens" and method == "POST":
             if self.kind != "human":
                 return self.reply(route, 403, {"ok": False, "error": "只有人类号能签发机机钥匙。"})
-            if body.get("scopes") != ["comment:write"]:
+            sc = body.get("scopes") or []
+            if not sc or any(x not in ("comment:write", "profile:write") for x in sc):
                 return self.reply(route, 400, {"ok": False, "error": self.ISSUE_400})
             key = env({"id": "mt_new", "machine": body["machine"], "label": body.get("label"),
                        "created_day": "2031-03-04", "expires_day": "2031-08-31"})
@@ -307,13 +314,15 @@ class MachineKeyPanelDom(unittest.TestCase):
             self.assertEqual(dead.locator(".rj-key-revoke").count(), 0, "作废了的钥匙不该还有作废按钮")
             self.assertEqual(first.locator(".rj-key-revoke").count(), 1)
 
-            # 签发表单：scope 只有一个勾、默认勾上，旁边那句
-            scope = sec.locator(".rj-key-scope-box")
-            self.assertEqual(scope.count(), 1)
+            # 签发表单（刀 K2 起两个勾：留言 comment:write、自己打扮名片 profile:write，默认都勾上），旁边那句
+            self.assertEqual(sec.locator(".rj-key-scope-box").count(), 2)
+            scope = sec.locator('.rj-key-scope-box[value="comment:write"]')
+            card_scope = sec.locator('.rj-key-scope-box[value="profile:write"]')
             self.assertTrue(scope.is_checked())
-            self.assertEqual(scope.get_attribute("value"), "comment:write")
-            self.assertIn("给了它，你的机机就能用 MCP 在精读卡下留言；用钥匙发的留言都先待审，站方通过后才公开。",
-                          sec.inner_text())
+            self.assertTrue(card_scope.is_checked())
+            self.assertIn("勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）", sec.inner_text())
+            self.assertIn("给 @fake-bot 签一把", sec.locator(".rj-key-go").inner_text())
+            card_scope.uncheck()   # 下面这段照旧只验留言那一种
             self.assertEqual(sec.locator(".rj-key-label").get_attribute("maxlength"), "40")
 
             # 勾掉 scope：页面照发，后端那句原样摆出来，明文框不出现
@@ -353,8 +362,10 @@ class MachineKeyPanelDom(unittest.TestCase):
             page.locator("#keyPlainDone").click()
             page.locator("#keyPlain").wait_for(state="hidden")
             self.assertNotIn(FakeBackend.TOKEN, page.content())
+            # 刀 R 起 localStorage 里只许有「这个浏览器登录过」的 0/1 提示位（不是凭据）；钥匙明文哪儿都不许落
             self.assertEqual(page.evaluate(
-                "() => [localStorage.length, sessionStorage.length]"), [0, 0])
+                "() => [Object.keys(localStorage).filter(k => k !== 'rj_signed_in').length, sessionStorage.length]"), [0, 0])
+            self.assertFalse(page.evaluate("t => Object.values(localStorage).some(v => v.includes(t))", FakeBackend.TOKEN))
 
             # 作废：确认一次，notice 照后端原话
             first.locator(".rj-key-revoke").click()

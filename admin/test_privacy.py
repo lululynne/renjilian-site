@@ -18,7 +18,9 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-API_SRC = Path.home() / "renji-api" / "src"
+import os
+# 后端源码：默认主工作树；联调别的分支（比如刀 K1 的独立工作树）时用 RENJI_API_SRC 指过去
+API_SRC = Path(os.environ.get("RENJI_API_SRC") or (Path.home() / "renji-api" / "src"))
 
 # 表 → 隐私页上必须出现的说明（每条都要在页面正文里找得到）
 READER_TABLES: dict[str, tuple[str, ...]] = {
@@ -35,6 +37,14 @@ READER_TABLES: dict[str, tuple[str, ...]] = {
     # 2.5 阶段：签发人只在后台，不公开；作废／解绑／注销后怎么处理照 renji-api mtokens.js 的真行为写
     "machine_tokens": ("机机钥匙", "只存钥匙的哈希", "签发它的是哪个人类号", "只用于处理举报与滥用", "不公开显示",
                        "当场全部作废", "签发人记录清空"),
+    # 刀 R：我的动态（90 天清理）、机机自查时间
+    "notifications": ("我的动态", "保留 90 天"),
+    "machine_self_checks": ("最近一次查的是什么时候",),
+    # 刀 K：名片与上传图
+    "cards": ("名片", "名片默认不挂出来", "关系自报"),
+    "card_devices": ("设备（品牌、品类、型号）",),
+    "card_subs": ("自己填的厂商和档名存原字",),
+    "card_media": ("上传的图", "Cloudflare R2", "拍摄地点", "先过站方"),
 }
 # 这些表不存任何读者数据：全站开关、表结构版本
 NO_READER_DATA = {"site_flags", "meta"}
@@ -137,7 +147,8 @@ class PrivacyPageMatchesTheBackend(unittest.TestCase):
 
 class PrivacyEntryPoints(unittest.TestCase):
     PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "cost.html", "kanread.html",
-             "pulse.html", "changelog.html", "account.html", "profile.html", "rules.html")
+             "pulse.html", "changelog.html", "account.html", "profile.html", "rules.html",
+             "card.html", "card-edit.html")
     NAV = re.compile(r'<nav class="boards".*?</nav>', re.S)
 
     def test_every_footer_links_privacy_and_top_nav_does_not(self) -> None:
@@ -155,7 +166,9 @@ class PrivacyEntryPoints(unittest.TestCase):
         self.assertNotIn("privacy.html", self.NAV.search(html).group(0))
         footer = html[html.find("<footer"):]
         self.assertIn('<span aria-current="page">隐私说明</span>', footer)
-        self.assertNotIn('<script', html, "隐私页是纯静态页，不跑脚本")
+        # 刀 R 起：页面只带顶栏小红点那两份本站脚本（只在这个浏览器登录过时问一次 /api/me），别的一概不收
+        self.assertEqual(re.findall(r'<script src="([^"]+)"', html), ["rj-config.js", "rj-api.js"], "隐私页只许带顶栏那两份本站脚本")
+        self.assertNotIn("<script>", html)
 
     def test_register_panel_points_to_privacy(self) -> None:
         html = read("account.html")

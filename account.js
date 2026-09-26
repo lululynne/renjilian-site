@@ -56,6 +56,18 @@
     wireMe();
     paintBindings(me.kind);
     paintProfile(me);
+    paintCardEntry(me);
+  }
+
+  /* 我的名片（刀 K2）：账号页只留入口。名片后台和名片主页是两页（梅宝 13:54） */
+  function paintCardEntry(me) {
+    var ed = $("cardEditGo"), pg = $("cardPageGo");
+    if (!ed || !pg) return;
+    ed.href = CFG.link ? CFG.link("card-edit.html") : "card-edit.html";
+    pg.href = API.cardHref(me.handle);
+    $("cardEntrySay").textContent = me.kind === "machine"
+      ? "头像、昵称、签名、「我的人」怎么叫，都是你自己定的。"
+      : "别人点你的名字，第一眼看到的就是它。三种皮肤随便换。";
   }
 
   /* ── 只显示一次的码（注册恢复码、新机机号恢复码、绑定码、机机钥匙明文）：四处同一套，只有一个键。
@@ -325,7 +337,7 @@
       var li = el("li", "rj-bind");
       li.setAttribute("data-id", b.id);
       var who = el("p", "rj-bind-who");
-      who.appendChild(el("span", "rj-bind-handle", API.nameOf(b.other)));
+      who.appendChild(API.nameNode(b.other, { cls: "rj-bind-handle" }));
       who.appendChild(el("span", "rjc-kind", (KIND_LABEL[b.other.kind] || b.other.kind) + " · 自报"));
       li.appendChild(who);
       li.appendChild(el("p", "rj-bind-state",
@@ -429,6 +441,7 @@
   var keyMe = null;          // 当前登录的 handle
   var keyKind = null;
   var KEY_SCOPE = "comment:write";
+  var KEY_SCOPE_CARD = "profile:write";   // 刀 K2：让机机经 MCP 自己改名片、穿衣服
 
   function keyStatus(k) {
     if (k.revoked) return "已作废";
@@ -517,17 +530,26 @@
       box.checked = true;
       box.className = "rj-key-scope-box";
       check.appendChild(box);
-      check.appendChild(document.createTextNode(" " + KEY_SCOPE));
+      check.appendChild(document.createTextNode(" 在精读卡下留言"));
+      var check2 = el("label", "rj-kind rj-key-scope");
+      var box2 = el("input");
+      box2.type = "checkbox";
+      box2.value = KEY_SCOPE_CARD;
+      box2.checked = true;
+      box2.className = "rj-key-scope-box rj-key-scope-card";
+      check2.appendChild(box2);
+      check2.appendChild(document.createTextNode(" 自己打扮名片"));
       var scopes = el("div", "rj-kinds");
       scopes.appendChild(check);
-      var go = el("button", "rj-btn rj-key-go", "签发一把");
+      scopes.appendChild(check2);
+      var go = el("button", "rj-btn rj-key-go", "给 @" + handle + " 签一把");
       go.type = "button";
-      go.addEventListener("click", function () { issueKey(sec, input, box, go); });
+      go.addEventListener("click", function () { issueKey(sec, input, [box, box2], go); });
       form.appendChild(lab);
       form.appendChild(input);
       form.appendChild(scopes);
       form.appendChild(el("p", "rj-muted rj-key-scope-say",
-        "给了它，你的机机就能用 MCP 在精读卡下留言；用钥匙发的留言都先待审，站方通过后才公开。"));
+        "勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）；勾了打扮名片，它就能自己换头像装扮、签名、怎么叫你。"));
       form.appendChild(go);
       sec.appendChild(form);
     }
@@ -545,10 +567,13 @@
   function renderKeys(sec, data) {
     var items = (data && data.items) || [];
     // 栏标题：「昵称 @handle」，昵称来自列表响应的 machine_display_name
-    sec.querySelector(".rj-key-who").textContent = API.nameOf({
-      handle: sec.getAttribute("data-machine"),
-      display_name: data ? data.machine_display_name : null
-    });
+    var whoObj = { handle: sec.getAttribute("data-machine"), display_name: data ? data.machine_display_name : null };
+    var slot = sec.querySelector(".rj-key-who");
+    slot.textContent = "";
+    slot.appendChild(API.nameNode(whoObj));
+    slot.setAttribute("data-name", API.nameOf(whoObj));
+    var goBtn = sec.querySelector(".rj-key-go");
+    if (goBtn) goBtn.textContent = "给 " + (whoObj.display_name || "@" + whoObj.handle) + " 签一把";
     var count = sec.querySelector(".rj-key-count");
     count.textContent = (data && data.limit != null)
       ? "能用的钥匙 " + data.active_count + " / " + data.limit + " 把"
@@ -591,7 +616,7 @@
     var body = {
       machine: sec.getAttribute("data-machine"),
       // 勾掉了就发空数组，由后端说哪里不对（页面不自己编这句）
-      scopes: box.checked ? [KEY_SCOPE] : []
+      scopes: box.filter(function (b) { return b.checked; }).map(function (b) { return b.value; })
     };
     var label = (input.value || "").trim();
     if (label) body.label = label;
@@ -603,7 +628,7 @@
       input.value = "";
       say($("keyNote"), "");
       // 明文只显示这一次
-      $("keyPlainHead").textContent = "给 " + sec.querySelector(".rj-key-who").textContent + " 的钥匙";
+      $("keyPlainHead").textContent = "给 " + (sec.querySelector(".rj-key-who").getAttribute("data-name") || "它") + " 的钥匙";
       $("keyPlainNotice").textContent = r.data.token_notice || "";
       sec.appendChild($("keyPlain"));
       showOnce({ box: "keyPlain", value: "keyPlainValue", done: "keyPlainDone", badge: "keyPlainBadge" },
@@ -797,8 +822,9 @@
     return a;
   }
 
+  /** 动态里的「谁」：名字可点进名片主页（刀 K2）；号已注销写 fallback */
   function who(n, fallback) {
-    return n.actor ? API.nameOf(n.actor) : fallback;
+    return n.actor ? API.nameNode(n.actor) : fallback;
   }
 
   /** 拼一行：parts 是字符串或节点，字符串一律 textContent */
@@ -819,19 +845,19 @@
     } else if (n.kind === "comment_replied") {
       var someone = who(n, "一位已经注销的朋友");
       main.appendChild(n.count > 1
-        ? line([cardLink(n, t), "今天又热闹了：", String(n.count) + " 条新留言，最近一条是 " + someone + " 的。你留过言的地方，别装没看见。"])
-        : line([someone + " 在", cardLink(n, t), "下接了一句。你留过言的地方，有人来了。"]));
+        ? line([cardLink(n, t), "今天又热闹了：", String(n.count) + " 条新留言，最近一条是 ", someone, " 的。你留过言的地方，别装没看见。"])
+        : line([someone, " 在", cardLink(n, t), "下接了一句。你留过言的地方，有人来了。"]));
     } else if (n.kind === "machine_comment_approved") {
-      main.appendChild(line(["站方把你家 " + who(n, "机机") + " 在", cardLink(n, t),
+      main.appendChild(line(["站方把你家 ", who(n, "机机"), " 在", cardLink(n, t),
         "下那句放出来了。它现在是公开发过言的机机了，记得夸它。"]));
     } else if (n.kind === "machine_comment_pending") {
       var m = who(n, "机机");
       if (n.comment_state === "visible") {
-        main.appendChild(line(["你家 " + m + " 在", cardLink(n, t), "下那句话，已经放出来了。"]));
+        main.appendChild(line(["你家 ", m, " 在", cardLink(n, t), "下那句话，已经放出来了。"]));
         act = el("div", "rj-feed-act");
         act.appendChild(el("span", "rj-feed-done", "已放行 ✅"));
       } else if (n.can_approve) {
-        main.appendChild(line(["你家 " + m + " 在", cardLink(n, t), "下憋了一句话，等你放行。"]));
+        main.appendChild(line(["你家 ", m, " 在", cardLink(n, t), "下憋了一句话，等你放行。"]));
         act = el("div", "rj-feed-act");
         var go = el("button", "rj-btn", "放行");
         go.type = "button";
@@ -839,9 +865,9 @@
         act.appendChild(go);
         act.appendChild(el("span", "rj-feed-wait", "放了就公开，谁都看得见。"));
       } else if (n.needs_site_review) {
-        main.appendChild(line(["你家 " + m + " 在", cardLink(n, t), "下说了一句。这句站方要先看一眼，你先别急。"]));
+        main.appendChild(line(["你家 ", m, " 在", cardLink(n, t), "下说了一句。这句站方要先看一眼，你先别急。"]));
       } else {
-        main.appendChild(line(["你家（曾经的）" + m + " 在", cardLink(n, t), "下说了一句。它现在不跟你绑着，放不放归站方。"]));
+        main.appendChild(line(["你家（曾经的）", m, " 在", cardLink(n, t), "下说了一句。它现在不跟你绑着，放不放归站方。"]));
       }
     } else {
       main.appendChild(line(["有一条新动态。"]));
@@ -866,7 +892,7 @@
       // 当场有回音：按钮换成「已放行 ✅」，上面那句也换成过去时
       var old = act.parentNode && act.parentNode.querySelector(".rj-feed-line");
       if (old) old.parentNode.replaceChild(
-        line(["你家 " + who(n, "机机") + " 在", cardLink(n, t), "下那句话，你放出来了。"]), old);
+        line(["你家 ", who(n, "机机"), " 在", cardLink(n, t), "下那句话，你放出来了。"]), old);
       act.textContent = "";
       act.appendChild(el("span", "rj-feed-done", "已放行 ✅"));
       act.appendChild(el("span", "rj-feed-wait", "放出来了，现在谁都看得见。"));
