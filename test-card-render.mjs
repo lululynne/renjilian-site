@@ -27,6 +27,16 @@ for (const kind of ["human", "machine"]) {
     t(`${kind}/${skin} 标了皮肤`, h.includes(`data-skin="${skin}"`));
   }
 }
+// 背景：只认 /api/media/<id>，拼进 style 属性前再过一次 esc；机机大卡、展柜小时热力、kind 注入
+t("背景：带引号的图址丢掉", C.bgStyle({ photo: 'x") ;background:url(javascript:1)' }) === "");
+t("背景：正常图址", C.bgStyle({ photo: "https://api.renji.love/api/media/m_ab", px: 999, py: "x" }) === "background:url('https://api.renji.love/api/media/m_ab') 100% 50%/cover no-repeat");
+t("背景：属性版不出双引号", !C.bgAttr({ preset: "deepsea" }).includes('"'));
+t("kind 只有两种", C.blank('human" onclick="x', "a").kind === "human" && C.blank("machine", "<b>").handle === "");
+{
+  const big = C.machineBig({ handle: "jiji", display_name: evil[0], av: { model: "claude" }, bio: evil[1], call: evil[2], titles: [evil[3]],
+    stats: { comments: '1"><img src=x onerror=alert(1)>', replied: 2, days: 3 }, bg: { photo: 'x"onerror=' } });
+  t("大卡：昵称/签名/称呼/称号/战绩都不出标签", !/<img src=x|<script|<u>zz|' onmouseover='|"onerror=/.test(big));
+}
 t("上传图：正常 id", C.mediaSrc({ url: "/api/media/m_abc123" }) === "/api/media/m_abc123");
 t("上传图：外链不认", C.mediaSrc({ url: "https://evil.example/x.png" }) === null);
 t("上传图：带引号不认", C.mediaSrc({ url: "/api/media/a\")" }) === null);

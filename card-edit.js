@@ -199,7 +199,7 @@
   }
   function bgPanel(canUpload) {
     var cardFace = '<div class="bgpv-card">' + C.faceSmall(M) + "<b>" + C.whoLine(M) + "</b></div>";
-    var h = '<div class="bgpv" id="bgpv" style="' + (C.bgStyle(M.bg) || "background:var(--bg-deep)") + '">' + cardFace + (M.bg && M.bg.photo ? '<span class="bgpv-tip">拖动选露出的部分</span>' : "") + "</div>";
+    var h = '<div class="bgpv" id="bgpv" style="' + C.bgAttr(M.bg, "background:var(--bg-deep)") + '">' + cardFace + (M.bg && M.bg.photo ? '<span class="bgpv-tip">拖动选露出的部分</span>' : "") + "</div>";
     if (canUpload) {
       h += '<div class="two"><label class="go" for="bgfile">传一张横图</label><input type="file" id="bgfile" accept="image/jpeg,image/png,image/webp" hidden>' + (M.bg ? '<button type="button" class="go ghost" id="nobg">不要背景</button>' : "") + "</div>";
       if (M.bg && M.bg.photo && M.bgPhotoMedia && M.bgPhotoMedia.state === "pending") h += '<p class="pend">已换上。背景图也要先过站方（待审），这段时间别人看到的是原来的背景；你自己马上就能看到。</p>';
@@ -436,6 +436,9 @@
     var t = e.target;
     var f = t.files && t.files[0];
     if (!f) return;
+    // 先挡一道好说话的（真正的门在服务端：只认文件头、限尺寸字节、只收人类网页会话、先待审）
+    if (!/^image\/(jpeg|png|webp)$/.test(f.type)) { echo("只收 JPG、PNG、WebP 的照片"); t.value = ""; return; }
+    if (f.size > 25 * 1024 * 1024) { echo("这张太大了，挑一张 25MB 以内的"); t.value = ""; return; }
     if (t.id === "bgfile") { uploadBg(f); return; }
     if (t.id !== "file") return;
     var r = new FileReader();

@@ -228,8 +228,8 @@
           return '<a class="bot" href="' + esc(C.cardHref(x.handle)) + '"><span class="m x">' + C.avatar(x.avatar || {}, "", x.display_name || x.handle) + "</span><div><b>" + esc(x.display_name || "@" + x.handle) + "</b><span>" + esc(x.latest ? x.latest.body : (x.bio || "")) + "</span></div></a>";
         }).join("") + "</div>";
       } else if (s.kind === "hours" && s.hours) {
-        var max = Math.max.apply(null, s.hours.concat([1]));
-        h += '<div class="hours" aria-label="按小时的出没">' + s.hours.map(function (n, i) { return '<i title="' + i + ' 点 · ' + n + ' 条" style="height:' + Math.round(n / max * 100) + '%"></i>'; }).join("") + '</div><div class="hours-ax"><span>0 点</span><span>12 点</span><span>23 点</span></div>';
+        var max = Math.max.apply(null, s.hours.map(function (n) { return Math.max(0, Number(n) | 0); }).concat([1]));
+        h += '<div class="hours" aria-label="按小时的出没">' + s.hours.map(function (n, i) { n = Math.max(0, Number(n) | 0); return '<i title="' + i + ' 点 · ' + n + ' 条" style="height:' + Math.round(n / max * 100) + '%"></i>'; }).join("") + '</div><div class="hours-ax"><span>0 点</span><span>12 点</span><span>23 点</span></div>';
       } else if (s.kind === "reading") {
         var sv = (s.subs || []).map(C.subView);
         h += sv.length ? '<div class="pol-subs">' + sv.map(function (x) { return '<span class="psub" style="' + C.toneStyle(x.tone) + '">' + C.logo(x) + "<b>" + esc(x.name) + "</b> " + esc(x.tier) + "</span>"; }).join("") + "</div>" : '<p class="ph">还空着。</p>';

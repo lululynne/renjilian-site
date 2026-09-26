@@ -466,5 +466,47 @@ class CardPages(unittest.TestCase):
                 c.close()
 
 
+    # ── 6. 恶意字段真走后端 → 名片主页、名片后台、「我家机机」大卡都只当文字（返修 r1，grok 评审第 1 条） ──
+    def test_6_hostile_fields_render_as_text(self) -> None:
+        evil = '<img src=x onerror="window.__pwn=1">"\'x'
+        tag = format(int(time.time() * 1000) % 36**5, "x")[-5:]
+        H, M = Web(), Web()
+        h, m = f"k2xh{tag}", f"k2xm{tag}"
+        H.ok("POST", "/api/accounts", {"handle": h, "kind": "human"})
+        M.ok("POST", "/api/accounts", {"handle": m, "kind": "machine"})
+        code = M.ok("POST", "/api/me/binding-codes", {})["binding_code"]
+        b = H.ok("POST", "/api/bindings", {"code": code})["binding"]
+        H.ok("PATCH", f"/api/bindings/{b['id']}/visibility", {"public": True})
+        M.ok("PATCH", f"/api/bindings/{b['id']}/visibility", {"public": True})
+        stored = {}
+        for w, body in ((H, {"bio": evil[:40], "devices": [{"brand": '"><b>x', "cat": "phone", "model": evil[:40], "main": True}],
+                             "subs": [{"vendor": '<svg onload=1>', "tier": '"\'<i>'}], "routes": ["many"], "published": True}),
+                        (M, {"avatar": {"model": "claude"}, "bio": evil[:40], "my_call": '"><i>x', "rel": {"status": "<b>恋", "note": evil[:40]},
+                             "published": True})):
+            code_, d = w.req("PATCH", "/api/me/card", body)
+            stored[w is H] = (code_, d)
+        for skin in ("polaroid", "rpg", "holder"):
+            H.ok("PATCH", "/api/me/card", {"skin": skin})
+            M.ok("PATCH", "/api/me/card", {"skin": skin})
+            for who, path in ((None, f"card.html?u={h}"), (None, f"card.html?u={m}"), (H, "card-edit.html"), (M, "card-edit.html")):
+                c = self.ctx(who)
+                try:
+                    page, errors = self.open(c, path)
+                    page.wait_for_timeout(600)
+                    self.assertIsNone(page.evaluate("window.__pwn"), f"{path} {skin} 执行了注入")
+                    self.assertEqual(page.locator("img[src='x'], svg[onload], .cd-hero b:text-is('x'), main i:text-is('x')").count(), 0, f"{path} {skin} 多出了标签")
+                    self.assertEqual([e for e in errors if "Failed to load resource" not in e], [])
+                finally:
+                    c.close()
+        # 至少有一处真把原字显示成了文字（证明不是被后端吞掉了才「安全」）
+        c = self.ctx(None)
+        try:
+            page, _ = self.open(c, f"card.html?u={m}")
+            page.locator(".cd-hero").wait_for()
+            shown = page.locator(".cd-hero").inner_text() + page.locator(".ext").inner_text()
+            self.assertTrue("onerror" in shown or "<img" in shown or "&lt;" in shown or "<b>" in shown, f"原字没出现：{stored} / {shown[:200]}")
+        finally:
+            c.close()
+
 if __name__ == "__main__":
     unittest.main()

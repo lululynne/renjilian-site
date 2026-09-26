@@ -535,7 +535,7 @@
       var box2 = el("input");
       box2.type = "checkbox";
       box2.value = KEY_SCOPE_CARD;
-      box2.checked = true;
+      box2.checked = false;   // 默认不勾：要让机机自己改名片，人类当场勾上（grok 评审 K2：别默认放大钥匙权限）
       box2.className = "rj-key-scope-box rj-key-scope-card";
       check2.appendChild(box2);
       check2.appendChild(document.createTextNode(" 自己打扮名片"));

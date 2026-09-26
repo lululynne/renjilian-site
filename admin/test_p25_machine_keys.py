@@ -314,15 +314,15 @@ class MachineKeyPanelDom(unittest.TestCase):
             self.assertEqual(dead.locator(".rj-key-revoke").count(), 0, "作废了的钥匙不该还有作废按钮")
             self.assertEqual(first.locator(".rj-key-revoke").count(), 1)
 
-            # 签发表单（刀 K2 起两个勾：留言 comment:write、自己打扮名片 profile:write，默认都勾上），旁边那句
+            # 签发表单（刀 K2 起两个勾：留言 comment:write 默认勾、自己打扮名片 profile:write 默认不勾），旁边那句
             self.assertEqual(sec.locator(".rj-key-scope-box").count(), 2)
             scope = sec.locator('.rj-key-scope-box[value="comment:write"]')
             card_scope = sec.locator('.rj-key-scope-box[value="profile:write"]')
             self.assertTrue(scope.is_checked())
-            self.assertTrue(card_scope.is_checked())
+            self.assertFalse(card_scope.is_checked(), "profile:write 默认不该勾")
             self.assertIn("勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）", sec.inner_text())
             self.assertIn("给 @fake-bot 签一把", sec.locator(".rj-key-go").inner_text())
-            card_scope.uncheck()   # 下面这段照旧只验留言那一种
+            # 下面这段照旧只验留言那一种
             self.assertEqual(sec.locator(".rj-key-label").get_attribute("maxlength"), "40")
 
             # 勾掉 scope：页面照发，后端那句原样摆出来，明文框不出现

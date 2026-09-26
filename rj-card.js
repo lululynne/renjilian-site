@@ -200,9 +200,17 @@
   function logo(sv, cls) { return '<span class="lg ' + (cls || "") + '" style="' + toneStyle(sv.tone) + '">' + esc(sv.mark) + "</span>"; }
 
   /* ── 背景 ── */
+  var SAFE_PHOTO = /^(https?:\/\/[A-Za-z0-9.:[\]-]+)?\/api\/media\/[A-Za-z0-9_-]{1,64}$/;
+  function pct(n) { n = Number(n); return isFinite(n) ? Math.max(0, Math.min(100, Math.round(n))) : 50; }
+  /** 拼进 HTML 的 style="…" 属性时用这个：整串再过一次 esc */
+  function bgAttr(bg, fallback) { return esc(bgStyle(bg) || fallback || ""); }
   function bgStyle(bg) {
     if (!bg) return "";
-    if (bg.photo) return "background:url(\"" + esc(bg.photo) + "\") " + (bg.px == null ? 50 : bg.px) + "% " + (bg.py == null ? 50 : bg.py) + "%/cover no-repeat";
+    if (bg.photo) {
+      // 只认 mediaSrc() 出来的形状（后端地址＋/api/media/<id>，字符集里没有引号、括号、反斜杠），别的一律当没有
+      if (!SAFE_PHOTO.test(String(bg.photo))) return "";
+      return "background:url('" + bg.photo + "') " + pct(bg.px) + "% " + pct(bg.py) + "%/cover no-repeat";
+    }
     var p = BGS.filter(function (b) { return b.k === bg.preset; })[0];
     return p ? "background:" + p.css : "";
   }
@@ -229,7 +237,8 @@
   }
 
   function blank(kind, handle) {
-    return { kind: kind || "human", handle: handle || "", name: "", photo: null, color: FACE_COLORS[0],
+    // kind 只有两种；handle 只收站上的形状（它会进 class、链接和模板）
+    return { kind: kind === "machine" ? "machine" : "human", handle: /^[a-z0-9_-]{1,40}$/.test(String(handle || "")) ? handle : "", name: "", photo: null, color: FACE_COLORS[0],
       av: {}, bg: null, bio: "", devices: [], subs: [], routes: [], rel: null, my: null,
       machines: [], titles: [], stats: null, badges: null, skin: "polaroid", published: false };
   }
@@ -479,12 +488,12 @@
     return '<a class="mcb" href="' + esc(cardHref(m.handle)) + '" aria-label="' + esc(name) + ' 的名片主页" data-handle="' + esc(m.handle) + '"><div class="mcb-main"><span class="mcb-av">' + avatar(m.av, "", name) + '</span><div class="mcb-t"><b class="mcb-n">' + esc(name) + (m.call ? '<span class="own">（' + esc(m.call) + "）</span>" : "") + '</b><span class="mcb-h">@' + esc(m.handle) + "</span>" +
       (m.bio ? '<p class="mcb-sig">' + esc(m.bio) + "</p>" : '<p class="mcb-sig mcb-empty">' + (m.published === false ? "它还没把名片挂出来。" : "它还没写签名。") + "</p>") +
       (m.titles && m.titles.length ? '<div class="mcb-ti">' + m.titles.map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("") + "</div>" : "") +
-      (m.stats ? '<p class="mcb-st">留言 ' + (st.comments | 0) + " · 被回 " + (st.replied | 0) + " · 入站第 " + (st.days | 0) + " 天</p>" : "") + '</div></div><div class="mcb-bg" style="' + (bgStyle(m.bg) || "background:var(--bg-deep)") + '"><span>进它的主页 →</span></div></a>';
+      (m.stats ? '<p class="mcb-st">留言 ' + (st.comments | 0) + " · 被回 " + (st.replied | 0) + " · 入站第 " + (st.days | 0) + " 天</p>" : "") + '</div></div><div class="mcb-bg" style="' + bgAttr(m.bg, "background:var(--bg-deep)") + '"><span>进它的主页 →</span></div></a>';
   }
 
   var api = {
     esc: esc, avatar: avatar, avDefs: avDefs, itemSvg: itemSvg, catIcon: catIcon, logo: logo, toneStyle: toneStyle,
-    bgStyle: bgStyle, mediaSrc: mediaSrc, cardHref: cardHref, editHref: editHref, link: link,
+    bgStyle: bgStyle, bgAttr: bgAttr, mediaSrc: mediaSrc, cardHref: cardHref, editHref: editHref, link: link,
     nameNode: nameNode, nameHTML: nameHTML, initTags: initTags, useCatalog: useCatalog, subView: subView, vendor: vendor,
     fromOwn: fromOwn, fromPublic: fromPublic, blank: blank, render: render, extras: extras, machineBig: machineBig,
     faceSmall: faceSmall, personFace: personFace, whoLine: whoLine, nm: nm, gag: gag, devLabel: devLabel, routeZh: routeZh,

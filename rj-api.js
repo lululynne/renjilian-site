@@ -121,7 +121,7 @@ window.RJ_API = (function () {
     }
     c.setAttribute("href", cardHref(who.handle));
     var here = /(^|\/)card(-edit)?\.html$/.test(location.pathname);
-    c.classList.toggle("on", here && (location.pathname.indexOf("card-edit") >= 0 || new RegExp("[?&]u=" + who.handle + "(&|$)").test(location.search)));
+    c.classList.toggle("on", here && (location.pathname.indexOf("card-edit") >= 0 || new URLSearchParams(location.search).get("u") === who.handle));
     // 两个入口并排：名片挨在账号左边；masthead 右侧留出两个的位置，标题和 slogan 不被压
     c.style.right = (acct.offsetWidth + 6) + "px";
     head.style.paddingRight = (acct.offsetWidth + c.offsetWidth + 14) + "px";
