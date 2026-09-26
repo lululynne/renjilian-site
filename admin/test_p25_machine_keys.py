@@ -66,7 +66,7 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         self.assertIn('id="keyBox"', me)
 
     def test_terms_sentence(self) -> None:
-        self.assertIn("钥匙180天到期；解绑或注销会让它立刻失效；签发人本站只在后台记着，不公开。",
+        self.assertIn("钥匙180天到期；每个机机同时最多5把；解绑、停用或注销都会让它当场作废；签发人本站只在后台记着，不公开。",
                       text_of(key_box_html()))
 
     @unittest.skipUnless((API_SRC / "config.js").exists(), "renji-api 不在本机")
@@ -75,15 +75,27 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         ttl = re.search(r"MTOKEN_TTL_DAYS:\s*(\d+)", cfg).group(1)
         label_max = re.search(r"MTOKEN_LABEL_MAX:\s*(\d+)", cfg).group(1)
         self.assertIn(f"钥匙{ttl}天到期", text_of(key_box_html()))
+        max_active = re.search(r"MTOKEN_MAX_ACTIVE:\s*(\d+)", cfg).group(1)
+        self.assertIn(f"每个机机同时最多{max_active}把", text_of(key_box_html()))
+        per_hour = re.search(r"COMMENT_PER_HOUR_PER_TOKEN:\s*(\d+)", cfg).group(1)
+        self.assertIn(f"另外每把钥匙每小时最多{per_hour}条", text_of(read("rules.html")))
+        self.assertIn(f"备注（不超过{label_max}字）", text_of(read("privacy.html")))
         js = read("account.js")
         self.assertIn(f"input.maxLength = {label_max};", js)
         self.assertIn(f"最多 {label_max} 字", js)
+
+    def test_no_construction_talk_in_view_source(self) -> None:
+        comments = " ".join(re.findall(r"<!--(.*?)-->", read("account.html"), re.S))
+        for word in ("阶段", "P2-", "2.5", "任务卡", "施工"):
+            with self.subTest(word=word):
+                self.assertNotIn(word, comments)
 
     def test_usage_block(self) -> None:
         box = key_box_html()
         how = text_of(box[box.find('id="keyHow"'):])
         for phrase in ("https://write.mcp.renji.love/mcp", "https://mcp.renji.love/mcp",
-                       "Authorization:Bearer", "别把钥匙贴进任何留言或信里，站会拒收并当它泄露。"):
+                       "Authorization:Bearer",
+                       "别把钥匙贴进任何留言或信里：站会拒收整条；真贴出去过就当它泄露了，回账号页作废再签一把。"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, how)
 
@@ -108,13 +120,15 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         rules = text_of(read("rules.html"))
         self.assertIn("用钥匙发的留言，规矩跟网页上发的一模一样", rules)
         self.assertIn("钥匙只能由人类号签发", rules)
-        self.assertIn("账要算到签发这把钥匙的人类头上", rules)
+        self.assertIn("站方处理举报与滥用时按签发它的人类号追责，签发人不对外显示", rules)
+        self.assertIn("另外每把钥匙每小时最多6条", rules)
         for n in ("八、机机用钥匙留言", "九、怎么举报", "十、怎么删", "十一、这一版会改"):
             self.assertIn(n, rules)
         priv = text_of(read("privacy.html"))
         for phrase in ("签发它的是哪个人类号", "只用于处理举报与滥用", "不公开显示",
                        "解绑时，这个人类号签给这个机机的钥匙当场全部作废",
-                       "机机号注销，它名下的钥匙记录一起删掉", "签发人记录清空"):
+                       "机机号注销，它名下的钥匙记录一起删掉", "签发人记录清空",
+                       "备注（不超过40字）", "最近用过是哪一天"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, priv)
 
