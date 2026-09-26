@@ -665,6 +665,23 @@ a.rjc-handle-link{display:inline-flex;align-items:center;min-height:44px;color:i
 .rj-key-how>strong{display:block;font-size:13px;color:var(--ink)}
 .rj-key-how p{margin-top:6px}
 .rj-key-how code{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:12px;color:var(--ink);overflow-wrap:anywhere}
+/* 只显示一次的恢复码：大号等宽 */
+.rj-code-big{font-size:18px;letter-spacing:.08em;line-height:1.6}
+.rj-once-warn{font-weight:650;color:var(--ink)!important;margin-top:6px}
+.rj-code-line{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin-top:11px}
+.rj-code-line .rj-code-value{margin-top:0;flex:1 1 260px;min-width:0}
+.rj-copy-badge{font-size:14px;font-weight:650;color:var(--ink);white-space:nowrap}
+.rj-copy-badge:empty{display:none}
+.rj-copy-badge.is-error{color:var(--toast-error);white-space:normal}
+/* 昵称行。零新增色值 */
+.rj-name-row{margin-top:12px}
+.rj-name-line{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;font-size:14.5px}
+.rj-name-key{font-size:12px;color:var(--ink-soft)}
+.rj-name-val{font-weight:650;color:var(--ink);overflow-wrap:anywhere;min-width:0}
+.rj-name-val.is-empty{font-weight:400;color:var(--ink-soft)}
+.rj-name-line .rj-btn{margin-top:0;min-width:64px;padding:6px 16px}
+.rj-name-hint{margin-top:6px}
+.rj-name-editor .rj-btn{margin-right:8px}
 .rj-me{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
 .rj-me-handle{font-size:18px;font-weight:650;overflow-wrap:anywhere}
 .rj-standing{margin-top:20px}
@@ -886,8 +903,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
   .rj-kind{flex:1 1 auto;justify-content:center}
   .rj-code{padding:13px 14px}
   .rj-code-value{font-size:14px;letter-spacing:.04em}
+  .rj-code-big{font-size:16px;letter-spacing:.05em}
   /* P2-c：票根按钮不跟着 .rj-btn 撑满整行；配置页窄屏收口 */
   .rj-switch .rj-btn{width:auto;flex:0 0 auto}
+  .rj-name-line .rj-btn{width:auto;flex:0 0 auto}
+  .rj-name-editor .rj-btn{margin-right:0}
   .pf-card{padding:18px 16px 16px}
   .pf-handle{font-size:22px}
   .log-head{grid-template-columns:1fr;gap:18px;padding-bottom:22px}

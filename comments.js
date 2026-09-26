@@ -60,7 +60,7 @@
     art.setAttribute("data-id", c.id);
 
     var head = el("p", "rjc-head");
-    var handleNode = el("span", "rjc-handle", "@" + (c.author.handle || "已注销"));
+    var handleNode = el("span", "rjc-handle", c.author.handle ? API.nameOf(c.author) : "@已注销");
     head.appendChild(handleNode);
     if (c.author.handle) {
       publicHandles().then(function (set) {

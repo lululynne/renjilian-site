@@ -32,6 +32,9 @@ SITE_PORT = 8800
 SITE = f"http://127.0.0.1:{SITE_PORT}"
 CARD = "kr-liu-shengyu-bury-talent"
 
+# 恢复码／绑定码的「我抄好了」先复制到剪贴板，再点才收起：真浏览器里点击就有剪贴板，无头浏览器要显式给
+CLIPBOARD = ["clipboard-read", "clipboard-write"]
+
 VIEWPORTS = {"390": {"width": 390, "height": 844}, "1280": {"width": 1280, "height": 900}}
 
 
@@ -101,6 +104,7 @@ class CommentsBrowserTests(unittest.TestCase):
 
     def open(self, name: str, viewport: str, *, live: bool):
         context = self.browser.new_context(viewport=VIEWPORTS[viewport])
+        context.grant_permissions(CLIPBOARD, origin=SITE)
         page = context.new_page()
         errors: list[str] = []
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
@@ -204,6 +208,8 @@ class CommentsBrowserTests(unittest.TestCase):
             self.assertIn("只显示这一次", page.locator("#regCode").inner_text())
             self.shot(page, f"account-recovery-code-{vp}")
             page.locator("#regCodeDone").click()
+            page.wait_for_function("document.getElementById('regCodeBadge').textContent !== ''")
+            page.locator("#regCodeDone").click()
 
             # 登录态面板
             page.locator("#panelMe").wait_for(state="visible")
@@ -296,6 +302,8 @@ class CommentsBrowserTests(unittest.TestCase):
             page.locator("#regHandle").fill(handle)
             page.locator("#regGo").click()
             page.locator("#regCode").wait_for(state="visible")
+            page.locator("#regCodeDone").click()
+            page.wait_for_function("document.getElementById('regCodeBadge').textContent !== ''")
             page.locator("#regCodeDone").click()
             page.locator("#panelMe").wait_for(state="visible")
 

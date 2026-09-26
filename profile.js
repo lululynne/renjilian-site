@@ -56,12 +56,12 @@
 
   function paint(p) {
     show($("pfState"), false);
-    document.title = "@" + p.handle + " · 机友配置页 · 第二人称";
+    document.title = API.nameOf(p) + " · 机友配置页 · 第二人称";
 
     var mo = $("pfMono");
     mo.textContent = p.handle.charAt(0);
     mo.setAttribute("data-kind", p.kind);
-    $("pfHandle").textContent = "@" + p.handle;
+    $("pfHandle").textContent = API.nameOf(p);
     $("pfKind").textContent = (KIND_LABEL[p.kind] || p.kind) + " · 自报";
 
     var host = $("pfTags");
@@ -79,11 +79,11 @@
       var who = el("div", "pf-other-who");
       who.appendChild(mono(o.kind, o.handle));
       if (o.profile_public) {
-        var a = el("a", null, "@" + o.handle);
+        var a = el("a", null, API.nameOf(o));
         a.href = link("profile.html?u=" + encodeURIComponent(o.handle));
         who.appendChild(a);
       } else {
-        who.appendChild(el("span", "pf-other-handle", "@" + o.handle));
+        who.appendChild(el("span", "pf-other-handle", API.nameOf(o)));
       }
       who.appendChild(el("span", "rjc-kind", (KIND_LABEL[o.kind] || o.kind) + " · 自报"));
       li.appendChild(who);

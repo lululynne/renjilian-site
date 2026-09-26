@@ -52,7 +52,7 @@ window.RJ_API = (function () {
       if (!r.ok || !r.data || !r.data.ok) return null;
       return r.data.signed_in === false ? null : r.data;
     }).catch(function () { return null; });
-    // 顶栏右上角的账号入口跟着同一次 /api/me 换字：登录了显示 @handle，没登录回「账号」。
+    // 顶栏右上角的账号入口跟着同一次 /api/me 换字：登录了有昵称显示昵称、没有显示 @handle，没登录回「账号」。
     // 只挂在页面本来就会发的这次请求上，不为它另发请求。
     meCache.then(paintEntry);
     return meCache;
@@ -61,13 +61,20 @@ window.RJ_API = (function () {
   function paintEntry(who) {
     var els = document.querySelectorAll("a.account-entry");
     for (var i = 0; i < els.length; i++) {
-      var h = who && who.handle ? "@" + who.handle : "";
+      var h = who && who.handle ? (who.display_name || "@" + who.handle) : "";
       els[i].textContent = h || "账号";
-      if (h) els[i].setAttribute("title", h); else els[i].removeAttribute("title");
+      if (h) els[i].setAttribute("title", nameOf(who)); else els[i].removeAttribute("title");
     }
   }
 
   function forget() { meCache = null; }
+
+  /** 全站显示一个号：有昵称是「昵称 @handle」，没有就「@handle」。只给 textContent 用，昵称是读者写的字 */
+  function nameOf(o) {
+    if (!o || !o.handle) return "";
+    var dn = typeof o.display_name === "string" ? o.display_name.trim() : "";
+    return (dn ? dn + " " : "") + "@" + o.handle;
+  }
 
   /** 从返回里取一句能给人看的错误话；后端的文案本来就是人话，取不到再兜底 */
   function errorOf(r, fallback) {
@@ -84,6 +91,8 @@ window.RJ_API = (function () {
     me: me,
     forget: forget,
     errorOf: errorOf,
+    nameOf: nameOf,
+    paintEntry: paintEntry,
     get: function (p) { return call("GET", p); },
     post: function (p, b) { return call("POST", p, b === undefined ? {} : b); },
     put: function (p, b) { return call("PUT", p, b === undefined ? {} : b); },

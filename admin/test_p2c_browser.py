@@ -23,7 +23,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-from test_p2a_browser import API, SITE, SITE_PORT, admin_token, api_call, backend_up
+from test_p2a_browser import API, CLIPBOARD, SITE, SITE_PORT, admin_token, api_call, backend_up
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -79,6 +79,7 @@ class _Base(unittest.TestCase):
 
     def open(self, path: str, context=None, lang: str | None = None):
         ctx = context or self.browser.new_context(viewport=VP)
+        ctx.grant_permissions(CLIPBOARD, origin=SITE)
         if lang:
             ctx.add_init_script(f"try {{ localStorage.setItem('renjilian-cost-lang', '{lang}'); }} catch (e) {{}}")
         page = ctx.new_page()
@@ -134,6 +135,8 @@ class ProfileWallBrowserTests(_Base):
         page.locator("#regHandle").fill(handle)
         page.locator("#regGo").click()
         page.locator("#regCode").wait_for(state="visible")
+        page.locator("#regCodeDone").click()
+        page.wait_for_function("document.getElementById('regCodeBadge').textContent !== ''")
         page.locator("#regCodeDone").click()
         page.locator("#profileBox").wait_for(state="visible")
         page.locator("#pickRows button[data-tag]").first.wait_for()

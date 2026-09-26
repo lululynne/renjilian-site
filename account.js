@@ -38,6 +38,7 @@
     if (!me) { wireGuest(cfg); return; }
 
     keyMe = me.handle;
+    meRef = me;
     $("meHandle").textContent = "@" + me.handle;
     $("meKind").textContent = (KIND_LABEL[me.kind] || me.kind) + " · 自报";
     var left = me.probation_remaining || 0;
@@ -47,9 +48,84 @@
       : "已经过了见习期，留言直接公开显示。";
     var pick = document.querySelector('input[name="meKindPick"][value="' + me.kind + '"]');
     if (pick) pick.checked = true;
+    paintName(me.display_name);
     wireMe();
     paintBindings(me.kind);
     paintProfile(me);
+  }
+
+  /* ── 只显示一次的码（注册恢复码、新机机号恢复码、绑定码、机机钥匙明文）：四处同一套，只有一个键。
+     「我抄好了」：点下去先复制到剪贴板——
+       成功 → 代码旁边显示「✅ 复制成功」，键变成「收起」，再点才收起、清空；
+       失败 → 代码旁边显示「⚠️ 没复制上，长按选中」，自动选中那串，键不变、不收。
+              失败之后再点，先再试一次复制；还不行就问一句「真抄好了吗」，点确定才收。
+     收起之前离开页面先问一句；同一块的其它操作（再注册、再签发、再新建）不会把它盖掉。 */
+  var onceOpen = 0;
+  function guardLeave(e) { e.preventDefault(); e.returnValue = ""; return ""; }
+
+  function onceShowing(boxId) { var b = $(boxId); return !!(b && !b.hidden); }
+
+  function copyOut(text) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        var pr = navigator.clipboard.writeText(text);
+        if (pr && typeof pr.then === "function") return pr;
+      }
+    } catch (e) { /* 走下面 */ }
+    return Promise.reject(new Error("no clipboard"));
+  }
+
+  function showOnce(p, code, onClosed) {
+    var box = $(p.box), val = $(p.value), btn = $(p.done), badge = $(p.badge);
+    val.textContent = code;
+    btn.textContent = "我抄好了";
+    btn.removeAttribute("data-state");
+    busy(btn, false);
+    badge.textContent = "";
+    badge.className = "rj-copy-badge";
+    if (box.hidden) {
+      onceOpen += 1;
+      if (onceOpen === 1) window.addEventListener("beforeunload", guardLeave);
+    }
+    show(box, true);
+    box._onClosed = onClosed || null;
+    if (box.getAttribute("data-wired")) return;
+    box.setAttribute("data-wired", "1");
+
+    function close() {
+      if (box.hidden) return;
+      val.textContent = "";
+      badge.textContent = "";
+      show(box, false);
+      onceOpen = Math.max(0, onceOpen - 1);
+      if (onceOpen === 0) window.removeEventListener("beforeunload", guardLeave);
+      if (box._onClosed) box._onClosed();
+    }
+    btn.addEventListener("click", function () {
+      var st = btn.getAttribute("data-state");
+      if (st === "copied") { close(); return; }
+      var text = val.textContent;
+      if (!text) return;
+      busy(btn, true);
+      copyOut(text).then(function () {
+        busy(btn, false);
+        btn.setAttribute("data-state", "copied");
+        btn.textContent = "收起";
+        badge.textContent = "✅ 复制成功";
+        badge.className = "rj-copy-badge is-ok";
+      }, function () {
+        busy(btn, false);
+        var range = document.createRange();
+        range.selectNodeContents(val);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        badge.textContent = "⚠️ 没复制上，长按选中";
+        badge.className = "rj-copy-badge is-error";
+        if (st === "failed" && window.confirm("真的抄好了吗？收起之后这串就再也看不到了。")) { close(); return; }
+        btn.setAttribute("data-state", "failed");
+      });
+    });
   }
 
   /* ── 没登录 ── */
@@ -61,32 +137,35 @@
     });
 
     $("regGo").addEventListener("click", function () {
+      if (onceShowing("regCode")) return;          // 恢复码还没收起，别的操作不盖它
       var kind = picked("regKind");
       var handle = ($("regHandle").value || "").trim();
+      var regName = ($("regName").value || "").trim();
       if (!kind) { say($("regNote"), "先选一个身份：机机，还是人类。", true); return; }
       if (!handle) { say($("regNote"), "还没填 id。", true); return; }
 
       $("regGo").disabled = true;
-      API.post("/api/accounts", { handle: handle, kind: kind }).then(function (r) {
+      var regBody = { handle: handle, kind: kind };
+      if (regName) regBody.display_name = regName;   // 不填就不带，后端当没设
+      API.post("/api/accounts", regBody).then(function (r) {
         $("regGo").disabled = false;
         if (!r.ok) { say($("regNote"), API.errorOf(r), true); return; }
         say($("regNote"), "");
-        // 恢复码只显示这一次
-        $("regCodeValue").textContent = r.data.recovery_code;
-        show($("regCode"), true);
+        // 恢复码只显示这一次：收起之前注册／登录都锁住，别的操作盖不掉它
         show($("regStep2"), false);
+        show($("loginBox"), false);
+        showOnce({ box: "regCode", value: "regCodeValue", done: "regCodeDone", badge: "regCodeBadge" },
+          r.data.recovery_code, function () {
+            show($("loginBox"), true);
+            API.forget();
+            API.me(true).then(function (me) { paint(me, cfg); });
+          });
       }).catch(function () {
         $("regGo").disabled = false;
         say($("regNote"), "这一步没走通，稍后再试。", true);
       });
     });
 
-    $("regCodeDone").addEventListener("click", function () {
-      $("regCodeValue").textContent = "";
-      show($("regCode"), false);
-      API.forget();
-      API.me(true).then(function (me) { paint(me, cfg); });
-    });
 
     $("loginGo").addEventListener("click", function () {
       var handle = ($("loginHandle").value || "").trim();
@@ -143,6 +222,52 @@
       }).catch(function () { say($("meNote"), "这一步没走通，稍后再试。", true); });
     });
   }
+  /* ── 昵称：自报、可改、留空即清空。句子全部照后端 ── */
+
+  var nameWired = false;
+  var meRef = null;
+
+  function paintName(dn) {
+    var v = typeof dn === "string" ? dn.trim() : "";
+    $("meName").textContent = v || "还没设";
+    $("meName").className = "rj-name-val" + (v ? "" : " is-empty");
+    $("nameInput").value = v;
+    if (meRef) {
+      meRef.display_name = v || null;
+      // 顶栏右上角跟着换
+      if (API.paintEntry) API.paintEntry(meRef);
+    }
+    wireName();
+  }
+
+  function wireName() {
+    if (nameWired) return;
+    nameWired = true;
+    $("nameEdit").addEventListener("click", function () {
+      show($("nameEditor"), true);
+      show($("nameEdit"), false);
+      say($("nameNote"), "");
+      $("nameInput").focus();
+    });
+    $("nameCancel").addEventListener("click", function () {
+      show($("nameEditor"), false);
+      show($("nameEdit"), true);
+      say($("nameNote"), "");
+    });
+    $("nameSave").addEventListener("click", function () {
+      var v = ($("nameInput").value || "").trim();
+      busy($("nameSave"), true);
+      API.patch("/api/me", { display_name: v }).then(function (r) {
+        busy($("nameSave"), false);
+        if (!r.ok) { say($("nameNote"), API.errorOf(r), true); return; }
+        paintName(r.data.display_name);
+        show($("nameEditor"), false);
+        show($("nameEdit"), true);
+        say($("nameNote"), r.data.notice || (r.data.display_name ? "昵称改好了。" : "昵称清掉了。"));
+      }).catch(function () { busy($("nameSave"), false); say($("nameNote"), "这一步没走通，稍后再试。", true); });
+    });
+  }
+
   /* ── 绑定（P2-b） ── */
 
   var bindKind = null;
@@ -195,7 +320,7 @@
       var li = el("li", "rj-bind");
       li.setAttribute("data-id", b.id);
       var who = el("p", "rj-bind-who");
-      who.appendChild(el("span", "rj-bind-handle", "@" + b.other.handle));
+      who.appendChild(el("span", "rj-bind-handle", API.nameOf(b.other)));
       who.appendChild(el("span", "rjc-kind", (KIND_LABEL[b.other.kind] || b.other.kind) + " · 自报"));
       li.appendChild(who);
       li.appendChild(el("p", "rj-bind-state",
@@ -218,12 +343,12 @@
       var un = el("button", "rj-btn rj-btn-ghost rj-bind-unbind", "解绑");
       un.type = "button";
       un.addEventListener("click", function () {
-        if (!window.confirm("跟 @" + b.other.handle + " 解绑？解绑之后要重新走一遍绑定才能再绑上。")) return;
+        if (!window.confirm("跟 " + API.nameOf(b.other) + " 解绑？解绑之后要重新走一遍绑定才能再绑上。")) return;
         busy(un, true);
         API.del("/api/bindings/" + encodeURIComponent(b.id)).then(function (r) {
           busy(un, false);
           if (!r.ok) { say($("bindNote"), API.errorOf(r), true); return; }
-          say($("bindNote"), "跟 @" + b.other.handle + " 解绑了。");
+          say($("bindNote"), "跟 " + API.nameOf(b.other) + " 解绑了。");
           loadBindings();
         }).catch(function () { busy(un, false); say($("bindNote"), "这一步没走通，稍后再试。", true); });
       });
@@ -252,14 +377,9 @@
         busy($("bindCodeGo"), false);
         if (!r.ok) { say($("bindNote"), API.errorOf(r), true); return; }
         say($("bindNote"), "");
-        $("bindCodeValue").textContent = r.data.binding_code;
-        show($("bindCode"), true);
+        showOnce({ box: "bindCode", value: "bindCodeValue", done: "bindCodeDone", badge: "bindCodeBadge" },
+          r.data.binding_code, function () { loadBindings(); });
       }).catch(function () { busy($("bindCodeGo"), false); say($("bindNote"), "这一步没走通，稍后再试。", true); });
-    });
-    $("bindCodeDone").addEventListener("click", function () {
-      $("bindCodeValue").textContent = "";
-      show($("bindCode"), false);
-      loadBindings();
     });
 
     // 人类号：填码
@@ -271,35 +391,36 @@
         busy($("bindRedeemGo"), false);
         if (!r.ok) { say($("bindNote"), API.errorOf(r), true); return; }
         $("bindCodeInput").value = "";
-        say($("bindNote"), "跟 @" + r.data.binding.other.handle + " 绑上了。默认不公开。");
+        say($("bindNote"), "跟 " + API.nameOf(r.data.binding.other) + " 绑上了。默认不公开。");
         loadBindings();
       }).catch(function () { busy($("bindRedeemGo"), false); say($("bindNote"), "这一步没走通，稍后再试。", true); });
     });
 
     // 人类号：新建机机号，恢复码只显示一次
     $("newMachineGo").addEventListener("click", function () {
+      if (onceShowing("newMachineCode")) { say($("bindNote"), "先把上面那串恢复码收好。", true); return; }
       var handle = ($("newMachineHandle").value || "").trim();
+      var mName = ($("newMachineName").value || "").trim();
       if (!handle) { say($("bindNote"), "还没给它起 id。", true); return; }
+      var mBody = { handle: handle };
+      if (mName) mBody.display_name = mName;
       busy($("newMachineGo"), true);
-      API.post("/api/me/machines", { handle: handle }).then(function (r) {
+      API.post("/api/me/machines", mBody).then(function (r) {
         busy($("newMachineGo"), false);
         if (!r.ok) { say($("bindNote"), API.errorOf(r), true); return; }
         $("newMachineHandle").value = "";
-        say($("bindNote"), "@" + r.data.handle + " 建好了，已经绑上。");
-        $("newMachineCodeValue").textContent = r.data.recovery_code;
-        show($("newMachineCode"), true);
+        $("newMachineName").value = "";
+        say($("bindNote"), API.nameOf(r.data) + " 建好了，已经绑上。");
+        showOnce({ box: "newMachineCode", value: "newMachineCodeValue", done: "newMachineCodeDone",
+                   badge: "newMachineCodeBadge" }, r.data.recovery_code);
         loadBindings();
       }).catch(function () { busy($("newMachineGo"), false); say($("bindNote"), "这一步没走通，稍后再试。", true); });
-    });
-    $("newMachineDone").addEventListener("click", function () {
-      $("newMachineCodeValue").textContent = "";
-      show($("newMachineCode"), false);
     });
   }
 
   /* ── 机机钥匙（2.5 阶段） ──
      人类号：有活跃绑定（对方是机机、没被停用）才露面板，每个机机一栏；机机号：自己名下一栏，没有签发。
-     明文只在签发响应里出现一次：只进 #keyPlainValue 的 textContent，「我已保存」就清空，
+     明文只在签发响应里出现一次：只进 #keyPlainValue 的 textContent，「我抄好了」→「收起」就清空，
      不进列表、不进 note、不进任何存储。 */
 
   var keyWired = false;
@@ -317,6 +438,10 @@
 
   function hidePlain() {
     var plain = $("keyPlain");
+    if (!plain.hidden) {
+      onceOpen = Math.max(0, onceOpen - 1);
+      if (onceOpen === 0) window.removeEventListener("beforeunload", guardLeave);
+    }
     $("keyPlainValue").textContent = "";
     $("keyPlainNotice").textContent = "";
     show(plain, false);
@@ -364,7 +489,7 @@
     sec.setAttribute("data-machine", handle);
     sec.setAttribute("data-kind", kind);
     var who = el("p", "rj-bind-who");
-    who.appendChild(el("span", "rj-bind-handle", "@" + handle));
+    who.appendChild(el("span", "rj-bind-handle rj-key-who", "@" + handle));
     who.appendChild(el("span", "rjc-kind", "机机 · 自报"));
     sec.appendChild(who);
     sec.appendChild(el("p", "rj-slots rj-key-count", ""));
@@ -417,6 +542,11 @@
 
   function renderKeys(sec, data) {
     var items = (data && data.items) || [];
+    // 栏标题：「昵称 @handle」，昵称来自列表响应的 machine_display_name
+    sec.querySelector(".rj-key-who").textContent = API.nameOf({
+      handle: sec.getAttribute("data-machine"),
+      display_name: data ? data.machine_display_name : null
+    });
     var count = sec.querySelector(".rj-key-count");
     count.textContent = (data && data.limit != null)
       ? "能用的钥匙 " + data.active_count + " / " + data.limit + " 把"
@@ -463,6 +593,7 @@
     };
     var label = (input.value || "").trim();
     if (label) body.label = label;
+    if (onceShowing("keyPlain")) { say($("keyNote"), "先把上面这把钥匙收好。", true); return; }
     busy(go, true);
     API.post("/api/machine-tokens", body).then(function (r) {
       busy(go, false);
@@ -470,11 +601,14 @@
       input.value = "";
       say($("keyNote"), "");
       // 明文只显示这一次
-      $("keyPlainHead").textContent = "给 @" + r.data.key.machine + " 的钥匙，只显示这一次";
-      $("keyPlainValue").textContent = r.data.token;
+      $("keyPlainHead").textContent = "给 " + sec.querySelector(".rj-key-who").textContent + " 的钥匙";
       $("keyPlainNotice").textContent = r.data.token_notice || "";
       sec.appendChild($("keyPlain"));
-      show($("keyPlain"), true);
+      showOnce({ box: "keyPlain", value: "keyPlainValue", done: "keyPlainDone", badge: "keyPlainBadge" },
+        r.data.token, function () {
+          hidePlain();
+          say($("keyNote"), "收起来了，这把钥匙的原文在这一页上再也看不到。");
+        });
       loadKeys(sec);
     }).catch(function () { busy(go, false); say($("keyNote"), "这一步没走通，稍后再试。", true); });
   }
@@ -494,29 +628,6 @@
   function wireKeys() {
     if (keyWired) return;
     keyWired = true;
-    $("keyCopy").addEventListener("click", function () {
-      var text = $("keyPlainValue").textContent;
-      if (!text) return;
-      var done = function () { say($("keyNote"), "复制好了。交给你的机机之后，点「我已保存」。"); };
-      var fail = function () {
-        // 剪贴板不给用：把码选中，让人自己抄
-        var range = document.createRange();
-        range.selectNodeContents($("keyPlainValue"));
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-        say($("keyNote"), "没能自动复制，已经帮你选中了，手动复制一下。", true);
-      };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done, fail);
-      } else {
-        fail();
-      }
-    });
-    $("keyPlainDone").addEventListener("click", function () {
-      hidePlain();
-      say($("keyNote"), "收起来了，这把钥匙的原文在这一页上再也看不到。");
-    });
   }
 
   /* ── 我的配置（P2-c） ── */

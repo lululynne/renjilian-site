@@ -24,7 +24,7 @@ from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import sync_playwright
 
-from test_p2a_browser import API, CARD, SITE, SITE_PORT, admin_token, api_call, backend_up
+from test_p2a_browser import API, CARD, CLIPBOARD, SITE, SITE_PORT, admin_token, api_call, backend_up
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,7 +57,7 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         box = key_box_html()
         self.assertIn("<legend>机机钥匙</legend>", box)
         for node in ('id="keyAsHuman" hidden', 'id="keyAsMachine" hidden', 'id="keyPlain" hidden',
-                     'id="keyMachines"', 'id="keyPlainValue"', 'id="keyCopy"', 'id="keyPlainDone"',
+                     'id="keyMachines"', 'id="keyPlainValue"', 'id="keyPlainBadge"', 'id="keyPlainDone"',
                      'id="keyNote" role="status" aria-live="polite"'):
             with self.subTest(node=node):
                 self.assertIn(node, box)
@@ -109,8 +109,8 @@ class MachineKeyPanelMarkup(unittest.TestCase):
             with self.subTest(bad=bad):
                 self.assertNotIn(bad, part)
         # 明文只写进一个地方
-        self.assertEqual(part.count("r.data.token;"), 1)
-        self.assertIn('$("keyPlainValue").textContent = r.data.token;', part)
+        self.assertEqual(len(re.findall(r"r\.data\.token(?!_)", part)), 1)
+        self.assertIn('r.data.token, function', part)   # 只交给 showOnce，由它写进 #keyPlainValue
         # 错误一律照后端原话
         self.assertGreaterEqual(part.count("API.errorOf(r)"), 3)
         # 页面不自己算日期
@@ -342,14 +342,16 @@ class MachineKeyPanelDom(unittest.TestCase):
             self.assertIn("2031-08-31", sec.locator('.rj-key[data-id="mt_new"]').inner_text())
             self.assertEqual(sec.locator(".rj-key-label").input_value(), "", "签完备注框清空")
 
-            # 复制
-            page.locator("#keyCopy").click()
-            page.wait_for_function("document.getElementById('keyNote').textContent.startsWith('复制好了')")
-            self.assertEqual(page.evaluate("navigator.clipboard.readText()"), FakeBackend.TOKEN)
-
-            # 我已保存：关掉就再也看不到
+            # 「我抄好了」：先复制，代码旁「✅ 复制成功」，键变「收起」；再点才收
+            self.assertEqual(page.locator("#keyPlainDone").inner_text(), "我抄好了")
+            self.assertEqual(page.locator("#keyPlain button").count(), 1, "只能有一个键")
             page.locator("#keyPlainDone").click()
-            self.assertFalse(page.locator("#keyPlain").is_visible())
+            page.wait_for_function("document.getElementById('keyPlainBadge').textContent === '✅ 复制成功'")
+            self.assertEqual(page.evaluate("navigator.clipboard.readText()"), FakeBackend.TOKEN)
+            self.assertEqual(page.locator("#keyPlainDone").inner_text(), "收起")
+            self.assertTrue(page.locator("#keyPlain").is_visible())
+            page.locator("#keyPlainDone").click()
+            page.locator("#keyPlain").wait_for(state="hidden")
             self.assertNotIn(FakeBackend.TOKEN, page.content())
             self.assertEqual(page.evaluate(
                 "() => [localStorage.length, sessionStorage.length]"), [0, 0])
@@ -390,6 +392,34 @@ class MachineKeyPanelDom(unittest.TestCase):
             # 用法说明对机机也在
             self.assertTrue(page.locator("#keyHow").is_visible())
             self.assertEqual(errors, [])
+        finally:
+            ctx.close()
+
+    def test_copy_failure_keeps_plain_visible(self) -> None:
+        fake = FakeBackend("human", [binding("fake-bot")])
+        ctx = self.browser.new_context(viewport={"width": 1280, "height": 900})
+        # 剪贴板不给用：writeText 直接抛
+        ctx.add_init_script("navigator.clipboard.writeText = () => Promise.reject(new Error('denied'));")
+        page = ctx.new_page()
+        dialogs: list[str] = []
+        page.on("dialog", lambda d: (dialogs.append(d.message), d.accept()))
+        page.route(MOCK + "/**", fake.handle_route)
+        try:
+            page.goto(f"{self.site}/account.html?api={MOCK}", wait_until="networkidle")
+            sec = page.locator('.rj-keyset[data-machine="fake-bot"]')
+            sec.locator(".rj-key").first.wait_for()
+            sec.locator(".rj-key-go").click()
+            page.locator("#keyPlain").wait_for(state="visible")
+            page.locator("#keyPlainDone").click()
+            page.wait_for_function("document.getElementById('keyPlainBadge').textContent === '⚠️ 没复制上，长按选中'")
+            self.assertTrue(page.locator("#keyPlain").is_visible(), "复制失败也收起了")
+            self.assertEqual(page.locator("#keyPlainDone").inner_text(), "我抄好了")
+            self.assertEqual(page.evaluate("String(getSelection())"), FakeBackend.TOKEN, "没自动选中那串")
+            # 再点：再试一次还不行，问一句，确定才收
+            page.locator("#keyPlainDone").click()
+            page.locator("#keyPlain").wait_for(state="hidden")
+            self.assertEqual(len(dialogs), 1)
+            self.assertNotIn(FakeBackend.TOKEN, page.content())
         finally:
             ctx.close()
 
@@ -455,6 +485,7 @@ class MachineKeyPanelLive(unittest.TestCase):
 
     def open(self):
         ctx = self.browser.new_context(viewport=VP390)
+        ctx.grant_permissions(CLIPBOARD, origin=SITE)
         page = ctx.new_page()
         errors: list[str] = []
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
@@ -475,6 +506,8 @@ class MachineKeyPanelLive(unittest.TestCase):
             hpage.locator("#regHandle").fill(h_handle)
             hpage.locator("#regGo").click()
             hpage.locator("#regCodeDone").click()
+            hpage.wait_for_function("document.getElementById('regCodeBadge').textContent !== ''")
+            hpage.locator("#regCodeDone").click()
             hpage.locator("#bindAsHuman").wait_for(state="visible")
             hpage.wait_for_function("document.getElementById('bindSlots').textContent.includes('还剩')")
             self.assertFalse(hpage.locator("#keyBox").is_visible())
@@ -484,7 +517,9 @@ class MachineKeyPanelLive(unittest.TestCase):
             hpage.locator("#newMachineGo").click()
             hpage.locator("#newMachineCode").wait_for(state="visible")
             m_code = hpage.locator("#newMachineCodeValue").inner_text().strip()
-            hpage.locator("#newMachineDone").click()
+            hpage.locator("#newMachineCodeDone").click()
+            hpage.wait_for_function("document.getElementById('newMachineCodeBadge').textContent !== ''")
+            hpage.locator("#newMachineCodeDone").click()
             sec = hpage.locator(f'.rj-keyset[data-machine="{m_handle}"]')
             sec.wait_for(state="visible")
             hpage.wait_for_function(
@@ -509,6 +544,9 @@ class MachineKeyPanelLive(unittest.TestCase):
             for piece in ("测试台", "能用", key["created_day"], key["expires_day"], "还没用过"):
                 self.assertIn(piece, row)
             hpage.locator("#keyPlainDone").click()
+            hpage.wait_for_function("document.getElementById('keyPlainBadge').textContent !== ''")
+            hpage.locator("#keyPlainDone").click()
+            hpage.locator("#keyPlain").wait_for(state="hidden")
             self.assertNotIn(token, hpage.content())
 
             # 钥匙真能留言（Bearer，不带 cookie / Origin）

@@ -302,6 +302,12 @@
     }).join("");
   }
 
+  /* 「昵称 @handle」；没昵称只有「@handle」。昵称是读者写的字，进 innerHTML 前一律 esc */
+  function who(o) {
+    var dn = o && typeof o.display_name === "string" ? o.display_name.trim() : "";
+    return (dn ? dn + " " : "") + "@" + (o && o.handle ? o.handle : "?");
+  }
+
   /* 真号的卡（P2-c）：整张是链接，点进配置页。handle 只有 [a-z0-9_-]，仍然照样转义 */
   function realCard(it, maps) {
     var href = "profile.html?u=" + encodeURIComponent(it.handle);
@@ -316,7 +322,7 @@
         '<div class="setup-tags">' + fareTags(known, map, tone) + "</div></div>";
     }
     var bound = (it.bindings || []).map(function (b) {
-      return "@" + b.handle + " · " + (b.kind === "machine" ? t("kindWordMachine") : t("kindWordHuman"));
+      return who(b) + " · " + (b.kind === "machine" ? t("kindWordMachine") : t("kindWordHuman"));
     });
     var a = document.createElement("a");
     a.className = "setup-card is-real";
@@ -326,7 +332,7 @@
         '<div class="setup-head">' +
           '<div class="setup-avatar"><div class="setup-mono" data-kind="' + esc(it.kind) + '" aria-hidden="true">' +
             esc(String(it.handle || "?").charAt(0)) + "</div></div>" +
-          '<div><strong class="is-handle">@' + esc(it.handle) + "</strong>" +
+          '<div><strong class="is-handle">' + esc(who(it)) + "</strong>" +
           '<div class="who">' + esc(it.kind === "machine" ? t("kindMachine") : t("kindHuman")) + "</div></div>" +
         "</div>" +
       "</div>" +

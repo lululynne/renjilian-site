@@ -21,7 +21,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-from test_p2a_browser import API, SITE, SITE_PORT, admin_token, api_call, backend_up
+from test_p2a_browser import API, CLIPBOARD, SITE, SITE_PORT, admin_token, api_call, backend_up
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -60,6 +60,7 @@ class BindingBrowserTests(unittest.TestCase):
 
     def open_account(self):
         context = self.browser.new_context(viewport=VP)
+        context.grant_permissions(CLIPBOARD, origin=SITE)
         page = context.new_page()
         errors: list[str] = []
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
@@ -74,6 +75,8 @@ class BindingBrowserTests(unittest.TestCase):
         page.locator("#regHandle").fill(handle)
         page.locator("#regGo").click()
         page.locator("#regCode").wait_for(state="visible")
+        page.locator("#regCodeDone").click()
+        page.wait_for_function("document.getElementById('regCodeBadge').textContent !== ''")
         page.locator("#regCodeDone").click()
         page.locator("#panelMe").wait_for(state="visible")
         page.locator("#bindBox").wait_for(state="visible")
@@ -121,6 +124,9 @@ class BindingBrowserTests(unittest.TestCase):
             self.touch_targets_ok(mpage, "机机号的绑定码")
             mpage.screenshot(path=str(SHOTS / "bind-machine-code-390.png"), full_page=True)
             mpage.locator("#bindCodeDone").click()
+            mpage.wait_for_function("document.getElementById('bindCodeBadge').textContent !== ''")
+            mpage.locator("#bindCodeDone").click()
+            mpage.locator("#bindCode").wait_for(state="hidden")
             self.assertEqual(mpage.locator("#bindCodeValue").inner_text(), "", "绑定码没从页面上抹掉")
             self.assertFalse(mpage.locator("#bindCode").is_visible())
 
@@ -172,7 +178,9 @@ class BindingBrowserTests(unittest.TestCase):
             self.no_overflow(hpage, "人类号新建机机号")
             self.touch_targets_ok(hpage, "人类号新建机机号")
             hpage.screenshot(path=str(SHOTS / "bind-human-created-390.png"), full_page=True)
-            hpage.locator("#newMachineDone").click()
+            hpage.locator("#newMachineCodeDone").click()
+            hpage.wait_for_function("document.getElementById('newMachineCodeBadge').textContent !== ''")
+            hpage.locator("#newMachineCodeDone").click()
             self.assertEqual(hpage.locator("#newMachineCodeValue").inner_text(), "", "恢复码没从页面上抹掉")
             self.assertEqual(hpage.locator(".rj-bind").count(), 2)
 
