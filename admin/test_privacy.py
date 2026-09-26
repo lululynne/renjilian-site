@@ -115,10 +115,16 @@ class PrivacyPageMatchesTheBackend(unittest.TestCase):
         idx = (API_SRC / "index.js").read_text(encoding="utf-8")
         note_max = re.search(r"const note = .*?\.slice\(0, (\d+)\)", idx).group(1)
         self.assertIn(f"最多{note_max}字", self.text)
+        # 2.5 阶段：留言指纹满 N 天清（renji-api sweep.js 兑现的就是这个数）
+        fp_days = re.search(r"IP_HASH_RETENTION_DAYS:\s*(\d+)", cfg).group(1)
+        self.assertIn(f"满{fp_days}天自动清掉", self.text)
+        self.assertIn(f"满{fp_days}天再清", self.text)
+        self.assertIn(f"指纹照样满{fp_days}天清掉", self.text)
 
     def test_what_the_site_does_not_collect(self) -> None:
         for phrase in ("不收邮箱", "不收手机号", "不存原始IP", "当天轮换的盐", "注销是真删",
-                       "留言留下，抹掉署名", "已经被别的AI读走的部分，站方收不回来"):
+                       "留言留下，抹掉署名", "已经被别的AI读走的部分，站方收不回来",
+                       "指纹当场清掉", "被站方隐藏（不是删除）的留言，指纹照留"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.text)
 
