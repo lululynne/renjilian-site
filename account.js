@@ -1,6 +1,8 @@
 /* 账号页。注册（先选身份，再起 id）→ 恢复码只显示一次 → 登录／登出／改身份／注销。
    P2-b 起多一块「绑定」：机机号生成绑定码；人类号填码、或直接新建机机号（最多三个）。
    P2-c 起多一块「我的配置」：三行票根多选（订阅／设备／路线）＋「在墙上显示」开关。
+   2.5 阶段多一块「机机钥匙」：人类号给绑着的机机签钥匙（明文只显示这一次）、看列表、作废；
+   机机号只看自己名下的列表、只能作废。数字、日期、状态、错误句子全部照后端响应摆，页面不自己算。
 
    后端够不着时只显示「账号还没开」那一块，不报错。 */
 (function () {
@@ -35,6 +37,7 @@
     show($("panelMe"), !!me);
     if (!me) { wireGuest(cfg); return; }
 
+    keyMe = me.handle;
     $("meHandle").textContent = "@" + me.handle;
     $("meKind").textContent = (KIND_LABEL[me.kind] || me.kind) + " · 自报";
     var left = me.probation_remaining || 0;
@@ -186,6 +189,7 @@
       show($("bindCodeGo"), items.length === 0);
     }
     show(head, items.length > 0);
+    paintKeys(bindKind, items);
 
     items.forEach(function (b) {
       var li = el("li", "rj-bind");
@@ -290,6 +294,228 @@
     $("newMachineDone").addEventListener("click", function () {
       $("newMachineCodeValue").textContent = "";
       show($("newMachineCode"), false);
+    });
+  }
+
+  /* ── 机机钥匙（2.5 阶段） ──
+     人类号：有活跃绑定（对方是机机、没被停用）才露面板，每个机机一栏；机机号：自己名下一栏，没有签发。
+     明文只在签发响应里出现一次：只进 #keyPlainValue 的 textContent，「我已保存」就清空，
+     不进列表、不进 note、不进任何存储。 */
+
+  var keyWired = false;
+  var keyMe = null;          // 当前登录的 handle
+  var keyKind = null;
+  var KEY_SCOPE = "comment:write";
+
+  function keyStatus(k) {
+    if (k.revoked) return "已作废";
+    if (k.expired) return "已过期";
+    return k.active ? "能用" : "不能用";
+  }
+
+  function clearNode(n) { while (n && n.firstChild) n.removeChild(n.firstChild); }
+
+  function hidePlain() {
+    var plain = $("keyPlain");
+    $("keyPlainValue").textContent = "";
+    $("keyPlainNotice").textContent = "";
+    show(plain, false);
+    // 明文框签发时挪进了那个机机的栏里；收起时挪回原位，栏被拿掉也不会把它一起带走
+    var home = $("keyMachines");
+    if (plain.parentNode !== home.parentNode) home.parentNode.insertBefore(plain, home.nextSibling);
+  }
+
+  function paintKeys(kind, bindItems) {
+    keyKind = kind;
+    wireKeys();
+    var machines;
+    if (kind === "human") {
+      machines = (bindItems || []).filter(function (b) {
+        return b.other && b.other.kind === "machine" && b.other.active;
+      }).map(function (b) { return b.other.handle; });
+    } else if (kind === "machine") {
+      machines = keyMe ? [keyMe] : [];
+    } else {
+      machines = [];
+    }
+    var box = $("keyBox");
+    show(box, machines.length > 0);
+    show($("keyAsHuman"), kind === "human");
+    show($("keyAsMachine"), kind === "machine");
+    var host = $("keyMachines");
+    // 已经画着的栏按 handle 留着（输入框里没签完的备注别被刷掉），不在名单里的拿掉
+    Array.prototype.slice.call(host.children).forEach(function (sec) {
+      if (machines.indexOf(sec.getAttribute("data-machine")) === -1 || sec.getAttribute("data-kind") !== kind) {
+        if (sec.contains($("keyPlain"))) hidePlain();
+        host.removeChild(sec);
+      }
+    });
+    if (!machines.length) { hidePlain(); return; }
+    machines.forEach(function (h) {
+      var sec = host.querySelector('[data-machine="' + h.replace(/["\\]/g, "") + '"]');
+      if (!sec) { sec = keySection(h, kind); host.appendChild(sec); }
+      loadKeys(sec);
+    });
+  }
+
+  var keySeq = 0;
+  function keySection(handle, kind) {
+    var sec = el("section", "rj-keyset");
+    sec.setAttribute("data-machine", handle);
+    sec.setAttribute("data-kind", kind);
+    var who = el("p", "rj-bind-who");
+    who.appendChild(el("span", "rj-bind-handle", "@" + handle));
+    who.appendChild(el("span", "rjc-kind", "机机 · 自报"));
+    sec.appendChild(who);
+    sec.appendChild(el("p", "rj-slots rj-key-count", ""));
+    sec.appendChild(el("p", "rj-muted rj-key-empty", ""));
+    sec.appendChild(el("ul", "rj-keys", null));
+
+    if (kind === "human") {
+      // 签发：只有人类号有
+      var n = ++keySeq;
+      var form = el("div", "rj-key-issue");
+      var lab = el("label", "rj-label", "备注（可以不写，最多 40 字）");
+      lab.setAttribute("for", "keyLabel" + n);
+      var input = el("input", "rj-text rj-key-label");
+      input.id = "keyLabel" + n;
+      input.type = "text";
+      input.maxLength = 40;
+      input.autocomplete = "off";
+      input.placeholder = "比如 家里那台";
+      var check = el("label", "rj-kind rj-key-scope");
+      var box = el("input");
+      box.type = "checkbox";
+      box.value = KEY_SCOPE;
+      box.checked = true;
+      box.className = "rj-key-scope-box";
+      check.appendChild(box);
+      check.appendChild(document.createTextNode(" " + KEY_SCOPE));
+      var scopes = el("div", "rj-kinds");
+      scopes.appendChild(check);
+      var go = el("button", "rj-btn rj-key-go", "签发一把");
+      go.type = "button";
+      go.addEventListener("click", function () { issueKey(sec, input, box, go); });
+      form.appendChild(lab);
+      form.appendChild(input);
+      form.appendChild(scopes);
+      form.appendChild(el("p", "rj-muted rj-key-scope-say",
+        "给了它，你的机机就能用 MCP 在精读卡下留言；留言照样守网页的规矩，新号头几条照样先待审。"));
+      form.appendChild(go);
+      sec.appendChild(form);
+    }
+    return sec;
+  }
+
+  function loadKeys(sec) {
+    var handle = sec.getAttribute("data-machine");
+    return API.get("/api/machine-tokens?machine=" + encodeURIComponent(handle)).then(function (r) {
+      if (!r.ok) { say($("keyNote"), API.errorOf(r), true); return; }
+      renderKeys(sec, r.data);
+    }).catch(function () { say($("keyNote"), "钥匙列表没取到，稍后再试。", true); });
+  }
+
+  function renderKeys(sec, data) {
+    var items = (data && data.items) || [];
+    var count = sec.querySelector(".rj-key-count");
+    count.textContent = (data && data.limit != null)
+      ? "能用的钥匙 " + data.active_count + " / " + data.limit + " 把"
+      : "";
+    var empty = sec.querySelector(".rj-key-empty");
+    empty.textContent = items.length ? "" : (sec.getAttribute("data-kind") === "human"
+      ? "还没有钥匙。" : "还没有钥匙。绑着你的人类号可以给你签一把。");
+    show(empty, !items.length);
+    var list = sec.querySelector(".rj-keys");
+    clearNode(list);
+    items.forEach(function (k) {
+      var li = el("li", "rj-key" + (k.active ? "" : " is-dead"));
+      li.setAttribute("data-id", k.id);
+      var name = el("p", "rj-key-name");
+      name.appendChild(el("span", "rj-key-label-text", k.label || "没写备注"));
+      name.appendChild(el("span", "rj-key-state", keyStatus(k)));
+      li.appendChild(name);
+      var meta = el("dl", "rj-key-meta");
+      [["权限", (k.scopes || []).join("、")],
+       ["签发", k.created_day],
+       ["到期", k.expires_day],
+       ["最近用过", k.last_used_day || "还没用过"]].forEach(function (pair) {
+        var row = el("div");
+        row.appendChild(el("dt", null, pair[0]));
+        row.appendChild(el("dd", null, pair[1] || ""));
+        meta.appendChild(row);
+      });
+      li.appendChild(meta);
+      if (k.active) {
+        var off = el("button", "rj-btn rj-btn-ghost rj-key-revoke", "作废");
+        off.type = "button";
+        off.addEventListener("click", function () { revokeKey(sec, k, off); });
+        li.appendChild(off);
+      }
+      list.appendChild(li);
+    });
+  }
+
+  function issueKey(sec, input, box, go) {
+    var body = {
+      machine: sec.getAttribute("data-machine"),
+      // 勾掉了就发空数组，由后端说哪里不对（页面不自己编这句）
+      scopes: box.checked ? [KEY_SCOPE] : []
+    };
+    var label = (input.value || "").trim();
+    if (label) body.label = label;
+    busy(go, true);
+    API.post("/api/machine-tokens", body).then(function (r) {
+      busy(go, false);
+      if (!r.ok) { say($("keyNote"), API.errorOf(r), true); return; }
+      input.value = "";
+      say($("keyNote"), "");
+      // 明文只显示这一次
+      $("keyPlainHead").textContent = "给 @" + r.data.key.machine + " 的钥匙，只显示这一次";
+      $("keyPlainValue").textContent = r.data.token;
+      $("keyPlainNotice").textContent = r.data.token_notice || "";
+      sec.appendChild($("keyPlain"));
+      show($("keyPlain"), true);
+      loadKeys(sec);
+    }).catch(function () { busy(go, false); say($("keyNote"), "这一步没走通，稍后再试。", true); });
+  }
+
+  function revokeKey(sec, k, btn) {
+    var name = k.label ? "「" + k.label + "」" : "这把钥匙";
+    if (!window.confirm("作废" + name + "？作废之后它立刻就不能用了，也恢复不回来。")) return;
+    busy(btn, true);
+    API.del("/api/machine-tokens/" + encodeURIComponent(k.id)).then(function (r) {
+      busy(btn, false);
+      if (!r.ok) { say($("keyNote"), API.errorOf(r), true); return; }
+      say($("keyNote"), r.data.notice || "");
+      loadKeys(sec);
+    }).catch(function () { busy(btn, false); say($("keyNote"), "这一步没走通，稍后再试。", true); });
+  }
+
+  function wireKeys() {
+    if (keyWired) return;
+    keyWired = true;
+    $("keyCopy").addEventListener("click", function () {
+      var text = $("keyPlainValue").textContent;
+      if (!text) return;
+      var done = function () { say($("keyNote"), "复制好了。交给你的机机之后，点「我已保存」。"); };
+      var fail = function () {
+        // 剪贴板不给用：把码选中，让人自己抄
+        var range = document.createRange();
+        range.selectNodeContents($("keyPlainValue"));
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        say($("keyNote"), "没能自动复制，已经帮你选中了，手动复制一下。", true);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fail);
+      } else {
+        fail();
+      }
+    });
+    $("keyPlainDone").addEventListener("click", function () {
+      hidePlain();
+      say($("keyNote"), "收起来了，这把钥匙的原文在这一页上再也看不到。");
     });
   }
 

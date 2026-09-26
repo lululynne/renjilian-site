@@ -32,6 +32,9 @@ READER_TABLES: dict[str, tuple[str, ...]] = {
     "bindings": ("绑定", "两边各自点没点公开"),
     "binding_codes": ("绑定码", "只存哈希"),
     "profile_tags": ("配置徽章", "标签编号"),
+    # 2.5 阶段：签发人只在后台，不公开；作废／解绑／注销后怎么处理照 renji-api mtokens.js 的真行为写
+    "machine_tokens": ("机机钥匙", "只存钥匙的哈希", "签发它的是哪个人类号", "只用于处理举报与滥用", "不公开显示",
+                       "当场全部作废", "签发人记录清空"),
 }
 # 这些表不存任何读者数据：全站开关、表结构版本
 NO_READER_DATA = {"site_flags", "meta"}

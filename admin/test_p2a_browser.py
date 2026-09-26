@@ -26,7 +26,8 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = Path.home() / ".openclaw/backups/renjilian-p2a-20260918/shots"
-API = "http://127.0.0.1:8798"
+# 默认连 8798；别的席位占着 8798 时，用 RJ_TEST_API 指到自己起的那一份（例如 http://127.0.0.1:8796）
+API = os.environ.get("RJ_TEST_API", "http://127.0.0.1:8798")
 SITE_PORT = 8800
 SITE = f"http://127.0.0.1:{SITE_PORT}"
 CARD = "kr-liu-shengyu-bury-talent"

@@ -631,6 +631,28 @@ a.rjc-handle-link{display:inline-flex;align-items:center;min-height:44px;color:i
 .rj-bind-state{margin-top:4px;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
 .rj-bind-ops{display:flex;flex-wrap:wrap;gap:0 10px}
 .rj-bind-ops .rj-btn{margin-top:10px}
+/* 机机钥匙（2.5 阶段）。零新增色值 */
+.rj-keyset{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.rj-keyset:first-child{border-top:0;margin-top:6px;padding-top:0}
+.rj-keys{list-style:none;margin:8px 0 0;padding:0}
+.rj-keys:empty{display:none}
+.rj-key{border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;margin-top:8px;background:var(--card)}
+.rj-key.is-dead{background:var(--card-block)}
+.rj-key-name{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:14.5px;font-weight:650;overflow-wrap:anywhere}
+.rj-key-state{font-size:12px;font-weight:600;color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.rj-key-meta{display:flex;flex-wrap:wrap;gap:2px 16px;margin:6px 0 0;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
+.rj-key-meta div{display:flex;gap:6px}
+.rj-key-meta dt{font-weight:600}
+.rj-key-meta dd{margin:0;color:var(--ink);font-variant-numeric:tabular-nums}
+.rj-key .rj-btn{margin-top:10px}
+.rj-key-issue{margin-top:12px}
+.rj-key-scope input{width:18px;height:18px}
+.rj-key-scope-say{margin-top:8px}
+.rj-key-steps{display:flex;flex-wrap:wrap;gap:0 10px}
+.rj-key-how{margin-top:18px;padding:12px 14px;border-left:3px solid var(--line);font-size:12.5px;line-height:1.75;color:var(--ink-soft)}
+.rj-key-how>strong{display:block;font-size:13px;color:var(--ink)}
+.rj-key-how p{margin-top:6px}
+.rj-key-how code{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:12px;color:var(--ink);overflow-wrap:anywhere}
 .rj-me{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
 .rj-me-handle{font-size:18px;font-weight:650;overflow-wrap:anywhere}
 .rj-standing{margin-top:20px}
