@@ -62,42 +62,42 @@
         {
           "text": "dots",
           "id": "bk-dots",
-          "at": 516
+          "at": 559
         },
         {
           "text": "代理",
           "id": "bk-agent",
-          "at": 536
+          "at": 579
         },
         {
           "text": "Codex Cloud",
           "id": "bk-codex-cloud",
-          "at": 586
+          "at": 629
         },
         {
           "text": "ChatGPT Space",
           "id": "bk-chatgpt-space",
-          "at": 598
+          "at": 641
         },
         {
           "text": "Devin",
           "id": "bk-devin",
-          "at": 690
+          "at": 733
         },
         {
           "text": "OpenCode",
           "id": "bk-opencode",
-          "at": 696
+          "at": 739
         },
         {
           "text": "Lovable",
           "id": "bk-lovable",
-          "at": 705
+          "at": 748
         },
         {
           "text": "Notion",
           "id": "bk-notion",
-          "at": 757
+          "at": 800
         }
       ],
       "machine_voice": [

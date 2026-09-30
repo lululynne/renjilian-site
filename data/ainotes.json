@@ -3,6 +3,38 @@
   "updated_at": "2026-09-30",
   "items": [
     {
+      "id": "bk-openai",
+      "zh": "OpenAI",
+      "en": "OpenAI",
+      "aliases": [
+        "Open AI"
+      ],
+      "tags": [
+        "公司",
+        "OpenAI"
+      ],
+      "line": "做 ChatGPT 和 Codex 的公司，ChatGPT 每周 12 亿人用。",
+      "more": "ChatGPT 每周 12 亿用户这个数字出自 OpenAI 的 DevDay 2026 回顾。2026 年 9 月 29 日 DevDay 上，它宣布 ChatGPT Plus 和 Pro 的订阅额度可以带到 16 家合作产品里用。公司由非营利的 OpenAI Foundation 管理营利的 OpenAI Group。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI：About",
+          "url": "https://openai.com/about/"
+        },
+        {
+          "name": "OpenAI DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
       "id": "bk-tibo",
       "zh": "Tibo",
       "en": "Tibo (Thibault Sottiaux)",
@@ -85,6 +117,35 @@
       "status": "verified"
     },
     {
+      "id": "bk-usage",
+      "zh": "额度 / 用量",
+      "en": "Usage / Limit",
+      "aliases": [
+        "用量",
+        "额度"
+      ],
+      "tags": [
+        "概念",
+        "计费"
+      ],
+      "line": "订阅里包含的「能用多少」，像手机流量套餐：用完就停，或者另买。",
+      "more": "",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI Codex 定价页",
+          "url": "https://developers.openai.com/codex/pricing"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
       "id": "bk-api",
       "zh": "API",
       "en": "API (Application Programming Interface)",
@@ -112,6 +173,73 @@
         {
           "name": "OpenAI 帮助中心：在别的软件里用 ChatGPT 套餐",
           "url": "https://help.openai.com/en/articles/20001542"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-sub",
+      "zh": "订阅",
+      "en": "Subscription / Plan",
+      "aliases": [
+        "Subscription",
+        "套餐"
+      ],
+      "tags": [
+        "概念",
+        "计费"
+      ],
+      "line": "按月付固定的钱换额度和功能。Plus 每月 20 美元，Pro 100 美元起。",
+      "more": "",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 帮助中心：什么是 ChatGPT Plus",
+          "url": "https://help.openai.com/en/articles/6950777-what-is-chatgpt-plus"
+        },
+        {
+          "name": "OpenAI 帮助中心：关于 ChatGPT Pro 档位",
+          "url": "https://help.openai.com/en/articles/9793128-about-chatgpt-pro-tiers"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-credits",
+      "zh": "点数",
+      "en": "Credits",
+      "aliases": [
+        "点数",
+        "credit",
+        "credits"
+      ],
+      "tags": [
+        "概念",
+        "计费"
+      ],
+      "line": "预付的「代币」，额度用完后接着扣。ChatGPT 的点数和别家软件自己的点数是两套账，像两家游戏厅的币。",
+      "more": "在 ChatGPT 里，点数（credits）是额度用完之后继续干活的付费单位，Plus 和 Pro 用户可以另买。把 ChatGPT 套餐接到别的软件后，只有你在「设置 → 用量」里明确打开「允许 app 用 credits」，那个软件才会在额度用完后接着花你的 ChatGPT 点数；这个开关默认关。如果同时开了自动购买点数，可能不另行提醒就扣钱。合作软件自己的订阅和收费，跟你的 ChatGPT 套餐和点数分开算。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 帮助中心：在别的软件里用 ChatGPT 套餐",
+          "url": "https://help.openai.com/en/articles/20001542"
+        },
+        {
+          "name": "OpenAI Codex 定价页",
+          "url": "https://developers.openai.com/codex/pricing"
         }
       ],
       "added_at": "2026-09-30",
@@ -149,6 +277,42 @@
         {
           "name": "Tibo 关于 dots 的帖子",
           "url": "https://x.com/thsottiaux/status/2104981170685616361"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-fast",
+      "zh": "快速模式",
+      "en": "Fast / Ultrafast",
+      "aliases": [
+        "Fast",
+        "Ultrafast",
+        "快速模式",
+        "加速模式"
+      ],
+      "tags": [
+        "概念",
+        "OpenAI",
+        "计费"
+      ],
+      "line": "ChatGPT Work 和 Codex 的加速档，更快，额度最高按 8 倍扣。",
+      "more": "按订阅内含额度算，Fast 按 2.5 倍扣，GPT-6 Astra Ultrafast 按 8 倍扣；用另买的点数付时分别是 2 倍和 6 倍。倍数相对同一模型的标准速度，官方说明这是计费倍数，不代表快了几倍。Ultrafast 只给 GPT-6 Astra 用；个人 Pro 档里只有 Pro 500 能开，Pro 100 和 Pro 200 买点数也解锁不了。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI Codex 定价页",
+          "url": "https://developers.openai.com/codex/pricing"
+        },
+        {
+          "name": "OpenAI 帮助中心：关于 ChatGPT Pro 档位",
+          "url": "https://help.openai.com/en/articles/9793128-about-chatgpt-pro-tiers"
         }
       ],
       "added_at": "2026-09-30",
@@ -206,7 +370,7 @@
         "计费"
       ],
       "line": "OpenAI 2026 年 9 月 29 日发布的模型：能力接近最强的 Astra，价格只要五分之一。",
-      "more": "是 GPT-6 Sol 的升级版，2026 年 9 月 29 日（美国时间）在 DevDay 发布，北京时间 9 月 30 日 01:25 前后。OpenAI 官方说它在写代码、操作电脑、专业文档这些任务上接近 GPT-6 Astra，而价格是 Astra 标准价的五分之一；缓存输入每百万 token 只要 0.10 美元。所有付费套餐和 API 当天可用。Plus 用户用它，每 5 小时大约能发 15 到 160 条。",
+      "more": "是 GPT-6 Sol 的升级版，2026 年 9 月 29 日（美国时间）在 DevDay 发布，北京时间 9 月 30 日 01:25 前后。OpenAI 官方说它在写代码、操作电脑、专业文档这些任务上接近 GPT-6 Astra，而价格是 Astra 标准价的五分之一；缓存输入每百万 token 只要 0.10 美元。Plus、Pro、Business、Enterprise、Edu 当天就能在 ChatGPT Work 和 Codex 里用，普通聊天里暂时还没有；API 同日开放。Plus 用户用它，每 5 小时大约能发 15 到 160 条。",
       "for_us": "给伴侣日常说话用，这一档比 Astra 划算得多。",
       "related": [
         "bk-gpt6-astra",
@@ -223,6 +387,1131 @@
         {
           "name": "OpenAI Codex 定价页",
           "url": "https://developers.openai.com/codex/pricing"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-dots",
+      "zh": "dots",
+      "en": "dots",
+      "aliases": [
+        "dot"
+      ],
+      "tags": [
+        "产品",
+        "OpenAI"
+      ],
+      "line": "OpenAI 的常驻代理：有自己的电脑和浏览器，全天候替你干活。",
+      "more": "2026 年 9 月 29 日 DevDay 发布，由 GPT-6 Astra 驱动，有自己的云端电脑和浏览器，能通过插件连 4000 多个 app，会从你的反馈里学。先对「符合条件的市场」里的 Pro 和 Business Premium 用户逐步开放，企业、教育、医疗版要管理员手动打开试用版；限 18 岁以上，Pro 用户在欧洲经济区、瑞士、英国暂不开放。只能在桌面 App 或电脑浏览器里创建，之后手机上能跟它对话。扣不扣额度，官方几处说法不一样：Tibo 的帖子说包含在 Pro 里、不扣用量；更新日志说接下来一个月不计入额度、之后再公布规则；dots 介绍页说跟它聊天不计入，但让它去 Codex 或 ChatGPT Work 里干的活照常计入。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Tibo：Announcing dots",
+          "url": "https://x.com/thsottiaux/status/2104981170685616361"
+        },
+        {
+          "name": "OpenAI：Introducing dots",
+          "url": "https://openai.com/index/introducing-dots/"
+        },
+        {
+          "name": "OpenAI ChatGPT 更新日志（2026-09-29 条）",
+          "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes"
+        },
+        {
+          "name": "OpenAI DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-agent",
+      "zh": "代理 / 智能体",
+      "en": "Agent",
+      "aliases": [
+        "智能体",
+        "Agent",
+        "代理"
+      ],
+      "tags": [
+        "概念"
+      ],
+      "line": "能自己连着做很多步的 AI。你交代一件事，它自己拆步骤、用工具、检查结果。像请助理去办事，而不是打电话问一句。",
+      "more": "",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Anthropic：Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-codex-cloud",
+      "zh": "Codex Cloud",
+      "en": "Codex Cloud",
+      "aliases": [
+        "云端 Codex"
+      ],
+      "tags": [
+        "产品",
+        "OpenAI",
+        "编程",
+        "云端"
+      ],
+      "line": "Codex 云端版：编程活交给 OpenAI 机房的电脑跑，你电脑休眠它照样干。",
+      "more": "2026 年 9 月 29 日 DevDay 发布的新版，带可配置、可复用的云端环境，团队可以共用一套批准过的设置。每个任务有自己隔离的工作区，可以从电脑、网页或手机发起和继续。Plus、Pro、Business、医疗、教育、企业档都能用。官方说云端任务可能比本地消息更耗额度。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        },
+        {
+          "name": "OpenAI ChatGPT 更新日志（2026-09-29 条）",
+          "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes"
+        },
+        {
+          "name": "Tibo：Launching a new Codex Cloud",
+          "url": "https://x.com/thsottiaux/status/2104987594719461796"
+        },
+        {
+          "name": "OpenAI Codex 定价页",
+          "url": "https://developers.openai.com/codex/pricing"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-chatgpt-space",
+      "zh": "ChatGPT Space",
+      "en": "ChatGPT Space",
+      "aliases": [
+        "Space"
+      ],
+      "tags": [
+        "产品",
+        "OpenAI",
+        "写作与办公"
+      ],
+      "line": "ChatGPT 里的协作页：几个人和 AI 一起改带图表的笔记、计划、会议记录。",
+      "more": "2026 年 9 月 29 日发布。Tibo 的说法是「给开发者的 AGENTS.md 再往前一步」。Pro、Business、企业档在桌面端和网页可用，手机暂时只能看和分享，不能编辑。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Tibo：Announcing ChatGPT Space",
+          "url": "https://x.com/thsottiaux/status/2104983716049379472"
+        },
+        {
+          "name": "OpenAI DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-devin",
+      "zh": "Devin",
+      "en": "Devin",
+      "aliases": [
+        "Cognition Devin"
+      ],
+      "tags": [
+        "产品",
+        "编程",
+        "云端"
+      ],
+      "line": "「AI 软件工程师」：团队把整件编程活交给它，它在云端电脑里自己写、测、修。",
+      "more": "Cognition 公司做的，官方说是帮工程团队清掉积压任务，经验法则是「你三小时能做完的活，它多半能做」。能用 OpenAI、Claude、Gemini、SpaceXAI 的模型和开源模型；Pro 档另送 SWE-2 Free，限 Devin Desktop 和命令行，到 2026 年 10 月 16 日。2026 年 9 月 29 日起，用 ChatGPT Plus/Pro 登录后，它里面所有 OpenAI 模型的用量改扣你的额度，云端、桌面、命令行三处都算。免费档有，Pro 每月 20 美元。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Devin 定价页",
+          "url": "https://devin.ai/pricing"
+        },
+        {
+          "name": "Devin 文档首页",
+          "url": "https://docs.devin.ai/"
+        },
+        {
+          "name": "Cognition 官方 X",
+          "url": "https://x.com/cognition/status/2104996240190792029"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-opencode",
+      "zh": "OpenCode",
+      "en": "OpenCode",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "编程",
+        "终端",
+        "开源"
+      ],
+      "line": "开源编程代理：程序员在终端或编辑器里让它写代码，能接 75 家以上模型。",
+      "more": "Anomaly Innovations 公司做的（这家公司也做开源项目 SST），官网说每月有 1600 万开发者在用。在它里面用 /connect 选 OpenAI、再选「ChatGPT Plus/Pro」登录后，OpenAI 的模型可以走你的订阅。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenCode 官网",
+          "url": "https://opencode.ai/"
+        },
+        {
+          "name": "OpenCode 文档：providers",
+          "url": "https://opencode.ai/docs/providers/"
+        },
+        {
+          "name": "Anomaly 信任中心",
+          "url": "https://trust.opencode.ai/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-lovable",
+      "zh": "Lovable",
+      "en": "Lovable",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "建站",
+        "网页"
+      ],
+      "line": "跟 AI 聊天就能做出网站和应用，一键上线；官方说八成用户不是技术岗。",
+      "more": "总部在瑞典斯德哥尔摩。官方博客说，在它上面做东西的人里 80% 自认是非技术岗位，创业者、设计师、销售增长最快。OpenAI 合作方目录把它列为「即将支持」订阅额度（coming soon），2026 年 9 月 30 日还没上线，具体规则未核。免费档有，Pro 每月 25 美元。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        },
+        {
+          "name": "Lovable 定价页",
+          "url": "https://lovable.dev/pricing"
+        },
+        {
+          "name": "Lovable 博客：A first look at the build economy",
+          "url": "https://lovable.dev/blog/a-first-look-at-the-build-economy"
+        },
+        {
+          "name": "Lovable 官方 LinkedIn（总部斯德哥尔摩）",
+          "url": "https://www.linkedin.com/company/lovable-dev"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-notion",
+      "zh": "Notion",
+      "en": "Notion",
+      "aliases": [
+        "Notion AI"
+      ],
+      "tags": [
+        "产品",
+        "写作与办公",
+        "网页",
+        "桌面"
+      ],
+      "line": "学生、博主、上班族天天在用的笔记和文档软件，里面带 AI 助手。",
+      "more": "Notion 的 AI 助手可以选 Claude、GPT、Gemini、Grok 几家模型，其中 Claude Fable 5.1 只在 Business 和 Enterprise 档；高级模型要花 Notion 自己的点数。OpenAI 把 Notion 列进「能用订阅额度」，但 Notion 自己没写哪些功能、哪档套餐会改扣你的 ChatGPT，未核。免费档有，付费档按成员人数收费。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Notion 帮助中心：Notion Agent",
+          "url": "https://www.notion.com/help/notion-agent"
+        },
+        {
+          "name": "Notion 定价页",
+          "url": "https://www.notion.com/pricing"
+        },
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        },
+        {
+          "name": "OpenAI DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-china-availability",
+      "zh": "ChatGPT 支持地区",
+      "en": "ChatGPT supported countries",
+      "aliases": [
+        "大陆能不能用",
+        "支持地区"
+      ],
+      "tags": [
+        "概念",
+        "OpenAI"
+      ],
+      "line": "OpenAI 的 ChatGPT 支持地区里没有中国大陆、香港和澳门，有台湾。",
+      "more": "官方页面写明，在列表以外的地区访问或提供访问，可能导致账号被封禁或停用。所以任何「接 ChatGPT」的功能，对大陆用户来说，前提都是先有一个能正常用的 ChatGPT 账号。列表以官方页面为准。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 帮助中心：ChatGPT 支持地区",
+          "url": "https://help.openai.com/en/articles/7947663-chatgpt-supported-countries"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-airtable",
+      "zh": "Airtable",
+      "en": "Airtable",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "写作与办公",
+        "网页"
+      ],
+      "line": "像 Excel 一样好上手的在线表格数据库，团队常拿来管项目、客户名单、内容排期，不用写代码。",
+      "more": "官网说有 50 万个团队在用。OpenAI 目录把它列为「只能登录」：用 ChatGPT 账号登录它，不花你的订阅额度。Airtable 联合创始人 Howie Liu 主导的 Hyperagent 才在「能用额度」名单里；媒体报道 2026 年 8 月 Bending Spoons 宣布收购 Airtable，收购前 Hyperagent 已拆成独立公司，官方说法未核。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        },
+        {
+          "name": "Airtable 官网",
+          "url": "https://www.airtable.com/"
+        },
+        {
+          "name": "媒体报道：Reworked，Bending Spoons 收购 Airtable",
+          "url": "https://www.reworked.co/digital-workplace/bending-spoons-acquires-airtable-for-1285b/"
+        },
+        {
+          "name": "媒体报道：Stork.ai，Hyperagent 拆分",
+          "url": "https://www.stork.ai/blog/airtables-ceo-exited-for-this-ai"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-canva",
+      "zh": "Canva",
+      "en": "Canva",
+      "aliases": [
+        "可画",
+        "canva.cn"
+      ],
+      "tags": [
+        "产品",
+        "设计",
+        "网页"
+      ],
+      "line": "做海报、PPT 的在线设计工具，套模板改改就能用，官方说月活超 2.2 亿。",
+      "more": "OpenAI 目录把它列为「只能登录」：用 ChatGPT 账号登录 Canva，不花你的订阅额度。另一条路是 ChatGPT 里的 Canva 插件：在聊天里描述想要的设计，ChatGPT 里先预览几个方案，选一个进 Canva 接着改；Canva 免费号也能连，用品牌模板等功能要付费档。Canva 在中国大陆另有站点 canva.cn，它是否支持用 ChatGPT 登录，未核。Canva 素材里标着「Resource」的教育类内容，只能用于教育和非商业用途。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        },
+        {
+          "name": "Canva 帮助中心：把 Canva 连到 ChatGPT",
+          "url": "https://www.canva.com/help/connect-chatgpt-to-canva/"
+        },
+        {
+          "name": "Canva：About",
+          "url": "https://www.canva.com/about/"
+        },
+        {
+          "name": "Canva 内容许可协议",
+          "url": "https://www.canva.com/policies/content-license-agreement/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-gitlab",
+      "zh": "GitLab",
+      "en": "GitLab",
+      "aliases": [
+        "极狐"
+      ],
+      "tags": [
+        "产品",
+        "编程",
+        "网页"
+      ],
+      "line": "程序员存放代码、一起协作开发、自动测试和上线的平台。",
+      "more": "OpenAI 目录把它列为「只能登录」：用 ChatGPT 账号登录，不花你的订阅额度。中国有中外合资、拿到 GitLab 独家授权的「极狐」gitlab.cn，由本土团队独立运营；极狐是否支持 ChatGPT 登录，未核。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        },
+        {
+          "name": "GitLab 官网",
+          "url": "https://about.gitlab.com/"
+        },
+        {
+          "name": "极狐 GitLab：公司介绍",
+          "url": "https://gitlab.cn/company"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-hubspot",
+      "zh": "HubSpot",
+      "en": "HubSpot",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "写作与办公",
+        "网页"
+      ],
+      "line": "公司用的客户管理和营销工具：管客户名单、发营销邮件、跟销售线索。",
+      "more": "OpenAI 目录把它列为「只能登录」：用 ChatGPT 账号登录，不花你的订阅额度。它有免费的客户管理（CRM）工具。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        },
+        {
+          "name": "HubSpot 官网",
+          "url": "https://www.hubspot.com/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-supabase",
+      "zh": "Supabase",
+      "en": "Supabase",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "编程",
+        "云端"
+      ],
+      "line": "给开发者用的「现成后端」：数据库、用户登录、文件存储一站式提供。",
+      "more": "核心是一个 Postgres 数据库，加上用户注册登录、文件存储、实时数据等。AI 建站工具 Lovable 的官网就写着用它做后端。OpenAI 目录把它列为「只能登录」：用 ChatGPT 账号登录，不花你的订阅额度。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        },
+        {
+          "name": "Supabase 官网",
+          "url": "https://supabase.com/"
+        },
+        {
+          "name": "Lovable：founders 页",
+          "url": "https://lovable.dev/founders"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-backend",
+      "zh": "后端",
+      "en": "Backend",
+      "aliases": [],
+      "tags": [
+        "概念",
+        "编程"
+      ],
+      "line": "网站和 App 背后看不见的部分：存数据、算结果、管账号，像餐厅后厨。",
+      "more": "",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "MDN：服务端网站编程入门",
+          "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Introduction"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-plugin-ext",
+      "zh": "插件扩展",
+      "en": "Plugin extensions",
+      "aliases": [
+        "ChatGPT 插件",
+        "plugins"
+      ],
+      "tags": [
+        "产品",
+        "OpenAI",
+        "插件"
+      ],
+      "line": "别家软件在 ChatGPT 侧栏里安家，你一边聊天，一边在旁边的面板里直接操作那个软件。",
+      "more": "2026 年 9 月 29 日 DevDay 开放：开发者可以给插件做侧栏、可交互的面板和文件查看器，所有套餐可用；OpenAI 演示时用的是 Canva。插件照样要连各家的账号、受工作区权限限制。Canva 自己的帮助页目前写的是在聊天里预览设计、再进 Canva 改，侧栏形态对谁开放，未核。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        },
+        {
+          "name": "OpenAI ChatGPT 更新日志（2026-09-29 条）",
+          "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes"
+        },
+        {
+          "name": "OpenAI 开发者文档：插件扩展",
+          "url": "https://developers.openai.com/plugins/build/extensions"
+        },
+        {
+          "name": "Canva 帮助中心：把 Canva 连到 ChatGPT",
+          "url": "https://www.canva.com/help/connect-chatgpt-to-canva/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-amp",
+      "zh": "Amp Code",
+      "en": "Amp",
+      "aliases": [
+        "Amp"
+      ],
+      "tags": [
+        "产品",
+        "编程",
+        "终端"
+      ],
+      "line": "编程代理：替程序员写、改代码，有命令行、Mac 和 iPhone App。",
+      "more": "Amp Inc. 做的，是从代码搜索公司 Sourcegraph 独立出来的。2026 年 8 月起，接上 ChatGPT 订阅后低、中、高三档全换成 OpenAI 模型，钱记在你的订阅上；最高的 ultra 档照样用 Claude Fable、照样收它的点数。2026 年 9 月 13 日起，用 ChatGPT 订阅不再需要买它的月费档；个人版每月 20 美元，主要买的是云端电脑时间。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Amp：A dial for you",
+          "url": "https://ampcode.com/news/a-dial-for-you"
+        },
+        {
+          "name": "Amp：Free agent",
+          "url": "https://ampcode.com/news/free-agent"
+        },
+        {
+          "name": "Amp 定价页",
+          "url": "https://ampcode.com/pricing"
+        },
+        {
+          "name": "Amp：iOS 和 macOS App",
+          "url": "https://ampcode.com/news/amp-on-ios-and-macos"
+        },
+        {
+          "name": "Sourcegraph 博客：拆成两家公司",
+          "url": "https://sourcegraph.com/blog/why-sourcegraph-and-amp-are-becoming-independent-companies"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-kilo",
+      "zh": "Kilo Code",
+      "en": "Kilo Code",
+      "aliases": [
+        "Kilo"
+      ],
+      "tags": [
+        "产品",
+        "编程",
+        "插件",
+        "开源"
+      ],
+      "line": "装在程序员代码编辑器里的开源 AI 助手，能接 500 多个模型。",
+      "more": "接上 ChatGPT 后，官方说最多能用满订阅里 Work 和 Codex 的额度；不是所有 OpenAI 模型都算，开源的 GPT-OSS 就不算，云端代理的算力另收。额度用完时请求报错停下，不会自动转成付费；但官方也写明，个别登录续期失败的情况可能改走你存的 API 密钥或 Kilo 点数。个人免费。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Kilo 文档：OpenAI ChatGPT Plus/Pro",
+          "url": "https://kilo.ai/docs/ai-providers/openai-chatgpt-plus-pro"
+        },
+        {
+          "name": "Kilo 博客：Sign in with ChatGPT",
+          "url": "https://blog.kilo.ai/p/sign-in-with-chatgpt"
+        },
+        {
+          "name": "Kilo 官网",
+          "url": "https://kilo.ai/"
+        },
+        {
+          "name": "Kilo 定价页",
+          "url": "https://kilo.ai/pricing"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-pi",
+      "zh": "Pi",
+      "en": "Pi",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "编程",
+        "终端",
+        "开源"
+      ],
+      "line": "极简的开源编程代理，也是一套零件，别人能把它嵌进自己的 AI 助理。OpenClaw 就是官方举的例子。",
+      "more": "代码放在 Earendil 公司的 GitHub 仓库里维护，支持 15 家以上的模型服务商，也直接支持智谱（ZAI）、Kimi、MiniMax、通义、小米 MiMo 的国内接口。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Pi 官网",
+          "url": "https://pi.dev/"
+        },
+        {
+          "name": "Pi 文档：providers",
+          "url": "https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/providers.md"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-conductor",
+      "zh": "Conductor",
+      "en": "Conductor",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "编程",
+        "桌面"
+      ],
+      "line": "Mac 上的「包工头」软件：同时指挥好几个 AI 程序员各改各的，最后帮你合并。",
+      "more": "Melty Labs 做的。自己不做模型，调度的是 Claude Code、Codex、Cursor、OpenCode 这些编程代理。接 ChatGPT 是在「设置 → Agents → Codex」里点「Continue with ChatGPT」，只作用在它里面 Codex 那一路。免费档可以在自己的 Mac 上并行跑，Pro 每月 50 美元，多了云端工作区和手机 App。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Conductor 更新日志 0.89.0",
+          "url": "https://www.conductor.build/changelog/0.89.0-sign-in-with-chatgpt"
+        },
+        {
+          "name": "Conductor 官网",
+          "url": "https://www.conductor.build/"
+        },
+        {
+          "name": "Conductor 定价页",
+          "url": "https://www.conductor.build/pricing"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-t3",
+      "zh": "T3 Code",
+      "en": "T3 Code",
+      "aliases": [
+        "T3"
+      ],
+      "tags": [
+        "产品",
+        "编程",
+        "开源",
+        "桌面"
+      ],
+      "line": "给各种编程代理套的统一遥控器，在一个界面里同时指挥 Claude Code、Codex、Cursor 等。",
+      "more": "开发者 Theo 参与创办的 Ping Labs 做的，开源（MIT）免费，官网写明「不转卖 token」，你用自己已有的订阅。它里面的 Codex 那一路用你自己的 Codex 登录（codex login），所以接 ChatGPT 只决定这一路用谁的账号，别的代理各走各的。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "T3 Code 官网",
+          "url": "https://t3.codes/"
+        },
+        {
+          "name": "T3 Code 仓库",
+          "url": "https://github.com/pingdotgg/t3code"
+        },
+        {
+          "name": "Ping Labs 官网",
+          "url": "https://ping.gg/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-warp",
+      "zh": "Warp",
+      "en": "Warp",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "编程",
+        "终端",
+        "桌面"
+      ],
+      "line": "新一代的终端（程序员敲命令的黑窗口），里面自带 AI 编程代理，帮你写代码、跑命令。",
+      "more": "接上 ChatGPT 后，用你订阅里 Work 和 Codex 的额度跑它里面的 AI 请求，Warp 终端和 Warp Agent 命令行都支持。免费档有，Build 每月 20 美元起。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Warp 博客：Sign in to Warp with ChatGPT",
+          "url": "https://www.warp.dev/blog/sign-in-to-warp-with-chatgpt"
+        },
+        {
+          "name": "Warp 定价页",
+          "url": "https://www.warp.dev/pricing"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-vorflux",
+      "zh": "Vorflux",
+      "en": "Vorflux",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "编程",
+        "云端"
+      ],
+      "line": "给软件团队用的「编程流水线」：一句需求进去，AI 从规划、写码、测试一路做到合并代码。",
+      "more": "媒体报道：由 Rippling 联合创始人 Prasanna Sankar 创办，2026 年 7 月亮相；不训练自己的模型，每个环节挑当下最合适的别家模型；每次任务在一台专属云服务器上跑，按小时计费。OpenAI 合作方目录把它列进「能用订阅额度」；Vorflux 自己的官方说明未核，媒体报道它的计费方式之一是接入已有的 Codex 订阅。官方价目表只列了各家模型单价。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        },
+        {
+          "name": "Vorflux 价目表",
+          "url": "https://vorflux.com/pricing.html"
+        },
+        {
+          "name": "媒体报道：TestingCatalog",
+          "url": "https://www.testingcatalog.com/vorflux-opens-sign-ups-for-its-automated-coding-platform/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-vercel",
+      "zh": "Vercel / v0",
+      "en": "Vercel / v0",
+      "aliases": [
+        "v0",
+        "Vercel"
+      ],
+      "tags": [
+        "产品",
+        "建站",
+        "网页"
+      ],
+      "line": "Vercel 把网站和应用部署上网；它家的 v0 能一句话生成网页应用。",
+      "more": "Vercel 2026 年 7 月 29 日的公告只写了 Vercel 和 v0 可以用 ChatGPT 登录（测试版）。DevDay 后 OpenAI 把 Vercel 列进「能用额度」，v0 首页也出现了「在 v0 里用你的 ChatGPT 套餐」的入口；具体哪部分扣你的订阅、怎么扣，未核。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Vercel 更新日志：Sign in with ChatGPT",
+          "url": "https://vercel.com/changelog/sign-in-with-chatgpt-is-now-available-on-vercel"
+        },
+        {
+          "name": "v0 官网",
+          "url": "https://v0.app/"
+        },
+        {
+          "name": "Vercel 官网",
+          "url": "https://vercel.com/"
+        },
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-deploy",
+      "zh": "托管 / 部署",
+      "en": "Hosting / Deploy",
+      "aliases": [
+        "部署",
+        "托管",
+        "上线"
+      ],
+      "tags": [
+        "概念",
+        "建站"
+      ],
+      "line": "把做好的网站放到网上的服务器，让别人能打开，像把做好的菜端上桌。",
+      "more": "",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "MDN：发布你的网站",
+          "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Your_first_website/Publishing_your_website"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-hyperagent",
+      "zh": "Hyperagent",
+      "en": "Hyperagent",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "写作与办公",
+        "云端"
+      ],
+      "line": "给公司团队用的「AI 同事」平台：每个代理有自己的云电脑，能做调研简报、网页、幻灯片。",
+      "more": "由 Airtable 联合创始人 Howie Liu 主导，官网页脚写「© 2026 Airtable」；媒体报道 2026 年 Airtable 被 Bending Spoons 收购前，它已拆成独立公司，官方说法未核。接上 ChatGPT 后只有「支持的 GPT 模型」改扣你的订阅，其他模型、工具、图片视频照样扣它的点数。官方套餐表最低一档每月 20 美元，没列免费档。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Hyperagent 文档：套餐",
+          "url": "https://www.hyperagent.com/docs/billing/plans"
+        },
+        {
+          "name": "Hyperagent 官网",
+          "url": "https://hyperagent.com/"
+        },
+        {
+          "name": "媒体报道：Stork.ai，Hyperagent 拆分",
+          "url": "https://www.stork.ai/blog/airtables-ceo-exited-for-this-ai"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-dactyl",
+      "zh": "Dactyl",
+      "en": "Dactyl",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "建站",
+        "网页"
+      ],
+      "line": "说一句话，AI 在浏览器里做出真的 iPhone 或安卓 App，不用 Mac。",
+      "more": "Deno 团队做的。Builder 档每月 20 美元，AI 代理跑在你的 ChatGPT 订阅上，它只收工具链的钱（模拟器、签名、上架）；免费档能用免费 Apple ID 装到自己 iPhone，不能上架；上架 App Store 另需苹果开发者账号每年 99 美元。ChatGPT 连接断了会停下来问你，不会悄悄转成扣费。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Dactyl 定价页",
+          "url": "https://dactyl.dev/pricing/"
+        },
+        {
+          "name": "Dactyl 官网",
+          "url": "https://dactyl.dev/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-openclaw",
+      "zh": "OpenClaw",
+      "en": "OpenClaw",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "开源",
+        "陪伴",
+        "人机恋相关"
+      ],
+      "line": "装在自己电脑上常驻的开源 AI 助理，在你常用的聊天软件里跟你说话。",
+      "more": "官方说它的状态、记忆和凭证都存在你自己的机器上。奥地利开发者 Peter Steinberger 创建；2026 年 2 月 15 日他宣布加入 OpenAI、项目转入基金会，现由独立的非营利组织 OpenClaw Foundation 开发，OpenAI 是捐助方、不是所有者。大脑可换：Claude、Codex、本地模型、国产模型都行。新接法「用 ChatGPT 登录」（测试版）让它日常说话直接吃你 Plus/Pro 的 Codex 额度，但这条路不支持生图、语音转写、实时语音，记忆向量和文字转语音也要另配凭证。",
+      "for_us": "养本地伴侣的人不用再另买 API，但伴侣和你共用一个额度池，生图、语音、长期记忆检索还得另配。",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenClaw 文档：OpenAI 认证方式",
+          "url": "https://docs.openclaw.ai/providers/openai/authentication"
+        },
+        {
+          "name": "OpenClaw 仓库",
+          "url": "https://github.com/openclaw/openclaw"
+        },
+        {
+          "name": "Peter Steinberger 博客：OpenClaw, OpenAI and the future",
+          "url": "https://steipete.me/posts/2026/openclaw"
+        },
+        {
+          "name": "媒体报道：TechCrunch",
+          "url": "https://techcrunch.com/2026/02/15/openclaw-creator-peter-steinberger-joins-openai/"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-hermes",
+      "zh": "Hermes Agent",
+      "en": "Hermes Agent",
+      "aliases": [
+        "Hermes"
+      ],
+      "tags": [
+        "产品",
+        "开源",
+        "陪伴",
+        "人机恋相关"
+      ],
+      "line": "跟 OpenClaw 同类的开源个人 AI 助理，有长期记忆，能接进聊天软件。",
+      "more": "Nous Research 做的，这是一家做开源模型研究的实验室，自称「引领美国开源运动」。软件开源（MIT），能接 Telegram、Discord、Slack 等聊天软件，有跨会话的长期记忆。能用 ChatGPT 账号跑 Codex 的模型，但它自己的文档写着：哪些套餐能用、怎么算额度「目前没有说明」。",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Hermes Agent 文档：providers",
+          "url": "https://hermes-agent.nousresearch.com/docs/integrations/providers"
+        },
+        {
+          "name": "Hermes Agent 文档首页",
+          "url": "https://hermes-agent.nousresearch.com/docs/"
+        },
+        {
+          "name": "Nous Research 官网",
+          "url": "https://nousresearch.com/"
+        },
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-voice",
+      "zh": "语音（听和说）",
+      "en": "Speech-to-Text / TTS",
+      "aliases": [
+        "TTS",
+        "语音转文字",
+        "文字转语音"
+      ],
+      "tags": [
+        "概念",
+        "语音"
+      ],
+      "line": "语音转文字，让 AI 听懂你说话；文字转语音，让 AI 开口说话。",
+      "more": "",
+      "for_us": "",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI API 文档：语音转文字",
+          "url": "https://platform.openai.com/docs/guides/speech-to-text"
+        },
+        {
+          "name": "OpenAI API 文档：文字转语音",
+          "url": "https://platform.openai.com/docs/guides/text-to-speech"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-anthropic",
+      "zh": "Anthropic / Claude",
+      "en": "Anthropic / Claude",
+      "aliases": [
+        "Claude",
+        "Anthropic"
+      ],
+      "tags": [
+        "公司",
+        "Anthropic"
+      ],
+      "line": "做 Claude 系列模型的 AI 公司，和 OpenAI 一样做通用大模型。",
+      "more": "",
+      "for_us": "本站精读里的「机声」由 Claude 写，而 Anthropic 是 OpenAI 的直接对手；读到对 OpenAI 的评价时，记得这层关系。",
+      "related": [],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Anthropic：Company",
+          "url": "https://www.anthropic.com/company"
+        },
+        {
+          "name": "Anthropic 官网",
+          "url": "https://www.anthropic.com/"
         }
       ],
       "added_at": "2026-09-30",
