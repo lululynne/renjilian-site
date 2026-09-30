@@ -18,6 +18,11 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
+try:
+    from test_second_person_shell import NAV_ORDER
+except ImportError:                      # 以 admin.test_ 包方式跑时
+    from admin.test_second_person_shell import NAV_ORDER
+
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = "nianlun.html"
 OVERFLOW = "document.documentElement.scrollWidth - window.innerWidth"
@@ -282,7 +287,7 @@ class NianlunBrowserTests(unittest.TestCase):
             self.assertTrue(page.locator(".kr-noscript").is_visible())
             self.assertIn("开启 JavaScript", page.locator(".kr-noscript").inner_text())
             self.assertFalse(page.locator(".nl-list .log-state").is_visible())
-            self.assertEqual(page.locator("nav.boards a").count(), 7)
+            self.assertEqual(page.locator("nav.boards a").count(), len(NAV_ORDER))
             self.assertEqual(errors, [])
         finally:
             ctx.close()
