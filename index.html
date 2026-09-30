@@ -49,10 +49,10 @@
   <a class="kanread-strip" href="kanread.html">
     <span class="ks-label">刊读 · 精读</span>
     <span class="ks-body">
-      <strong>我不得不把才华埋葬在昨天</strong>
-      <em>「我的手中多了些齿轮，但心中少了些节拍。」</em>
+      <strong>精读目录</strong>
+      <em>每篇先给原文入口，再给本站的读法。</em>
     </span>
-    <span class="ks-go">读这一篇 →</span>
+    <span class="ks-go">进目录 →</span>
   </a>
 
   <section class="grid">
@@ -97,5 +97,31 @@
 <!-- 顶栏右上角的小红点（刀 R）：只在这个浏览器登录过时才问一次 /api/me -->
 <script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
+<script>
+(function () {
+  "use strict";
+  // 刊读横条取最新一篇（刀 3，做法 A）：只换横条里的内容和链接去向，版式一个像素不动。
+  // 取不到数就留着上面的静态兜底，不报错。
+  var strip = document.querySelector(".kanread-strip");
+  if (!strip) return;
+  fetch("data/kanread.json", { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (data) {
+      var items = ((data && data.items) || []).filter(function (it) {
+        return it.status === "verified" || it.status === "unavailable";
+      });
+      if (!items.length) return;
+      var latest = items.slice().sort(function (a, b) {
+        return String(b.published_at || "").localeCompare(String(a.published_at || ""));
+      })[0];
+      strip.setAttribute("href", "kanread.html#" + encodeURIComponent(latest.id));
+      strip.querySelector(".ks-label").textContent = "刊读 · 最新精读";
+      strip.querySelector(".ks-body strong").textContent = latest.title;
+      strip.querySelector(".ks-body em").textContent = latest.hook ? "「" + latest.hook + "」" : "";
+      strip.querySelector(".ks-go").textContent = "读这一篇 →";
+    })
+    .catch(function () {});
+})();
+</script>
 </body>
 </html>

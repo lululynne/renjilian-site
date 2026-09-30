@@ -161,6 +161,21 @@ class KanreadShellTests(unittest.TestCase):
                          "目录视图不许派渲染事件：只在 showSingle 里派一次")
         self.assertNotIn("scrollToHash", html, "kanread 不再调 RJ_RELATED.scrollToHash，滚动自己管")
 
+    def test_home_strip_reads_latest(self) -> None:
+        """刀 3 做法 A：首页横条内联脚本取最新一篇直达单篇；静态兜底链到目录。"""
+        idx = read("index.html")
+        strip = re.search(r'<a class="kanread-strip" href="([^"]+)">.*?</a>', idx, re.S)
+        self.assertIsNotNone(strip, "首页缺 kanread-strip")
+        self.assertEqual(strip.group(1), "kanread.html", "静态兜底必须链到目录")
+        self.assertIn("精读目录", strip.group(0))
+        self.assertIn("data/kanread.json", idx)
+        self.assertIn("textContent", idx)
+        self.assertIn('encodeURIComponent', idx)
+        self.assertNotIn("innerHTML", idx, "横条只许 textContent，不许 innerHTML")
+        # 只换横条里的内容和去向：横条结构还是这三截
+        for cls in ("ks-label", "ks-body", "ks-go"):
+            self.assertIn(cls, strip.group(0))
+
     def test_noscript_fallback(self) -> None:
         html = read(PAGE)
         self.assertIn("<noscript>", html)

@@ -455,6 +455,53 @@ class KanreadViewsTests(unittest.TestCase):
             self.assertEqual(errors, [])
         finally:
             ctx.close()
+    # ── V14 首页横条：取最新一篇直达单篇；取数失败保持兜底 ──
+    def test_v14_home_strip_reads_latest(self) -> None:
+        items = fixture_items()
+        latest = max((it for it in items if it["status"] in ("verified", "unavailable")),
+                     key=lambda it: it["published_at"])
+        ctx = self.browser.new_context(viewport={"width": 390, "height": 844})
+        page = ctx.new_page()
+        errors: list[str] = []
+        page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        body = json.dumps(payload(items), ensure_ascii=False)
+        page.route("**/data/kanread.json",
+                   lambda route, _r: route.fulfill(status=200, content_type="application/json", body=body))
+        try:
+            page.goto(f"{self.base}/index.html", wait_until="networkidle")
+            strip = page.locator(".kanread-strip")
+            strip.wait_for()
+            page.wait_for_function(
+                "document.querySelector('.kanread-strip').getAttribute('href') !== 'kanread.html'")
+            self.assertEqual(strip.locator(".ks-body strong").inner_text(), latest["title"])
+            self.assertEqual(strip.locator(".ks-label").inner_text(), "刊读 · 最新精读")
+            self.assertIn(latest["hook"], strip.locator(".ks-body em").inner_text())
+            self.assertEqual(strip.locator(".ks-go").inner_text(), "读这一篇 →")
+            self.assertEqual(strip.get_attribute("href"), f"kanread.html#{latest['id']}")
+            # 点过去直达那一篇单篇
+            strip.click()
+            page.locator(f"#{latest['id']}.kanread-card").wait_for()
+            self.assertEqual(errors, [])
+        finally:
+            ctx.close()
+        # 取数失败：保持静态兜底，console 零错误
+        ctx = self.browser.new_context(viewport={"width": 390, "height": 844})
+        page = ctx.new_page()
+        errors = []
+        page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        page.route("**/data/kanread.json", lambda route, _r: route.fulfill(status=404, body=""))
+        try:
+            page.goto(f"{self.base}/index.html", wait_until="networkidle")
+            strip = page.locator(".kanread-strip")
+            strip.wait_for()
+            page.wait_for_timeout(300)
+            self.assertEqual(strip.get_attribute("href"), "kanread.html", "取数失败要保持兜底链接")
+            self.assertEqual(strip.locator(".ks-body strong").inner_text(), "精读目录")
+            self.assertEqual([e for e in errors if "Failed to load resource" not in e], [])
+        finally:
+            ctx.close()
 
 
 if __name__ == "__main__":
