@@ -559,6 +559,61 @@ footer.site{
 .kr-back-bottom{margin:16px 0 0}
 .kanread-card h3:focus:not(:focus-visible){outline:none}
 
+/* 年轮时间线（年轮刀 1） */
+/* 一条竖线贯穿、每格一个圆点挂在线上；只用既有 token，电池与年轮图是图片不算色值 */
+.nl-head h2{display:flex;align-items:center;gap:10px}
+.nl-head .nl-ring{flex:none}
+.nl-filter{
+  display:flex;gap:6px;overflow-x:auto;margin:0 0 4px;padding:2px 2px 4px;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.nl-filter::-webkit-scrollbar{display:none}
+.nl-chip{
+  flex:none;display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:4px 13px;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);
+  color:var(--ink);font-size:13px;cursor:pointer;
+}
+.nl-chip[aria-checked="true"]{border-color:var(--ink);font-weight:650}
+.nl-chip .nl-n{font-size:11px;color:var(--ink-soft)}
+.nl-chip:disabled{opacity:.55;cursor:default}
+.nl-legend{margin:0 0 6px;font-size:13px;color:var(--ink-soft)}
+.nl-legend summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+.nl-legend ul{list-style:none;margin:0;padding:0 0 4px}
+.nl-legend li{display:flex;align-items:center;gap:8px;margin:4px 0}
+.nl-day-head{
+  font:650 12px/1.4 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.08em;
+  color:var(--ink-soft);margin:16px 0 8px;
+}
+.nl-track{border-left:2px solid var(--line);padding-left:16px;margin-left:19px;
+  display:flex;flex-direction:column;gap:14px}
+.nl-item{
+  position:relative;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:12px 14px 10px;
+}
+.nl-item::before{
+  content:"";position:absolute;left:-23px;top:22px;width:10px;height:10px;
+  border-radius:50%;background:var(--human);border:2px solid var(--card);
+}
+.nl-item.nl-hit{outline:2px solid var(--ink);outline-offset:2px}
+.nl-time{margin:0 0 4px;font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.nl-battery{position:absolute;top:12px;right:14px}
+.nl-tags{margin:0 0 6px}
+.nl-tags .chip{cursor:default;min-height:0;min-width:0}
+.nl-line{margin:0 0 6px;font-size:14px;line-height:1.75}
+.nl-srcs{display:flex;flex-wrap:wrap;gap:0 16px;margin:2px 0 0;font-size:13px}
+.nl-srcs a,.nl-srcs span{display:inline-flex;align-items:center;min-height:44px}
+.nl-srcs a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.nl-srcs span{color:var(--ink-soft)}
+.nl-read{margin:2px 0 0}
+.nl-read a{
+  display:inline-flex;align-items:center;min-height:44px;
+  font-size:13px;color:var(--ink);text-decoration:underline;text-underline-offset:3px;
+}
+.nl-first{
+  display:flex;align-items:center;gap:8px;margin:26px 0 0;padding-top:14px;
+  border-top:1px dashed var(--line);font-size:13px;color:var(--ink-soft);
+}
+
 /* hidden 属性必须真的隐藏。
    浏览器自带的 [hidden]{display:none} 优先级最低，被 .card{display:flex} 这类作者规则一压就失效——
    站里原来是逐个写 #rj-overlay[hidden] 来兜的。这里收成一条通则，往后用 el.hidden 才靠得住。 */

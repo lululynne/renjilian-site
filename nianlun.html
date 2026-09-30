@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>年轮 · 第二人称</title>
 <link rel="stylesheet" href="style.css">
+<noscript><style>.nl-list .log-state{display:none}</style></noscript>
 </head>
 <body>
 
@@ -34,6 +35,26 @@
     <h2><img class="nl-ring" src="img/nianlun/ring.png" width="36" height="36" alt="">年轮</h2>
     <p class="kr-intro">从 2026-09-30 起，一圈一圈往外记。</p>
   </section>
+
+  <div class="nl-filter" id="nlFilter" role="radiogroup" aria-label="只看某一家"></div>
+
+  <details class="nl-legend">
+    <summary>电池怎么看</summary>
+    <ul>
+      <li><img src="img/nianlun/battery-5.png" width="24" height="24" alt="5 格"><span>新一代旗舰，或改变全行业价格</span></li>
+      <li><img src="img/nianlun/battery-4.png" width="24" height="24" alt="4 格"><span>旗舰迭代、重要新产品，或订阅和额度规则大改</span></li>
+      <li><img src="img/nianlun/battery-3.png" width="24" height="24" alt="3 格"><span>新功能上线</span></li>
+      <li><img src="img/nianlun/battery-2.png" width="24" height="24" alt="2 格"><span>小版本，或价格小调</span></li>
+      <li><img src="img/nianlun/battery-1.png" width="24" height="24" alt="1 格"><span>修复、文档变更</span></li>
+    </ul>
+  </details>
+
+  <p class="kr-status" id="nlStatus" role="status" aria-live="polite" hidden></p>
+
+  <section class="nl-list" id="nlList" aria-label="时间线">
+    <p class="log-state">正在翻页…</p>
+    <noscript><p class="kr-noscript">这一页要开启 JavaScript 才能显示时间线。</p></noscript>
+  </section>
 </main>
 
 <footer class="site">
@@ -52,6 +73,214 @@
 
 <script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
+<script>
+(function () {
+  "use strict";
+  var filterEl = document.getElementById("nlFilter");
+  var listEl = document.getElementById("nlList");
+  var statusEl = document.getElementById("nlStatus");
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  var DATA = null;        // 信封：{first_ring, members, items}
+  var MEMBER_NAME = {};   // id → 显示名
+  var COUNTS = {};        // id → 格数（不随筛选变）
+  var CURRENT = "";       // 当前筛选的成员 id；"" = 全部
+  var WEEKDAYS = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+
+  // 星期从日期字符串本身算（UTC 日历算术），不碰浏览器本地时区
+  function weekdayOf(dateStr) {
+    var y = +dateStr.slice(0, 4), m = +dateStr.slice(5, 7), d = +dateStr.slice(8, 10);
+    return WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+  }
+
+  function hashId() {
+    var raw = location.hash.slice(1);
+    if (!raw) return "";
+    try { return decodeURIComponent(raw); } catch (_) { return raw; }
+  }
+
+  // ?m=：只认 members 里的 id；不认识就当「全部」并把 query 清掉
+  function readFilterFromUrl() {
+    var m = "";
+    try { m = new URLSearchParams(location.search).get("m") || ""; } catch (_) {}
+    if (m && !MEMBER_NAME[m]) {
+      m = "";
+      try { history.replaceState(history.state, "", location.pathname); } catch (_) {}
+    }
+    return m;
+  }
+
+  function syncFilterUrl() {
+    try {
+      history.replaceState(history.state, "",
+        location.pathname + (CURRENT ? "?m=" + encodeURIComponent(CURRENT) : ""));
+    } catch (_) {}
+  }
+
+  function announce() {
+    var n = visibleItems().length;
+    statusEl.textContent = CURRENT
+      ? "现在看的是 " + MEMBER_NAME[CURRENT] + "，共 " + n + " 格"
+      : "现在看的是全部成员，共 " + n + " 格";
+    statusEl.hidden = false;
+  }
+
+  function visibleItems() {
+    // 新的在上：at 是同偏移的 ISO 串，字典序即时间序；同一时刻保持数据原序（稳定）
+    var items = (DATA.items || []).map(function (it, i) { return [it, i]; });
+    items.sort(function (a, b) {
+      var cmp = String(b[0].at).localeCompare(String(a[0].at));
+      return cmp || a[1] - b[1];
+    });
+    return items.map(function (x) { return x[0]; })
+      .filter(function (it) { return !CURRENT || it.member === CURRENT; });
+  }
+
+  function itemHtml(it) {
+    var out = '<article class="nl-item" id="' + esc(it.id) + '">';
+    // 时间直接从 at 字符串取时分（at 一律是 +08:00 东八区的 ISO 串），不做时区换算
+    out += '<p class="nl-time"><time datetime="' + esc(it.at) + '">' + esc(String(it.at).slice(11, 16)) + "</time></p>";
+    out += '<img class="nl-battery" src="img/nianlun/battery-' + esc(it.level) + '.png" width="40" height="40"' +
+      ' alt="重要度 ' + esc(it.level) + '／5" loading="lazy">';
+    var chips = ['<span class="chip">' + esc(MEMBER_NAME[it.member] || it.member) + "</span>"];
+    (it.tags || []).forEach(function (t) { chips.push('<span class="chip">' + esc(t) + "</span>"); });
+    out += '<p class="chips nl-tags">' + chips.join("") + "</p>";
+    out += '<p class="nl-line">' + esc(it.line) + "</p>";
+    var srcs = [];
+    (it.sources || []).forEach(function (s) {
+      if (s && typeof s.url === "string" && s.url.indexOf("https://") === 0) {
+        srcs.push('<a href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.name) + "</a>");
+      } else if (s && s.name) {
+        srcs.push("<span>" + esc(s.name) + "</span>");
+      }
+    });
+    if (srcs.length) out += '<p class="nl-srcs">' + srcs.join("") + "</p>";
+    if (it.read) {
+      out += '<p class="nl-read"><a href="kanread.html#' + encodeURIComponent(it.read) + '">读我们的精读 →</a></p>';
+    }
+    return out + "</article>";
+  }
+
+  function renderList() {
+    var items = visibleItems();
+    if (!items.length) {
+      listEl.innerHTML = '<p class="log-state">' +
+        (CURRENT ? "这一家还没有记到。" : "第一圈还在记。") + "</p>";
+      return;
+    }
+    var html = "";
+    var groups = [], byDay = {};
+    items.forEach(function (it) {
+      var day = String(it.at).slice(0, 10);   // 东八区日期，直接取字符串前 10 位
+      if (!byDay[day]) { byDay[day] = []; groups.push(day); }
+      byDay[day].push(it);
+    });
+    groups.forEach(function (day) {
+      var its = byDay[day];
+      html += '<section class="nl-day"><h3 class="nl-day-head">' +
+        esc(Number(day.slice(5, 7)) + " 月 " + Number(day.slice(8, 10)) + " 日 · " + weekdayOf(day) +
+            " · " + its.length + " 格") + "</h3>" +
+        '<div class="nl-track">' + its.map(itemHtml).join("") + "</div></section>";
+    });
+    html += '<p class="nl-first"><img src="img/nianlun/ring.png" width="28" height="28" alt="">' +
+      "第一圈 · " + esc(DATA.first_ring || "") + "</p>";
+    listEl.innerHTML = html;
+  }
+
+  function syncChips() {
+    var chips = filterEl.querySelectorAll(".nl-chip"), i;
+    for (i = 0; i < chips.length; i++) {
+      var on = chips[i].getAttribute("data-m") === CURRENT;
+      chips[i].setAttribute("aria-checked", on ? "true" : "false");
+      chips[i].setAttribute("tabindex", on ? "0" : "-1");
+    }
+  }
+
+  function renderFilter() {
+    var html = '<button type="button" class="nl-chip" role="radio" data-m="" aria-checked="true">全部' +
+      ' <span class="nl-n">' + (DATA.items || []).length + "</span></button>";
+    DATA.members.forEach(function (m) {
+      var n = COUNTS[m.id] || 0;
+      html += '<button type="button" class="nl-chip" role="radio" data-m="' + esc(m.id) + '"' +
+        (n ? "" : ' disabled aria-label="' + esc(m.name) + "，还没有记到" + '"') + ">" +
+        esc(m.name) + ' <span class="nl-n">' + n + "</span></button>";
+    });
+    filterEl.innerHTML = html;
+    syncChips();
+  }
+
+  function setFilter(m) {
+    CURRENT = m;
+    syncFilterUrl();
+    syncChips();
+    renderList();
+    announce();
+  }
+
+  filterEl.addEventListener("click", function (e) {
+    var c = e.target && e.target.closest ? e.target.closest(".nl-chip") : null;
+    if (c && !c.disabled) setFilter(c.getAttribute("data-m"));
+  });
+
+  // radiogroup 键盘：左右键（上下同效）换选并移焦点
+  filterEl.addEventListener("keydown", function (e) {
+    var c = e.target && e.target.closest ? e.target.closest(".nl-chip") : null;
+    if (!c) return;
+    var step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    var all = filterEl.querySelectorAll(".nl-chip:not([disabled])");
+    var idx = Array.prototype.indexOf.call(all, c);
+    if (idx === -1) return;
+    var next = all[(idx + step + all.length) % all.length];
+    next.focus();
+    setFilter(next.getAttribute("data-m"));
+  });
+
+  // 锚点：#nl-… 滚到那一格并标出「就是这一格」（加粗边框 + 状态播报，不靠颜色）
+  function locateHash() {
+    var id = hashId();
+    if (!id || id.indexOf("nl-") !== 0) return;
+    var el = document.getElementById(id);
+    if (!el) {
+      statusEl.textContent = "没找到这一格，可能已撤下或链接写错了。上面是全部记录。";
+      statusEl.hidden = false;
+      try { history.replaceState(history.state, "", location.pathname + location.search); } catch (_) {}
+      return;
+    }
+    var old = listEl.querySelector(".nl-hit");
+    if (old) old.classList.remove("nl-hit");
+    el.classList.add("nl-hit");
+    el.scrollIntoView({ block: "start" });
+    var t = el.querySelector("time");
+    statusEl.textContent = "就是这一格：" + (t ? t.textContent : "");
+    statusEl.hidden = false;
+  }
+
+  window.addEventListener("hashchange", locateHash);
+
+  fetch("data/nianlun.json", { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (data) {
+      DATA = data;
+      (data.members || []).forEach(function (m) { MEMBER_NAME[m.id] = m.name; });
+      (data.items || []).forEach(function (it) { COUNTS[it.member] = (COUNTS[it.member] || 0) + 1; });
+      CURRENT = readFilterFromUrl();
+      renderFilter();
+      renderList();
+      if (CURRENT) announce();
+      locateHash();
+    })
+    .catch(function () {
+      listEl.innerHTML = '<p class="log-state">这一页暂时读不出来，稍后再来。</p>';
+    });
+})();
+</script>
 
 </body>
 </html>

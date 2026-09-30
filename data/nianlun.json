@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-30",
+  "first_ring": "2026-09-30",
+  "members": [
+    {
+      "id": "openai",
+      "name": "OpenAI"
+    },
+    {
+      "id": "anthropic",
+      "name": "Anthropic"
+    },
+    {
+      "id": "google",
+      "name": "Google"
+    },
+    {
+      "id": "xai",
+      "name": "xAI"
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek"
+    },
+    {
+      "id": "moonshot",
+      "name": "月之暗面"
+    },
+    {
+      "id": "qwen",
+      "name": "阿里通义"
+    },
+    {
+      "id": "zhipu",
+      "name": "智谱"
+    },
+    {
+      "id": "doubao",
+      "name": "字节豆包"
+    },
+    {
+      "id": "mimo",
+      "name": "小米 MiMo"
+    },
+    {
+      "id": "cursor",
+      "name": "Cursor"
+    },
+    {
+      "id": "minimax",
+      "name": "MiniMax"
+    }
+  ],
+  "items": [
+    {
+      "id": "nl-20260930-plugin-extensions",
+      "at": "2026-09-30T01:48:00+08:00",
+      "member": "openai",
+      "tags": [
+        "chatgpt"
+      ],
+      "level": 3,
+      "line": "ChatGPT 开放插件扩展：别家软件可以在 ChatGPT 的侧栏里放一个能操作的面板，边聊天边直接用那个软件。",
+      "sources": [
+        {
+          "name": "OpenAI：DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        },
+        {
+          "name": "OpenAI 开发者文档：插件扩展",
+          "url": "https://developers.openai.com/plugins/build/extensions"
+        }
+      ],
+      "read": "",
+      "notes": [
+        "bk-plugin-ext"
+      ]
+    },
+    {
+      "id": "nl-20260930-plan-sharing",
+      "at": "2026-09-30T01:47:00+08:00",
+      "member": "openai",
+      "tags": [
+        "chatgpt",
+        "codex"
+      ],
+      "level": 4,
+      "line": "ChatGPT Plus 和 Pro 的订阅额度可以带进 16 家合作产品里用。Tibo 的帖子先写「超过 60 个」，一小时后重发改成「超过 16 个」，官方回顾写的也是 16 家。",
+      "sources": [
+        {
+          "name": "OpenAI：DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        },
+        {
+          "name": "OpenAI：合作产品目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        },
+        {
+          "name": "Tibo 原帖（01:47）",
+          "url": "https://x.com/thsottiaux/status/2104991529416999243"
+        }
+      ],
+      "read": "kr-openai-devday-2026-plan-sharing",
+      "notes": [
+        "bk-usage",
+        "bk-sub"
+      ]
+    },
+    {
+      "id": "nl-20260930-codex-cloud",
+      "at": "2026-09-30T01:32:00+08:00",
+      "member": "openai",
+      "tags": [
+        "codex"
+      ],
+      "level": 3,
+      "line": "新版 Codex Cloud 发布：编程任务交给 OpenAI 管理的电脑去跑，自己的电脑休眠了也不停，手机上能接着看。",
+      "sources": [
+        {
+          "name": "OpenAI：DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        },
+        {
+          "name": "Tibo 原帖",
+          "url": "https://x.com/thsottiaux/status/2104987594719461796"
+        }
+      ],
+      "read": "",
+      "notes": [
+        "bk-codex-cloud"
+      ]
+    },
+    {
+      "id": "nl-20260930-chatgpt-space",
+      "at": "2026-09-30T01:29:00+08:00",
+      "member": "openai",
+      "tags": [
+        "chatgpt"
+      ],
+      "level": 3,
+      "line": "ChatGPT Space 上线：几个人可以和 AI 一起编辑同一份带图表的笔记、计划或会议记录，先给 Pro、Business 和企业档。",
+      "sources": [
+        {
+          "name": "OpenAI：DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        },
+        {
+          "name": "Tibo 原帖",
+          "url": "https://x.com/thsottiaux/status/2104983716049379472"
+        }
+      ],
+      "read": "",
+      "notes": [
+        "bk-chatgpt-space"
+      ]
+    },
+    {
+      "id": "nl-20260930-gpt-6-1-sol",
+      "at": "2026-09-30T01:25:00+08:00",
+      "member": "openai",
+      "tags": [
+        "gpt-6.1-sol",
+        "codex"
+      ],
+      "level": 5,
+      "line": "GPT-6.1 Sol 发布：官方说它在写代码、操作电脑、做专业文档上接近旗舰 Astra，价格是 Astra 标准价的五分之一。目前只在 ChatGPT Work 和 Codex 里，普通聊天里还没有。",
+      "sources": [
+        {
+          "name": "OpenAI：Introducing GPT-6.1 Sol",
+          "url": "https://openai.com/index/introducing-gpt-6-1-sol/"
+        },
+        {
+          "name": "OpenAI：DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        }
+      ],
+      "read": "",
+      "notes": [
+        "bk-gpt61-sol"
+      ]
+    },
+    {
+      "id": "nl-20260930-dots",
+      "at": "2026-09-30T01:19:00+08:00",
+      "member": "openai",
+      "tags": [
+        "dots",
+        "chatgpt"
+      ],
+      "level": 4,
+      "line": "常驻 AI 代理 dots 发布：它有一台自己的云端电脑和浏览器，可以全天候替你干活，先在部分地区开放给 Pro 和 Business Premium 用户。",
+      "sources": [
+        {
+          "name": "OpenAI：Introducing dots",
+          "url": "https://openai.com/index/introducing-dots/"
+        },
+        {
+          "name": "OpenAI：DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        }
+      ],
+      "read": "",
+      "notes": [
+        "bk-dots"
+      ]
+    },
+    {
+      "id": "nl-20260929-pro-200",
+      "at": "2026-09-29T14:41:00+08:00",
+      "member": "openai",
+      "tags": [
+        "codex",
+        "chatgpt-pro"
+      ],
+      "level": 4,
+      "line": "Codex 负责人 Tibo 预告：Pro $200 第二天重新对新用户开放，但同样 200 美元，用量折成 API 价钱大约只有旧方案的一半；每 5 小时的限额不会恢复。",
+      "sources": [
+        {
+          "name": "Tibo 原帖",
+          "url": "https://x.com/thsottiaux/status/2104823812042940713"
+        },
+        {
+          "name": "OpenAI 帮助中心：Pro 各档说明",
+          "url": "https://help.openai.com/en/articles/9793128-about-chatgpt-pro-tiers"
+        }
+      ],
+      "read": "kr-openai-devday-2026-plan-sharing",
+      "notes": [
+        "bk-chatgpt-plans",
+        "bk-tibo"
+      ]
+    }
+  ]
+}
