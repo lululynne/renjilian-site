@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>名片主页 · 第二人称</title>
+<title>年轮 · 第二人称</title>
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="rj-card.css">
 </head>
 <body>
 
@@ -20,7 +19,7 @@
     <nav class="boards" aria-label="站内板块">
       <a href="index.html">首页</a>
       <a href="kanread.html">刊读</a>
-      <a href="nianlun.html">年轮</a>
+      <a href="nianlun.html" class="on">年轮</a>
       <a href="games.html">互动提问</a>
       <a href="cost.html">大模型成本</a>
       <a href="codex.html">额度重置</a>
@@ -29,25 +28,13 @@
   </div>
 </header>
 
-<div class="rjk rjk-page">
-  <div class="bgband" id="bgband" hidden></div>
-  <main class="pg" id="pg">
-    <p class="log-state" id="cdState" role="status" aria-live="polite">正在翻这张名片…</p>
-    <section class="cd-hero" id="hero" hidden></section>
-    <div class="acts" id="acts" hidden></div>
-    <section class="sec" id="fam" hidden>
-      <h3 id="famt"></h3>
-      <div id="famList"></div>
-      <p class="ph" id="famNote"></p>
-    </section>
-    <section class="sec" id="show" hidden>
-      <h3>展柜<small>SHOWCASE</small></h3>
-      <div id="showList"></div>
-    </section>
-    <p class="note-foot" id="cdNotice" hidden></p>
-  </main>
-  <div class="echo" id="echo" role="status" aria-live="polite"></div>
-</div>
+<main class="wrap">
+  <section class="board-head kr-head nl-head">
+    <p class="section-label">RINGS</p>
+    <h2><img class="nl-ring" src="img/nianlun/ring.png" width="36" height="36" alt="">年轮</h2>
+    <p class="kr-intro">从 2026-09-30 起，一圈一圈往外记。</p>
+  </section>
+</main>
 
 <footer class="site">
   <div class="wrap sister-footer">
@@ -65,7 +52,6 @@
 
 <script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
-<script src="rj-card.js"></script>
-<script src="card.js"></script>
+
 </body>
 </html>

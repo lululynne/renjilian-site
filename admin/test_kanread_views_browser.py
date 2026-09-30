@@ -433,7 +433,7 @@ class KanreadViewsTests(unittest.TestCase):
             self.assertTrue(page.locator(".kr-noscript").is_visible())
             self.assertIn("开启 JavaScript", page.locator(".kr-noscript").inner_text())
             self.assertFalse(page.locator(".kanread-list .log-state").is_visible(), "没有 JS 时「正在翻页」要藏着")
-            self.assertEqual(page.locator("nav.boards a").count(), 6)
+            self.assertEqual(page.locator("nav.boards a").count(), 7)
             self.assertEqual(errors, [])
         finally:
             ctx.close()
