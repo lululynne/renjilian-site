@@ -71,8 +71,9 @@
     <h4 id="anZh"></h4>
     <p class="an-en" id="anEn"></p>
     <p class="an-line" id="anLine"></p>
+    <p id="anDetailWrap" hidden><button type="button" class="an-detail-btn" id="anDetailBtn">看不太懂？说详细点</button></p>
     <p class="an-us" id="anUs" hidden></p>
-    <p id="anMoreWrap" hidden><button type="button" class="an-more-btn" id="anMoreBtn">展开</button></p>
+    <p id="anMoreWrap" hidden><button type="button" class="an-more-btn" id="anMoreBtn">展开来龙去脉</button></p>
     <p class="an-more" id="anMore" hidden></p>
     <p class="an-srcs" id="anSrcs"></p>
     <p class="an-verified" id="anVerified"></p>
@@ -98,13 +99,25 @@
     }).join("");
   }
 
-  /* ── 小纸条：正文生词的页下注（刀 1，2026-09-30） ──
+  /* ── 小纸条：正文生词的页下注（刀 1 起；刀 2 改三档，2026-09-30） ──
      词条或标记任何一个取不到/解析失败，NOTES 就是 null，整页退回没有小纸条的样子。 */
-  var NOTES = null;       // {entries: {id: 词条}, marks: {精读id: {human_voice: [], machine_voice: []}}}
-  var NOTES_ON = true;    // 开关全站一个；读不到存储时默认开
+  var NOTES = null;          // {entries: {id: 词条}, marks: {精读id: {human_voice: [], machine_voice: []}}}
+  var MODE = "brief";        // 三档全站一个：off / brief / full；读不到存储时默认简洁
   try {
-    var savedNotes = localStorage.getItem("rj.ainotes.on");
-    if (savedNotes !== null) NOTES_ON = savedNotes === "1";
+    var savedMode = localStorage.getItem("rj.ainotes.mode");
+    if (savedMode === "off" || savedMode === "brief" || savedMode === "full") {
+      MODE = savedMode;
+    } else {
+      // 迁移旧键 rj.ainotes.on（刀 1 的两档）："0"→关，"1"→简洁；迁移后写新键、删旧键
+      var oldOn = localStorage.getItem("rj.ainotes.on");
+      if (oldOn !== null) {
+        MODE = oldOn === "0" ? "off" : "brief";
+        try {
+          localStorage.setItem("rj.ainotes.mode", MODE);
+          localStorage.removeItem("rj.ainotes.on");
+        } catch (_) {}
+      }
+    }
   } catch (_) {}
 
   // 图钉图标（照样张，内联 SVG，颜色跟 currentColor）
@@ -153,12 +166,32 @@
     }).join("");
     var foot = "";
     if (order.length) {
-      foot = '<ol class="an-foot">' + order.map(function (id) {
+      // 简洁档每条用 brief，详细档用 line，两份都在 DOM 里由 body.an-full 门控切换；
+      // 词条没有 brief 时两档都退到 line
+      var lis = order.map(function (id) {
         var e = NOTES.entries[id];
-        return "<li><b>" + esc(e.zh) + "</b>（" + esc(e.en) + "）：" + esc(e.line) + "</li>";
-      }).join("") + "</ol>";
+        var brief = typeof e.brief === "string" && e.brief && e.brief !== e.line ? e.brief : "";
+        // 用 <i> 不用 <span>：.kr-voice span 的块级小字规则会砸中 span（同 .an-w 的教训）
+        var body = brief
+          ? '<i class="an-b">' + esc(brief) + '</i><i class="an-f">' + esc(e.line) + "</i>"
+          : esc(e.line);
+        return "<li><b>" + esc(e.zh) + "</b>" + enPart(e.zh, e.en) + "：" + body + "</li>";
+      }).join("");
+      foot = '<details class="an-foot-wrap"><summary>本段小纸条 · ' + order.length + " 条</summary>" +
+        '<ol class="an-foot">' + lis + "</ol></details>";
     }
     return { html: html, foot: foot, count: order.length };
+  }
+
+  // 中文名里已经包含英文名（不分大小写）就不再重复括一遍；完全相同也只写一次
+  function enPart(zh, en) {
+    zh = String(zh == null ? "" : zh);
+    en = String(en == null ? "" : en);
+    if (!en) return "";
+    var z = zh.toLowerCase(), n = en.toLowerCase();
+    if (z === n) return "";
+    if (z.indexOf("(" + n + ")") !== -1 || z.indexOf("（" + n + "）") !== -1) return "";
+    return "（" + esc(en) + "）";
   }
 
   function voiceBody(text, marks) {
@@ -167,10 +200,17 @@
     return parasMarked(text, ms);
   }
 
-  function toggleHtml() {
-    return '<p class="an-bar"><button type="button" class="an-toggle" aria-pressed="' +
-      (NOTES_ON ? "true" : "false") + '">' + PIN + "<span>" +
-      (NOTES_ON ? "小纸条：开" : "小纸条：关") + "</span></button></p>";
+  // 三选一：图钉 + 「小纸条」+ 关/简洁/详细；roving tabindex，左右键换档
+  var MODES = [["off", "关"], ["brief", "简洁"], ["full", "详细"]];
+  function modeHtml() {
+    return '<div class="an-bar" role="radiogroup" aria-label="小纸条显示方式">' + PIN +
+      '<span class="an-bar-label">小纸条</span>' +
+      MODES.map(function (o) {
+        var on = MODE === o[0];
+        return '<button type="button" class="an-mode" role="radio" data-mode="' + o[0] +
+          '" aria-checked="' + (on ? "true" : "false") + '" tabindex="' + (on ? "0" : "-1") + '">' +
+          o[1] + "</button>";
+      }).join("") + "</div>";
   }
 
   /* 底部弹层：文字全部走 textContent（不经过 HTML），来源只给 https:// 做链接 */
@@ -178,11 +218,13 @@
   var anSheet = document.getElementById("anSheet");
   var anX = document.getElementById("anX");
   var anOpener = null;
+  var anEntry = null;   // 当前弹层打开的词条（「说详细点」要用它的 line）
 
   function closeSheet() {
     if (anSheet.hidden) return;
     anSheet.hidden = true;
     anBack.hidden = true;
+    anEntry = null;
     if (anOpener && document.contains(anOpener)) anOpener.focus();
     anOpener = null;
   }
@@ -191,9 +233,17 @@
     var e = NOTES && NOTES.entries[id];
     if (!e) return;
     anOpener = from || null;
+    anEntry = e;
     document.getElementById("anZh").textContent = (e.__draft ? "【草稿】" : "") + (e.zh || "");
-    document.getElementById("anEn").textContent = e.en || "";
-    document.getElementById("anLine").textContent = e.line || "";
+    // 标题与英文名完全相同（不分大小写）时，英文名那行不重复出现
+    var enEl = document.getElementById("anEn");
+    var sameName = String(e.zh || "").trim().toLowerCase() === String(e.en || "").trim().toLowerCase();
+    enEl.hidden = !e.en || sameName;
+    enEl.textContent = e.en || "";
+    // 简洁档先给 brief，看不懂一键换 line（只换本次打开）；详细档直接 line；没有 brief 两档都 line
+    var brief = typeof e.brief === "string" && e.brief && e.brief !== e.line ? e.brief : "";
+    document.getElementById("anLine").textContent = (MODE === "full" || !brief) ? (e.line || "") : brief;
+    document.getElementById("anDetailWrap").hidden = !(MODE === "brief" && brief);
     var us = document.getElementById("anUs");
     us.hidden = !e.for_us;
     us.textContent = e.for_us ? "对我们：" + e.for_us : "";
@@ -224,6 +274,12 @@
     anX.focus();
   }
 
+  // 「看不太懂？说详细点」：把 brief 换成 line（替换不是追加），按钮消失；只对本次打开生效，不改全站档位
+  document.getElementById("anDetailBtn").addEventListener("click", function () {
+    if (!anEntry) return;
+    document.getElementById("anLine").textContent = anEntry.line || "";
+    document.getElementById("anDetailWrap").hidden = true;
+  });
   document.getElementById("anMoreBtn").addEventListener("click", function () {
     document.getElementById("anMore").hidden = false;
     document.getElementById("anMoreWrap").hidden = true;
@@ -235,16 +291,21 @@
   });
 
   function syncNotesUI() {
-    document.body.classList.toggle("an-on", NOTES_ON);
-    var ts = document.querySelectorAll(".an-toggle"), i;
-    for (i = 0; i < ts.length; i++) {
-      ts[i].setAttribute("aria-pressed", NOTES_ON ? "true" : "false");
-      ts[i].querySelector("span").textContent = NOTES_ON ? "小纸条：开" : "小纸条：关";
+    document.body.classList.toggle("an-on", MODE !== "off");
+    document.body.classList.toggle("an-full", MODE === "full");
+    var radios = document.querySelectorAll(".an-mode"), i;
+    for (i = 0; i < radios.length; i++) {
+      var on = radios[i].getAttribute("data-mode") === MODE;
+      radios[i].setAttribute("aria-checked", on ? "true" : "false");
+      radios[i].setAttribute("tabindex", on ? "0" : "-1");
     }
+    // 详细档页下注默认收起，简洁档展开
+    var wraps = document.querySelectorAll(".an-foot-wrap");
+    for (i = 0; i < wraps.length; i++) wraps[i].open = MODE !== "full";
     // 关着的时候：标记不可聚焦、点了也没反应，视觉上和周围正文零差别
     var btns = document.querySelectorAll(".an-t");
     for (i = 0; i < btns.length; i++) {
-      if (NOTES_ON) {
+      if (MODE !== "off") {
         btns[i].removeAttribute("tabindex");
         btns[i].removeAttribute("aria-hidden");
       } else {
@@ -254,18 +315,33 @@
     }
   }
 
-  function setNotes(on) {
-    NOTES_ON = !!on;
-    try { localStorage.setItem("rj.ainotes.on", NOTES_ON ? "1" : "0"); } catch (_) {}
+  function setMode(mode) {
+    if (mode !== "off" && mode !== "brief" && mode !== "full") return;
+    MODE = mode;
+    try { localStorage.setItem("rj.ainotes.mode", MODE); } catch (_) {}
     syncNotesUI();
-    if (!NOTES_ON) closeSheet();
+    if (MODE === "off") closeSheet();
   }
 
   document.addEventListener("click", function (e) {
-    var t = e.target && e.target.closest ? e.target.closest(".an-toggle") : null;
-    if (t) { setNotes(!NOTES_ON); return; }
+    var r = e.target && e.target.closest ? e.target.closest(".an-mode") : null;
+    if (r) { setMode(r.getAttribute("data-mode")); return; }
     var w = e.target && e.target.closest ? e.target.closest(".an-t") : null;
-    if (w && NOTES_ON) openSheet(w.getAttribute("data-k"), w);
+    if (w && MODE !== "off") openSheet(w.getAttribute("data-k"), w);
+  });
+
+  // radiogroup 键盘：左右键（上下键同效）换档并移焦点
+  document.addEventListener("keydown", function (e) {
+    var r = e.target && e.target.closest ? e.target.closest(".an-mode") : null;
+    if (!r) return;
+    var step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    var group = r.parentNode.querySelectorAll(".an-mode");
+    var idx = Array.prototype.indexOf.call(group, r);
+    var next = group[(idx + step + group.length) % group.length];
+    next.focus();
+    setMode(next.getAttribute("data-mode"));
   });
 
   function card(it) {
@@ -305,7 +381,7 @@
     var mk = NOTES && NOTES.marks[it.id];
     var hv = it.human_voice ? voiceBody(it.human_voice, mk && mk.human_voice) : null;
     var mv = it.machine_voice ? voiceBody(it.machine_voice, mk && mk.machine_voice) : null;
-    if ((hv && hv.count) || (mv && mv.count)) parts.push(toggleHtml());
+    if ((hv && hv.count) || (mv && mv.count)) parts.push(modeHtml());
     if (it.human_voice) {
       parts.push('<div class="kr-voice kr-human"><span>人声 · 摘要</span>' + hv.html + hv.foot + "</div>");
     }

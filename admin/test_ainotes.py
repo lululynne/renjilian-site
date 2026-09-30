@@ -158,13 +158,24 @@ class AinotesMarksTests(unittest.TestCase):
 class AinotesPageTests(unittest.TestCase):
     def test_page_carries_the_switch_and_dialog(self) -> None:
         html = read("kanread.html")
-        self.assertIn("小纸条：开", html)
-        self.assertIn("小纸条：关", html)
-        self.assertIn("rj.ainotes.on", html)
+        # 刀 2：三档选一（radiogroup + 关/简洁/详细），不再是「小纸条：开／关」
+        self.assertIn("小纸条", html)
+        self.assertIn('role="radiogroup"', html)
+        self.assertIn('role="radio"', html)
+        for label in ('"brief", "简洁"', '"full", "详细"', '"off", "关"'):
+            self.assertIn(label, html, f"三档定义缺 {label}")
+        self.assertIn('aria-checked', html)
+        self.assertIn('data-mode="', html)
+        # 存储键换成 rj.ainotes.mode；旧键 rj.ainotes.on 的迁移代码必须在（读完就删旧键）
+        self.assertIn("rj.ainotes.mode", html)
+        self.assertIn('localStorage.getItem("rj.ainotes.on")', html, "缺旧键迁移读取")
+        self.assertIn('localStorage.removeItem("rj.ainotes.on")', html, "迁移后必须删掉旧键")
         self.assertIn('role="dialog"', html)
         self.assertIn('aria-modal="true"', html)
         self.assertIn("data/ainotes.json", html)
         self.assertIn("data/ainotes.marks.json", html)
+        self.assertIn("看不太懂？说详细点", html)
+        self.assertIn("展开来龙去脉", html)
 
     def test_ainotes_styles_add_no_new_colour(self) -> None:
         """色板是拍过板的：小纸条样式块只准复用既有 token，不准新增色值。"""
