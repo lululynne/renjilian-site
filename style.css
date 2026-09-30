@@ -1003,3 +1003,60 @@ td .rj-related{margin-top:6px;padding-top:4px;font-size:12px}
 .rj-card-go .rj-btn{display:inline-flex;align-items:center;min-height:44px;text-decoration:none}
 .rj-key-who .rj-who-link{margin:0}
 .rj-who .rj-who-id,.rj-who .rj-who-gone{display:inline}
+
+/* 小纸条 ainotes */
+/* 刊读精读卡的词下注（刀 1，2026-09-30）。只用既有 token，不新增色值：
+   图钉与点线用 --human 珊瑚（现有 token 里最接近图钉红的），上标小号用 --ink-soft 保住小字对比度 */
+.an-bar{margin:10px 0 0}
+.an-toggle{
+  display:inline-flex;align-items:center;min-height:44px;padding:6px 14px;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);
+  color:var(--ink);font-size:14px;cursor:pointer;
+}
+.an-toggle svg{flex:none;color:var(--human)}
+.an-toggle[aria-pressed="true"]{border-color:var(--human);background:var(--accent-soft)}
+/* 行内词的触控盒：padding 12px 15px 把可点面积撑到 ≥44×44，等额负 margin 吃回去，
+   排版进位仍等于词宽，开关切换不引起任何位移；点线画在内层 .an-w 上，刚好贴住词本身 */
+.an-t{
+  font:inherit;line-height:inherit;color:inherit;background:none;border:0;text-align:left;
+  padding:12px 15px;margin:-12px -15px;min-width:44px;cursor:default;
+}
+.an-w{font-style:normal}
+body.an-on .an-t{cursor:pointer}
+body.an-on .an-t .an-w{border-bottom:1.5px dotted var(--human)}
+.an-t sup{display:none;font-size:11px;margin-left:1px;color:var(--ink-soft)}
+body.an-on .an-t sup{display:inline}
+.an-foot{
+  display:none;margin:12px 0 0;padding:10px 12px 8px 32px;
+  background:var(--card-block);border-top:1px dashed var(--line);
+  border-radius:0 0 10px 10px;font-size:14px;color:var(--ink-soft);
+}
+body.an-on .an-foot{display:block}
+.an-foot li{margin:3px 0}
+.an-foot b{color:var(--ink);font-weight:600}
+.an-back{position:fixed;inset:0;z-index:90}
+.an-sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:91;
+  background:var(--card);border-top:1px solid var(--line);
+  padding:16px 16px calc(22px + env(safe-area-inset-bottom));
+  max-height:80dvh;overflow-y:auto;
+}
+.an-inner{position:relative;max-width:760px;margin:0 auto}
+.an-x{
+  position:absolute;top:-6px;right:0;width:44px;height:44px;padding:0;
+  border:0;background:transparent;color:var(--ink-soft);font-size:24px;line-height:1;cursor:pointer;
+}
+.an-sheet h4{margin:0 48px 2px 0;font-size:17px}
+.an-en{margin:0 48px 6px 0;font-size:13px;color:var(--ink-soft)}
+.an-line{margin:0}
+.an-us{margin:6px 0 0;font-size:14px;color:var(--ink-soft)}
+.an-more-btn{
+  min-height:44px;padding:6px 0;border:0;background:transparent;cursor:pointer;
+  color:var(--ink);font-size:14px;text-decoration:underline;text-underline-offset:3px;
+}
+.an-more{margin:2px 0 0;font-size:14px;color:var(--ink-soft)}
+.an-srcs{display:flex;flex-wrap:wrap;gap:0 16px;margin:8px 0 0;font-size:13px}
+.an-srcs a,.an-srcs span{display:inline-flex;align-items:center;min-height:44px}
+.an-srcs a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.an-srcs span{color:var(--ink-soft)}
+.an-verified{margin:6px 0 0;font-size:12px;color:var(--ink-soft)}

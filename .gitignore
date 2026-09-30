@@ -23,3 +23,4 @@ data/*sessions*
 .dev.vars.*
 !.dev.vars.example
 .wrangler/
+data/ainotes.drafts.json

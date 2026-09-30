@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-30",
+  "items": [
+    {
+      "id": "bk-tibo",
+      "zh": "Tibo",
+      "en": "Tibo (Thibault Sottiaux)",
+      "aliases": [
+        "thsottiaux",
+        "Thibault Sottiaux",
+        "Codex 负责人"
+      ],
+      "tags": [
+        "人物",
+        "OpenAI",
+        "编程",
+        "计费"
+      ],
+      "line": "OpenAI 里管 Codex 和 ChatGPT 的负责人。Codex 额度、订阅规则有变，多半是他先在 X 上说。",
+      "more": "X 账号 @thsottiaux，简介写的是「Codex & ChatGPT @OpenAI」，粉丝约 77 万（2026 年 9 月 30 日）。他习惯在 X 上第一时间发 Codex 的更新和订阅规则变化，Codex 用户关心的「额外重置周额度」消息，也以他的原帖为准；本站「额度重置」页核对的就是他的帖子。2026 年 9 月 29 日他先发长帖说明 Pro 200 重开与额度算法变化，当天又在 DevDay 现场连发十几条。帖子落款常写「Codexingly, Tibo」。",
+      "for_us": "想知道 Codex 额度有没有变，先看他的账号，比看二手消息快。",
+      "related": [
+        "bk-codex",
+        "bk-openai",
+        "bk-devday"
+      ],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "Tibo 的 X 账号",
+          "url": "https://x.com/thsottiaux"
+        },
+        {
+          "name": "Pro 200 长帖",
+          "url": "https://x.com/thsottiaux/status/2104823812042940713"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-chatgpt-plans",
+      "zh": "ChatGPT 的付费档位（Plus / Pro）",
+      "en": "ChatGPT Plus / Pro 100 / Pro 200 / Pro 500",
+      "aliases": [
+        "Plus",
+        "Pro",
+        "Pro 100",
+        "Pro 200",
+        "Pro 500",
+        "ChatGPT 会员"
+      ],
+      "tags": [
+        "计费",
+        "OpenAI",
+        "产品"
+      ],
+      "line": "ChatGPT 的个人付费套餐：Plus 每月 20 美元，Pro 分 100、200、500 美元三档，越贵额度越多。",
+      "more": "Plus 每月 20 美元。Pro 分三档：Pro 100 每月 100 美元，Pro 200 每月 200 美元，Pro 500 每月 500 美元（2026 年 9 月 29 日新出，也是唯一带 Astra Ultrafast 加速模式的档位），都按月付，没有年付。2026 年 9 月 29 日起，Pro 200 重新对新用户开放，但新订的用量比以前低；老用户如果在截止日前是有效订阅，旧额度保留到 2026 年 10 月 29 日。Tibo 给的倍数关系：Plus 算 1 倍，Pro 100 算 5 倍，Pro 200 算 10 倍。只有 Plus 和 Pro 能把额度共享给别的软件。",
+      "for_us": "只想聊天，Plus 够用；想让自己养的伴侣或编程代理连着干活，才需要往上看。",
+      "related": [
+        "bk-usage",
+        "bk-codex",
+        "bk-tibo"
+      ],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 帮助中心：关于 ChatGPT Pro 档位",
+          "url": "https://help.openai.com/en/articles/9793128-about-chatgpt-pro-tiers"
+        },
+        {
+          "name": "Tibo 的倍数说明",
+          "url": "https://x.com/thsottiaux/status/2104951965184925941"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-api",
+      "zh": "API",
+      "en": "API (Application Programming Interface)",
+      "aliases": [
+        "接口",
+        "应用接口"
+      ],
+      "tags": [
+        "概念",
+        "编程",
+        "计费"
+      ],
+      "line": "软件之间传话的窗口。像银行柜台：你不进金库，把单子递进去，柜员把结果递出来。",
+      "more": "AI 公司通过 API 把模型「租」给别的软件用：软件把你的问题递进去，模型把答案递出来，按用了多少 token 收钱。用 API 要先申请一把「API 密钥」，谁拿着钥匙，费用就记在谁账上。订阅（比如 ChatGPT Plus）和 API 是两种付钱方式：订阅是包月，API 是按量。2026 年 9 月起，部分软件可以直接用你的 ChatGPT 订阅代替 API 付钱。",
+      "for_us": "在自己电脑上养伴侣，以前要买 API 按量付费；现在有些软件能直接刷 ChatGPT 订阅。",
+      "related": [
+        "bk-apikey",
+        "bk-token",
+        "bk-sub"
+      ],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI 帮助中心：在别的软件里用 ChatGPT 套餐",
+          "url": "https://help.openai.com/en/articles/20001542"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-gpt6-astra",
+      "zh": "GPT-6 Astra",
+      "en": "GPT-6 Astra",
+      "aliases": [
+        "Astra"
+      ],
+      "tags": [
+        "模型",
+        "OpenAI",
+        "计费"
+      ],
+      "line": "OpenAI 现在最强的模型，也最费额度。Plus 用户用它，5 小时大约只够发 5 到 45 条。",
+      "more": "GPT-6 系列里的旗舰，Tibo 在 2026 年 9 月 29 日的帖子里称它「our best model yet」。OpenAI 的 Codex 定价页给了估算：Plus 用户用 Astra，每 5 小时大约能发 5 到 45 条本地消息（同页 GPT-6.1 Sol 是 15 到 160 条，GPT-6 Luna 是 350 到 3000 条）。开 Ultrafast 加速时按 8 倍扣额度，Pro 档里只有 Pro 500 能开。",
+      "for_us": "让伴侣日常说话，用 Astra 是浪费；留给真正难的活。",
+      "related": [
+        "bk-gpt61-sol",
+        "bk-chatgpt-plans",
+        "bk-usage"
+      ],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI Codex 定价页",
+          "url": "https://developers.openai.com/codex/pricing"
+        },
+        {
+          "name": "Tibo 关于 dots 的帖子",
+          "url": "https://x.com/thsottiaux/status/2104981170685616361"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-devday",
+      "zh": "DevDay",
+      "en": "OpenAI DevDay",
+      "aliases": [
+        "OpenAI 开发者大会",
+        "DevDay 2026"
+      ],
+      "tags": [
+        "事件",
+        "OpenAI"
+      ],
+      "line": "OpenAI 每年一次的发布会，一口气公布新模型和新功能。2026 年这场在 9 月 29 日。",
+      "more": "面向开发者的年度大会。2026 年 9 月 29 日（美国时间）在旧金山 Fort Mason 举行，北京时间 9 月 30 日凌晨 1 点开场。这一届 OpenAI 自称「有史以来最大」，发布了 20 多项：GPT-6.1 Sol、dots 常驻代理、Codex Cloud、ChatGPT Space、Pro 500 档位、把 ChatGPT 订阅带到别家软件里用、插件扩展等。",
+      "for_us": "跟机友直接相关的，是订阅额度能带去别家用，以及 Pro 200 额度变少。",
+      "related": [
+        "bk-gpt61-sol",
+        "bk-chatgpt-plans",
+        "bk-tibo"
+      ],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI DevDay 2026 回顾",
+          "url": "https://openai.com/index/devday-2026-recap/"
+        },
+        {
+          "name": "Tibo：See you at Fort Mason",
+          "url": "https://x.com/thsottiaux/status/2104465709384491519"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-gpt61-sol",
+      "zh": "GPT-6.1 Sol",
+      "en": "GPT-6.1 Sol",
+      "aliases": [
+        "6.1 Sol",
+        "Sol"
+      ],
+      "tags": [
+        "模型",
+        "OpenAI",
+        "计费"
+      ],
+      "line": "OpenAI 2026 年 9 月 29 日发布的模型：能力接近最强的 Astra，价格只要五分之一。",
+      "more": "是 GPT-6 Sol 的升级版，2026 年 9 月 29 日（美国时间）在 DevDay 发布，北京时间 9 月 30 日 01:25 前后。OpenAI 官方说它在写代码、操作电脑、专业文档这些任务上接近 GPT-6 Astra，而价格是 Astra 标准价的五分之一；缓存输入每百万 token 只要 0.10 美元。所有付费套餐和 API 当天可用。Plus 用户用它，每 5 小时大约能发 15 到 160 条。",
+      "for_us": "给伴侣日常说话用，这一档比 Astra 划算得多。",
+      "related": [
+        "bk-gpt6-astra",
+        "bk-devday"
+      ],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI：Introducing GPT-6.1 Sol",
+          "url": "https://openai.com/index/introducing-gpt-6-1-sol/"
+        },
+        {
+          "name": "OpenAI Codex 定价页",
+          "url": "https://developers.openai.com/codex/pricing"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    }
+  ]
+}

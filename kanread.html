@@ -64,6 +64,21 @@
   </div>
 </footer>
 
+<div class="an-back" id="anBack" hidden></div>
+<section class="an-sheet" id="anSheet" role="dialog" aria-modal="true" aria-labelledby="anZh" hidden>
+  <div class="an-inner">
+    <button type="button" class="an-x" id="anX" aria-label="关闭小纸条">×</button>
+    <h4 id="anZh"></h4>
+    <p class="an-en" id="anEn"></p>
+    <p class="an-line" id="anLine"></p>
+    <p class="an-us" id="anUs" hidden></p>
+    <p id="anMoreWrap" hidden><button type="button" class="an-more-btn" id="anMoreBtn">展开</button></p>
+    <p class="an-more" id="anMore" hidden></p>
+    <p class="an-srcs" id="anSrcs"></p>
+    <p class="an-verified" id="anVerified"></p>
+  </div>
+</section>
+
 <script src="rj-related.js"></script>
 <script>
 (function () {
@@ -82,6 +97,176 @@
       return "<p>" + esc(t.trim()) + "</p>";
     }).join("");
   }
+
+  /* ── 小纸条：正文生词的页下注（刀 1，2026-09-30） ──
+     词条或标记任何一个取不到/解析失败，NOTES 就是 null，整页退回没有小纸条的样子。 */
+  var NOTES = null;       // {entries: {id: 词条}, marks: {精读id: {human_voice: [], machine_voice: []}}}
+  var NOTES_ON = true;    // 开关全站一个；读不到存储时默认开
+  try {
+    var savedNotes = localStorage.getItem("rj.ainotes.on");
+    if (savedNotes !== null) NOTES_ON = savedNotes === "1";
+  } catch (_) {}
+
+  // 图钉图标（照样张，内联 SVG，颜色跟 currentColor）
+  var PIN = '<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:-1px;margin-right:4px">' +
+    '<path fill="currentColor" d="M16 3l5 5-3 1-3 3 1 5-2 2-4-4-5 5-1-1 5-5-4-4 2-2 5 1 3-3z"/></svg>';
+
+  // 只留下「词条已加载、位置跟正文对得上」的标记；对不上的照普通文字渲染，不画线不编号
+  function usableMarks(text, marks) {
+    if (!NOTES || !marks || !marks.length) return [];
+    var s = String(text);
+    return marks.filter(function (mk) {
+      return mk && NOTES.entries[mk.id] && typeof mk.at === "number" &&
+        typeof mk.text === "string" && s.substr(mk.at, mk.text.length) === mk.text;
+    }).slice().sort(function (a, b) { return a.at - b.at; });
+  }
+
+  // 有标记的声部：按 at 切开，标记包成可点按钮；所有文字先转义再拼，分段结果与 paras 逐字一致
+  function parasMarked(s, marks) {
+    s = String(s);
+    var chunks = [], last = 0, m, re = /\n{2,}/g;
+    while ((m = re.exec(s)) !== null) { chunks.push([last, m.index]); last = m.index + m[0].length; }
+    chunks.push([last, s.length]);
+    var seen = {}, order = [], n = 0;
+    var html = chunks.map(function (range) {
+      var raw = s.slice(range[0], range[1]);
+      var trimmed = raw.trim();
+      var start = range[0] + (raw.length - raw.replace(/^\s+/, "").length);
+      var end = start + trimmed.length;
+      var ms = [], i;
+      for (i = 0; i < marks.length; i++) {
+        if (marks[i].at >= start && marks[i].at + marks[i].text.length <= end) ms.push(marks[i]);
+      }
+      if (!ms.length) return "<p>" + esc(trimmed) + "</p>";
+      var out = "", cur = start;
+      ms.forEach(function (mk) {
+        if (mk.at < cur) return;   // 重叠防御：已经包进上一个标记里的不再包第二层
+        out += esc(s.slice(cur, mk.at));
+        if (!seen[mk.id]) { n += 1; seen[mk.id] = n; order.push(mk.id); }
+        // 词用 <i> 不用 <span>：.kr-voice span 是声部标签的块级小字规则，span 会被它砸中
+        out += '<button type="button" class="an-t" data-k="' + esc(mk.id) + '"><i class="an-w">' +
+          esc(mk.text) + '</i><sup aria-hidden="true">' + seen[mk.id] + "</sup></button>";
+        cur = mk.at + mk.text.length;
+      });
+      out += esc(s.slice(cur, end));
+      return "<p>" + out + "</p>";
+    }).join("");
+    var foot = "";
+    if (order.length) {
+      foot = '<ol class="an-foot">' + order.map(function (id) {
+        var e = NOTES.entries[id];
+        return "<li><b>" + esc(e.zh) + "</b>（" + esc(e.en) + "）：" + esc(e.line) + "</li>";
+      }).join("") + "</ol>";
+    }
+    return { html: html, foot: foot, count: order.length };
+  }
+
+  function voiceBody(text, marks) {
+    var ms = usableMarks(text, marks);
+    if (!ms.length) return { html: paras(text), foot: "", count: 0 };
+    return parasMarked(text, ms);
+  }
+
+  function toggleHtml() {
+    return '<p class="an-bar"><button type="button" class="an-toggle" aria-pressed="' +
+      (NOTES_ON ? "true" : "false") + '">' + PIN + "<span>" +
+      (NOTES_ON ? "小纸条：开" : "小纸条：关") + "</span></button></p>";
+  }
+
+  /* 底部弹层：文字全部走 textContent（不经过 HTML），来源只给 https:// 做链接 */
+  var anBack = document.getElementById("anBack");
+  var anSheet = document.getElementById("anSheet");
+  var anX = document.getElementById("anX");
+  var anOpener = null;
+
+  function closeSheet() {
+    if (anSheet.hidden) return;
+    anSheet.hidden = true;
+    anBack.hidden = true;
+    if (anOpener && document.contains(anOpener)) anOpener.focus();
+    anOpener = null;
+  }
+
+  function openSheet(id, from) {
+    var e = NOTES && NOTES.entries[id];
+    if (!e) return;
+    anOpener = from || null;
+    document.getElementById("anZh").textContent = (e.__draft ? "【草稿】" : "") + (e.zh || "");
+    document.getElementById("anEn").textContent = e.en || "";
+    document.getElementById("anLine").textContent = e.line || "";
+    var us = document.getElementById("anUs");
+    us.hidden = !e.for_us;
+    us.textContent = e.for_us ? "对我们：" + e.for_us : "";
+    var moreWrap = document.getElementById("anMoreWrap");
+    var more = document.getElementById("anMore");
+    moreWrap.hidden = !e.more;
+    more.hidden = true;
+    more.textContent = e.more || "";
+    var srcs = document.getElementById("anSrcs");
+    srcs.textContent = "";
+    (e.sources || []).forEach(function (s) {
+      if (s && typeof s.url === "string" && s.url.indexOf("https://") === 0) {
+        var a = document.createElement("a");
+        a.href = s.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = s.name || s.url;
+        srcs.appendChild(a);
+      } else {
+        var sp = document.createElement("span");
+        sp.textContent = (s && s.name) || "";
+        srcs.appendChild(sp);
+      }
+    });
+    document.getElementById("anVerified").textContent = "最后核对 " + (e.last_verified || "");
+    anBack.hidden = false;
+    anSheet.hidden = false;
+    anX.focus();
+  }
+
+  document.getElementById("anMoreBtn").addEventListener("click", function () {
+    document.getElementById("anMore").hidden = false;
+    document.getElementById("anMoreWrap").hidden = true;
+  });
+  anX.addEventListener("click", closeSheet);
+  anBack.addEventListener("click", closeSheet);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeSheet();
+  });
+
+  function syncNotesUI() {
+    document.body.classList.toggle("an-on", NOTES_ON);
+    var ts = document.querySelectorAll(".an-toggle"), i;
+    for (i = 0; i < ts.length; i++) {
+      ts[i].setAttribute("aria-pressed", NOTES_ON ? "true" : "false");
+      ts[i].querySelector("span").textContent = NOTES_ON ? "小纸条：开" : "小纸条：关";
+    }
+    // 关着的时候：标记不可聚焦、点了也没反应，视觉上和周围正文零差别
+    var btns = document.querySelectorAll(".an-t");
+    for (i = 0; i < btns.length; i++) {
+      if (NOTES_ON) {
+        btns[i].removeAttribute("tabindex");
+        btns[i].removeAttribute("aria-hidden");
+      } else {
+        btns[i].setAttribute("tabindex", "-1");
+        btns[i].setAttribute("aria-hidden", "true");
+      }
+    }
+  }
+
+  function setNotes(on) {
+    NOTES_ON = !!on;
+    try { localStorage.setItem("rj.ainotes.on", NOTES_ON ? "1" : "0"); } catch (_) {}
+    syncNotesUI();
+    if (!NOTES_ON) closeSheet();
+  }
+
+  document.addEventListener("click", function (e) {
+    var t = e.target && e.target.closest ? e.target.closest(".an-toggle") : null;
+    if (t) { setNotes(!NOTES_ON); return; }
+    var w = e.target && e.target.closest ? e.target.closest(".an-t") : null;
+    if (w && NOTES_ON) openSheet(w.getAttribute("data-k"), w);
+  });
 
   function card(it) {
     var art = document.createElement("article");
@@ -116,12 +301,17 @@
         "</p>");
     }
     if (it.hook) parts.push('<p class="kr-hook">' + esc(it.hook) + "</p>");
+    // 小纸条：两个声部先各自算好正文与页下注；有任何一处可显示标记才放开关（在人声段上方）
+    var mk = NOTES && NOTES.marks[it.id];
+    var hv = it.human_voice ? voiceBody(it.human_voice, mk && mk.human_voice) : null;
+    var mv = it.machine_voice ? voiceBody(it.machine_voice, mk && mk.machine_voice) : null;
+    if ((hv && hv.count) || (mv && mv.count)) parts.push(toggleHtml());
     if (it.human_voice) {
-      parts.push('<div class="kr-voice kr-human"><span>人声 · 摘要</span>' + paras(it.human_voice) + "</div>");
+      parts.push('<div class="kr-voice kr-human"><span>人声 · 摘要</span>' + hv.html + hv.foot + "</div>");
     }
     if (it.machine_voice) {
       parts.push('<div class="kr-voice kr-machine"><span>' +
-        esc(it.machine_byline || "机声 · 旁白") + "</span>" + paras(it.machine_voice) + "</div>");
+        esc(it.machine_byline || "机声 · 旁白") + "</span>" + mv.html + mv.foot + "</div>");
     }
 
     if (it.roundtable && it.roundtable.length) {
@@ -179,6 +369,7 @@
       return;
     }
     items.forEach(function (it) { list.appendChild(card(it)); });
+    syncNotesUI();   // 卡片铺完，把开关状态（含 localStorage 里存的「关」）落到所有标记上
     if (window.RJ_RELATED) window.RJ_RELATED.scrollToHash();   // 从别的板块带 #kr-… 进来，铺完再跳
     // 卡片铺完了，评论区可以往上挂了（comments.js 听这个事件）
     document.dispatchEvent(new CustomEvent("rj:kanread-rendered"));
@@ -186,9 +377,35 @@
 
   // 草稿只在本机预览：localhost + ?preview=1 时并入 data/kanread.drafts.json（该文件不进仓库）
   var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname) && /[?&]preview=1/.test(location.search);
-  fetch("data/kanread.json", { cache: "no-store" })
-    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function (data) {
+
+  function getJson(url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    });
+  }
+
+  // 小纸条数据：词条或标记任何一个取不到/解析失败 → null，精读卡照常渲染，不抛未捕获错误。
+  // 预览时把 ainotes.drafts.json 的词条并进来（线上永远不取 drafts），弹层里给草稿词条标【草稿】。
+  function loadNotes() {
+    return Promise.all([getJson("data/ainotes.json"), getJson("data/ainotes.marks.json")])
+      .then(function (rs) {
+        var entries = {};
+        ((rs[0] && rs[0].items) || []).forEach(function (e) { if (e && e.id) entries[e.id] = e; });
+        var notes = { entries: entries, marks: (rs[1] && rs[1].readings) || {} };
+        if (!local) return notes;
+        return getJson("data/ainotes.drafts.json").then(function (dr) {
+          ((dr && dr.items) || []).forEach(function (e) {
+            if (e && e.id && !entries[e.id]) { e.__draft = true; entries[e.id] = e; }
+          });
+          return notes;
+        }).catch(function () { return notes; });
+      })
+      .catch(function () { return null; });
+  }
+
+  Promise.all([
+    getJson("data/kanread.json").then(function (data) {
       if (!local) return data;
       return fetch("data/kanread.drafts.json", { cache: "no-store" })
         .then(function (r) { return r.ok ? r.json() : { items: [] }; })
@@ -197,11 +414,14 @@
           data.items = (data.items || []).concat(dr.items || []);
           return data;
         }).catch(function () { return data; });
-    })
-    .then(render)
-    .catch(function () {
-      list.innerHTML = '<p class="log-state">这一页暂时读不出来，稍后再来。</p>';
-    });
+    }),
+    loadNotes()
+  ]).then(function (rs) {
+    NOTES = rs[1];
+    render(rs[0]);
+  }).catch(function () {
+    list.innerHTML = '<p class="log-state">这一页暂时读不出来，稍后再来。</p>';
+  });
 })();
 </script>
 

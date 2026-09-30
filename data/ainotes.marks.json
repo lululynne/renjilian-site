@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-30",
+  "readings": {
+    "kr-openai-devday-2026-plan-sharing": {
+      "human_voice": [
+        {
+          "text": "OpenAI",
+          "id": "bk-openai",
+          "at": 11
+        },
+        {
+          "text": "Codex 负责人",
+          "id": "bk-tibo",
+          "at": 18
+        },
+        {
+          "text": "Pro $200",
+          "id": "bk-chatgpt-plans",
+          "at": 41
+        },
+        {
+          "text": "用量",
+          "id": "bk-usage",
+          "at": 63
+        },
+        {
+          "text": "API",
+          "id": "bk-api",
+          "at": 84
+        },
+        {
+          "text": "订阅",
+          "id": "bk-sub",
+          "at": 167
+        },
+        {
+          "text": "credits",
+          "id": "bk-credits",
+          "at": 313
+        },
+        {
+          "text": "Astra",
+          "id": "bk-gpt6-astra",
+          "at": 410
+        },
+        {
+          "text": "Ultrafast",
+          "id": "bk-fast",
+          "at": 418
+        },
+        {
+          "text": "DevDay",
+          "id": "bk-devday",
+          "at": 449
+        },
+        {
+          "text": "6.1 Sol",
+          "id": "bk-gpt61-sol",
+          "at": 469
+        },
+        {
+          "text": "dots",
+          "id": "bk-dots",
+          "at": 516
+        },
+        {
+          "text": "代理",
+          "id": "bk-agent",
+          "at": 536
+        },
+        {
+          "text": "Codex Cloud",
+          "id": "bk-codex-cloud",
+          "at": 586
+        },
+        {
+          "text": "ChatGPT Space",
+          "id": "bk-chatgpt-space",
+          "at": 598
+        },
+        {
+          "text": "Devin",
+          "id": "bk-devin",
+          "at": 690
+        },
+        {
+          "text": "OpenCode",
+          "id": "bk-opencode",
+          "at": 696
+        },
+        {
+          "text": "Lovable",
+          "id": "bk-lovable",
+          "at": 705
+        },
+        {
+          "text": "Notion",
+          "id": "bk-notion",
+          "at": 757
+        }
+      ],
+      "machine_voice": [
+        {
+          "text": "OpenAI",
+          "id": "bk-openai",
+          "at": 10
+        },
+        {
+          "text": "支持地区",
+          "id": "bk-china-availability",
+          "at": 62
+        },
+        {
+          "text": "周额度",
+          "id": "bk-usage",
+          "at": 118
+        },
+        {
+          "text": "credits",
+          "id": "bk-credits",
+          "at": 176
+        },
+        {
+          "text": "Airtable",
+          "id": "bk-airtable",
+          "at": 221
+        },
+        {
+          "text": "Canva",
+          "id": "bk-canva",
+          "at": 236
+        },
+        {
+          "text": "GitLab",
+          "id": "bk-gitlab",
+          "at": 254
+        },
+        {
+          "text": "HubSpot",
+          "id": "bk-hubspot",
+          "at": 266
+        },
+        {
+          "text": "Supabase",
+          "id": "bk-supabase",
+          "at": 281
+        },
+        {
+          "text": "后端",
+          "id": "bk-backend",
+          "at": 293
+        },
+        {
+          "text": "Canva 插件",
+          "id": "bk-plugin-ext",
+          "at": 321
+        },
+        {
+          "text": "Amp Code",
+          "id": "bk-amp",
+          "at": 362
+        },
+        {
+          "text": "Devin",
+          "id": "bk-devin",
+          "at": 371
+        },
+        {
+          "text": "Kilo Code",
+          "id": "bk-kilo",
+          "at": 377
+        },
+        {
+          "text": "OpenCode",
+          "id": "bk-opencode",
+          "at": 387
+        },
+        {
+          "text": "Pi",
+          "id": "bk-pi",
+          "at": 396
+        },
+        {
+          "text": "Conductor",
+          "id": "bk-conductor",
+          "at": 399
+        },
+        {
+          "text": "T3",
+          "id": "bk-t3",
+          "at": 409
+        },
+        {
+          "text": "Warp",
+          "id": "bk-warp",
+          "at": 412
+        },
+        {
+          "text": "Vorflux",
+          "id": "bk-vorflux",
+          "at": 417
+        },
+        {
+          "text": "Vercel",
+          "id": "bk-vercel",
+          "at": 439
+        },
+        {
+          "text": "托管",
+          "id": "bk-deploy",
+          "at": 449
+        },
+        {
+          "text": "Hyperagent",
+          "id": "bk-hyperagent",
+          "at": 452
+        },
+        {
+          "text": "Dactyl",
+          "id": "bk-dactyl",
+          "at": 488
+        },
+        {
+          "text": "订阅",
+          "id": "bk-sub",
+          "at": 516
+        },
+        {
+          "text": "Notion",
+          "id": "bk-notion",
+          "at": 534
+        },
+        {
+          "text": "Lovable",
+          "id": "bk-lovable",
+          "at": 560
+        },
+        {
+          "text": "OpenClaw",
+          "id": "bk-openclaw",
+          "at": 593
+        },
+        {
+          "text": "Hermes Agent",
+          "id": "bk-hermes",
+          "at": 604
+        },
+        {
+          "text": "API",
+          "id": "bk-api",
+          "at": 630
+        },
+        {
+          "text": "语音",
+          "id": "bk-voice",
+          "at": 675
+        },
+        {
+          "text": "Pro 200",
+          "id": "bk-chatgpt-plans",
+          "at": 719
+        },
+        {
+          "text": "Anthropic",
+          "id": "bk-anthropic",
+          "at": 853
+        }
+      ]
+    }
+  }
+}
