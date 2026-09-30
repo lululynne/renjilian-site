@@ -326,6 +326,24 @@ class AccessibilityClosureTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_ainotes_390(self) -> None:
+        """刀 4：小纸条频道页，真实数据，只断言形状。"""
+        context, page, errors = self.open_page("ainotes.html")
+        try:
+            page.locator(".bk-card").first.wait_for()
+            self.assert_widths_390(page)
+            self.assert_touch_ok(page)
+            self.assertEqual(page.locator('nav.boards a[href="ainotes.html"].on').count(), 1)
+            # 展开标签和第一张卡，再量一次
+            page.locator(".bk-tags-wrap summary").click()
+            page.locator(".bk-card .bk-more-wrap summary").first.click()
+            page.wait_for_timeout(200)
+            self.assert_widths_390(page)
+            self.assert_touch_ok(page)
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
     def test_pulse_390(self) -> None:
         context, page, errors = self.open_page("pulse.html")
         try:

@@ -543,8 +543,7 @@ class AinotesPageBrowserTests(unittest.TestCase):
         try:
             self.assertTrue(page.locator(".kr-noscript").is_visible())
             self.assertFalse(page.locator(".bk-search").is_visible())
-            # C1 时 NAV_ORDER 还没收 ainotes.html（C2 顶栏才加），本页顶栏比它多自己这一项
-            self.assertEqual(page.locator("nav.boards a").count(), len(NAV_ORDER) + 1)
+            self.assertEqual(page.locator("nav.boards a").count(), len(NAV_ORDER))
             self.assertEqual(errors, [])
         finally:
             ctx.close()

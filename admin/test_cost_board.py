@@ -163,7 +163,7 @@ class CostBoardDataTests(unittest.TestCase):
         for key in ("rowRoute", "whoReal", "draftHint", "hiddenCostTitle", "hiddenCost", "avgScope", "avgScopeHint"):
             self.assertEqual(js.count(f"{key}:"), 2, f"i18n 键 {key} 中英两包都要有")
         self.assertIn('href="cost.html" class="on"', html)
-        for page in ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "changelog.html"):
+        for page in ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "nianlun.html", "ainotes.html", "changelog.html"):
             self.assertIn('href="cost.html"', (ROOT / page).read_text(encoding="utf-8"), f"{page} 顶栏缺大模型成本")
 
 

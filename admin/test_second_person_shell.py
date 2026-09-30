@@ -20,17 +20,17 @@ ROOT = Path(__file__).resolve().parents[1]
 # 2026-09-25：大模型成本（cost）以实验看板身份进顶栏，同额度重置一档；价格行未核对前 status=draft，由 test_cost_board 守。
 # 2026-09-26（1-核）：外壳测试扩到全部 11 页＋隐私说明页；工具页（日志／账号／配置页／守则／隐私）不进顶栏、顶栏无选中态。
 PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "cost.html",
-         "nianlun.html", "changelog.html", "account.html", "profile.html", "rules.html", "privacy.html",
+         "nianlun.html", "ainotes.html", "changelog.html", "account.html", "profile.html", "rules.html", "privacy.html",
          "card.html", "card-edit.html")
 # 2026-09-26（刀 K2）：名片主页 card.html、名片后台 card-edit.html 是工具页，不进顶栏
 TOOL_PAGES = {"changelog.html", "account.html", "profile.html", "rules.html", "privacy.html", "card.html", "card-edit.html"}
 # 统一页脚：这四个站内入口按这个次序，当前页用 <span aria-current="page">，再接两个姐妹站
 FOOTER_LINKS = (("changelog.html", "更新日志"), ("account.html", "账号"),
                 ("privacy.html", "隐私说明"), ("rules.html", "留言守则"))
-REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "cost.html", "nianlun.html"}
-# 刀 3（2026-09-30）：顶栏新顺序——刊读挪到首页旁边；年轮（nianlun）刀 1 起进顶栏，挨着刊读。
+REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "cost.html", "nianlun.html", "ainotes.html"}
+# 刀 3（2026-09-30）：刊读挪到首页旁边；年轮刀 1 进顶栏；刀 4 起小纸条进顶栏，排年轮后。16 页完全一致。
 # REAL_ROUTES 那行集合字面量不许动：MCP client-smoke 按正则解析它
-NAV_ORDER = ("index.html", "kanread.html", "nianlun.html", "games.html", "cost.html", "codex.html", "baibao.html")
+NAV_ORDER = ("index.html", "kanread.html", "nianlun.html", "ainotes.html", "games.html", "cost.html", "codex.html", "baibao.html")
 NAV_BLOCK = re.compile(r'<nav class="boards".*?</nav>', re.S)
 ANCHOR = re.compile(r'<a\b[^>]*\bhref="([^"]*)"')
 
@@ -74,6 +74,8 @@ class SecondPersonShellTests(unittest.TestCase):
                                  f"{page} 顶栏顺序不是 NAV_ORDER")
         pulse_nav = NAV_BLOCK.search(read("pulse.html")).group(0)
         self.assertIn('<a href="kanread.html" class="on">刊读</a>', pulse_nav)
+        self.assertIn('<a href="ainotes.html" class="on">小纸条</a>',
+                      NAV_BLOCK.search(read("ainotes.html")).group(0), "小纸条自己的顶栏要带选中态")
 
     def test_unopened_items_do_not_pollute_navigation(self) -> None:
         for page in PAGES:
@@ -103,13 +105,14 @@ class SecondPersonShellTests(unittest.TestCase):
                 self.assertNotIn('sister-current', html)
 
     def test_home_copy_matches_what_is_open(self) -> None:
-        """首页自我介绍要跟实情一致：09-25 还写着「两个栏目已开放」，实际开了六个（裁定 v1.1 §二 1-核）。"""
+        """首页自我介绍要跟实情一致：刀 4 起写「八个栏目」（裁定 v1.1 §二 1-核 的同一规矩）。"""
         html = read("index.html")
         self.assertNotIn("两个栏目", html)
+        self.assertNotIn("六个栏目", html)
         self.assertNotIn("本周刊读", html, "刊读不锁周更，首页不写「本周」")
         hero = html[html.find('class="hero-copy"'):html.find("</section>", html.find('class="hero-copy"'))]
-        self.assertIn("六个栏目", hero)
-        for name in ("刊读", "互动提问", "人机百宝箱", "额度重置", "大模型成本", "注册一个号", "机友墙"):
+        self.assertIn("八个栏目", hero)
+        for name in ("刊读", "年轮", "小纸条", "互动提问", "人机百宝箱", "额度重置", "大模型成本", "注册一个号", "机友墙"):
             with self.subTest(name=name):
                 self.assertIn(name, hero)
 

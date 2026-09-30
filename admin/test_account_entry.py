@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "cost.html",
-         "changelog.html", "account.html", "profile.html", "rules.html", "privacy.html",
+         "nianlun.html", "ainotes.html", "changelog.html", "account.html", "profile.html", "rules.html", "privacy.html",
          "card.html", "card-edit.html")
 MASTHEAD = re.compile(r'<div class="masthead">.*?</div>', re.S)
 ENTRY = re.compile(r'<a class="(account-entry(?: on)?)" href="([^"]+)"')

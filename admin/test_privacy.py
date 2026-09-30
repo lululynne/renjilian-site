@@ -147,7 +147,7 @@ class PrivacyPageMatchesTheBackend(unittest.TestCase):
 
 class PrivacyEntryPoints(unittest.TestCase):
     PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "cost.html", "kanread.html",
-             "pulse.html", "changelog.html", "account.html", "profile.html", "rules.html",
+             "pulse.html", "nianlun.html", "ainotes.html", "changelog.html", "account.html", "profile.html", "rules.html",
              "card.html", "card-edit.html")
     NAV = re.compile(r'<nav class="boards".*?</nav>', re.S)
 
@@ -169,6 +169,9 @@ class PrivacyEntryPoints(unittest.TestCase):
         # 刀 R 起：页面只带顶栏小红点那两份本站脚本（只在这个浏览器登录过时问一次 /api/me），别的一概不收
         self.assertEqual(re.findall(r'<script src="([^"]+)"', html), ["rj-config.js", "rj-api.js"], "隐私页只许带顶栏那两份本站脚本")
         self.assertNotIn("<script>", html)
+        # 刀 4（Q7）：本机存储清单要跟实情一致——小纸条显示方式 rj.ainotes.mode
+        self.assertIn("rj.ainotes.mode", html)
+        self.assertIn("小纸条显示方式", html)
 
     def test_register_panel_points_to_privacy(self) -> None:
         html = read("account.html")
