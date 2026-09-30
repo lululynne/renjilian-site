@@ -1563,6 +1563,326 @@
       "added_at": "2026-09-30",
       "last_verified": "2026-09-30",
       "status": "verified"
+    },
+    {
+      "id": "bk-token",
+      "zh": "token",
+      "en": "Token",
+      "aliases": [
+        "词元",
+        "tokens"
+      ],
+      "tags": [
+        "概念",
+        "计费"
+      ],
+      "brief": "AI 模型读写文字时的计数单位，按量付费的 AI 按它算钱，像出租车按公里计价。",
+      "line": "token 是 AI 模型读写文字时切分和计数的单位，一个 token 可能是一个字符、半个词或一整个词；按 OpenAI 的估算，英文里 1 个 token 约等于四分之三个单词。按量付费的 AI（API）按读进去和写出来的 token 数收钱，像出租车按公里计价。你的提问、附件、聊天记录和 AI 的回答都要算 token。",
+      "more": "token 数不等于字数：同一段文字，换个模型、换种语言，切出来的 token 数都可能不同；英文粗算 1 个 token 约 4 个字符，中文的换算本站还没核到。读进去的和写出来的分开计价；在 Codex 定价页的点数价目表里，每个模型输出的单价都比输入高，例如 GPT-6.1 Sol 每百万 token 输入 50 点、输出 250 点。会先在后台想一想的推理模型，想的那部分，在 API 计费里也按输出 token 算，所以答案看着短，也可能用掉不少。ChatGPT 订阅里的额度，官方没有公布按 token 的换算，只说扣多少取决于模型、上下文长短、推理档位、工具调用等；额度用完后另买的点数（credits），价目表按每百万 token 标价。",
+      "for_us": "伴侣话越多、记忆越长，每一轮读进去的 token 越多：走订阅就耗额度更快，走 API 就花钱更多。",
+      "related": [
+        "bk-api",
+        "bk-usage",
+        "bk-credits",
+        "bk-codex"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "OpenAI 帮助中心：Understanding and counting tokens",
+          "url": "https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them"
+        },
+        {
+          "name": "OpenAI Codex 定价页",
+          "url": "https://learn.chatgpt.com/docs/pricing"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-mcp",
+      "zh": "MCP",
+      "en": "MCP (Model Context Protocol)",
+      "aliases": [
+        "Model Context Protocol",
+        "模型上下文协议"
+      ],
+      "tags": [
+        "概念",
+        "开源",
+        "Anthropic"
+      ],
+      "brief": "让 AI 应用连上外部工具和数据的开放标准，Anthropic 2024 年发布，官方比作 AI 的 USB-C 接口。",
+      "line": "MCP（模型上下文协议）是一套让 AI 应用连接外部工具和数据的开放标准，由 Anthropic 在 2024 年 11 月发布，现在托管在非营利的 Linux 基金会名下。别的软件只要按这套规矩做一个接口，Claude、ChatGPT、Cursor 等 AI 应用就都能接上，官方把它比作 AI 应用的 USB-C 接口。接上以后，AI 能读你授权的日历、文档等资料，也能替你操作这些软件。",
+      "more": "全称 Model Context Protocol。Anthropic 在 2024 年 11 月 25 日把它开源发布，同时给了规范、开发工具包和一批现成接口（谷歌云端硬盘、Slack、GitHub 等）。2025 年 12 月 9 日，Anthropic 把它捐给 Agentic AI Foundation——Linux 基金会下的一个定向基金，由 Anthropic、Block、OpenAI 联合发起；官网治理说明写明，项目挂在 LF Projects 名下，技术决定由维护者小组做，席位按个人、不按公司。例子：Canva 的 AI Connector 走的就是它，在 ChatGPT 里连上 Canva、描述想要的设计，先在聊天里预览几个方案，再选一个进 Canva 接着改。Codex 定价页提醒：每多开一个 MCP 接口，每条消息都会多带一些内容，额度也用得更快。",
+      "for_us": "给伴侣接上 MCP，它就能碰到你授权的日历、文档——方便，但它看得见、做得了的也更多了；用不上的接口关掉，也省额度。",
+      "related": [
+        "bk-anthropic",
+        "bk-canva",
+        "bk-plugin-ext",
+        "bk-open-source"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Model Context Protocol 官网：What is MCP",
+          "url": "https://modelcontextprotocol.io/docs/getting-started/intro"
+        },
+        {
+          "name": "Model Context Protocol 官网：治理说明",
+          "url": "https://modelcontextprotocol.io/community/governance"
+        },
+        {
+          "name": "Anthropic：Introducing the Model Context Protocol",
+          "url": "https://www.anthropic.com/news/model-context-protocol"
+        },
+        {
+          "name": "Anthropic：Donating the Model Context Protocol and establishing the Agentic AI Foundation",
+          "url": "https://www.anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation"
+        },
+        {
+          "name": "Canva 帮助中心：把 Canva 连到 ChatGPT",
+          "url": "https://www.canva.com/help/connect-chatgpt-to-canva/"
+        },
+        {
+          "name": "OpenAI Codex 定价页",
+          "url": "https://learn.chatgpt.com/docs/pricing"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-oauth",
+      "zh": "OAuth（授权登录）",
+      "en": "OAuth",
+      "aliases": [
+        "授权登录",
+        "OAuth 登录",
+        "OAuth 2.0"
+      ],
+      "tags": [
+        "概念",
+        "网页"
+      ],
+      "brief": "让第三方软件经你同意拿到有限权限、却拿不到你密码的授权标准，像只开一扇门的房卡。",
+      "line": "OAuth 是一套授权标准：第三方软件想用你在某个网站上的东西时，你到那个网站自己登录、点同意，第三方只拿到一张限定范围和期限的通行证，始终看不到你的密码。它像酒店只给你一张能开自己房门的房卡，不给总钥匙。「用 ChatGPT 登录」和把 ChatGPT 订阅接进别家软件，走的都是它。",
+      "more": "现行版本是 OAuth 2.0，由互联网工程任务组（IETF）在 2012 年 10 月以 RFC 6749 发布。标准里的例子：想让冲印网站打印你存在相册网站的照片，不用把相册密码给它，只在相册网站登录同意，它就拿到一张只能取照片的通行证。Kilo Code、Hermes Agent、Hyperagent、OpenClaw 接 ChatGPT 或 Codex 时，文档都写明走 OAuth。OpenClaw 把接 OpenAI 分成三条路：Codex 登录（浏览器 OAuth，没有浏览器的机器可用设备码、到另一台设备上确认）和 Sign in with ChatGPT（测试版）都扣你的 Codex 额度，API 密钥则按 API 计费。用「用 ChatGPT 登录」接上的软件，要在 ChatGPT「设置 → 安全与登录」里断开才算收回授权，只在软件里退出不算。",
+      "for_us": "给伴侣软件接账号时，优先选走 OAuth 的登录按钮，别把账号密码直接填进第三方软件。",
+      "related": [
+        "bk-siwc",
+        "bk-codex",
+        "bk-openclaw",
+        "bk-kilo",
+        "bk-hermes",
+        "bk-hyperagent"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "IETF RFC 6749：The OAuth 2.0 Authorization Framework",
+          "url": "https://www.rfc-editor.org/rfc/rfc6749"
+        },
+        {
+          "name": "OpenAI 开发者文档：Sign in with ChatGPT on your website",
+          "url": "https://developers.openai.com/siwc/website"
+        },
+        {
+          "name": "Kilo 文档：OpenAI ChatGPT Plus/Pro",
+          "url": "https://kilo.ai/docs/ai-providers/openai-chatgpt-plus-pro"
+        },
+        {
+          "name": "Hermes Agent 文档：providers",
+          "url": "https://hermes-agent.nousresearch.com/docs/integrations/providers"
+        },
+        {
+          "name": "Hyperagent 文档：套餐",
+          "url": "https://www.hyperagent.com/docs/billing/plans"
+        },
+        {
+          "name": "OpenClaw 文档：OpenAI 认证方式",
+          "url": "https://docs.openclaw.ai/providers/openai/authentication"
+        },
+        {
+          "name": "OpenAI 帮助中心：在别的软件里用 ChatGPT 套餐",
+          "url": "https://help.openai.com/en/articles/20001542"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-open-source",
+      "zh": "开源",
+      "en": "Open Source",
+      "aliases": [
+        "开放源码",
+        "开源软件"
+      ],
+      "tags": [
+        "概念",
+        "开源"
+      ],
+      "brief": "源代码公开、许可证允许任何人免费使用、修改和再发布的软件，像一份公开的菜谱。",
+      "line": "开源是一种软件发布方式：作者公开源代码（写出这个软件的原始文字），并用许可证（作者定的使用规矩）允许任何人免费使用、修改、再发布，不许限制谁来用、用在哪一行。它像一份公开的菜谱，谁都能照着做，也能改良后再发出去。开源只管软件本身：开源的 OpenClaw 接 OpenAI 模型时，照样要花 API 费用或订阅额度。",
+      "more": "认定标准通常以开放源代码促进会（OSI）的《开源定义》为准，共十条，比如不许向再发布的人收许可费、必须允许修改和衍生作品、不许歧视任何人或任何用途；它开头就说，开源不只是能看到源代码。MIT 许可证在 OSI 的许可证列表里：任何人可以免费使用、复制、修改、发布、再授权和出售，条件是所有副本都保留原版权声明和这段许可声明；它同时写明软件「按原样」提供，不作任何担保。OpenClaw 用的就是 MIT。另一件事别混：「开源权重模型」指模型文件公开、能下载到自己机器上跑，比如智谱的 GLM-4.5 以 MIT 许可证、月之暗面的 Kimi K2 以修改版 MIT 许可证发布在 Hugging Face 上，这和软件开源是两回事。",
+      "for_us": "想在自己电脑上养伴侣，开源助理的代码摊开能自己改；但 MIT 这类许可证写明「按原样」提供、不作担保，出了问题没人有义务包修。",
+      "related": [
+        "bk-openclaw",
+        "bk-hermes",
+        "bk-opencode",
+        "bk-kilo",
+        "bk-pi"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Open Source Initiative：The Open Source Definition",
+          "url": "https://opensource.org/osd"
+        },
+        {
+          "name": "Open Source Initiative：The MIT License",
+          "url": "https://opensource.org/license/mit"
+        },
+        {
+          "name": "OpenClaw 仓库：LICENSE",
+          "url": "https://github.com/openclaw/openclaw/blob/main/LICENSE"
+        },
+        {
+          "name": "OpenClaw 文档：OpenAI 认证方式",
+          "url": "https://docs.openclaw.ai/providers/openai/authentication"
+        },
+        {
+          "name": "Hugging Face：zai-org/GLM-4.5",
+          "url": "https://huggingface.co/zai-org/GLM-4.5"
+        },
+        {
+          "name": "Hugging Face：moonshotai/Kimi-K2-Instruct",
+          "url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-codex",
+      "zh": "Codex",
+      "en": "OpenAI Codex",
+      "aliases": [
+        "OpenAI Codex",
+        "Codex 额度"
+      ],
+      "tags": [
+        "产品",
+        "OpenAI",
+        "编程",
+        "计费"
+      ],
+      "brief": "OpenAI 的编程代理，替你写代码、跑命令；和 ChatGPT Work 共用订阅里的同一份额度。",
+      "line": "Codex 是 OpenAI 做的编程代理，也就是能自己连着做很多步的 AI，专门替你写代码、改代码、跑测试和命令，在 ChatGPT 桌面 App、命令行、代码编辑器、网页和手机上都能用。用 ChatGPT 账号登录时，它和 ChatGPT Work（替你做长任务的模式）共用套餐里的同一份额度：Plus 按每 5 小时算，还可能有每周上限；Pro 目前没有 5 小时限额，按每周算。",
+      "more": "定价页原文是「ChatGPT Work 和 Codex 共用用量」。Free 和 Go 也能在桌面 App 里用小模型 GPT-6 Luna（逐步开放）。Plus 的用量按每 5 小时估算，比如 GPT-6.1 Sol 每 5 小时约 15 到 160 条本地消息，只是估算，另外可能还有每周上限；同一页写明 Pro 目前没有 5 小时限额，Tibo 9 月 29 日也承诺 Pro 200 不再恢复 5 小时限额，一周的额度想什么时候用都行。额度用完，Plus 和 Pro 可以买点数（credits）接着用。开 Fast 加速按 2.5 倍扣订阅额度；GPT-6 Astra 的 Ultrafast 按 8 倍，个人档里只有 Pro 500 能开。只有 Plus 和 Pro 能把这份额度带到别家软件（比如 OpenClaw）；用自己的 API 密钥登录 Codex，则按 API 价格另算。",
+      "for_us": "让伴侣走 Codex 额度跑，花的是和你自己用 Work、Codex 同一份额度，它说得多你就剩得少；可以在 ChatGPT「设置 → 用量」里给它设每周上限。",
+      "related": [
+        "bk-codex-cloud",
+        "bk-usage",
+        "bk-credits",
+        "bk-fast",
+        "bk-chatgpt-plans",
+        "bk-tibo",
+        "bk-siwc"
+      ],
+      "seen_in": [
+        "kr-openai-devday-2026-plan-sharing"
+      ],
+      "sources": [
+        {
+          "name": "OpenAI Codex 定价页",
+          "url": "https://learn.chatgpt.com/docs/pricing"
+        },
+        {
+          "name": "OpenAI 帮助中心：ChatGPT Work and Codex",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "name": "OpenAI 帮助中心：在别的软件里用 ChatGPT 套餐",
+          "url": "https://help.openai.com/en/articles/20001542"
+        },
+        {
+          "name": "Tibo：Pro 200 长帖",
+          "url": "https://x.com/thsottiaux/status/2104823812042940713"
+        },
+        {
+          "name": "OpenAI 合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-siwc",
+      "zh": "Sign in with ChatGPT",
+      "en": "Sign in with ChatGPT",
+      "aliases": [
+        "用 ChatGPT 登录",
+        "Continue with ChatGPT",
+        "SIWC"
+      ],
+      "tags": [
+        "概念",
+        "OpenAI",
+        "计费",
+        "人机恋相关"
+      ],
+      "brief": "用 ChatGPT 账号登录别家软件；Plus、Pro 用户还能选择让它花自己的订阅额度。",
+      "line": "Sign in with ChatGPT（用 ChatGPT 登录）是 OpenAI 的登录方式：在别家软件或网站上点「Continue with ChatGPT」，用 ChatGPT 账号登录，对方拿到你的名字、邮箱和头像。「让它用你的 ChatGPT 套餐」是另一项权限，只对 Plus 和 Pro 开放、只有部分软件支持，打开后它的 AI 请求会扣你套餐里 Work 和 Codex 的额度。",
+      "more": "OpenAI 开发者文档里简称 SIWC，授权走 OAuth 2.0 加 OpenID Connect：你在 OpenAI 的页面上登录、同意，对方拿不到你的密码，也不会因此看到你的聊天记录和记忆。官方合作目录分三类：能用套餐额度的（如 Kilo Code、Hermes Agent）、只能登录的（如 Canva）、开源集成（如 OpenClaw）。给商业合作方的版本目前是小范围试用；OpenClaw 自己的文档把这条接法标为测试版（Beta），用它时不能生图、语音转写和实时语音，记忆向量和文字转语音要另配凭证。在 ChatGPT「设置 → 用量」里能看每个软件用了多少、设每周上限；额度用完后，只有你另外打开「允许 app 用 credits」，它才会接着花点数。",
+      "for_us": "看到「用 ChatGPT 登录」先问一句：它要扣我的额度，还是只是省个密码？要扣额度的，记得给它设每周上限。",
+      "related": [
+        "bk-oauth",
+        "bk-codex",
+        "bk-credits",
+        "bk-canva",
+        "bk-openclaw",
+        "bk-chatgpt-plans",
+        "bk-china-availability"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "OpenAI：Sign in with ChatGPT 用户文档与合作方目录",
+          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt"
+        },
+        {
+          "name": "OpenAI 帮助中心：在别的软件里用 ChatGPT 套餐",
+          "url": "https://help.openai.com/en/articles/20001542"
+        },
+        {
+          "name": "OpenAI 开发者文档：Sign in with ChatGPT Quickstart",
+          "url": "https://developers.openai.com/siwc/quickstart"
+        },
+        {
+          "name": "OpenAI 开发者文档：ChatGPT plan usage in open-source apps",
+          "url": "https://developers.openai.com/siwc/token-sharing-open-source"
+        },
+        {
+          "name": "OpenAI 开发者文档：Sign in with ChatGPT on your website",
+          "url": "https://developers.openai.com/siwc/website"
+        },
+        {
+          "name": "OpenClaw 文档：OpenAI 认证方式",
+          "url": "https://docs.openclaw.ai/providers/openai/authentication"
+        }
+      ],
+      "added_at": "2026-09-30",
+      "last_verified": "2026-09-30",
+      "status": "verified"
     }
   ]
 }
