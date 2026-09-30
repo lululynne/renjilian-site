@@ -25,6 +25,7 @@
           "id",
           "zh",
           "en",
+          "brief",
           "line",
           "sources",
           "added_at",
@@ -56,10 +57,17 @@
               "type": "string"
             }
           },
-          "line": {
+          "brief": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 60,
+            "description": "简洁版：一眼扫过的短注，给已经懂一点的人"
+          },
+          "line": {
+            "type": "string",
+            "minLength": 40,
+            "maxLength": 200,
+            "description": "详细版：1 到 3 个完整句子，新手不用追问就能读懂"
           },
           "more": {
             "type": "string"

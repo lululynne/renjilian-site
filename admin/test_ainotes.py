@@ -22,7 +22,10 @@ MARKS = "data/ainotes.marks.json"
 SCHEMA = "data/ainotes.schema.json"
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 ID = re.compile(r"^bk-[a-z0-9-]+$")
-LINE_MAX = 60
+# 开头段要让新手读得懂：完整的句子，说清它是什么、谁给的、用完会怎样（梅宝 2026-09-30 15:13 定）。
+# 太短多半是只丢了个名词短语；太长就该挪进「展开」。
+LINE_MIN = 40
+LINE_MAX = 200
 
 
 def read(name: str) -> str:
@@ -97,7 +100,13 @@ class AinotesDataTests(unittest.TestCase):
                 self.assertRegex(e["id"], ID)
                 self.assertTrue(e["zh"].strip())
                 self.assertTrue(e["line"].strip())
-                self.assertLessEqual(len(e["line"]), LINE_MAX, "一句话超过 60 字")
+                self.assertLessEqual(len(e["line"]), LINE_MAX, "开头段超过 200 字，多出来的挪进展开")
+                self.assertGreaterEqual(len(e["line"]), LINE_MIN, "开头段太短：要写成新手读得懂的完整句子")
+                self.assertTrue(e["line"].endswith("。"), "开头段要以句号收住，不许是半截话")
+                self.assertTrue(e["brief"].strip(), "简洁版不能空")
+                self.assertLessEqual(len(e["brief"]), 60, "简洁版超过 60 字，就不叫简洁了")
+                first = e["line"].split("。")[0]
+                self.assertRegex(first, "是|指", "第一句必须是「X 是……」这样的完整判断句，先说清它是什么")
                 self.assertGreaterEqual(len(e["sources"]), 1, "至少一条来源")
                 for s in e["sources"]:
                     self.assertTrue(s["name"].strip())
