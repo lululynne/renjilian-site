@@ -534,6 +534,31 @@ footer.site{
 }
 .kr-comments p{font-size:13px;line-height:1.75;color:var(--ink-soft)}
 
+/* 刊读目录与单篇（刀 3） */
+/* 头部压矮、目录按月分组、单篇往返；只用既有 token，阴影沿用 .card 自带的 */
+.board-head.kr-head{padding:22px 0 10px}
+.kr-head h2{font-size:clamp(28px,4vw,40px);margin:4px 0 6px}
+.kr-head .kr-intro{font-size:14px;margin-top:0}
+.kr-head + .subnav{margin:0 0 14px}
+.kr-status{margin:0 0 12px;font-size:13.5px;color:var(--ink)}
+.kr-month + .kr-month{margin-top:22px}
+.kr-month-head{font:650 12px/1.4 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.08em;color:var(--ink-soft);margin:0 0 10px}
+.kr-index-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.kr-index-item{position:relative;padding:16px 18px 14px;gap:6px}
+.kr-index-meta{font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.kr-index-title{font:600 17px/1.5 "Noto Serif SC","Songti SC","STSong",serif}
+.kr-index-link{display:block;min-height:44px;color:var(--ink)}
+.kr-index-link::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.kr-index-item:focus-within{outline:2px solid var(--ink);outline-offset:2px}
+.kr-index-hook{font-size:13.5px;line-height:1.7;color:var(--ink)}
+.kr-index .chip{cursor:default;min-height:0;min-width:0}   /* 盖掉 ≤760 的 .chip 44px 规则：这里的 chip 不可点 */
+.kr-index-by{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kr-index-item.is-stale{border-style:dashed}
+.kr-back-row{margin:0 0 12px}
+.kr-back{display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.kr-back-bottom{margin:16px 0 0}
+.kanread-card h3:focus:not(:focus-visible){outline:none}
+
 /* hidden 属性必须真的隐藏。
    浏览器自带的 [hidden]{display:none} 优先级最低，被 .card{display:flex} 这类作者规则一压就失效——
    站里原来是逐个写 #rj-overlay[hidden] 来兜的。这里收成一条通则，往后用 el.hidden 才靠得住。 */

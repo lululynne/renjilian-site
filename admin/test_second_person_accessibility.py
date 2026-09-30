@@ -396,6 +396,14 @@ class AccessibilityClosureTests(unittest.TestCase):
             self.assert_widths_390(page)
             self.assert_touch_ok(page)
             self.assertEqual(errors, [])
+            # 刀 3：目录视图下没有评论区（它只在单篇里）
+            ctx2, page2, errors2 = self.open_page("kanread.html")
+            try:
+                page2.locator(".kr-index").wait_for()
+                self.assertEqual(page2.locator(".kr-comments").count(), 0, "目录里不许出现评论区")
+                self.assertEqual(errors2, [])
+            finally:
+                ctx2.close()
         finally:
             context.close()
 

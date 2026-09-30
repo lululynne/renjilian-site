@@ -143,6 +143,43 @@ class KanreadShellTests(unittest.TestCase):
             with self.subTest(fake=fake):
                 self.assertNotIn(fake, html.lower(), f"评论区占位期不许出现 {fake}")
 
+    def test_head_is_one_line(self) -> None:
+        """刀 3：头部压矮，一行说明 ≤22 字（360 宽、14px 一行放得下 23 个字）。"""
+        html = read(PAGE)
+        self.assertIn("board-head kr-head", html)
+        m = re.search(r'<p class="kr-intro">([^<]+)</p>', html)
+        self.assertIsNotNone(m, "缺 .kr-intro 一行说明")
+        self.assertLessEqual(len(m.group(1)), 22, f"一行说明超 22 字：{m.group(1)}")
+
+    def test_view_switch_wiring(self) -> None:
+        """刀 3：目录/单篇两层靠 hashchange；滚动位置与回程标记都写进 history.state。"""
+        html = read(PAGE)
+        for token in ('"hashchange"', "scrollRestoration", "krDirY", "krBack", "data-id", 'role="status"'):
+            with self.subTest(token=token):
+                self.assertIn(token, html)
+        self.assertEqual(html.count("rj:kanread-rendered"), 1,
+                         "目录视图不许派渲染事件：只在 showSingle 里派一次")
+        self.assertNotIn("scrollToHash", html, "kanread 不再调 RJ_RELATED.scrollToHash，滚动自己管")
+
+    def test_noscript_fallback(self) -> None:
+        html = read(PAGE)
+        self.assertIn("<noscript>", html)
+        self.assertIn("这一页要开启 JavaScript 才能显示目录和文章。", html)
+        self.assertIn(".kanread-list .log-state{display:none}", html, "没有 JS 时「正在翻页」要藏起来")
+
+    def test_index_styles_add_no_new_colour(self) -> None:
+        """刀 3 的样式块在「小纸条 ainotes」块之前，同样不许多一个色值。"""
+        css = read("style.css")
+        start = css.find("/* 刊读目录与单篇（刀 3） */")
+        self.assertNotEqual(start, -1, "style.css 缺刀 3 样式块")
+        end = css.find("/* hidden 属性", start)
+        self.assertGreater(end, start, "刀 3 样式块必须落在 [hidden] 通则之前")
+        block = css[start:end]
+        self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", block), [],
+                         "刀 3 样式里出现裸色值，应改用 var(--…) token")
+        self.assertEqual(re.findall(r"\b(?:rgb|hsl)a?\(", block), [],
+                         "刀 3 样式里出现 rgb()/hsl()，应改用 var(--…) token")
+
     def test_new_kanread_styles_add_no_new_colour(self) -> None:
         """色板是拍过板的：调序只准复用既有 token，不准新增色值。"""
         css = read("style.css")

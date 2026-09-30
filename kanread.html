@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>刊读 · 第二人称</title>
 <link rel="stylesheet" href="style.css">
+<noscript><style>.kanread-list .log-state{display:none}</style></noscript>
 </head>
 <body>
 
@@ -28,10 +29,10 @@
 </header>
 
 <main class="wrap">
-  <section class="board-head">
+  <section class="board-head kr-head">
     <p class="section-label">READINGS</p>
     <h2>刊读</h2>
-    <p>把外面的报告和长文，读成「我们怎么共同生活」的问题。每篇只留摘要和两段旁白，正文永远在原处——要看全文，点出去。</p>
+    <p class="kr-intro">外面的长文，读成我们怎么共同生活。</p>
   </section>
 
   <nav class="subnav" aria-label="刊读的两种节奏">
@@ -39,9 +40,14 @@
     <a href="pulse.html">脉搏 <small>快 · 最近发生了什么</small></a>
   </nav>
 
-  <section class="kanread-list" id="kanreadList" aria-live="polite">
+  <p class="kr-status" id="krStatus" role="status" aria-live="polite" hidden></p>
+
+  <section class="kanread-list" id="kanreadList" aria-label="精读目录">
     <p class="log-state">正在翻页…</p>
+    <noscript><p class="kr-noscript">这一页要开启 JavaScript 才能显示目录和文章。</p></noscript>
   </section>
+
+  <section class="kr-single" id="krSingle" aria-label="单篇" hidden></section>
 
   <section class="claim kanread-note">
     <strong>关于摘要与旁白</strong><br>
@@ -433,22 +439,181 @@
     return art;
   }
 
+  /* ── 刀 3：目录与单篇两层。目录一次铺完（深链进来也铺，只是藏着），
+     单篇靠 hashchange 切换，不用 pushState 路由；kanread.html#kr-… 契约不变 ── */
+  var single = document.getElementById("krSingle");
+  var statusEl = document.getElementById("krStatus");
+  var introEl = document.querySelector(".kr-intro");
+  var subnavEl = document.querySelector("nav.subnav");
+  var READY = false, BY_ID = {}, VIEW = null, CUR = null;
+  try { history.scrollRestoration = "manual"; } catch (_) {}
+
+  function hashId() {                       // 防 URIError：坏的 % 编码不许抛
+    var raw = location.hash.slice(1);
+    if (!raw) return "";
+    try { return decodeURIComponent(raw); } catch (_) { return raw; }
+  }
+
+  var DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+  // 目录项：只列日期、标题、钩子、标签、出处；整张卡可点（.kr-index-link::after 铺满）
+  function indexItemHtml(it) {
+    var d = String(it.published_at || "");
+    var meta = '<p class="kr-index-meta">' +
+      (DATE_RE.test(d) ? '<time datetime="' + esc(d) + '">' + esc(d.slice(5)) + "</time>" : "") +
+      (it.status === "unavailable" ? '<span class="kr-index-stale">原文入口已失效</span>' : "") + "</p>";
+    var out = meta + '<h4 class="kr-index-title"><a class="kr-index-link" href="#' +
+      esc(it.id) + '">' + esc(it.title) + "</a></h4>";
+    if (it.hook) out += '<p class="kr-index-hook">' + esc(it.hook) + "</p>";
+    if (it.topics && it.topics.length) {
+      out += '<p class="chips kr-topics">' +
+        it.topics.map(function (t) { return '<span class="chip">' + esc(t) + "</span>"; }).join("") + "</p>";
+    }
+    var by = [];
+    if (it.author) by.push(esc(it.author));
+    if (it.source_name) by.push(esc(it.source_name));
+    if (by.length) out += '<p class="kr-index-by">' + by.join(" · ") + "</p>";
+    return '<li class="card kr-index-item' + (it.status === "unavailable" ? " is-stale" : "") +
+      '" data-id="' + esc(it.id) + '">' + out + "</li>";
+  }
+
+  function buildIndex(items) {
+    // 先按 published_at 从新到旧稳定排序，再按月分组；日期不合规的沉到最后「未注明日期」
+    var sorted = items.map(function (it, i) { return [it, i]; });
+    sorted.sort(function (a, b) {
+      var cmp = String(b[0].published_at || "").localeCompare(String(a[0].published_at || ""));
+      return cmp || a[1] - b[1];
+    });
+    var groups = [], byKey = {};
+    sorted.forEach(function (pair) {
+      var it = pair[0];
+      var d = String(it.published_at || "");
+      var key = DATE_RE.test(d) ? d.slice(0, 7) : "";
+      if (!byKey[key]) { byKey[key] = []; groups.push(key); }
+      byKey[key].push(it);
+    });
+    var html = '<div class="kr-index">';
+    groups.forEach(function (key) {
+      var list_ = byKey[key];
+      var head = key
+        ? key.slice(0, 4) + " 年 " + Number(key.slice(5, 7)) + " 月 · " + list_.length + " 篇"
+        : "未注明日期 · " + list_.length + " 篇";
+      var hid = key ? ' id="krm-' + key + '"' : "";
+      html += '<section class="kr-month"' + (key ? ' aria-labelledby="krm-' + key + '"' : "") + ">" +
+        '<h3 class="kr-month-head"' + hid + ">" + esc(head) + "</h3>" +
+        '<ol class="kr-index-list">' + list_.map(indexItemHtml).join("") + "</ol></section>";
+    });
+    return html + "</div>";
+  }
+
+  function showSingle(it) {
+    closeSheet();   // 先关小纸条弹层（它的 opener 马上要被移除）
+    single.innerHTML = '<p class="kr-back-row"><a class="kr-back" href="kanread.html">← 刊读目录</a></p>';
+    single.appendChild(card(it));
+    single.insertAdjacentHTML("beforeend",
+      '<p class="kr-back-row kr-back-bottom"><a class="kr-back" href="kanread.html">← 回到刊读目录</a></p>');
+    // 保住 ?preview=1 / ?api=：没有 JS 时 href="kanread.html" 也照样能用
+    var self = location.pathname + location.search;
+    var backs = single.querySelectorAll(".kr-back"), i;
+    for (i = 0; i < backs.length; i++) backs[i].setAttribute("href", self);
+    single.hidden = false;
+    list.hidden = true;
+    statusEl.hidden = true;
+    introEl.hidden = true;
+    subnavEl.hidden = true;
+    syncNotesUI();
+    // 只挂这一篇的评论区（comments.js 听这个事件；目录里没有 .kr-comments，它不会动）
+    document.dispatchEvent(new CustomEvent("rj:kanread-rendered"));
+    var h3 = single.querySelector("h3");
+    h3.tabIndex = -1;
+    h3.focus({ preventScroll: true });
+    single.scrollIntoView({ block: "start" });
+    VIEW = "single";
+    CUR = it.id;
+    document.title = it.title + " · 刊读 · 第二人称";
+  }
+
+  function showIndex(notice) {
+    closeSheet();
+    single.hidden = true;
+    single.innerHTML = "";          // 同一时刻只有一个 .kanread-card：回目录时单篇清空
+    list.hidden = false;
+    introEl.hidden = false;
+    subnavEl.hidden = false;
+    document.title = "刊读 · 第二人称";
+    // 目录的 DOM 一直在，版面高度是现成的，同步滚动回去
+    var y = (history.state && typeof history.state.krDirY === "number") ? history.state.krDirY : 0;
+    window.scrollTo(0, y);
+    if (CUR) {
+      var link = list.querySelector('.kr-index-item[data-id="' + CUR + '"] .kr-index-link');
+      if (link) link.focus({ preventScroll: true });
+    }
+    if (notice) {
+      statusEl.textContent = notice;
+      statusEl.hidden = false;
+    } else {
+      statusEl.hidden = true;
+    }
+    VIEW = "index";
+  }
+
+  function route() {
+    if (!READY) return;             // 数据没到之前的 hashchange 忽略，数据到了统一 route()
+    closeSheet();
+    var id = hashId();
+    if (/^kr-/.test(id)) {
+      if (BY_ID[id]) return showSingle(BY_ID[id]);
+      showIndex("没找到这一篇，可能已撤下或链接写错了。下面是全部精读。");
+      history.replaceState(history.state, "", location.pathname + location.search);   // Q5：清掉
+      return;
+    }
+    showIndex("");                  // 空 hash 或非 kr- 的 hash：目录，不提示
+  }
+
+  window.addEventListener("hashchange", function () {
+    var from = VIEW;
+    route();
+    if (from === "index" && VIEW === "single")
+      // 这条单篇是从目录点进来的，记下来；目录那条历史自己身上带着 krDirY
+      history.replaceState(Object.assign({}, history.state, { krBack: 1 }), "");
+  });
+
+  // 在目录上点进单篇前，把滚动位置写进目录这条历史（刷新后也还在）
+  list.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest ? e.target.closest(".kr-index-link") : null;
+    if (!a) return;
+    try { history.replaceState(Object.assign({}, history.state, { krDirY: window.scrollY }), ""); } catch (_) {}
+  });
+
+  // 「← 刊读目录」：从目录点进来的就 history.back()；深链／换篇来的就 pushState 一条目录
+  document.addEventListener("click", function (e) {
+    var b = e.target && e.target.closest ? e.target.closest(".kr-back") : null;
+    if (!b) return;
+    e.preventDefault();
+    if (history.state && history.state.krBack) {
+      history.back();
+    } else {
+      history.pushState(null, "", location.pathname + location.search);
+      route();
+      window.scrollTo(0, 0);
+    }
+  });
+
   function render(data) {
-    list.innerHTML = "";
-    var items = (data && data.items) || [];
-    items = items.filter(function (it) { return it.status !== "draft"; });
+    var items = ((data && data.items) || []).filter(function (it) { return it.status !== "draft"; });
     if (!items.length) {
+      list.innerHTML = "";
       var p = document.createElement("p");
       p.className = "log-state";
       p.textContent = "第一篇还在写。";
       list.appendChild(p);
       return;
     }
-    items.forEach(function (it) { list.appendChild(card(it)); });
-    syncNotesUI();   // 卡片铺完，把开关状态（含 localStorage 里存的「关」）落到所有标记上
-    if (window.RJ_RELATED) window.RJ_RELATED.scrollToHash();   // 从别的板块带 #kr-… 进来，铺完再跳
-    // 卡片铺完了，评论区可以往上挂了（comments.js 听这个事件）
-    document.dispatchEvent(new CustomEvent("rj:kanread-rendered"));
+    BY_ID = {};
+    items.forEach(function (it) { BY_ID[it.id] = it; });
+    list.innerHTML = buildIndex(items);
+    READY = true;
+    route();
   }
 
   // 草稿只在本机预览：localhost + ?preview=1 时并入 data/kanread.drafts.json（该文件不进仓库）
