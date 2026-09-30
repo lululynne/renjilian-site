@@ -1154,3 +1154,55 @@ body.an-full .an-b{display:none}
 .an-srcs a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 .an-srcs span{color:var(--ink-soft)}
 .an-verified{margin:6px 0 0;font-size:12px;color:var(--ink-soft)}
+
+/* 小纸条频道页 ainotes.html（刀 4）。只用既有 token，不新增色值 */
+/* 吸顶搜索栏（iOS 聚焦不放大：字号 16px；原生 × 藏掉，它不足 44px） */
+.bk-search{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:8px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+.bk-q-label{flex:none;font-size:14px;font-weight:650;color:var(--ink)}
+.bk-q-row{position:relative;flex:1;min-width:0;display:flex}
+#bkQ{flex:1;min-width:0;min-height:44px;padding:8px 48px 8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font-size:16px;appearance:none;-webkit-appearance:none}
+#bkQ::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.bk-clear{position:absolute;right:0;top:0;width:44px;height:44px;padding:0;border:0;background:transparent;color:var(--ink-soft);font-size:22px;cursor:pointer}
+/* 标签栏 */
+.bk-tagbar{display:flex;flex-wrap:wrap;align-items:flex-start;gap:0 12px;margin:6px 0 0}
+.bk-tags-wrap{flex:1 1 auto;min-width:0}
+.bk-tags-wrap summary,.bk-more-wrap summary{min-height:44px;display:flex;align-items:center;font-size:14px;color:var(--ink);cursor:pointer}
+.bk-tag-group{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0}
+.bk-tag-legend{flex:none;min-width:3.5em;font-size:12px;color:var(--ink-soft)}
+.bk-tag{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+.bk-tag[aria-pressed="true"]::before{content:"✓";margin-right:4px}
+/* 文字按钮：墨色下划线，不用珊瑚 */
+.bk-tags-clear,.bk-reset,.bk-detail-btn{min-height:44px;padding:0;border:0;background:transparent;color:var(--ink);font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+/* 计数与档位条 */
+.bk-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 12px;margin:2px 0 6px}
+.bk-bar .an-bar{margin:0}
+.bk-count{margin:0;font-size:13px;color:var(--ink-soft)}
+/* 列表与卡片 */
+.bk-list{display:flex;flex-direction:column;gap:12px;padding:0 0 32px}
+.bk-letter{margin:12px 0 0}
+.bk-card{cursor:auto;padding:16px 18px 12px;gap:6px;scroll-margin-top:72px}
+.bk-card:focus{outline:none}
+.bk-card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.bk-card.is-target{border:2px solid var(--ink)}
+.bk-here{display:flex;align-items:center;gap:4px;margin:0;font-size:13px;font-weight:650;color:var(--ink)}
+.bk-pin{color:var(--human)}
+.bk-name{margin:0;font:600 17px/1.5 "Noto Serif SC","Songti SC","STSong",serif}
+.bk-en{margin:0;font-size:13px;color:var(--ink-soft)}
+.bk-aka{margin:0;font-size:13px;color:var(--ink)}
+.bk-card .chip{cursor:default;min-height:0;min-width:0}
+.bk-text{margin:2px 0 0;font-size:15px;line-height:1.8;color:var(--ink)}
+.bk-text:focus{outline:none}
+/* 两档门控 */
+.bk-b,.bk-f{font-style:normal}
+.bk-f{display:none}
+body.bk-full .bk-f,.bk-card.is-full .bk-f,.bk-f.bk-only{display:inline}
+body.bk-full .bk-b,.bk-card.is-full .bk-b,body.bk-full .bk-detail-row,.bk-card.is-full .bk-detail-row{display:none}
+/* 展开区 */
+.bk-more-body{font-size:14px;color:var(--ink-soft)}
+.bk-sec{margin:6px 0 0}
+.bk-sec-label{color:var(--ink);font-weight:600;margin-right:6px}
+.bk-seen,.bk-rel{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px;margin:6px 0 0}
+.bk-link{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+/* 空结果 */
+.bk-empty{padding:8px 0 28px;font-size:14px;color:var(--ink)}
+.bk-starters{display:flex;flex-wrap:wrap;gap:0 14px}

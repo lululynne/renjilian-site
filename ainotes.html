@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小纸条 · 人机百科 · 第二人称</title>
+<link rel="stylesheet" href="style.css">
+<noscript><style>.bk-search,.bk-tagbar,.bk-bar,.bk-list .log-state{display:none}</style></noscript>
+</head>
+<body class="bk-page">
+
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>第二人称</h1>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
+      <a class="account-entry" href="account.html">账号</a>
+    </div>
+    <nav class="boards" aria-label="站内板块">
+      <a href="index.html">首页</a>
+      <a href="kanread.html">刊读</a>
+      <a href="nianlun.html">年轮</a>
+      <a href="ainotes.html" class="on">小纸条</a>
+      <a href="games.html">互动提问</a>
+      <a href="cost.html">大模型成本</a>
+      <a href="codex.html">额度重置</a>
+      <a href="baibao.html">MCP / Skills</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="board-head kr-head bk-head">
+    <p class="section-label">AINOTES</p>
+    <h2>小纸条</h2>
+    <p class="kr-intro">人机百科·第二人称给 AI 世界写的页边注</p>
+  </section>
+
+  <!-- 吸顶：必须是 main 的直接子元素（sticky 只在父元素范围内生效） -->
+  <div class="bk-search" role="search">
+    <label class="bk-q-label" for="bkQ">查一个词</label>
+    <div class="bk-q-row">
+      <input id="bkQ" type="search" placeholder="中文、英文、缩写都行，比如 API、额度"
+             autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"
+             maxlength="64" aria-controls="bkList" aria-describedby="bkCount">
+      <button type="button" class="bk-clear" id="bkClear" aria-label="清空搜索" hidden>×</button>
+    </div>
+  </div>
+
+  <div class="bk-tagbar">
+    <details class="bk-tags-wrap" id="bkTagsWrap">
+      <summary>按标签筛<span id="bkTagsPicked"></span></summary>
+      <div class="bk-tags" id="bkTags"></div>
+    </details>
+    <button type="button" class="bk-tags-clear" id="bkTagsClear" hidden>清除标签</button>
+  </div>
+
+  <div class="bk-bar">
+    <p class="bk-count" id="bkCount" role="status" aria-live="polite"></p>
+    <div class="an-bar bk-modes" role="radiogroup" aria-label="小纸条显示方式">
+      <svg class="bk-pin" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 3l5 5-3 1-3 3 1 5-2 2-4-4-5 5-1-1 5-5-4-4 2-2 5 1 3-3z"/></svg><span class="an-bar-label">解释</span>
+      <button type="button" class="an-mode" role="radio" data-mode="brief" aria-checked="true" tabindex="0">简洁</button>
+      <button type="button" class="an-mode" role="radio" data-mode="full" aria-checked="false" tabindex="-1">详细</button>
+    </div>
+  </div>
+
+  <p class="kr-status" id="bkNotice" role="status" aria-live="polite" hidden></p>
+
+  <section class="bk-list" id="bkList" aria-label="词条">
+    <p class="log-state">正在翻小纸条…</p>
+    <noscript><p class="kr-noscript">这一页要开启 JavaScript 才能查词和筛选。</p></noscript>
+  </section>
+
+  <div class="bk-empty" id="bkEmpty" hidden>
+    <p id="bkEmptyText"></p>
+    <p class="bk-starters" id="bkStarters"></p>
+    <p><button type="button" class="bk-reset" id="bkEmptyReset" hidden>清空搜索和标签</button></p>
+  </div>
+
+  <section class="claim kanread-note">
+    <strong>关于小纸条</strong><br>
+    词条是本站自己写的解释，每条附来源和最后核对日期；公司和产品的情况会变，以官方页面为准。这里是查词典，不是聊天：搜索只在你自己的浏览器里比对文字，不联网，也不记录你搜了什么。<br>
+    发现写错了，来信：<a href="mailto:arumrasidi813@gmail.com">arumrasidi813@gmail.com</a>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="站点与姐妹网站">
+      <a href="changelog.html">更新日志</a>
+      <a href="account.html">账号</a>
+      <a href="privacy.html">隐私说明</a>
+      <a href="rules.html">留言守则</a>
+      <a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a>
+      <a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="ainotes.js"></script>
+<script src="rj-config.js"></script>
+<script src="rj-api.js"></script>
+
+</body>
+</html>
