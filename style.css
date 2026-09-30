@@ -582,13 +582,13 @@ footer.site{
 .nl-legend li{display:flex;align-items:center;gap:8px;margin:4px 0}
 .nl-day-head{
   font:650 12px/1.4 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.08em;
-  color:var(--ink-soft);margin:16px 0 8px;
+  color:var(--ink-soft);margin:12px 0 6px;
 }
 .nl-track{border-left:2px solid var(--line);padding-left:16px;margin-left:19px;
-  display:flex;flex-direction:column;gap:14px}
+  display:flex;flex-direction:column;gap:12px}
 .nl-item{
   position:relative;background:var(--card);border:1px solid var(--line);
-  border-radius:14px;padding:12px 14px 10px;
+  border-radius:14px;padding:10px 14px 8px;
 }
 .nl-item::before{
   content:"";position:absolute;left:-23px;top:22px;width:10px;height:10px;
