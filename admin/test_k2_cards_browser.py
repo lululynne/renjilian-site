@@ -168,13 +168,14 @@ class CardPages(unittest.TestCase):
         c.grant_permissions(["clipboard-read", "clipboard-write"], origin=SITE)
         return c
 
-    def open(self, c, path: str):
+    def open(self, c, path: str, hash: str | None = None):
         page = c.new_page()
         errors: list[str] = []
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
         page.on("pageerror", lambda e: errors.append(str(e)))
         sep = "&" if "?" in path else "?"
-        page.goto(f"{SITE}/{path}{sep}api={API}", wait_until="networkidle")
+        # 刀 3：hash 永远在 query 之后，不然 ?api= 会被吞进 hash 里
+        page.goto(f"{SITE}/{path}{sep}api={API}{('#' + hash) if hash else ''}", wait_until="networkidle")
         return page, errors
 
     def shot(self, page, name: str, full: bool = True) -> None:
@@ -415,7 +416,7 @@ class CardPages(unittest.TestCase):
         for vp, tag in ((VP390, "390"), (VP1280, "1280")):
             c = self.ctx(None, vp)
             try:
-                page, errors = self.open(c, "kanread.html")
+                page, errors = self.open(c, "kanread.html", hash=CARD)
                 item = page.locator(f'.rjc-item[data-id="{self.said["o"][0]}"]')
                 item.wait_for()
                 who = item.locator(".rj-who")

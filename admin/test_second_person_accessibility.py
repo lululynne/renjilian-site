@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import functools
 import http.server
+import json
 import threading
 import unittest
 from pathlib import Path
@@ -377,7 +378,9 @@ class AccessibilityClosureTests(unittest.TestCase):
 
     def test_kanread_comment_placeholder_survives_without_backend_390(self) -> None:
         """apiBase 为空时，评论区必须还是那句占位文案，且一个网络请求都不发。"""
-        context, page, errors = self.open_page("kanread.html")
+        first = next(it["id"] for it in json.loads((ROOT / "data/kanread.json").read_text(encoding="utf-8"))["items"]
+                     if it.get("status") != "draft")
+        context, page, errors = self.open_page(f"kanread.html#{first}")
         try:
             page.locator(".kanread-card").first.wait_for()
             calls: list[str] = []
@@ -435,7 +438,7 @@ class AccessibilityClosureTests(unittest.TestCase):
 
     def test_related_rows_render_on_all_four_boards_390(self) -> None:
         cases = (
-            ("kanread.html", "#kr-liu-shengyu-bury-talent",
+            ("kanread.html#kr-liu-shengyu-bury-talent", "#kr-liu-shengyu-bury-talent",
              ["pulse.html#pl-20260914-liu-farewell", "games.html#q-ms6cixkx-37qaff", "games.html#q-20260729-20367594"]),
             ("pulse.html", "#pl-20260910-deepseek-v41-flash", ["kanread.html#kr-liu-shengyu-bury-talent"]),
             ("baibao.html", "#renji-love-mcp", ["kanread.html#kr-liu-shengyu-bury-talent", "cost.html#claude-pro"]),

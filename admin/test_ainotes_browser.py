@@ -91,7 +91,8 @@ class AinotesBrowserTests(unittest.TestCase):
         page.on("pageerror", lambda e: errors.append(str(e)))
         for pattern, payload in (routes or {}).items():
             page.route(pattern, lambda route, _request, p=payload: fulfill(route, p))
-        page.goto(f"{self.base}/{PAGE}{query}", wait_until="networkidle")
+        # 刀 3 起单篇在 #id 下：小纸条只在单篇里，测试一律带 hash 打开
+        page.goto(f"{self.base}/{PAGE}{query}#{CARD}", wait_until="networkidle")
         page.locator(".kanread-card").first.wait_for()
         return ctx, page, errors
 
@@ -517,10 +518,11 @@ class AinotesBrowserTests(unittest.TestCase):
                 more_btn = page.locator("#anMoreBtn")
                 self.assertEqual(more_btn.inner_text(), "展开来龙去脉")
                 self.assertTrue(page.locator("#anMoreWrap").is_visible())
+                url_before = page.url
                 more_btn.click()
                 self.assertTrue(page.locator("#anMore").is_visible())
                 self.assertIn(more_entry["more"][:12], page.locator("#anMore").inner_text())
-                self.assertNotIn("#", page.url.split(PAGE)[-1], "展开不许跳页")
+                self.assertEqual(page.url, url_before, "展开不许跳页")
             # 没有 more 的词条：不出现「展开来龙去脉」
             plain_entry = next((e for e in full["items"]
                                 if not e.get("more") and e["id"] in subset_ids | draft_ids and e["id"] in marked_ids()), None)
@@ -536,12 +538,8 @@ class AinotesBrowserTests(unittest.TestCase):
     def test_live_real_data_counts_are_computed(self) -> None:
         full = load("data/ainotes.json")
         total, per_voice = expected(full)
-        ids = {e["id"] for e in full["items"]}
-        all_marks = load("data/ainotes.marks.json")["readings"]
-        kanread_items = [it for it in load("data/kanread.json")["items"] if it.get("status") != "draft"]
-        expected_bars = sum(
-            1 for it in kanread_items
-            if any(m["id"] in ids for ms in (all_marks.get(it["id"]) or {}).values() for m in ms))
+        # 刀 3 起一张单篇一个开关：只算当前这张卡有没有可解析标记
+        expected_bars = 1 if total else 0
         ctx, page, errors = self.open()
         try:
             card = self.card(page)
@@ -550,7 +548,7 @@ class AinotesBrowserTests(unittest.TestCase):
             for voice, hit in per_voice.items():
                 self.assertEqual(card.locator(f"{voice_sel[voice]} .an-foot li").count(),
                                  len({m["id"] for m in hit}), f"{voice} 页下注条数不对")
-            self.assertEqual(page.locator(".an-bar[role='radiogroup']").count(), expected_bars)
+            self.assertEqual(card.locator(".an-bar[role='radiogroup']").count(), expected_bars)
             self.assertEqual(errors, [])
         finally:
             ctx.close()
@@ -579,7 +577,7 @@ class AinotesBrowserTests(unittest.TestCase):
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.route("**/data/ainotes.marks.json", lambda route, _request: route.fulfill(status=404, body=""))
         try:
-            page.goto(f"{self.base}/{PAGE}", wait_until="networkidle")
+            page.goto(f"{self.base}/{PAGE}#{CARD}", wait_until="networkidle")
             page.locator(".kanread-card").first.wait_for()
             self.assertEqual(page.locator(".an-t").count(), 0)
             self.assertEqual(page.locator(".an-bar").count(), 0)

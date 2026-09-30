@@ -211,14 +211,16 @@ class DisplayNameDom(unittest.TestCase):
         c.grant_permissions(["clipboard-read", "clipboard-write"], origin=self.site)
         return c
 
-    def page(self, c, fake: Fake, path: str):
+    def page(self, c, fake: Fake, path: str, hash: str = ""):
         page = c.new_page()
         errors: list[str] = []
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.on("dialog", lambda d: d.accept())
         page.route(MOCK + "/**", fake.handle_route)
-        page.goto(f"{self.site}/{path}{'&' if '?' in path else '?'}api={MOCK}", wait_until="networkidle")
+        # 刀 3：hash 永远在 query 之后，不然 ?api= 会被吞进 hash 里
+        page.goto(f"{self.site}/{path}{'&' if '?' in path else '?'}api={MOCK}{('#' + hash) if hash else ''}",
+                  wait_until="networkidle")
         return page, errors
 
     def no_overflow(self, page, where: str) -> None:
@@ -307,7 +309,7 @@ class DisplayNameDom(unittest.TestCase):
             self.assertFalse(page.locator("#nameEditor").is_visible())
 
             # 留言里「昵称 @号」
-            kr, kerr = self.page(c, fake, "kanread.html")
+            kr, kerr = self.page(c, fake, "kanread.html", hash=CARD)
             kr.locator(".rjc-item").first.wait_for()
             self.assertEqual(kr.locator('.rjc-item[data-id="c_1"] .rjc-handle').first.inner_text(), "小狐狸 @meibao-h")
             self.assertEqual(kr.locator('.rjc-item[data-id="c_2"] .rjc-handle').first.inner_text(), "已离开")
@@ -458,7 +460,7 @@ class DisplayNameLive(unittest.TestCase):
             page.wait_for_function("document.getElementById('meName').textContent === '小狐狸测'")
 
             # 发一条留言，看「昵称 @号」
-            page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
+            page.goto(f"{SITE}/kanread.html?api={API}#{CARD}", wait_until="networkidle")
             card = page.locator(f"#{CARD}")
             card.locator(".rjc-text, textarea").first.fill(f"昵称测试 {tag}")
             card.locator(".rjc-send").first.click()
@@ -471,7 +473,7 @@ class DisplayNameLive(unittest.TestCase):
             page.locator("#nameInput").fill("")
             page.locator("#nameSave").click()
             page.wait_for_function("document.getElementById('meName').textContent === '还没设'")
-            page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
+            page.goto(f"{SITE}/kanread.html?api={API}#{CARD}", wait_until="networkidle")
             item = page.locator(".rjc-item").filter(has_text=f"昵称测试 {tag}").first
             item.wait_for()
             self.assertEqual(item.locator(".rjc-handle").first.inner_text(), f"@{handle}")

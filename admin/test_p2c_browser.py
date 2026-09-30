@@ -326,7 +326,7 @@ class ProfileWallBrowserTests(_Base):
             finally:
                 ctx.close()
 
-        gctx, gpage, gerr = self.open(f"kanread.html?api={API}")
+        gctx, gpage, gerr = self.open(f"kanread.html?api={API}#kr-liu-shengyu-bury-talent")
         try:
             item = gpage.locator(f'.rjc-item[data-id="{ids[pub]}"]')
             item.wait_for()

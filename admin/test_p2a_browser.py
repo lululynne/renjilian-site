@@ -102,7 +102,7 @@ class CommentsBrowserTests(unittest.TestCase):
         cls.server.server_close()
         cls.thread.join(timeout=2)
 
-    def open(self, name: str, viewport: str, *, live: bool):
+    def open(self, name: str, viewport: str, *, live: bool, hash: str = ""):
         context = self.browser.new_context(viewport=VIEWPORTS[viewport])
         context.grant_permissions(CLIPBOARD, origin=SITE)
         page = context.new_page()
@@ -110,7 +110,8 @@ class CommentsBrowserTests(unittest.TestCase):
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
         page.on("pageerror", lambda e: errors.append(str(e)))
         q = f"?api={API}" if live else ""
-        page.goto(f"{SITE}/{name}{q}", wait_until="networkidle")
+        # 刀 3：hash 永远在 query 之后
+        page.goto(f"{SITE}/{name}{q}{('#' + hash) if hash else ''}", wait_until="networkidle")
         return context, page, errors
 
     def shot(self, page, name: str) -> None:
@@ -136,7 +137,7 @@ class CommentsBrowserTests(unittest.TestCase):
     def test_without_backend_the_page_is_unchanged(self) -> None:
         for vp in VIEWPORTS:
             with self.subTest(viewport=vp):
-                context, page, errors = self.open("kanread.html", vp, live=False)
+                context, page, errors = self.open("kanread.html", vp, live=False, hash=CARD)
                 try:
                     page.locator(".kanread-card").first.wait_for()
                     self.assertIn("评论区还没开放", page.locator(".kr-comments").first.inner_text())
@@ -170,7 +171,7 @@ class CommentsBrowserTests(unittest.TestCase):
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
         page.on("pageerror", lambda e: errors.append(str(e)))
         try:
-            page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
+            page.goto(f"{SITE}/kanread.html?api={API}#{CARD}", wait_until="networkidle")
             page.locator(".rjc-list").first.wait_for()
             self.assertTrue(page.evaluate("window.__rjAgain === true"), "补派那一次没跑到")
             self.assert_mounted_once(page)
@@ -232,7 +233,7 @@ class CommentsBrowserTests(unittest.TestCase):
             page.locator("#panelMe").wait_for(state="visible")
 
             # 去刊读发一条
-            page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
+            page.goto(f"{SITE}/kanread.html?api={API}#{CARD}", wait_until="networkidle")
             page.locator(".rjc-input").first.wait_for()
             self.assert_mounted_once(page)
 
@@ -274,7 +275,7 @@ class CommentsBrowserTests(unittest.TestCase):
             # 匿名读者也看得到，而且看不到发表框
             anon = self.browser.new_context(viewport=VIEWPORTS[vp])
             anon_page = anon.new_page()
-            anon_page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
+            anon_page.goto(f"{SITE}/kanread.html?api={API}#{CARD}", wait_until="networkidle")
             anon_page.locator(".rjc-item").first.wait_for()
             self.assertIn(body, anon_page.locator(".kr-comments").first.inner_text())
             self.assertEqual(anon_page.locator(".rjc-input").count(), 0, "没登录不该有发表框")
@@ -307,7 +308,7 @@ class CommentsBrowserTests(unittest.TestCase):
             page.locator("#regCodeDone").click()
             page.locator("#panelMe").wait_for(state="visible")
 
-            page.goto(f"{SITE}/kanread.html?api={API}", wait_until="networkidle")
+            page.goto(f"{SITE}/kanread.html?api={API}#{CARD}", wait_until="networkidle")
             page.locator(".rjc-input").first.wait_for()
             self.assert_mounted_once(page)
 
@@ -349,7 +350,7 @@ class CommentsBrowserTests(unittest.TestCase):
     def test_kill_switch_degrades_the_page_gracefully(self) -> None:
         api_call("POST", "/api/admin/flags", self.token, {"key": "comments_enabled", "value": "0"})
         try:
-            context, page, errors = self.open("kanread.html", "390", live=True)
+            context, page, errors = self.open("kanread.html", "390", live=True, hash=CARD)
             try:
                 page.locator(".kanread-card").first.wait_for()
                 page.wait_for_timeout(400)

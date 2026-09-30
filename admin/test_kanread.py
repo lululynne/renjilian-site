@@ -337,11 +337,11 @@ class RoundtableRenderTests(unittest.TestCase):
         cls.server.server_close()
         cls.thread.join(timeout=2)
 
-    def open(self, query: str = ""):
+    def open(self, query: str = "", hash: str = ""):
         page = self.browser.new_page(viewport={"width": 1100, "height": 900})
         errors: list[str] = []
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
-        page.goto(f"{self.base}/{PAGE}{query}", wait_until="networkidle")
+        page.goto(f"{self.base}/{PAGE}{query}{('#' + hash) if hash else ''}", wait_until="networkidle")
         page.locator(".kanread-card").first.wait_for()
         return page, errors
 
@@ -351,12 +351,17 @@ class RoundtableRenderTests(unittest.TestCase):
             [it["id"] for it in load(DATA)["items"] if it.get("roundtable")], [],
             "如果以后线上真出现圆桌，这条会红，提醒回来补一张逐字比对",
         )
-        page, errors = self.open()
-        try:
-            self.assertEqual(page.locator(".kr-round").count(), 0)
-            self.assertEqual(errors, [])
-        finally:
-            page.close()
+        # 刀 3 起单篇在 #id 下：逐篇打开，断言都没有圆桌
+        for it in load(DATA)["items"]:
+            if it["status"] == "draft":
+                continue
+            with self.subTest(item=it["id"]):
+                page, errors = self.open(hash=it["id"])
+                try:
+                    self.assertEqual(page.locator(".kr-round").count(), 0)
+                    self.assertEqual(errors, [])
+                finally:
+                    page.close()
 
     def test_single_paragraph_entry_still_renders_the_old_shape(self) -> None:
         """单段、无 context 的圆桌：拿真渲染代码跑一条注入数据，产出必须逐字等于旧形状。"""
@@ -374,7 +379,7 @@ class RoundtableRenderTests(unittest.TestCase):
             ),
         )
         try:
-            page.goto(f"{self.base}/{PAGE}", wait_until="networkidle")
+            page.goto(f"{self.base}/{PAGE}#{payload['items'][0]['id']}", wait_until="networkidle")
             page.locator(".kr-round").first.wait_for()
             self.assertEqual(
                 page.locator(".kr-round").first.inner_html(),
@@ -391,7 +396,7 @@ class RoundtableRenderTests(unittest.TestCase):
             self.skipTest("本机没有草稿文件")
         item = json.loads(drafts.read_text(encoding="utf-8"))["items"][0]
         entry = item["roundtable"][0]
-        page, errors = self.open("?preview=1")
+        page, errors = self.open("?preview=1", hash=item["id"])
         try:
             block = page.locator(f'#{item["id"]} .kr-round')
             who = block.locator(".kr-who")
