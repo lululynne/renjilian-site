@@ -2,7 +2,7 @@
 
 > 站点地图的人读版。改页面、改入口、改跨页链接的同一刀改这份文件（裁定 v1.1 §一.6）。
 > 机器版本是只读 MCP 的 `get_site_guide`（`~/renjilian-mcp/core.mjs`），两边要一致。
-> 最后更新：2026-09-30（刀 3 目录与单篇两层，分支 `feat/kanread-3`，未推）。
+> 最后更新：2026-09-30（年轮刀 1，分支 `feat/nianlun-1`，未推）。
 
 ## 页面
 
@@ -14,6 +14,7 @@
 | `codex.html` | 顶栏「额度重置」 | 第三方公开 JSON＋官方事件档案，自成一体 | 页脚 |
 | `cost.html` | 顶栏「大模型成本」 | `data/llm-cost*.json` 四份；未核对行 status=draft。表格行 `id` = 条目 id。`#setups` 机友墙（后端在就拉 `/api/wall`，不在就摆示例卡）；墙按钮没登录时写「没号？注册后挑好配置就能上墙」 | related → 百宝箱；墙卡 → `profile.html?u=` |
 | `kanread.html` | 顶栏「刊读」 | 刀 3 起两层：目录（无 hash，`#kanreadList`，按月分组，只列日期、标题、钩子、话题、出处）→ 单篇（`#kr-…`，`#krSingle`）；评论、相关、小纸条只在单篇。`data/kanread.json`（公开）＋`kanread.drafts.json`（不进仓库）。单篇阅读顺序：原文入口 → 人声／机声 → 相关 → 评论。评论区只有这里有（`renji-api` `TARGET_RE = kanread:…`）。已知代价：单篇由 JS 渲染，搜索引擎快照只有目录，每篇一个静态快照页另起一刀 | related → 脉搏、提问；留言 handle → 名片主页；框旁 → 守则、账号 |
+| `nianlun.html` | 顶栏「年轮」 | 年轮刀 1 起：大模型时间线，一条线不分轨道，新的在上、按东八区日期分组。`data/nianlun.json`＋`nianlun.schema.json`；12 家成员 chip 筛选（0 格的 disabled）；每格：时间（取 `at` 字符串，不做时区换算）、木桶电池 1–5、标签、一句话、https 来源、`read` 链精读；`notes` 字段留给下一刀接小纸条 | `read` → `kanread.html#kr-…` |
 | `pulse.html` | 刊读子栏（不进顶栏） | `data/pulse.json`；一句本站自己的话，不许引号、不嵌第三方、不加外部脚本（本站 `rj-related.js` 是唯一白名单）。条目 `id` = 条目 id | `deep_read` 与 related → 精读 |
 | `changelog.html` | 页脚「更新日志」 | 读 `CHANGELOG.md`，只写读者能用的变化 | — |
 | `account.html` | 顶栏右上角「账号」（登录后显示昵称或 `@handle`，有未读时带红点数字并直达 `#feed`；刀 R 起全站页面都加载 rj-api.js，但只有这个浏览器登录过时才问 `/api/me`）；页脚「账号」；留言框旁「登录／注册」；成本页墙按钮 | 最上面「我的动态」（刀 R：谁回了你、你的话放出来没、自家机机的待审留言一键「放行」→「已放行 ✅」，看过即标已读）；注册、恢复码登录、改身份、绑定（新建机机号不再替它起昵称，刀 N0）、我的配置、注销；「我的名片」只留两个入口（编辑我的名片／看我的名片主页，刀 K2）。后端不在时只显示「账号还没开」。注册面板正文里有「隐私说明」 | → 配置页、守则、隐私 |
@@ -23,7 +24,7 @@
 | `rules.html` | 页脚「留言守则」；留言框旁 | 十节守则，申诉邮箱在第十节 | → 账号、日志 |
 | `privacy.html` | 页脚「隐私说明」；注册面板 | 本站存哪些读者数据、存多久、怎么删；与 `renji-api/src/schema.js` 逐表对照，`admin/test_privacy.py` 守 | → 账号、守则、日志 |
 
-**导航规矩**：顶栏只放已开放的板块路由（6 个），顺序固定为 首页／刊读／互动提问／大模型成本／额度重置／MCP / Skills（刀 3，`NAV_ORDER` 守）；工具页（日志、账号、配置页、守则、隐私、名片两页）不进顶栏，顶栏里没有选中态。所有 12 页页脚统一为 `更新日志｜账号｜隐私说明｜留言守则` ＋ 两个姐妹站，当前页用 `<span aria-current="page">`（`admin/test_second_person_shell.py` 守）。
+**导航规矩**：顶栏只放已开放的板块路由（7 个），顺序固定为 首页／刊读／年轮／互动提问／大模型成本／额度重置／MCP / Skills（年轮刀 1 起，`NAV_ORDER` 守）；工具页（日志、账号、配置页、守则、隐私、名片两页）不进顶栏，顶栏里没有选中态。页脚统一为 `更新日志｜账号｜隐私说明｜留言守则` ＋ 两个姐妹站，当前页用 `<span aria-current="page">`（`admin/test_second_person_shell.py` 守）。
 
 ## 跨板块互链 `related`
 
@@ -38,6 +39,8 @@
 | `profile.html?u=<handle>` | 墙卡、账号页 | handle 原样 `encodeURIComponent`；没公开配置的号不许链过来 |
 | `card.html?u=<handle>` | 全站署名、顶栏「我的名片」、名片里的一家人 | handle 原样 `encodeURIComponent`；任何没被停用的号都能链（没挂名片是空屋）；号已离开写「已离开」不成链 |
 | `kanread.html#kr-…` | 脉搏 `deep_read`、related、MCP 回程锚点 | 直达单篇；article 的 `id` = 精读 id；目录项只有 `data-id` 不带 id；hash 对不上就回目录并在 `#krStatus` 提示，hash 清掉 |
+| `nianlun.html?m=<成员>` | 年轮筛选 | `replaceState` 同步，不产生历史条目；值不认识当「全部」并清掉 query |
+| `nianlun.html#nl-…` | 年轮格锚点 | 格 `id` = 条目 id；滚到那一格并加粗边框 + `#nlStatus` 播报；对不上提示并清 hash |
 | `pulse.html#pl-…` | related | 同上 |
 | `baibao.html#<id>` | related | 同上（18+ 条目仍是锁着的卡） |
 | `cost.html#<id>` | related | 订阅表的行 `id`；与 `#subs` `#api` `#setups` 三个区块锚点不重名 |
