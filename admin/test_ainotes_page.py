@@ -116,6 +116,18 @@ class AinotesPageStaticTests(unittest.TestCase):
     def test_takedown_contact(self) -> None:
         self.assertRegex(self.html, r"mailto:[\w.\-]+@[\w.\-]+")
 
+    def test_kanread_sheet_links_channel(self) -> None:
+        """刀 4 C3：刊读弹层底部加「在小纸条里看这个词 →」。"""
+        html = read("kanread.html")
+        self.assertIn('id="anGo"', html)
+        self.assertIn("在小纸条里看这个词 →", html)
+        self.assertIn('"ainotes.html"', html)
+        self.assertGreater(html.find('id="anGoWrap"'), html.find('id="anSrcs"'),
+                           "anGo 必须在 anSrcs 之后（数量断言守着）")
+        row = re.search(r'<p class="an-go-row".*?</p>', html, re.S)
+        self.assertIsNotNone(row)
+        self.assertNotIn("<svg", row.group(0), "anGo 里不许有 svg（弹层恶意断言守着）")
+
     def test_no_fake_marks(self) -> None:
         self.assertNotIn('href="#"', self.html)
         self.assertNotIn("施工中", self.html)

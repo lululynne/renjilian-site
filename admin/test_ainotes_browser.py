@@ -586,6 +586,36 @@ class AinotesBrowserTests(unittest.TestCase):
             self.assertEqual([e for e in errors if "Failed to load resource" not in e], [])
         finally:
             ctx.close()
+    # ── 刀 4 C3：弹层底部「在小纸条里看这个词 →」（真实数据，id 从 DOM 现取） ──
+    def test_sheet_links_to_channel_page(self) -> None:
+        ctx, page, errors = self.open()
+        try:
+            self.card(page).locator(".an-t").first.click()
+            page.locator("#anSheet:not([hidden])").wait_for()
+            k = page.evaluate("document.querySelector('.an-t').getAttribute('data-k')")
+            go = page.locator("#anGo")
+            self.assertTrue(go.is_visible())
+            self.assertEqual(go.get_attribute("href"), f"ainotes.html#{k}")
+            self.assertGreaterEqual(go.bounding_box()["height"], 44)
+            self.assertEqual(page.locator("#anSrcs #anGo").count(), 0, "链接不许在 anSrcs 里")
+            # 点过去：落到频道页，那条词条被定位
+            go.click()
+            page.wait_for_url("**/ainotes.html*")
+            page.locator(f"#{k}.is-target").wait_for()
+            self.assertIn("就是这一条", page.locator(f"#{k} .bk-here").inner_text())
+            self.assertEqual(errors, [])
+        finally:
+            ctx.close()
+        # 预览态：href 带 ?preview=1
+        ctx, page, errors = self.open("?preview=1")
+        try:
+            self.card(page).locator(".an-t").first.click()
+            page.locator("#anSheet:not([hidden])").wait_for()
+            k = page.evaluate("document.querySelector('.an-t').getAttribute('data-k')")
+            self.assertEqual(page.locator("#anGo").get_attribute("href"), f"ainotes.html?preview=1#{k}")
+            self.assertEqual(errors, [])
+        finally:
+            ctx.close()
 
 
 if __name__ == "__main__":

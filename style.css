@@ -1147,7 +1147,9 @@ body.an-full .an-b{display:none}
   min-height:44px;padding:6px 0;border:0;background:transparent;cursor:pointer;
   color:var(--ink);font-size:14px;text-decoration:underline;text-underline-offset:3px;
 }
-.an-detail-btn{color:var(--human)}
+/* 刀 4（R11）：弹层里的「在小纸条里看这个词 →」与「说详细点」统一墨色下划线，不用珊瑚（对比度不够） */
+.an-go-row{margin:4px 0 0}
+.an-go{display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 .an-more{margin:2px 0 0;font-size:14px;color:var(--ink-soft)}
 .an-srcs{display:flex;flex-wrap:wrap;gap:0 16px;margin:8px 0 0;font-size:13px}
 .an-srcs a,.an-srcs span{display:inline-flex;align-items:center;min-height:44px}

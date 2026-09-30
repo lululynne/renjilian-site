@@ -85,6 +85,7 @@
     <p class="an-more" id="anMore" hidden></p>
     <p class="an-srcs" id="anSrcs"></p>
     <p class="an-verified" id="anVerified"></p>
+    <p class="an-go-row" id="anGoWrap"><a class="an-go" id="anGo" href="ainotes.html">在小纸条里看这个词 →</a></p>
   </div>
 </section>
 
@@ -277,6 +278,10 @@
       }
     });
     document.getElementById("anVerified").textContent = "最后核对 " + (e.last_verified || "");
+    // 链接到频道页里这个词的那一条；预览态带过去（var local 声明在后面，提升到这里是 undefined→false 之外的值，
+    // 但弹层只在渲染完成后才可能打开，读到时 local 已赋好）
+    document.getElementById("anGo").setAttribute("href",
+      "ainotes.html" + (local ? "?preview=1" : "") + "#" + encodeURIComponent(e.id));
     anBack.hidden = false;
     anSheet.hidden = false;
     anX.focus();
