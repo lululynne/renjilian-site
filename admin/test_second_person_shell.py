@@ -28,6 +28,9 @@ TOOL_PAGES = {"changelog.html", "account.html", "profile.html", "rules.html", "p
 FOOTER_LINKS = (("changelog.html", "更新日志"), ("account.html", "账号"),
                 ("privacy.html", "隐私说明"), ("rules.html", "留言守则"))
 REAL_ROUTES = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "cost.html"}
+# 刀 3（2026-09-30）：顶栏新顺序——刊读挪到首页旁边。14 页完全一致。
+# REAL_ROUTES 那行集合字面量不许动：MCP client-smoke 按正则解析它
+NAV_ORDER = ("index.html", "kanread.html", "games.html", "cost.html", "codex.html", "baibao.html")
 NAV_BLOCK = re.compile(r'<nav class="boards".*?</nav>', re.S)
 ANCHOR = re.compile(r'<a\b[^>]*\bhref="([^"]*)"')
 
@@ -60,6 +63,17 @@ class SecondPersonShellTests(unittest.TestCase):
                 self.assertNotIn("施工中", html)
                 # 板块页恰好一个选中态；工具页不在顶栏里，就一个都没有
                 self.assertEqual(nav.group(0).count('class="on"'), 0 if page in TOOL_PAGES else 1)
+
+    def test_nav_order_is_the_same_everywhere(self) -> None:
+        """刀 3：14 页顶栏 hrefs 序列完全等于 NAV_ORDER；pulse 的选中态仍在「刊读」上。"""
+        for page in PAGES:
+            with self.subTest(page=page):
+                nav = NAV_BLOCK.search(read(page))
+                self.assertIsNotNone(nav, f"{page} 缺少 nav.boards")
+                self.assertEqual(tuple(ANCHOR.findall(nav.group(0))), NAV_ORDER,
+                                 f"{page} 顶栏顺序不是 NAV_ORDER")
+        pulse_nav = NAV_BLOCK.search(read("pulse.html")).group(0)
+        self.assertIn('<a href="kanread.html" class="on">刊读</a>', pulse_nav)
 
     def test_unopened_items_do_not_pollute_navigation(self) -> None:
         for page in PAGES:
