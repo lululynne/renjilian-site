@@ -54,6 +54,14 @@
     {
       "id": "elevenlabs",
       "name": "ElevenLabs"
+    },
+    {
+      "id": "meta",
+      "name": "Meta"
+    },
+    {
+      "id": "cherry-studio",
+      "name": "Cherry Studio"
     }
   ],
   "items": [
@@ -162,6 +170,30 @@
         {
           "name": "Claude 开发者文档：发布说明 2026-09-30",
           "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20260930-deepseek-ascend-kernels",
+      "at": "2026-09-30T08:45:00+08:00",
+      "member": "deepseek",
+      "tags": [
+        "ascend",
+        "open-source",
+        "local"
+      ],
+      "level": 3,
+      "line": "DeepSeek 开源了两套面向华为昇腾芯片的底层组件：矩阵乘法库 DeepGEMM-Ascend 和通信库 DeepEP-Ascend，在国产芯片上自己搭推理与训练栈多了可用的零件。",
+      "sources": [
+        {
+          "name": "GitHub deepseek-ai/DeepGEMM-Ascend（官方组织仓库）",
+          "url": "https://github.com/deepseek-ai/DeepGEMM-Ascend"
+        },
+        {
+          "name": "GitHub deepseek-ai/DeepEP-Ascend（官方组织仓库）",
+          "url": "https://github.com/deepseek-ai/DeepEP-Ascend"
         }
       ],
       "read": "",
