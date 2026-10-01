@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-30",
+  "updated_at": "2026-10-01",
   "first_ring": "2026-09-30",
   "members": [
     {
@@ -50,9 +50,123 @@
     {
       "id": "minimax",
       "name": "MiniMax"
+    },
+    {
+      "id": "elevenlabs",
+      "name": "ElevenLabs"
     }
   ],
   "items": [
+    {
+      "id": "nl-20261001-gemini-4-argon",
+      "at": "2026-10-01T04:00:00+08:00",
+      "member": "google",
+      "tags": [
+        "gemini",
+        "model",
+        "pricing"
+      ],
+      "level": 5,
+      "line": "Google 发布新一代旗舰 Gemini 4 Argon：先给 Fairwind 计划里的网安防御者用，之后开放给付费 API 和 AI Ultra 订阅；入门价每百万 token 输入 2 美元、输出 10 美元，输出上限从 6.4 万提到 100 万 token。",
+      "sources": [
+        {
+          "name": "Google 官方博客：Gemini 4 Argon",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261001-gemini-skills",
+      "at": "2026-10-01T00:00:00+08:00",
+      "member": "google",
+      "tags": [
+        "gemini",
+        "skills"
+      ],
+      "level": 4,
+      "line": "Gemini 应用全球上线 skills：把常做的事存成可复用的技能，对话里敲「/」就能调用，还能从聊天记录直接生成，以后会取代 Gems。",
+      "sources": [
+        {
+          "name": "Google 官方博客：Let skills in Gemini tackle your most repetitive tasks",
+          "url": "https://blog.google/products-and-platforms/products/gemini/automate-tasks-with-skills/"
+        },
+        {
+          "name": "Gemini Apps 发布说明 2026-09-30",
+          "url": "https://gemini.google/release-notes/"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261001-gems-opal-sunset",
+      "at": "2026-10-01T00:00:00+08:00",
+      "member": "google",
+      "tags": [
+        "gemini",
+        "gems",
+        "sunset"
+      ],
+      "level": 3,
+      "line": "Google 宣布停用 Gems 和 Opal：个人账号 11 月起不再支持 Gems，会自动迁成 skills；Opal 2026 年 11 月 17 日关停，Drive 里的工作流文件保留但不能再运行。",
+      "sources": [
+        {
+          "name": "Google 官方博客：skills 一文「Transition from Gems」",
+          "url": "https://blog.google/products-and-platforms/products/gemini/automate-tasks-with-skills/"
+        },
+        {
+          "name": "Opal 官方 FAQ",
+          "url": "https://developers.google.com/opal/faq"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20260930-claude-for-government-ga",
+      "at": "2026-09-30T21:00:00+08:00",
+      "member": "anthropic",
+      "tags": [
+        "claude",
+        "government"
+      ],
+      "level": 3,
+      "line": "Anthropic 的 Claude for Government 正式可用：美国联邦和州政府机构能在 FedRAMP High 环境里用 Claude，管理员可按部门控支出；Claude Code 和 Microsoft 365 版在同一环境开早期试用。",
+      "sources": [
+        {
+          "name": "Claude 官方博客：Claude for Government is now generally available",
+          "url": "https://claude.com/blog/claude-for-government-is-now-generally-available"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20260930-sonnet-4-5-deprecation",
+      "at": "2026-09-30T21:00:00+08:00",
+      "member": "anthropic",
+      "tags": [
+        "claude",
+        "api",
+        "deprecation"
+      ],
+      "level": 2,
+      "line": "Anthropic 通知弃用 Claude Sonnet 4.5：claude-sonnet-4-5-20250929 将于 2026 年 11 月 30 日在 Claude API 退役，官方建议迁到 Sonnet 5.5。",
+      "sources": [
+        {
+          "name": "Claude 开发者文档：模型弃用",
+          "url": "https://platform.claude.com/docs/en/about-claude/model-deprecations"
+        },
+        {
+          "name": "Claude 开发者文档：发布说明 2026-09-30",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
     {
       "id": "nl-20260930-plugin-extensions",
       "at": "2026-09-30T01:48:00+08:00",

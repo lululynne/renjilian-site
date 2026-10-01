@@ -1,7 +1,7 @@
 #!/opt/homebrew/opt/python@3.14/bin/python3.14
 """年轮时间线契约测试（2026-09-30，年轮刀 1）。
 
-守：数据信封与 schema 一致（不引第三方校验库）、成员名单恰好 12 家、read 指向真实精读、
+守：数据信封与 schema 一致（不引第三方校验库）、成员名单恰好 13 家、read 指向真实精读、
 notes 指向真实小纸条词条、页面壳层与取时间的办法（不许用浏览器本地时区）、图片在且小、
 样式块零裸色值。
 """
@@ -104,9 +104,9 @@ class NianlunDataTests(unittest.TestCase):
         errs = check(self.data, self.schema, "$")
         self.assertEqual(errs, [], "数据不符合 nianlun.schema.json：\n" + "\n".join(errs))
 
-    def test_members_are_exactly_the_twelve(self) -> None:
+    def test_members_are_exactly_the_thirteen(self) -> None:
         members = self.data["members"]
-        self.assertEqual(len(members), 12, "成员名单恰好 12 家")
+        self.assertEqual(len(members), 13, "成员名单恰好 13 家")
         ids = [m["id"] for m in members]
         self.assertEqual(len(ids), len(set(ids)), "成员 id 不许重复")
         for m in members:
