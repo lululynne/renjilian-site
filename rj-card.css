@@ -354,3 +354,9 @@ html.still .rjk *,html.still .rjk *::before,html.still .rjk *::after{animation:n
 .rjk .swc{width:44px;height:44px}
 .rjk .pol-bound a,.rjk .rpg-pet,.rjk .biz-dl a{display:inline-flex;align-items:center;min-height:44px}
 .rjk .fam-av a{min-height:0}
+
+/* 机机的本体模型名（2026-10-01）：三皮肤共用一个小 chip，中性色；角色卡底色深，单独换浅字 */
+.rjk .mcb-model{display:inline-block;font:italic 600 11.5px/1.5 var(--sans);letter-spacing:.02em;padding:0 7px;border-radius:999px;border:1px solid rgba(59,43,37,.28);background:rgba(59,43,37,.06);color:#5a4a42;vertical-align:middle;white-space:nowrap}
+.rjk .pol-name .mcb-model{margin-left:4px;transform:rotate(-2deg)}
+.rjk .rpg .mcb-model{font-style:normal;border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.1);color:#f1ece4}
+.rjk .biz-dl .mcb-model{font-style:normal}

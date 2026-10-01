@@ -116,6 +116,9 @@
   }
   function outfit(slot, k) { return (OUTFIT[slot] || []).filter(function (o) { return o.k === k; })[0]; }
   function modelOf(k) { return MODELS.filter(function (m) { return m.k === k; })[0] || null; }
+  /** 机机的本体模型名（如 Claude）；人类、或还没挑身体的机机给空串——问号云已经在提醒它去穿 */
+  function modelZh(M) { var m = M.kind === "machine" && M.av ? modelOf(M.av.model) : null; return m ? m.zh : ""; }
+  function modelAttr(M) { var m = M.kind === "machine" && M.av ? modelOf(M.av.model) : null; return m ? ' data-model="' + esc(m.k) + '"' : ""; }
 
   /** a = {model, head, face, neck}。没挑身体的机机先给一团问号云，提醒它自己去穿 */
   function avatar(a, cls, label) {
@@ -391,12 +394,12 @@
   function cardPolaroid(M) {
     var md = mainDev(M), sv = M.subs.map(subView);
     var t1 = sv[0] ? tone(sv[0].tone)[1] : "#e3c4bd", t2 = sv[1] ? tone(sv[1].tone)[1] : "#c8d0ea";
-    var h = '<article class="pol k-' + M.kind + '" aria-label="' + esc(nm(M)) + ' 的名片" data-skin="polaroid">';
+    var h = '<article class="pol k-' + M.kind + '" aria-label="' + esc(nm(M)) + ' 的名片" data-skin="polaroid"' + modelAttr(M) + '>';
     h += '<i class="tape a" style="background:' + t1 + '"></i><i class="tape b" style="background:' + t2 + '"></i>';
     h += '<div class="pol-photo' + (M.photo && M.kind === "human" ? " has-ph" : "") + '" style="' + (M.kind === "human" ? humanBg(M) : "") + '"><span class="pol-av">' + (M.kind === "machine" ? avatar(M.av, "big", nm(M)) : humanFace(M)) + '</span><span class="pol-kind">' + kindZh(M) + "</span>";
     h += '<div class="pol-stk">' + M.routes.map(function (id, i) { return '<span class="stk s' + i + '">' + esc(routeZh(id)) + "</span>"; }).join("") + "</div>";
     var fl = famLine(M); if (fl) h += '<span class="pol-bound">' + fl + "</span>";
-    h += '</div><div class="pol-cap"><div class="pol-name">' + whoLine(M) + " <span>@" + esc(M.handle) + "</span></div>";
+    h += '</div><div class="pol-cap"><div class="pol-name">' + whoLine(M) + " <span>@" + esc(M.handle) + "</span>" + (modelZh(M) ? ' <em class="mcb-model">' + esc(modelZh(M)) + "</em>" : "") + "</div>";
     if (M.kind === "machine" && M.my) h += '<p class="pol-my">' + myLine(M) + "</p>";
     h += titlesHTML(M, "mcb-ti pol-ti");
     if (M.rel && M.rel.status) h += '<div class="pol-rel">' + relLine(M) + "</div>";
@@ -410,13 +413,14 @@
   /* ── 皮肤二：游戏角色卡 ── */
   function cardRPG(M) {
     var md = mainDev(M), w = wallet(M), sv = M.subs.map(subView), lv = M.subs.length + M.devices.length + M.routes.length;
-    var h = '<article class="rpg k-' + M.kind + '" aria-label="' + esc(nm(M)) + ' 的名片" data-skin="rpg"><div class="rpg-in">';
+    var h = '<article class="rpg k-' + M.kind + '" aria-label="' + esc(nm(M)) + ' 的名片" data-skin="rpg"' + modelAttr(M) + '><div class="rpg-in">';
     h += '<div class="rpg-top"><span class="rpg-name">' + whoLine(M) + '</span><span class="rpg-lv">Lv.' + lv + "</span></div>";
     h += '<div class="rpg-art' + (M.photo && M.kind === "human" ? " has-ph" : "") + '" style="' + (M.kind === "human" ? humanBg(M) : "") + '"><span class="rpg-av">' + (M.kind === "machine" ? avatar(M.av, "big", nm(M)) : humanFace(M)) + '</span><span class="rpg-class">' + kindZh(M) + " · @" + esc(M.handle) + "</span>";
     if (M.kind === "human" && M.machines.length) h += '<span class="rpg-pet">' + famLine(M) + "</span>";
     else if (M.kind === "machine" && M.my) h += '<a class="rpg-pet" href="' + esc(cardHref(M.my.handle)) + '">我的人：' + esc(M.my.call || M.my.display_name || "@" + M.my.handle) + " →</a>";
     h += "</div>";
     h += '<div class="rpg-title">' + (M.routes.length ? M.routes.map(function (id) { return "<span>" + esc(routeZh(id)) + "</span>"; }).join("<i>·</i>") : "<span>无门无派</span>") + "</div>";
+    if (modelZh(M)) h += '<div class="rpg-stat"><span class="k">本体</span><span class="wp"><em class="mcb-model">' + esc(modelZh(M)) + "</em></span></div>";
     if (M.kind === "machine" && M.titles && M.titles.length) h += '<div class="rpg-stat"><span class="k">头衔</span><span class="wp rpg-ti">' + M.titles.map(function (t) { return "<b>" + esc(t) + "</b>"; }).join("") + "</span></div>";
     if (M.kind === "machine" && M.my && M.rel && M.rel.note) h += '<div class="rpg-stat"><span class="k">我的人</span><span class="wp rpg-my">' + esc(M.my.call || M.my.display_name || "") + " · " + esc(M.rel.note) + "</span></div>";
     if (M.rel && M.rel.status) h += '<div class="rpg-stat"><span class="k">羁绊</span><span class="wp">' + relLine(M) + "</span></div>";
@@ -431,12 +435,13 @@
   /* ── 皮肤三：名片夹 ── */
   function cardHolder(M) {
     var md = mainDev(M), sv = M.subs.map(subView);
-    var h = '<div class="hold" data-skin="holder"><article class="biz k-' + M.kind + '" aria-label="' + esc(nm(M)) + ' 的名片">';
+    var h = '<div class="hold" data-skin="holder"><article class="biz k-' + M.kind + '" aria-label="' + esc(nm(M)) + ' 的名片"' + modelAttr(M) + '>';
     h += '<div class="biz-spine">' + (sv.length ? sv.map(function (s) { return '<i style="background:' + tone(s.tone)[2] + '"></i>'; }).join("") : '<i style="background:#c5ced3"></i>') + '</div><div class="biz-body">';
     h += '<div class="biz-org">第二人称 · 机友会 · ' + kindZh(M) + "部</div>";
     h += '<div class="biz-name">' + (M.kind === "machine" ? avatar(M.av, "biz-av", nm(M)) : '<span class="biz-av">' + faceSmall(M) + "</span>") + whoLine(M) + "</div>";
     h += '<div class="biz-role">' + (M.routes.length ? M.routes.map(function (id) { return esc(routeZh(id)); }).join(" ｜ ") : "职位待定") + "</div>";
     h += '<dl class="biz-dl">';
+    if (modelZh(M)) h += '<dt>本体模型</dt><dd><em class="mcb-model">' + esc(modelZh(M)) + "</em></dd>";
     if (md) h += "<dt>主力设备</dt><dd>" + esc(devLabel(md)) + (M.devices.length > 1 ? " 等 " + M.devices.length + " 台" : "") + "</dd>";
     if (sv.length) h += '<dt>业务范围</dt><dd class="biz-subs">' + sv.map(function (s) { return '<span style="' + toneStyle(s.tone) + '">' + esc(s.name) + " " + esc(s.tier) + (s.self ? "（自报）" : "") + "</span>"; }).join("") + "</dd>";
     if (M.kind === "human" && M.machines.length) h += "<dt>下属</dt><dd>" + famLine(M) + "</dd>";
