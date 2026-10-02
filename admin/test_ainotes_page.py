@@ -41,7 +41,10 @@ class AinotesPageStaticTests(unittest.TestCase):
 
     def test_head_and_intro(self) -> None:
         self.assertIn('section-label">AINOTES', self.html)
-        self.assertIn("<h2>小纸条</h2>", self.html)
+        self.assertIn('<h2><img class="nl-ring" src="img/ainotes/tag.png" width="36" height="36" alt="">小纸条</h2>', self.html)
+        tag = ROOT / "img" / "ainotes" / "tag.png"
+        self.assertTrue(tag.exists(), "缺 img/ainotes/tag.png（小纸条频道标志，她 10-02 选的吊牌爪爪）")
+        self.assertLessEqual(tag.stat().st_size, 40 * 1024, "tag.png 超过 40KB")
         m = re.search(r'<p class="kr-intro">([^<]+)</p>', self.html)
         self.assertIsNotNone(m)
         self.assertIn("人机百科", m.group(1))
