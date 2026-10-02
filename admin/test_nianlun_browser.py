@@ -142,7 +142,7 @@ class NianlunBrowserTests(unittest.TestCase):
             for id_, it in by_id.items():
                 with self.subTest(item=id_):
                     img = page.locator(f"#{id_} .nl-battery")
-                    self.assertEqual(img.get_attribute("src"), f"img/nianlun/battery-{it['level']}.png")
+                    self.assertEqual(img.get_attribute("src"), f"img/nianlun/battery-{it['level']}.svg")
                     self.assertEqual(img.get_attribute("alt"), f"重要度 {it['level']}／5")
                     chips = page.locator(f"#{id_} .nl-tags .chip").all_inner_texts()
                     name = next(m["name"] for m in MEMBERS if m["id"] == it["member"])
