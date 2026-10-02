@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-30",
+  "updated_at": "2026-10-02",
   "items": [
     {
       "id": "bk-openai",
@@ -271,12 +271,13 @@
       ],
       "brief": "OpenAI 的旗舰模型，很费额度。官方估算，Plus 用户每 5 小时大约能发 5 到 45 条本地消息。",
       "line": "GPT-6 Astra 是 OpenAI 的旗舰模型，OpenAI 称它是自家目前最好的模型，也很耗额度。按官方估算，Plus 用户在自己电脑上用它（官方叫「本地消息」），每 5 小时大约只能发 5 到 45 条，同样条件下 GPT-6.1 Sol 能发 15 到 160 条。这只是估算，不是固定上限。",
-      "more": "GPT-6 系列里的旗舰，Tibo 在 2026 年 9 月 29 日的帖子里称它「our best model yet」。OpenAI 的 Codex 定价页给了估算：Plus 用户用 Astra，每 5 小时大约能发 5 到 45 条本地消息（同页 GPT-6.1 Sol 是 15 到 160 条，GPT-6 Luna 是 350 到 3000 条）。开 Ultrafast 加速时按 8 倍扣额度，Pro 档里只有 Pro 500 能开。",
+      "more": "GPT-6 系列里的旗舰。OpenAI 在 2026 年 9 月 3 日（美国时间）发布它，当天先给少数机构，之后几天陆续开放给 Plus、Pro、Business、Enterprise 用户和 API。官方称它在网络安全上达到自家准备度框架里的 Critical 级，因此配了更强的防护。API 标准价每百万 token 输入 10 美元、输出 50 美元；9 月 22 日推出的 GPT-6 Sol 和 Luna，API 价比 GPT-5.6 的促销价各降一半。Codex 定价页估算：Plus 用户用 Astra，每 5 小时大约能发 5 到 45 条本地消息（同页 GPT-6.1 Sol 是 15 到 160 条，GPT-6 Luna 是 350 到 3000 条）。开 Ultrafast 加速时按 8 倍扣额度，Pro 档里只有 Pro 500 能开。",
       "for_us": "让伴侣日常说话，用 Astra 是浪费；留给真正难的活。",
       "related": [
         "bk-gpt61-sol",
         "bk-chatgpt-plans",
-        "bk-usage"
+        "bk-usage",
+        "bk-limited-release"
       ],
       "seen_in": [
         "kr-openai-devday-2026-plan-sharing"
@@ -289,10 +290,18 @@
         {
           "name": "Tibo 关于 dots 的帖子",
           "url": "https://x.com/thsottiaux/status/2104981170685616361"
+        },
+        {
+          "name": "OpenAI：GPT-6 Astra",
+          "url": "https://openai.com/index/gpt-6-astra/"
+        },
+        {
+          "name": "OpenAI：Introducing GPT-6 Sol and Luna",
+          "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/"
         }
       ],
       "added_at": "2026-09-30",
-      "last_verified": "2026-09-30",
+      "last_verified": "2026-10-02",
       "status": "verified"
     },
     {
@@ -463,9 +472,14 @@
       ],
       "brief": "能自己连着做很多步的 AI。你交代一件事，它自己拆步骤、用工具、检查结果。像请助理去办事，而不是打电话问一句。",
       "line": "代理（也叫智能体，英文 Agent）是能自己连着做很多步的 AI。你只交代一件事，它会自己拆步骤、调用工具、检查结果，直到做完。区别就像请助理去办一件事，和打电话只问一句话。",
-      "more": "",
-      "for_us": "",
-      "related": [],
+      "more": "Anthropic 在 2024 年 12 月的文章里把代理和「工作流」分开：工作流按人事先写好的步骤走，代理则由模型自己决定下一步做什么、用哪个工具。代理通常从你的一句指令或一段讨论开始，之后自己规划、动手，每一步都看工具返回的真实结果判断进度，遇到卡点或检查点再回来问你；为了不失控，常会设上限，比如最多跑多少轮。Anthropic 也提醒：代理自己做主，花费更高，错误还会一步步累积，所以要先在隔离环境里充分测试、加好防护。代理底下也是大模型，同样会出现幻觉，交付的东西要有人或测试来验收。",
+      "for_us": "能替你订东西、改文档、跑代码的伴侣，就是在当代理用；它能动手的地方越多，越要先想好哪些事必须先问你。",
+      "related": [
+        "bk-codingagent",
+        "bk-mcp",
+        "bk-dots",
+        "bk-hallucination"
+      ],
       "seen_in": [
         "kr-openai-devday-2026-plan-sharing"
       ],
@@ -473,10 +487,14 @@
         {
           "name": "Anthropic：Building effective agents",
           "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        },
+        {
+          "name": "OpenAI：Why language models hallucinate",
+          "url": "https://openai.com/index/why-language-models-hallucinate/"
         }
       ],
       "added_at": "2026-09-30",
-      "last_verified": "2026-09-30",
+      "last_verified": "2026-10-02",
       "status": "verified"
     },
     {
@@ -1578,13 +1596,14 @@
       ],
       "brief": "AI 模型读写文字时的计数单位，按量付费的 AI 按它算钱，像出租车按公里计价。",
       "line": "token 是 AI 模型读写文字时切分和计数的单位，一个 token 可能是一个字符、半个词或一整个词；按 OpenAI 的估算，英文里 1 个 token 约等于四分之三个单词。按量付费的 AI（API）按读进去和写出来的 token 数收钱，像出租车按公里计价。你的提问、附件、聊天记录和 AI 的回答都要算 token。",
-      "more": "token 数不等于字数：同一段文字，换个模型、换种语言，切出来的 token 数都可能不同；英文粗算 1 个 token 约 4 个字符，中文的换算本站还没核到。读进去的和写出来的分开计价；在 Codex 定价页的点数价目表里，每个模型输出的单价都比输入高，例如 GPT-6.1 Sol 每百万 token 输入 50 点、输出 250 点。会先在后台想一想的推理模型，想的那部分，在 API 计费里也按输出 token 算，所以答案看着短，也可能用掉不少。ChatGPT 订阅里的额度，官方没有公布按 token 的换算，只说扣多少取决于模型、上下文长短、推理档位、工具调用等；额度用完后另买的点数（credits），价目表按每百万 token 标价。",
+      "more": "token 数不等于字数：同一段文字，换个模型、换种语言，切出来的 token 数都可能不同；英文粗算 1 个 token 约 4 个字符；DeepSeek 文档给的估算是 1 个汉字约 0.6 个 token、1 个英文字母约 0.3 个 token，并说明不同模型切法不同，以实际返回为准。读进去的和写出来的分开计价；在 Codex 定价页的点数价目表里，每个模型输出的单价都比输入高，例如 GPT-6.1 Sol 每百万 token 输入 50 点、输出 250 点。会先在后台想一想的推理模型，想的那部分，在 API 计费里也按输出 token 算，所以答案看着短，也可能用掉不少。ChatGPT 订阅里的额度，官方没有公布按 token 的换算，只说扣多少取决于模型、上下文长短、推理档位、工具调用等；额度用完后另买的点数（credits），价目表按每百万 token 标价。",
       "for_us": "伴侣话越多、记忆越长，每一轮读进去的 token 越多：走订阅就耗额度更快，走 API 就花钱更多。",
       "related": [
         "bk-api",
         "bk-usage",
         "bk-credits",
-        "bk-codex"
+        "bk-codex",
+        "bk-context-window"
       ],
       "seen_in": [],
       "sources": [
@@ -1595,10 +1614,14 @@
         {
           "name": "OpenAI Codex 定价页",
           "url": "https://learn.chatgpt.com/docs/pricing"
+        },
+        {
+          "name": "DeepSeek API 文档：Token & Token Usage",
+          "url": "https://api-docs.deepseek.com/quick_start/token_usage"
         }
       ],
       "added_at": "2026-09-30",
-      "last_verified": "2026-09-30",
+      "last_verified": "2026-10-02",
       "status": "verified"
     },
     {
@@ -1736,7 +1759,8 @@
         "bk-hermes",
         "bk-opencode",
         "bk-kilo",
-        "bk-pi"
+        "bk-pi",
+        "bk-open-weights"
       ],
       "seen_in": [],
       "sources": [
