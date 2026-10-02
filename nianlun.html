@@ -42,11 +42,11 @@
   <details class="nl-legend">
     <summary>电池怎么看</summary>
     <ul>
-      <li><img src="img/nianlun/battery-5.png" width="24" height="24" alt="5 格"><span>新一代旗舰，或改变全行业价格</span></li>
-      <li><img src="img/nianlun/battery-4.png" width="24" height="24" alt="4 格"><span>旗舰迭代、重要新产品，或订阅和额度规则大改</span></li>
-      <li><img src="img/nianlun/battery-3.png" width="24" height="24" alt="3 格"><span>新功能上线</span></li>
-      <li><img src="img/nianlun/battery-2.png" width="24" height="24" alt="2 格"><span>小版本，或价格小调</span></li>
-      <li><img src="img/nianlun/battery-1.png" width="24" height="24" alt="1 格"><span>修复、文档变更</span></li>
+      <li><img src="img/nianlun/battery-5.svg" width="48" height="24" alt="5 格"><span>新一代旗舰，或改变全行业价格</span></li>
+      <li><img src="img/nianlun/battery-4.svg" width="48" height="24" alt="4 格"><span>旗舰迭代、重要新产品，或订阅和额度规则大改</span></li>
+      <li><img src="img/nianlun/battery-3.svg" width="48" height="24" alt="3 格"><span>新功能上线</span></li>
+      <li><img src="img/nianlun/battery-2.svg" width="48" height="24" alt="2 格"><span>小版本，或价格小调</span></li>
+      <li><img src="img/nianlun/battery-1.svg" width="48" height="24" alt="1 格"><span>修复、文档变更</span></li>
     </ul>
   </details>
 
@@ -146,7 +146,7 @@
     var out = '<article class="nl-item" id="' + esc(it.id) + '">';
     // 时间直接从 at 字符串取时分（at 一律是 +08:00 东八区的 ISO 串），不做时区换算
     out += '<p class="nl-time"><time datetime="' + esc(it.at) + '">' + esc(String(it.at).slice(11, 16)) + "</time></p>";
-    out += '<img class="nl-battery" src="img/nianlun/battery-' + esc(it.level) + '.png" width="40" height="40"' +
+    out += '<img class="nl-battery" src="img/nianlun/battery-' + esc(it.level) + '.svg" width="64" height="32"' +
       ' alt="重要度 ' + esc(it.level) + '／5" loading="lazy">';
     var chips = ['<span class="chip">' + esc(MEMBER_NAME[it.member] || it.member) + "</span>"];
     (it.tags || []).forEach(function (t) { chips.push('<span class="chip">' + esc(t) + "</span>"); });

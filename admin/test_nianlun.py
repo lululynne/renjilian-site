@@ -185,7 +185,7 @@ class NianlunPageTests(unittest.TestCase):
 
     def test_images_exist_and_stay_small(self) -> None:
         for n in range(1, 6):
-            p = ROOT / "img" / "nianlun" / f"battery-{n}.png"
+            p = ROOT / "img" / "nianlun" / f"battery-{n}.svg"
             with self.subTest(img=p.name):
                 self.assertTrue(p.exists(), f"缺 {p.name}")
                 self.assertLessEqual(p.stat().st_size, 40 * 1024, f"{p.name} 超过 40KB")
@@ -193,7 +193,7 @@ class NianlunPageTests(unittest.TestCase):
         self.assertTrue(ring.exists(), "缺 ring.png")
         self.assertLessEqual(ring.stat().st_size, 40 * 1024)
         for n in range(1, 6):
-            self.assertIn(f"battery-{n}.png", self.html)
+            self.assertIn(f"battery-{n}.svg", self.html)
         self.assertIn("ring.png", self.html)
 
 
