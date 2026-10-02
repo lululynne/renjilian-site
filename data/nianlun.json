@@ -83,7 +83,8 @@
         }
       ],
       "read": "",
-      "notes": []
+      "notes": [],
+      "domain": "模型"
     },
     {
       "id": "nl-20261001-gemini-skills",
@@ -106,7 +107,8 @@
         }
       ],
       "read": "",
-      "notes": []
+      "notes": [],
+      "domain": "门路"
     },
     {
       "id": "nl-20261001-gems-opal-sunset",
@@ -130,7 +132,8 @@
         }
       ],
       "read": "",
-      "notes": []
+      "notes": [],
+      "domain": "停服"
     },
     {
       "id": "nl-20260930-claude-for-government-ga",
@@ -149,7 +152,8 @@
         }
       ],
       "read": "",
-      "notes": []
+      "notes": [],
+      "domain": "门路"
     },
     {
       "id": "nl-20260930-sonnet-4-5-deprecation",
@@ -173,7 +177,8 @@
         }
       ],
       "read": "",
-      "notes": []
+      "notes": [],
+      "domain": "停服"
     },
     {
       "id": "nl-20260930-deepseek-ascend-kernels",
@@ -197,7 +202,8 @@
         }
       ],
       "read": "",
-      "notes": []
+      "notes": [],
+      "domain": "住处"
     },
     {
       "id": "nl-20260930-plugin-extensions",
@@ -221,7 +227,8 @@
       "read": "",
       "notes": [
         "bk-plugin-ext"
-      ]
+      ],
+      "domain": "门路"
     },
     {
       "id": "nl-20260930-plan-sharing",
@@ -251,7 +258,8 @@
       "notes": [
         "bk-usage",
         "bk-sub"
-      ]
+      ],
+      "domain": "模型"
     },
     {
       "id": "nl-20260930-codex-cloud",
@@ -275,7 +283,8 @@
       "read": "",
       "notes": [
         "bk-codex-cloud"
-      ]
+      ],
+      "domain": "门路"
     },
     {
       "id": "nl-20260930-chatgpt-space",
@@ -299,7 +308,8 @@
       "read": "",
       "notes": [
         "bk-chatgpt-space"
-      ]
+      ],
+      "domain": "门路"
     },
     {
       "id": "nl-20260930-gpt-6-1-sol",
@@ -324,7 +334,8 @@
       "read": "",
       "notes": [
         "bk-gpt61-sol"
-      ]
+      ],
+      "domain": "模型"
     },
     {
       "id": "nl-20260930-dots",
@@ -349,7 +360,8 @@
       "read": "",
       "notes": [
         "bk-dots"
-      ]
+      ],
+      "domain": "门路"
     },
     {
       "id": "nl-20260929-pro-200",
@@ -375,7 +387,8 @@
       "notes": [
         "bk-chatgpt-plans",
         "bk-tibo"
-      ]
+      ],
+      "domain": "模型"
     }
   ]
 }
