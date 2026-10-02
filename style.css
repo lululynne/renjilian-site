@@ -102,6 +102,7 @@ nav.boards span.soon{
   background:transparent;border:1px solid transparent;border-bottom:2px solid transparent;
 }
 nav.boards a.on{border-bottom-color:var(--machine);color:var(--ink);font-weight:650}
+nav.boards a .nav-ico{width:18px;height:18px;margin-right:5px;flex:none}
 nav.boards span.soon{opacity:.6}
 
 /* ── 首页板块格：刊物方卡，已开放栏目用长春花描边标记 ── */

@@ -72,9 +72,12 @@ class SecondPersonShellTests(unittest.TestCase):
                 self.assertIsNotNone(nav, f"{page} 缺少 nav.boards")
                 self.assertEqual(tuple(ANCHOR.findall(nav.group(0))), NAV_ORDER,
                                  f"{page} 顶栏顺序不是 NAV_ORDER")
+                # 频道小标志（她 10-02 选、鲨宝画）：年轮蜗牛树桩、小纸条吊牌爪爪，16 页顶栏都带
+                self.assertIn('<img class="nav-ico" src="img/nianlun/ring.png"', nav.group(0), f"{page} 顶栏年轮缺小标志")
+                self.assertIn('<img class="nav-ico" src="img/ainotes/tag.png"', nav.group(0), f"{page} 顶栏小纸条缺小标志")
         pulse_nav = NAV_BLOCK.search(read("pulse.html")).group(0)
         self.assertIn('<a href="kanread.html" class="on">刊读</a>', pulse_nav)
-        self.assertIn('<a href="ainotes.html" class="on">小纸条</a>',
+        self.assertIn('<a href="ainotes.html" class="on"><img class="nav-ico" src="img/ainotes/tag.png" width="18" height="18" alt="">小纸条</a>',
                       NAV_BLOCK.search(read("ainotes.html")).group(0), "小纸条自己的顶栏要带选中态")
 
     def test_unopened_items_do_not_pollute_navigation(self) -> None:
