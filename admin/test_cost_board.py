@@ -162,9 +162,14 @@ class CostBoardDataTests(unittest.TestCase):
         self.assertIn('id="langZh"', html); self.assertIn('id="langEn"', html)
         for key in ("rowRoute", "whoReal", "draftHint", "hiddenCostTitle", "hiddenCost", "avgScope", "avgScopeHint"):
             self.assertEqual(js.count(f"{key}:"), 2, f"i18n 键 {key} 中英两包都要有")
-        self.assertIn('href="cost.html" class="on"', html)
+        # 10-02 起成本页在顶栏归「百宝箱」，自己在百宝箱子导航里亮
+        self.assertIn('href="baibao.html" class="on"', html)
+        self.assertIn('href="cost.html" class="here"', html)
+        # 10-02 起顶栏只留「百宝箱」一个入口，成本页从百宝箱子导航进
         for page in ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "nianlun.html", "ainotes.html", "changelog.html"):
-            self.assertIn('href="cost.html"', (ROOT / page).read_text(encoding="utf-8"), f"{page} 顶栏缺大模型成本")
+            self.assertIn('href="baibao.html"', (ROOT / page).read_text(encoding="utf-8"), f"{page} 顶栏缺百宝箱")
+        for page in ("baibao.html", "codex.html"):
+            self.assertIn('href="cost.html"', (ROOT / page).read_text(encoding="utf-8"), f"{page} 百宝箱子导航缺大模型成本")
 
 
 if __name__ == "__main__":

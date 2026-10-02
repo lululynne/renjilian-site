@@ -192,7 +192,7 @@ class NewPagesWearTheSiteShellButStayOutOfTheTopNav(unittest.TestCase):
                 self.assertIn("折光所 · AI 画风图鉴", html)
 
     def test_top_nav_has_the_same_real_routes(self) -> None:
-        real = {"index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "cost.html", "nianlun.html", "ainotes.html"}
+        real = {"index.html", "baibao.html", "kanread.html", "nianlun.html", "ainotes.html"}
         for page in NEW_PAGES:
             with self.subTest(page=page):
                 nav = re.search(r'<nav class="boards".*?</nav>', read(page), re.S)
