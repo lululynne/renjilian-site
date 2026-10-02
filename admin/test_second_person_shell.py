@@ -116,7 +116,7 @@ class SecondPersonShellTests(unittest.TestCase):
         self.assertNotIn("本周刊读", html, "刊读不锁周更，首页不写「本周」")
         hero = html[html.find('class="hero-copy"'):html.find("</section>", html.find('class="hero-copy"'))]
         self.assertIn("五个栏目", hero)
-        for name in ("刊读", "年轮", "小纸条", "百宝箱"):
+        for name in ("刊读", "年轮", "小纸条", "百宝箱", "注册一个号", "机友墙"):
             with self.subTest(name=name):
                 self.assertIn(name, hero)
 
