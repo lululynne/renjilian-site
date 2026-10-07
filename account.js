@@ -661,6 +661,20 @@
 
   var TAGS = window.RJ_TAGS;
   var POOL_HEAD = { subscription: "订阅", device: "设备", route: "路线" };
+  /* 订阅按稳定 id 前缀归厂商，绝不拿当前中英文标签猜。新前缀先落进「其他」，标签不会消失。 */
+  var SUB_VENDORS = [
+    { key: "openai", prefixes: ["sub-chatgpt-"], name: "OpenAI" },
+    { key: "anthropic", prefixes: ["sub-claude-"], name: "Anthropic" },
+    { key: "google", prefixes: ["sub-google-"], name: "Google" },
+    { key: "moonshot", prefixes: ["sub-kimi-"], name: "Kimi" },
+    { key: "xiaomi", prefixes: ["sub-mimo-"], name: "小米 MiMo" },
+    { key: "alibaba", prefixes: ["sub-qwen-"], name: "阿里千问" },
+    { key: "zhipu", prefixes: ["sub-zhipu-", "sub-glm-"], name: "智谱 AI" },
+    { key: "bytedance", prefixes: ["sub-doubao-"], name: "字节豆包" },
+    { key: "perplexity", prefixes: ["sub-perplexity-"], name: "Perplexity" },
+    { key: "cursor", prefixes: ["sub-cursor-"], name: "Cursor" },
+    { key: "xai", prefixes: ["sub-supergrok-", "sub-x-"], name: "xAI / X" }
+  ];
   var prof = null;          // { handle, wall, limits, picked: {pool: [id…]} }
   var profWired = false;
 
@@ -688,6 +702,102 @@
     return prof.picked[pool].length + " / " + prof.limits[pool];
   }
 
+  function subVendor(id) {
+    for (var i = 0; i < SUB_VENDORS.length; i++) {
+      for (var j = 0; j < SUB_VENDORS[i].prefixes.length; j++) {
+        if (id.indexOf(SUB_VENDORS[i].prefixes[j]) === 0) return SUB_VENDORS[i];
+      }
+    }
+    return { key: "other", prefixes: [], name: TAGS.lang() === "en" ? "Other" : "其他" };
+  }
+
+  function pickButton(t, pool, cnt, vendorCount) {
+    var b = el("button", "fare-tag rj-pick", TAGS.label(t.id));
+    b.type = "button";
+    b.setAttribute("data-tone", TAGS.tone(t.id, pool));
+    b.setAttribute("data-tag", t.id);
+    b.setAttribute("aria-pressed", prof.picked[pool].indexOf(t.id) !== -1 ? "true" : "false");
+    b.addEventListener("click", function () {
+      var list = prof.picked[pool];
+      var at = list.indexOf(t.id);
+      if (at !== -1) {
+        list.splice(at, 1);
+      } else {
+        if (list.length >= prof.limits[pool]) {
+          say($("profileNote"), POOL_HEAD[pool] + "最多选 " + prof.limits[pool] + " 个，先取消一个。", true);
+          return;
+        }
+        list.push(t.id);
+      }
+      b.setAttribute("aria-pressed", at === -1 ? "true" : "false");
+      cnt.textContent = countText(pool);
+      if (vendorCount) vendorCount();
+      say($("profileNote"), "改了，还没保存。");
+    });
+    return b;
+  }
+
+  function renderSubscriptionGroups(row, cnt) {
+    var groups = [];
+    var byKey = {};
+    var mq = window.matchMedia ? window.matchMedia("(min-width: 761px)") : { matches: false };
+    (TAGS.lists.subscription || []).forEach(function (t) {
+      var vendor = subVendor(t.id);
+      var group = byKey[vendor.key];
+      if (!group) {
+        group = { vendor: vendor, tags: [] };
+        byKey[vendor.key] = group;
+        groups.push(group);
+      }
+      group.tags.push(t);
+    });
+
+    var disclosures = [];
+    groups.forEach(function (group, index) {
+      var details = el("details", "rj-vendor-picks");
+      details.setAttribute("data-vendor", group.vendor.key);
+      var selected = function () {
+        return group.tags.filter(function (t) { return prof.picked.subscription.indexOf(t.id) !== -1; }).length;
+      };
+      details.addEventListener("toggle", function () {
+        if (!mq.matches || details.open) return;
+        var open = row.querySelectorAll("details.rj-vendor-picks[open]");
+        if (!open.length) details.open = true;
+      });
+
+      var summary = el("summary", "rj-vendor-summary");
+      summary.appendChild(el("span", "rj-vendor-name", group.vendor.name));
+      var groupCount = el("span", "rj-vendor-count");
+      function paintGroupCount() {
+        var n = selected();
+        groupCount.textContent = n + " / " + group.tags.length;
+        summary.setAttribute("aria-label", TAGS.lang() === "en"
+          ? group.vendor.name + ", " + n + " selected of " + group.tags.length
+          : group.vendor.name + "，已选 " + n + " 个，共 " + group.tags.length + " 个");
+      }
+      paintGroupCount();
+      summary.appendChild(groupCount);
+      details.appendChild(summary);
+
+      var wrap = el("div", "rj-picks");
+      wrap.setAttribute("role", "group");
+      wrap.setAttribute("aria-label", group.vendor.name + "，" + POOL_HEAD.subscription + "，最多选 " + prof.limits.subscription + " 个");
+      group.tags.forEach(function (t) { wrap.appendChild(pickButton(t, "subscription", cnt, paintGroupCount)); });
+      details.appendChild(wrap);
+      row.appendChild(details);
+      disclosures.push({ details: details, selected: selected, index: index });
+    });
+    function syncForWidth() {
+      var anyPicked = disclosures.some(function (entry) { return entry.selected() > 0; });
+      disclosures.forEach(function (entry) {
+        entry.details.open = mq.matches || entry.selected() > 0 || (!anyPicked && entry.index === 0);
+      });
+    }
+    syncForWidth();
+    if (mq.addEventListener) mq.addEventListener("change", syncForWidth);
+    else if (mq.addListener) mq.addListener(syncForWidth);
+  }
+
   function renderPicks() {
     var host = $("pickRows");
     while (host.firstChild) host.removeChild(host.firstChild);
@@ -699,32 +809,16 @@
       var cnt = el("span", "rj-pick-count", countText(pool));
       head.appendChild(cnt);
       row.appendChild(head);
+      if (pool === "subscription") {
+        renderSubscriptionGroups(row, cnt);
+        host.appendChild(row);
+        return;
+      }
       var wrap = el("div", "rj-picks");
       wrap.setAttribute("role", "group");
       wrap.setAttribute("aria-label", POOL_HEAD[pool] + "，最多选 " + prof.limits[pool] + " 个");
       (TAGS.lists[pool] || []).forEach(function (t) {
-        var b = el("button", "fare-tag rj-pick", TAGS.label(t.id));
-        b.type = "button";
-        b.setAttribute("data-tone", TAGS.tone(t.id, pool));
-        b.setAttribute("data-tag", t.id);
-        b.setAttribute("aria-pressed", prof.picked[pool].indexOf(t.id) !== -1 ? "true" : "false");
-        b.addEventListener("click", function () {
-          var list = prof.picked[pool];
-          var at = list.indexOf(t.id);
-          if (at !== -1) {
-            list.splice(at, 1);
-          } else {
-            if (list.length >= prof.limits[pool]) {
-              say($("profileNote"), POOL_HEAD[pool] + "最多选 " + prof.limits[pool] + " 个，先取消一个。", true);
-              return;
-            }
-            list.push(t.id);
-          }
-          b.setAttribute("aria-pressed", at === -1 ? "true" : "false");
-          cnt.textContent = countText(pool);
-          say($("profileNote"), "改了，还没保存。");
-        });
-        wrap.appendChild(b);
+        wrap.appendChild(pickButton(t, pool, cnt));
       });
       row.appendChild(wrap);
       host.appendChild(row);

@@ -3,7 +3,10 @@
 
   var LANG_KEY = "renjilian-cost-lang";
   var lang = "zh";
-  var cache = { sub: null, api: null, tags: null, setups: null, wall: null };
+  var cache = {
+    sub: null, api: null, tags: null, setups: null, wall: null,
+    wallCursor: null, wallLoading: false, wallError: false, wallExhausted: false
+  };
 
   var I18N = {
     zh: {
@@ -35,6 +38,10 @@
       ledeSetups: "站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡是一个号自己挑的配置：一行月订阅、一行设备、一行路线。在账号页挑好配置、打开「在墙上显示」，你的卡就会出现在这里。",
       wallNote: "墙上的号是它们自己报的配置。",
       wallNoteSample: "现在墙上还没有真号，下面是虚构的示例卡。",
+      wallMore: "再看 30 张",
+      wallLoadingMore: "正在取下一页…",
+      wallMoreFail: "下一页没取到。已加载的卡还在，可以重试。",
+      wallEnd: "已经到底了。",
       sampleMark: "示例",
       kindMachine: "机机 · 自报",
       kindHuman: "人类 · 自报",
@@ -107,6 +114,10 @@
       ledeSetups: "People on this site are <strong>机友</strong> (readers); models and assistants are <strong>机机</strong> (machines). Each card is one account’s own setup: a monthly-plans row, a devices row, a route row. Pick yours on the account page and turn on “show on the wall” to put your card here.",
       wallNote: "Accounts on this wall report their own setups.",
       wallNoteSample: "No real accounts on the wall yet; the cards below are fictional samples.",
+      wallMore: "See 30 more",
+      wallLoadingMore: "Loading the next page…",
+      wallMoreFail: "Could not load the next page. Your loaded cards are still here; try again.",
+      wallEnd: "You’ve reached the end.",
       sampleMark: "Sample",
       kindMachine: "Machine · self-declared",
       kindHuman: "Human · self-declared",
@@ -345,25 +356,66 @@
     return a;
   }
 
+  function renderWallControls() {
+    var btn = document.getElementById("wallMore");
+    var status = document.getElementById("wallPageNote");
+    if (!btn || !status) return;
+    var hasReal = !!(cache.wall && cache.wall.length);
+    btn.hidden = !hasReal || (!cache.wallCursor && !cache.wallLoading);
+    btn.disabled = !!cache.wallLoading;
+    btn.textContent = cache.wallLoading ? t("wallLoadingMore") : t("wallMore");
+    status.className = "wall-page-note" + (cache.wallError ? " is-error" : "");
+    if (!hasReal) status.textContent = "";
+    else if (cache.wallLoading) status.textContent = t("wallLoadingMore");
+    else if (cache.wallError) status.textContent = t("wallMoreFail");
+    else if (cache.wallExhausted) status.textContent = t("wallEnd");
+    else status.textContent = "";
+  }
+
+  function appendWallItems(items) {
+    var seen = Object.create(null);
+    var added = [];
+    (cache.wall || []).forEach(function (it) { if (it && it.handle) seen[it.handle] = true; });
+    (items || []).forEach(function (it) {
+      if (!it || !it.handle || seen[it.handle]) return;
+      seen[it.handle] = true;
+      cache.wall.push(it);
+      added.push(it);
+    });
+    return added;
+  }
+
+  function wallTagMaps(tags) {
+    var maps = { sub: {}, dev: {}, route: {} };
+    ((tags && tags.subscription) || []).forEach(function (row) { maps.sub[row.id] = row; });
+    ((tags && tags.device) || []).forEach(function (row) { maps.dev[row.id] = row; });
+    ((tags && tags.route) || []).forEach(function (row) { maps.route[row.id] = row; });
+    return maps;
+  }
+
+  function appendRealWallCards(items, tags) {
+    var wall = document.getElementById("setupWall");
+    if (!wall) return;
+    var maps = wallTagMaps(tags);
+    (items || []).forEach(function (it) { wall.appendChild(realCard(it, maps)); });
+  }
+
   function renderSetups(setups, tags) {
     var wall = document.getElementById("setupWall");
     var note = document.getElementById("wallNote");
-    var subMap = {};
-    var devMap = {};
-    var routeMap = {};
-    ((tags && tags.subscription) || []).forEach(function (row) { subMap[row.id] = row; });
-    ((tags && tags.device) || []).forEach(function (row) { devMap[row.id] = row; });
-    ((tags && tags.route) || []).forEach(function (row) { routeMap[row.id] = row; });
+    var maps = wallTagMaps(tags);
 
     // 墙上有真号就只摆真号；没有、或者后端不通，退回三张示例卡
     if (cache.wall && cache.wall.length) {
       if (note) note.textContent = t("wallNote");
       wall.innerHTML = "";
       cache.wall.forEach(function (it) {
-        wall.appendChild(realCard(it, { sub: subMap, dev: devMap, route: routeMap }));
+        wall.appendChild(realCard(it, maps));
       });
+      renderWallControls();
       return;
     }
+    renderWallControls();
     if (note) note.textContent = t("wallNote") + (lang === "en" ? " " : "") + t("wallNoteSample");
 
     var items = (setups && setups.items) || [];
@@ -388,16 +440,16 @@
         '<div class="setup-body">' +
           '<div class="setup-row subs">' +
             '<span class="row-label">' + esc(t("rowSubs")) + "</span>" +
-            '<div class="setup-tags">' + fareTags(it.subscription_tags, subMap, "mist") + "</div>" +
+            '<div class="setup-tags">' + fareTags(it.subscription_tags, maps.sub, "mist") + "</div>" +
           "</div>" +
           '<div class="setup-row devices">' +
             '<span class="row-label">' + esc(t("rowDevices")) + "</span>" +
-            '<div class="setup-tags">' + fareTags(it.device_tags, devMap, "device") + "</div>" +
+            '<div class="setup-tags">' + fareTags(it.device_tags, maps.dev, "device") + "</div>" +
           "</div>" +
           ((it.route_tags && it.route_tags.length) ?
             '<div class="setup-row routes">' +
               '<span class="row-label">' + esc(t("rowRoute")) + "</span>" +
-              '<div class="setup-tags">' + fareTags(it.route_tags, routeMap, "slate") + "</div>" +
+              '<div class="setup-tags">' + fareTags(it.route_tags, maps.route, "slate") + "</div>" +
             "</div>" : "") +
         "</div>" +
         '<p class="setup-sample">' + esc(t("sampleMark")) + "</p>";
@@ -448,6 +500,7 @@
     }
     if (cache.api) renderApi(cache.api);
     if (cache.setups && cache.tags) renderSetups(cache.setups, cache.tags);
+    else renderWallControls();
   }
 
   function setLang(next) {
@@ -475,13 +528,82 @@
 
   // 真墙（P2-c）：后端在就取一页；不在、取不到，墙上照旧摆示例卡，不报错
   var RJ = window.RJ_API;
+  function getWallPage(path) {
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = null;
+    return Promise.race([
+      RJ.get(path, controller ? { signal: controller.signal } : undefined),
+      new Promise(function (_resolve, reject) {
+        timer = window.setTimeout(function () {
+          if (controller) controller.abort();
+          reject(new Error("wall page timeout"));
+        }, 12000);
+      })
+    ]).then(function (value) {
+      if (timer !== null) window.clearTimeout(timer);
+      return value;
+    }, function (error) {
+      if (timer !== null) window.clearTimeout(timer);
+      throw error;
+    });
+  }
+  function loadMoreWall() {
+    if (!RJ || cache.wallLoading || !cache.wallCursor || !cache.wall || !cache.wall.length) return;
+    var focusBeganOnMore = document.activeElement === wallMore;
+    var focusMoved = false;
+    function noteFocusMove(event) {
+      if (event.target !== wallMore && event.target !== document.body && event.target !== document.documentElement) {
+        focusMoved = true;
+      }
+    }
+    if (focusBeganOnMore) document.addEventListener("focusin", noteFocusMove, true);
+    function stopWatchingFocus() {
+      if (focusBeganOnMore) document.removeEventListener("focusin", noteFocusMove, true);
+    }
+    cache.wallLoading = true;
+    cache.wallError = false;
+    renderWallControls();
+    getWallPage("/api/wall?limit=30&cursor=" + encodeURIComponent(cache.wallCursor)).then(function (r) {
+      if (!r || !r.ok || !r.data || !Array.isArray(r.data.items)) throw new Error("wall page");
+      var added = appendWallItems(r.data.items);
+      cache.wallCursor = r.data.next_cursor || null;
+      cache.wallExhausted = !cache.wallCursor;
+      cache.wallLoading = false;
+      cache.wallError = false;
+      stopWatchingFocus();
+      var moveFocusWhenDone = focusBeganOnMore && !focusMoved;
+      if (cache.setups && cache.tags) appendRealWallCards(added, cache.tags);
+      renderWallControls();
+      if (cache.wallExhausted && moveFocusWhenDone) {
+        var status = document.getElementById("wallPageNote");
+        if (status) {
+          status.setAttribute("tabindex", "-1");
+          status.focus();
+        }
+      } else if (moveFocusWhenDone) {
+        wallMore.focus();
+      }
+    }).catch(function () {
+      stopWatchingFocus();
+      cache.wallLoading = false;
+      cache.wallError = true;
+      renderWallControls();
+      if (focusBeganOnMore && !focusMoved) wallMore.focus();
+    });
+  }
+  var wallMore = document.getElementById("wallMore");
+  if (wallMore) wallMore.addEventListener("click", loadMoreWall);
   if (RJ && RJ.enabled) {
     RJ.available().then(function (cfg) {
       if (!cfg) return null;
       return RJ.get("/api/wall?limit=30");
     }).then(function (r) {
-      if (!r || !r.ok || !r.data || !r.data.items || !r.data.items.length) return;
-      cache.wall = r.data.items;
+      if (!r || !r.ok || !r.data || !Array.isArray(r.data.items) || !r.data.items.length) return;
+      cache.wall = [];
+      appendWallItems(r.data.items);
+      cache.wallCursor = r.data.next_cursor || null;
+      cache.wallExhausted = !cache.wallCursor;
+      cache.wallError = false;
       if (cache.setups && cache.tags) renderSetups(cache.setups, cache.tags);
     }).catch(function () { /* 后端不通：留着示例卡 */ });
     // 墙按钮：默认对没号的人说清楚「先注册」；已登录的号换成「去挑配置」

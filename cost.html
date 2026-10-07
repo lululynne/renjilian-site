@@ -68,6 +68,12 @@
 .cost-cta-row{margin:6px 0 4px}
 .cost-cta{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--ink);border-radius:6px;color:var(--ink);text-decoration:none;font:600 13px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.04em}
 .cost-cta:hover{background:var(--ink);color:#fff}
+.wall-more{text-align:center;margin:-16px 0 24px}
+.wall-more button{min-height:44px;min-width:132px;padding:8px 20px;border:1px solid var(--ink);border-radius:999px;background:var(--card);color:var(--ink);font:650 13px/1.2 "Avenir Next","PingFang SC",sans-serif;cursor:pointer}
+.wall-more button:hover{background:var(--ink);color:var(--card)}
+.wall-more button[disabled]{opacity:.55;cursor:default}
+.wall-page-note{min-height:1.7em;margin:7px 0 0;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
+.wall-page-note.is-error{color:var(--toast-error)}
 .cost-table .avg-scope{display:block;font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em;margin-top:2px}
 .cost-table .derived-tag{display:inline-block;margin-left:6px;font-size:10px;letter-spacing:.06em;padding:1px 5px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);vertical-align:1px}
 .cost-spark{display:block;width:88px;height:28px}
@@ -190,6 +196,10 @@
     <p class="cost-cta-row"><a class="cost-cta" id="wallCta" href="account.html" data-i18n="wallCtaGuest">没号？注册后挑好配置就能上墙 →</a></p>
     <div class="setup-wall" id="setupWall" aria-live="polite">
       <p class="log-state" data-i18n="loadingSetups">正在摆卡…</p>
+    </div>
+    <div class="wall-more">
+      <button id="wallMore" type="button" hidden>再看 30 张</button>
+      <p class="wall-page-note" id="wallPageNote" role="status" aria-live="polite"></p>
     </div>
     <p class="setup-note" id="wallNote">墙上的号是它们自己报的配置。</p>
   </section>

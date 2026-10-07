@@ -19,6 +19,7 @@ import json
 import os
 import threading
 import unittest
+import urllib.parse
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -118,6 +119,347 @@ class SampleWallTests(_Base):
             ctx.close()
 
 
+class P2cFinishBrowserTests(_Base):
+    """P2-c 收尾：手机厂商折叠与真墙游标翻页，不依赖本机 Worker。"""
+
+    @staticmethod
+    def json(route, data, status: int = 200) -> None:
+        route.fulfill(
+            status=status,
+            content_type="application/json",
+            headers={
+                "access-control-allow-origin": SITE,
+                "access-control-allow-credentials": "true",
+            },
+            body=json.dumps(data, ensure_ascii=False),
+        )
+
+    def account_api(self, picked=None):
+        picked = picked or {"subscription": [], "device": [], "route": []}
+
+        def handler(route) -> None:
+            path = urllib.parse.urlsplit(route.request.url).path
+            if path == "/api/config":
+                data = {"ok": True}
+            elif path == "/api/me":
+                data = {"ok": True, "signed_in": True, "handle": "foldtest", "kind": "human",
+                        "display_name": None, "probation_remaining": 0, "unread_count": 0}
+            elif path == "/api/me/profile":
+                data = {"ok": True, "handle": "foldtest", "wall_public": False,
+                        "limits": {"subscription": 8, "device": 6, "route": 3}, "tags": picked}
+            elif path == "/api/me/bindings":
+                data = {"ok": True, "items": [], "slots": {"left": 3}}
+            elif path == "/api/me/notifications":
+                data = {"ok": True, "items": [], "next_cursor": None, "unread_count": 0}
+            else:
+                data = {"ok": True, "items": []}
+            self.json(route, data)
+
+        return handler
+
+    def open_mock_account(self, picked=None, tags=None, viewport=VP):
+        ctx = self.browser.new_context(viewport=viewport)
+        page = ctx.new_page()
+        errors: list[str] = []
+        page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        page.route("http://mock.test/**", self.account_api(picked))
+        if tags is not None:
+            page.route("**/data/llm-cost-tags.json", lambda route: self.json(route, tags))
+        page.goto(f"{SITE}/account.html?api=http%3A%2F%2Fmock.test", wait_until="networkidle")
+        page.locator("#pickRows details.rj-vendor-picks").first.wait_for(state="attached")
+        return ctx, page, errors
+
+    def test_mobile_subscription_vendors_group_all_53_and_restore_selected_group(self) -> None:
+        picked = {"subscription": ["sub-claude-pro-monthly"], "device": [], "route": []}
+        ctx, page, errors = self.open_mock_account(picked)
+        try:
+            subs = page.locator('#pickRows [data-pool="subscription"] button[data-tag]')
+            self.assertEqual(subs.count(), 53)
+            groups = page.locator('#pickRows [data-pool="subscription"] details.rj-vendor-picks')
+            self.assertEqual(groups.count(), 11)
+            representatives = {
+                "openai": "sub-chatgpt-go-monthly",
+                "anthropic": "sub-claude-pro-monthly",
+                "google": "sub-google-ai-plus-monthly",
+                "moonshot": "sub-kimi-andante-monthly",
+                "xiaomi": "sub-mimo-lite-monthly",
+                "alibaba": "sub-qwen-advanced-monthly",
+                "zhipu": "sub-glm-coding-lite-monthly",
+                "bytedance": "sub-doubao-standard-monthly",
+                "perplexity": "sub-perplexity-pro-monthly",
+                "cursor": "sub-cursor-pro-monthly",
+                "xai": "sub-x-premium-monthly",
+            }
+            for vendor, tag in representatives.items():
+                self.assertEqual(
+                    page.locator(f'details[data-vendor="{vendor}"] button[data-tag="{tag}"]').count(), 1,
+                    f"{tag} 没归进 {vendor}",
+                )
+            self.assertEqual(page.locator('details[data-vendor="zhipu"] button[data-tag^="sub-zhipu-"]').count(), 2)
+            self.assertEqual(page.locator('details[data-vendor="xai"] button[data-tag^="sub-supergrok-"]').count(), 6)
+            selected = page.locator('details[data-vendor="anthropic"]')
+            self.assertTrue(selected.get_attribute("open") is not None, "服务端选中标签所在厂商没有展开")
+            self.assertTrue(page.locator('button[data-tag="sub-claude-pro-monthly"]').is_visible())
+            self.assertIn("1 / 4", selected.locator("summary").inner_text())
+
+            closed_summary = page.locator('details[data-vendor="google"] > summary')
+            closed_chevron = closed_summary.evaluate("e => getComputedStyle(e, '::before').transform")
+            closed_summary.click()
+            page.wait_for_timeout(180)
+            open_chevron = closed_summary.evaluate("e => getComputedStyle(e, '::before').transform")
+            self.assertNotEqual(closed_chevron, open_chevron, "厂商组开合没有可见指示")
+
+            first = groups.first
+            first.locator("summary").focus()
+            first.locator("summary").press("Enter")
+            self.assertIsNotNone(first.get_attribute("open"), "原生 summary 键盘操作没有展开")
+            sizes = page.locator(".rj-vendor-summary, button.fare-tag.rj-pick").evaluate_all(
+                "els => els.filter(e => e.offsetParent !== null).map(e => {const r=e.getBoundingClientRect(); return [r.width,r.height]})"
+            )
+            self.assertTrue(sizes)
+            self.assertTrue(all(w >= 44 and h >= 44 for w, h in sizes), sizes)
+            page.set_viewport_size({"width": 1280, "height": 900})
+            page.wait_for_function("document.querySelectorAll('details.rj-vendor-picks[open]').length === 11")
+            page.set_viewport_size(VP)
+            page.wait_for_function("document.querySelectorAll('details.rj-vendor-picks[open]').length === 1")
+            self.assertIsNotNone(selected.get_attribute("open"), "转回手机后选中厂商被折起来了")
+            page.locator('button[data-tag="sub-claude-pro-monthly"]').click()
+            page.set_viewport_size({"width": 1280, "height": 900})
+            page.wait_for_function("document.querySelectorAll('details.rj-vendor-picks[open]').length === 11")
+            page.set_viewport_size(VP)
+            page.wait_for_function("document.querySelectorAll('details.rj-vendor-picks[open]').length === 1")
+            self.assertIsNotNone(groups.first.get_attribute("open"), "取消最后一个已选项后，手机首组没有恢复为默认展开")
+            self.no_overflow(page, "53 个订阅标签按厂商折叠")
+            self.assertEqual(errors, [])
+        finally:
+            ctx.close()
+
+    def test_unknown_subscription_prefix_goes_to_other_and_desktop_starts_expanded(self) -> None:
+        tags = json.loads(json.dumps(TAGS))
+        tags["subscription"].append({
+            "id": "sub-newvendor-starter-monthly", "label": "新厂商入门 月费",
+            "label_en": "New vendor Starter monthly", "tone": "mist",
+        })
+        picked = {"subscription": ["sub-newvendor-starter-monthly"], "device": [], "route": []}
+        ctx, page, errors = self.open_mock_account(picked, tags=tags, viewport={"width": 1280, "height": 900})
+        try:
+            saved: list[dict] = []
+
+            def capture_save(route) -> None:
+                if route.request.method == "PUT" and urllib.parse.urlsplit(route.request.url).path == "/api/me/profile":
+                    saved.append(route.request.post_data_json)
+                    self.json(route, {"ok": True, "tags": picked, "wall_public": False, "notice": "存好了。"})
+                else:
+                    route.fallback()
+
+            page.route("http://mock.test/**", capture_save)
+            other = page.locator('details[data-vendor="other"]')
+            self.assertEqual(other.count(), 1)
+            self.assertIsNotNone(other.get_attribute("open"))
+            unknown = other.locator('button[data-tag="sub-newvendor-starter-monthly"]')
+            self.assertEqual(unknown.count(), 1, "未知前缀标签被丢了")
+            self.assertEqual(unknown.get_attribute("aria-pressed"), "true")
+            groups = page.locator('#pickRows [data-pool="subscription"] details.rj-vendor-picks')
+            opened = page.locator('#pickRows [data-pool="subscription"] details.rj-vendor-picks[open]')
+            self.assertEqual(groups.count(), opened.count())
+            page.locator("#profileSave").click()
+            page.wait_for_function("document.getElementById('profileNote').textContent.includes('存好了')")
+            self.assertEqual(saved[0]["subscription"], ["sub-newvendor-starter-monthly"], "未知厂商 tag id 没进保存 payload")
+            self.assertEqual(errors, [])
+        finally:
+            ctx.close()
+
+    def test_wall_load_more_dedup_end_failure_retry_and_language(self) -> None:
+        first = [self.wall_item(f"wall{i:02d}") for i in range(30)]
+        second = [self.wall_item("wall29"), self.wall_item("constructor"), self.wall_item("wall31")]
+        state = {"next_calls": 0}
+
+        def api(route) -> None:
+            url = urllib.parse.urlsplit(route.request.url)
+            query = urllib.parse.parse_qs(url.query)
+            if url.path == "/api/config":
+                self.json(route, {"ok": True})
+            elif url.path == "/api/me":
+                self.json(route, {"ok": True, "signed_in": False})
+            elif url.path == "/api/wall" and query.get("cursor") == ["o30"]:
+                state["next_calls"] += 1
+                if state["next_calls"] == 1:
+                    self.json(route, {"error": "temporary"}, status=503)
+                else:
+                    self.json(route, {"ok": True, "items": second, "next_cursor": None})
+            elif url.path == "/api/wall":
+                self.assertEqual(query.get("limit"), ["30"])
+                self.json(route, {"ok": True, "items": first, "next_cursor": "o30"})
+            else:
+                self.json(route, {"ok": True})
+
+        ctx = self.browser.new_context(viewport=VP)
+        page = ctx.new_page()
+        errors: list[str] = []
+        page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        page.route("http://mock.test/**", api)
+        try:
+            page.goto(f"{SITE}/cost.html?api=http%3A%2F%2Fmock.test", wait_until="networkidle")
+            cards = page.locator("#setupWall a.setup-card.is-real")
+            self.assertEqual(cards.count(), 30)
+            more = page.locator("#wallMore")
+            self.assertTrue(more.is_visible())
+            self.assertEqual(more.inner_text(), "再看 30 张")
+
+            page.locator("#langEn").click()
+            self.assertEqual(cards.count(), 30, "切语言丢了已加载真卡")
+            self.assertEqual(more.inner_text(), "See 30 more", "切语言丢了 next_cursor")
+            page.locator("#langZh").click()
+
+            loading = page.evaluate("""() => { const b=document.getElementById('wallMore'); b.click();
+                return {disabled:b.disabled, text:b.textContent}; }""")
+            self.assertEqual(loading, {"disabled": True, "text": "正在取下一页…"})
+            page.wait_for_function("document.getElementById('wallPageNote').textContent.includes('可以重试')")
+            self.assertEqual(cards.count(), 30, "下一页失败清空了已加载卡")
+            self.assertFalse(more.is_disabled())
+
+            more.focus()
+            more.press("Enter")
+            page.wait_for_function("document.querySelectorAll('#setupWall a.setup-card.is-real').length === 32")
+            handles = page.locator("#setupWall .is-handle").all_inner_texts()
+            self.assertEqual(len(handles), len(set(handles)), "offset 游标重复项没有按 handle 去重")
+            self.assertFalse(more.is_visible(), "没有 next_cursor 还显示翻页按钮")
+            self.assertIn("已经到底", page.locator("#wallPageNote").inner_text())
+            self.assertEqual(page.evaluate("document.activeElement && document.activeElement.id"), "wallPageNote")
+
+            page.locator("#langEn").click()
+            self.assertEqual(cards.count(), 32)
+            self.assertIn("reached the end", page.locator("#wallPageNote").inner_text())
+            self.assertEqual(cards.first.locator(".fare-tag").inner_text(), "Claude Pro monthly")
+            self.no_overflow(page, "31+ 真墙翻页")
+            self.touch_ok(page, "#setups", "真墙翻页")
+            self.assertEqual([e for e in errors if "Failed to load resource" not in e], [])
+        finally:
+            ctx.close()
+
+    def test_wall_load_more_timeout_reenables_retry(self) -> None:
+        first = [self.wall_item("wall00")]
+
+        def api(route) -> None:
+            url = urllib.parse.urlsplit(route.request.url)
+            query = urllib.parse.parse_qs(url.query)
+            if url.path == "/api/config":
+                self.json(route, {"ok": True})
+            elif url.path == "/api/me":
+                self.json(route, {"ok": True, "signed_in": False})
+            elif url.path == "/api/wall" and query.get("cursor") == ["o1"]:
+                self.json(route, {"ok": True, "items": [], "next_cursor": None})
+            elif url.path == "/api/wall":
+                self.json(route, {"ok": True, "items": first, "next_cursor": "o1"})
+            else:
+                self.json(route, {"ok": True})
+
+        ctx = self.browser.new_context(viewport=VP)
+        page = ctx.new_page()
+        page.route("http://mock.test/**", api)
+        try:
+            page.goto(f"{SITE}/cost.html?api=http%3A%2F%2Fmock.test", wait_until="networkidle")
+            page.evaluate("""() => {
+              const native = window.setTimeout.bind(window);
+              window.setTimeout = (fn, ms, ...args) => native(fn, ms === 12000 ? 30 : ms, ...args);
+              window.__wallAborted = false;
+              window.RJ_API.get = (_path, options) => new Promise((_resolve, reject) => {
+                options.signal.addEventListener('abort', () => {
+                  window.__wallAborted = true;
+                  reject(new DOMException('aborted', 'AbortError'));
+                }, {once: true});
+              });
+            }""")
+            more = page.locator("#wallMore")
+            more.click()
+            page.wait_for_function("document.getElementById('wallPageNote').textContent.includes('可以重试')")
+            self.assertFalse(more.is_disabled())
+            self.assertTrue(more.is_visible())
+            self.assertTrue(page.evaluate("window.__wallAborted"), "超时后底层 fetch 没被 abort")
+            self.assertEqual(page.locator("#setupWall a.setup-card.is-real").count(), 1)
+        finally:
+            ctx.close()
+
+    def test_wall_slow_page_preserves_focus_moved_into_existing_card(self) -> None:
+        first = [self.wall_item(f"focus{i:02d}") for i in range(30)]
+        second = [self.wall_item("focus30")]
+
+        def api(route) -> None:
+            url = urllib.parse.urlsplit(route.request.url)
+            if url.path == "/api/config":
+                self.json(route, {"ok": True})
+            elif url.path == "/api/me":
+                self.json(route, {"ok": True, "signed_in": False})
+            elif url.path == "/api/wall":
+                self.json(route, {"ok": True, "items": first, "next_cursor": "slow"})
+            else:
+                self.json(route, {"ok": True})
+
+        ctx = self.browser.new_context(viewport=VP)
+        page = ctx.new_page()
+        page.route("http://mock.test/**", api)
+        try:
+            page.goto(f"{SITE}/cost.html?api=http%3A%2F%2Fmock.test", wait_until="networkidle")
+            page.evaluate("""() => {
+              window.RJ_API.get = () => new Promise(resolve => { window.__resolveWallPage = resolve; });
+            }""")
+            more = page.locator("#wallMore")
+            more.focus()
+            more.press("Enter")
+            first_card = page.locator('#setupWall a.setup-card.is-real').first
+            first_href = first_card.get_attribute("href")
+            first_card.focus()
+            page.evaluate("items => window.__resolveWallPage({ok:true, data:{items, next_cursor:'more'}})", second)
+            page.wait_for_function("document.querySelectorAll('#setupWall a.setup-card.is-real').length === 31")
+            self.assertEqual(page.evaluate("document.activeElement && document.activeElement.getAttribute('href')"), first_href)
+            self.assertTrue(more.is_visible())
+        finally:
+            ctx.close()
+
+    def test_wall_nonterminal_page_restores_load_more_focus(self) -> None:
+        first = [self.wall_item(f"keepfocus{i:02d}") for i in range(30)]
+        second = [self.wall_item("keepfocus30")]
+
+        def api(route) -> None:
+            url = urllib.parse.urlsplit(route.request.url)
+            query = urllib.parse.parse_qs(url.query)
+            if url.path == "/api/config":
+                self.json(route, {"ok": True})
+            elif url.path == "/api/me":
+                self.json(route, {"ok": True, "signed_in": False})
+            elif url.path == "/api/wall" and query.get("cursor") == ["page2"]:
+                self.json(route, {"ok": True, "items": second, "next_cursor": "page3"})
+            elif url.path == "/api/wall":
+                self.json(route, {"ok": True, "items": first, "next_cursor": "page2"})
+            else:
+                self.json(route, {"ok": True})
+
+        ctx = self.browser.new_context(viewport=VP)
+        page = ctx.new_page()
+        page.route("http://mock.test/**", api)
+        try:
+            page.goto(f"{SITE}/cost.html?api=http%3A%2F%2Fmock.test", wait_until="networkidle")
+            more = page.locator("#wallMore")
+            more.focus()
+            more.press("Enter")
+            page.wait_for_function("document.querySelectorAll('#setupWall a.setup-card.is-real').length === 31")
+            self.assertEqual(page.evaluate("document.activeElement && document.activeElement.id"), "wallMore")
+            self.assertTrue(more.is_visible())
+            self.assertFalse(more.is_disabled())
+        finally:
+            ctx.close()
+
+    @staticmethod
+    def wall_item(handle: str) -> dict:
+        return {
+            "handle": handle, "kind": "human", "display_name": None,
+            "tags": {"subscription": ["sub-claude-pro-monthly"], "device": [], "route": []},
+            "bindings": [], "updated_on": "2026-10-08",
+        }
+
+
 @unittest.skipUnless(backend_up(), "本机后端没起（cd ~/renji-api && npx wrangler@latest dev --local --port 8798）")
 class ProfileWallBrowserTests(_Base):
     @classmethod
@@ -143,6 +485,10 @@ class ProfileWallBrowserTests(_Base):
 
     def pick(self, page, tag: str) -> None:
         b = page.locator(f'#pickRows button[data-tag="{tag}"]')
+        if not b.is_visible():
+            group = b.locator("xpath=ancestor::details[1]")
+            if group.count():
+                group.locator("summary").click()
         before = b.get_attribute("aria-pressed")
         b.click()
         self.assertNotEqual(b.get_attribute("aria-pressed"), before, f"{tag} 点了没反应")
