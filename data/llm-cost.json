@@ -11,6 +11,7 @@
   "items": [
     {
       "id": "chatgpt-plus",
+      "calculator_tag_id": "sub-chatgpt-plus-monthly",
       "vendor": "OpenAI",
       "product": "ChatGPT Plus",
       "prices": {
@@ -53,6 +54,7 @@
     },
     {
       "id": "claude-pro",
+      "calculator_tag_id": "sub-claude-pro-monthly",
       "vendor": "Anthropic",
       "product": "Claude Pro",
       "prices": {
@@ -101,6 +103,7 @@
     },
     {
       "id": "gemini-ai-premium",
+      "calculator_tag_id": "sub-google-ai-pro-monthly",
       "vendor": "Google",
       "product": "Google AI Pro",
       "prices": {
@@ -143,6 +146,7 @@
     },
     {
       "id": "supergrok",
+      "calculator_tag_id": "sub-supergrok-monthly",
       "vendor": "xAI",
       "product": "SuperGrok",
       "prices": {
@@ -240,6 +244,7 @@
     },
     {
       "id": "kimi-membership",
+      "calculator_tag_id": "sub-kimi-moderato-monthly",
       "vendor": "月之暗面",
       "product": "Kimi 会员（Moderato）",
       "prices": {
@@ -279,6 +284,7 @@
     },
     {
       "id": "qwen-membership",
+      "calculator_tag_id": "sub-qwen-advanced-monthly",
       "vendor": "阿里巴巴 / 通义",
       "product": "千问办公助理会员（高级套餐）",
       "prices": {
@@ -318,6 +324,7 @@
     },
     {
       "id": "zhipu-qingyan",
+      "calculator_tag_id": "sub-zhipu-vip-monthly",
       "vendor": "智谱",
       "product": "智谱清言（VIP 连续包月）",
       "prices": {
@@ -357,6 +364,7 @@
     },
     {
       "id": "cursor-pro",
+      "calculator_tag_id": "sub-cursor-pro-monthly",
       "vendor": "Anysphere / Cursor",
       "product": "Cursor（Pro）",
       "prices": {
@@ -438,6 +446,7 @@
     },
     {
       "id": "doubao-membership",
+      "calculator_tag_id": "sub-doubao-standard-monthly",
       "vendor": "字节跳动",
       "product": "豆包会员（标准套餐）",
       "prices": {
@@ -477,6 +486,7 @@
     },
     {
       "id": "mimo-token-plan",
+      "calculator_tag_id": "sub-mimo-lite-monthly",
       "vendor": "小米",
       "product": "MiMo Token Plan（Lite）",
       "prices": {

@@ -136,6 +136,32 @@ class CostBoardDataTests(unittest.TestCase):
                 # 千问办公助理会员只在 App 内有会员页，没有公开网页：允许写明「App 内」的非链接来源
                 self.assertTrue(src.startswith("http") or "App 内" in src, f"{t['id']} 缺官方来源")
 
+    def test_calculator_quotes_match_exact_verified_monthly_tags(self) -> None:
+        """算账只接同档同周期的已核价主行；草稿、备注里的别档与年/季费不借价。"""
+        expected = {
+            "sub-chatgpt-plus-monthly": "chatgpt-plus",
+            "sub-claude-pro-monthly": "claude-pro",
+            "sub-google-ai-pro-monthly": "gemini-ai-premium",
+            "sub-supergrok-monthly": "supergrok",
+            "sub-kimi-moderato-monthly": "kimi-membership",
+            "sub-qwen-advanced-monthly": "qwen-membership",
+            "sub-zhipu-vip-monthly": "zhipu-qingyan",
+            "sub-cursor-pro-monthly": "cursor-pro",
+            "sub-doubao-standard-monthly": "doubao-membership",
+            "sub-mimo-lite-monthly": "mimo-token-plan",
+        }
+        tags = {x["id"] for x in self.tags["subscription"]}
+        refs = {row["calculator_tag_id"]: row for row in self.subs["items"]
+                if row.get("calculator_tag_id")}
+        self.assertEqual({tag: row["id"] for tag, row in refs.items()}, expected)
+        for tag, row in refs.items():
+            with self.subTest(tag=tag):
+                self.assertIn(tag, tags)
+                self.assertTrue(tag.endswith("-monthly"))
+                self.assertEqual(row["status"], "verified")
+                self.assertTrue(any(side.get("amount") is not None and side.get("unit") == "month"
+                                    for side in row["prices"].values()))
+
     def test_no_cross_region_or_vpn_copy_anywhere(self) -> None:
         blobs = [self.subs, self.api, self.tags, self.setups]
         texts = list(walk_strings(blobs))

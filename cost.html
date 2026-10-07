@@ -84,6 +84,44 @@
 }
 .cost-section p.lede{font-size:13.5px;color:var(--ink-soft);max-width:720px}
 
+/* 配一配：左边挑票根，右边是一张会随着选择改写的账单。 */
+.calc-board{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:22px;margin:18px 0 28px}
+.calc-picks,.calc-receipt{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.calc-picks h4,.calc-receipt h4{margin:0 0 10px;color:var(--ink);font:650 14px/1.4 "Avenir Next","PingFang SC",sans-serif}
+.calc-vendor{border-top:1px solid var(--line)}
+.calc-vendor summary{min-height:44px;display:flex;align-items:center;gap:10px;cursor:pointer;color:var(--ink);font-size:13px;font-weight:600}
+.calc-vendor summary::marker{content:""}
+.calc-vendor summary::-webkit-details-marker{display:none}
+.calc-vendor summary::before{content:"›";font-size:18px;color:var(--ink-soft);transition:transform .15s ease}
+.calc-vendor[open] summary::before{transform:rotate(90deg)}
+.calc-vendor-name{flex:1}
+.calc-vendor-count{color:var(--ink-soft);font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+.calc-options{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 12px 17px}
+.calc-options button{min-height:44px;min-width:44px;padding:7px 11px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink);font:550 12.5px/1.4 "Avenir Next","PingFang SC",sans-serif;text-align:left;cursor:pointer}
+.calc-options button[aria-pressed="true"]{border-color:var(--ink);background:var(--card-block);box-shadow:inset 3px 0 var(--ink)}
+.calc-options button:hover{border-color:var(--ink-soft)}
+.calc-region{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 14px}
+.calc-region button{min-height:44px;min-width:76px;padding:8px 12px;border:1px solid var(--line);border-radius:5px;background:transparent;color:var(--ink);cursor:pointer;font:600 12px/1.3 "Avenir Next","PingFang SC",sans-serif}
+.calc-region button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.calc-result{padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.calc-total{display:block;font:600 29px/1.25 "Noto Serif SC","Songti SC","STSong",serif;color:var(--ink);font-variant-numeric:tabular-nums}
+.calc-result-note,.calc-footnote,.calc-line-note,.setup-estimate{font-size:12px;line-height:1.6;color:var(--ink-soft)}
+.calc-line-list{list-style:none;margin:0;padding:0}
+.calc-line{padding:12px 0;border-bottom:1px dashed var(--line)}
+.calc-line-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;color:var(--ink);font-size:12.5px}
+.calc-line-head strong{font-weight:600}
+.calc-line-head span{flex:none;font-variant-numeric:tabular-nums}
+.calc-line-note{margin:3px 0 0}
+.calc-manual{display:block;margin:7px 0 0;font-size:12px;color:var(--ink-soft)}
+.calc-manual input{display:block;width:min(100%,180px);min-height:44px;margin-top:4px;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink);font:600 14px/1.4 "Avenir Next","PingFang SC",sans-serif;font-variant-numeric:tabular-nums}
+.calc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
+.calc-actions button{min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:5px;background:transparent;color:var(--ink);font:600 12px/1.3 "Avenir Next","PingFang SC",sans-serif;cursor:pointer}
+.calc-actions button:hover{border-color:var(--ink)}
+.calc-footnote{margin:10px 0 0}
+.calc-state{min-height:1.5em;margin:8px 0 0;font-size:12px;color:var(--ink-soft)}
+.setup-estimate{border-top:1px solid var(--line);padding:10px 0 0;margin:10px 0 0}
+.setup-estimate strong{color:var(--ink);font-weight:650;font-variant-numeric:tabular-nums}
+
 /* ── 机友怎么配 · 墙的栅格（卡片与票根标签的样式在 style.css，账号页和配置页共用） ── */
 .setup-wall{
   display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:20px 0 32px;
@@ -91,8 +129,10 @@
 
 @media (max-width:900px){
   .setup-wall{grid-template-columns:1fr}
+  .calc-board{grid-template-columns:1fr;gap:12px}
   .cost-lang{margin-left:0}
 }
+@media (prefers-reduced-motion:reduce){.calc-vendor summary::before{transition:none}}
 </style>
 </head>
 <body class="reading-page">
@@ -134,8 +174,9 @@
     </div>
   </section>
 
-  <nav class="subnav" aria-label="成本页两层">
+  <nav class="subnav" aria-label="成本页四部分">
     <a href="#subs" class="here"><span data-i18n="navSubs">月订阅对照</span> <small data-i18n="navSubsSmall">主表 · 中国 / 美国 / 全球均价</small></a>
+    <a href="#calculator"><span data-i18n="navCalc">配一配</span> <small data-i18n="navCalcSmall">把几档订阅放在一起算</small></a>
     <a href="#api"><span data-i18n="navApi">API 参考</span> <small data-i18n="navApiSmall">每 1M tokens</small></a>
     <a href="#setups"><span data-i18n="navSetups">机友怎么配</span> <small data-i18n="navSetupsSmall">月订阅配置 × 设备</small></a>
   </nav>
@@ -168,6 +209,32 @@
     </aside>
   </section>
 
+  <section class="cost-section" id="calculator">
+    <h3 data-i18n="secCalc">配一配</h3>
+    <p class="lede" data-i18n="ledeCalc">挑几档订阅，看看一个月大约要留多少。只把同档同周期、已核过的价格算进去；缺价的档可以填你实际每次扣款的金额。试算只留在当前浏览器。</p>
+    <div class="calc-board" id="costCalc">
+      <div class="calc-picks">
+        <h4 data-i18n="calcPickTitle">挑订阅</h4>
+        <div id="calcPicks"><p class="log-state" data-i18n="calcLoading">正在摆订阅票根…</p></div>
+      </div>
+      <aside class="calc-receipt" aria-labelledby="calcReceiptTitle">
+        <h4 id="calcReceiptTitle" data-i18n="calcReceiptTitle">你的试算</h4>
+        <div class="calc-region" role="group" aria-label="试算币种">
+          <button type="button" id="calcRegionCny" data-calc-region="cn" aria-pressed="true">人民币 ¥</button>
+          <button type="button" id="calcRegionUsd" data-calc-region="us" aria-pressed="false">美元 $</button>
+        </div>
+        <div class="calc-result" id="calcResult" role="status" aria-live="polite">还没选订阅。</div>
+        <ul class="calc-line-list" id="calcLines"></ul>
+        <div class="calc-actions">
+          <button type="button" id="calcCopy" data-i18n="calcCopy">复制试算</button>
+          <button type="button" id="calcReset" data-i18n="calcReset">清空</button>
+        </div>
+        <p class="calc-state" id="calcState" role="status" aria-live="polite"></p>
+        <p class="calc-footnote" data-i18n="calcFootnote">这是按页面已核标价和你自行填入的金额作的试算，不是实际账单；年费和季费按 12／3 个月摊开。设备、API 用量和全球均价不计入。</p>
+      </aside>
+    </div>
+  </section>
+
   <section class="cost-section" id="api">
     <h3 data-i18n="secApi">API 参考单价</h3>
     <p class="lede" data-i18n="ledeApi">按每 100 万 tokens 的公开参考价。币种以厂商标价为准；多数仍是 draft。</p>
@@ -193,6 +260,7 @@
   <section class="cost-section" id="setups">
     <h3 data-i18n="secSetups">机友怎么配</h3>
     <p class="lede" data-i18n="ledeSetups">站点用户叫<strong>机友</strong>，模型与助手叫<strong>机机</strong>。每张卡是一个号自己挑的配置：一行月订阅、一行设备、一行路线。在账号页挑好配置、打开「在墙上显示」，你的卡就会出现在这里。</p>
+    <p class="setup-note" data-i18n="wallCostNote">卡片月费只按已核价的同档订阅估算；缺价的档会单独数出来，不会当成零。卡片是本人自报配置，不代表真实扣款。</p>
     <p class="cost-cta-row"><a class="cost-cta" id="wallCta" href="account.html" data-i18n="wallCtaGuest">没号？注册后挑好配置就能上墙 →</a></p>
     <div class="setup-wall" id="setupWall" aria-live="polite">
       <p class="log-state" data-i18n="loadingSetups">正在摆卡…</p>
@@ -228,6 +296,7 @@
 <script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
 <script src="rj-related.js"></script>
-<script src="cost.js"></script>
+<script src="rj-tags.js?v=20261008-c0"></script>
+<script src="cost.js?v=20261008-c0"></script>
 </body>
 </html>

@@ -11,6 +11,20 @@ window.RJ_TAGS = (function () {
     en: { subscription: "Monthly plans", device: "Devices", route: "Route" }
   };
   var FALLBACK_TONE = { subscription: "mist", device: "device", route: "slate" };
+  /* 订阅厂商只按稳定 tag id 前缀分组；账号页和成本试算共用这一份。 */
+  var SUB_VENDORS = [
+    { key: "openai", prefixes: ["sub-chatgpt-"], name: "OpenAI" },
+    { key: "anthropic", prefixes: ["sub-claude-"], name: "Anthropic" },
+    { key: "google", prefixes: ["sub-google-"], name: "Google" },
+    { key: "moonshot", prefixes: ["sub-kimi-"], name: "Kimi" },
+    { key: "xiaomi", prefixes: ["sub-mimo-"], name: "小米 MiMo", name_en: "Xiaomi MiMo" },
+    { key: "alibaba", prefixes: ["sub-qwen-"], name: "阿里千问", name_en: "Alibaba Qwen" },
+    { key: "zhipu", prefixes: ["sub-zhipu-", "sub-glm-"], name: "智谱 AI", name_en: "Zhipu AI" },
+    { key: "bytedance", prefixes: ["sub-doubao-"], name: "字节豆包", name_en: "ByteDance Doubao" },
+    { key: "perplexity", prefixes: ["sub-perplexity-"], name: "Perplexity" },
+    { key: "cursor", prefixes: ["sub-cursor-"], name: "Cursor" },
+    { key: "xai", prefixes: ["sub-supergrok-", "sub-x-"], name: "xAI / X" }
+  ];
   var loading = null;
   var byId = {};
   var lists = { subscription: [], device: [], route: [] };
@@ -52,6 +66,19 @@ window.RJ_TAGS = (function () {
   }
 
   function poolLabel(pool) { return (POOL_LABEL[lang()] || POOL_LABEL.zh)[pool] || pool; }
+
+  function subscriptionVendor(id, language) {
+    for (var i = 0; i < SUB_VENDORS.length; i++) {
+      for (var j = 0; j < SUB_VENDORS[i].prefixes.length; j++) {
+        if (id.indexOf(SUB_VENDORS[i].prefixes[j]) === 0) {
+          var vendor = SUB_VENDORS[i];
+          return { key: vendor.key, prefixes: vendor.prefixes,
+            name: language === "en" && vendor.name_en ? vendor.name_en : vendor.name };
+        }
+      }
+    }
+    return { key: "other", prefixes: [], name: language === "en" ? "Other" : "其他" };
+  }
 
   /** 一枚只读的票根 */
   function badge(id, pool) {
@@ -103,6 +130,7 @@ window.RJ_TAGS = (function () {
     poolLabel: poolLabel,
     badge: badge,
     rows: rows,
+    subscriptionVendor: subscriptionVendor,
     lang: lang
   };
 })();

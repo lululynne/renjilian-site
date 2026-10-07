@@ -661,20 +661,6 @@
 
   var TAGS = window.RJ_TAGS;
   var POOL_HEAD = { subscription: "订阅", device: "设备", route: "路线" };
-  /* 订阅按稳定 id 前缀归厂商，绝不拿当前中英文标签猜。新前缀先落进「其他」，标签不会消失。 */
-  var SUB_VENDORS = [
-    { key: "openai", prefixes: ["sub-chatgpt-"], name: "OpenAI" },
-    { key: "anthropic", prefixes: ["sub-claude-"], name: "Anthropic" },
-    { key: "google", prefixes: ["sub-google-"], name: "Google" },
-    { key: "moonshot", prefixes: ["sub-kimi-"], name: "Kimi" },
-    { key: "xiaomi", prefixes: ["sub-mimo-"], name: "小米 MiMo" },
-    { key: "alibaba", prefixes: ["sub-qwen-"], name: "阿里千问" },
-    { key: "zhipu", prefixes: ["sub-zhipu-", "sub-glm-"], name: "智谱 AI" },
-    { key: "bytedance", prefixes: ["sub-doubao-"], name: "字节豆包" },
-    { key: "perplexity", prefixes: ["sub-perplexity-"], name: "Perplexity" },
-    { key: "cursor", prefixes: ["sub-cursor-"], name: "Cursor" },
-    { key: "xai", prefixes: ["sub-supergrok-", "sub-x-"], name: "xAI / X" }
-  ];
   var prof = null;          // { handle, wall, limits, picked: {pool: [id…]} }
   var profWired = false;
 
@@ -703,12 +689,7 @@
   }
 
   function subVendor(id) {
-    for (var i = 0; i < SUB_VENDORS.length; i++) {
-      for (var j = 0; j < SUB_VENDORS[i].prefixes.length; j++) {
-        if (id.indexOf(SUB_VENDORS[i].prefixes[j]) === 0) return SUB_VENDORS[i];
-      }
-    }
-    return { key: "other", prefixes: [], name: TAGS.lang() === "en" ? "Other" : "其他" };
+    return TAGS.subscriptionVendor(id, TAGS.lang());
   }
 
   function pickButton(t, pool, cnt, vendorCount) {
