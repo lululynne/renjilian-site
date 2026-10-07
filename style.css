@@ -408,6 +408,7 @@ body.no-scroll{overflow:hidden}
 .log-head>p:last-child{margin:0;color:var(--ink-soft);font-size:13px;line-height:1.9}
 .release-ledger{counter-reset:release}
 .release-entry{counter-increment:release;display:grid;grid-template-columns:180px minmax(0,1fr);gap:30px;padding:30px 0;border-bottom:1px solid var(--line)}
+.release-entry>*{min-width:0}
 .release-entry>header{position:relative;padding-left:40px}
 .release-entry>header::before{content:counter(release,decimal-leading-zero);position:absolute;left:0;top:2px;color:var(--machine);font:700 11px/1 ui-monospace,"SFMono-Regular",Menlo,monospace;letter-spacing:.08em}
 .release-entry h3{margin:0;color:var(--ink);font:750 18px/1.35 ui-monospace,"SFMono-Regular",Menlo,monospace}
@@ -1209,3 +1210,56 @@ body.bk-full .bk-b,.bk-card.is-full .bk-b,body.bk-full .bk-detail-row,.bk-card.i
 /* 空结果 */
 .bk-empty{padding:8px 0 28px;font-size:14px;color:var(--ink)}
 .bk-starters{display:flex;flex-wrap:wrap;gap:0 14px}
+
+/* 长文手机阅读收口（2026-10-07）：不改双声信号的版面，只让 390px 上的字号、
+   行距、纸面留白与横滑边界适合连续阅读。长串和媒体在内容区自己收口；
+   代码仍可在局部横滑，不把整页撑宽。 */
+@media (max-width:760px){
+  body.reading-page main.wrap :where(p,li,h2,h3,h4,a,code){overflow-wrap:anywhere}
+  body.reading-page main.wrap :where(img,video){max-width:100%;height:auto}
+  body.reading-page main.wrap svg{max-width:100%}
+  body.reading-page main.wrap pre{min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+
+  body.reading-page .board-head{padding:36px 0 14px}
+  body.reading-page .board-head h2{font-size:34px;line-height:1.22}
+  body.reading-page .board-head p{font-size:15px;line-height:1.8}
+
+  /* 守住长文的可读字号，同时把卡片内边距让回给正文。 */
+  .rj-rules{padding:18px 16px}
+  .rj-rules h3{font-size:17px;line-height:1.55}
+  .rj-rules p{font-size:16px;line-height:1.9}
+  .kanread-card{padding:18px 16px}
+  .kr-index-item{padding:15px 16px 13px}
+  .kr-hook,.kr-voice p{font-size:16px;line-height:1.9}
+  .kr-round p{font-size:15px;line-height:1.85}
+  .kr-voice,.kr-round,.kr-source{padding-left:12px;padding-right:12px}
+  .pulse-item{padding:16px}
+  .pl-line{font-size:16px;line-height:1.85}
+  .pl-rel{font-size:15px;line-height:1.8}
+  .bk-card{padding:16px}
+  .bk-text{font-size:16px;line-height:1.85}
+  .bk-more-body{font-size:15px;line-height:1.8}
+
+  .changelog-main{padding-top:32px;padding-bottom:48px}
+  .log-head>p:last-child{font-size:15px;line-height:1.8}
+  .release-entry li{font-size:16px;line-height:1.85}
+
+  /* cost.html 的组件定义在页内样式里；用更明确的选择器只收手机阅读态。 */
+  body .cost-section{margin:28px 0 10px}
+  body .cost-section h3{font-size:21px;line-height:1.5}
+  body .cost-section p.lede{font-size:16px;line-height:1.85}
+  body .cost-panel{padding:12px 0 8px;margin:14px 0 24px}
+  body .cost-scroll{
+    overscroll-behavior-x:contain;scrollbar-width:thin;
+    scroll-padding-left:14px;
+  }
+  /* 直接把区域的 aria-label 变成可见横滑提示，不复制另一份文案。 */
+  body .cost-scroll::before{
+    content:attr(aria-label);position:sticky;left:0;z-index:2;
+    display:block;width:max-content;max-width:calc(100vw - 64px);
+    margin:0 14px 6px;color:var(--ink-soft);font-size:12px;line-height:1.6;
+  }
+
+  body.reading-page .claim{font-size:15px;line-height:1.85;padding:22px 0 36px}
+  .kanread-note a{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+}
