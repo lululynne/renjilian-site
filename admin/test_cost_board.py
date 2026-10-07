@@ -149,6 +149,8 @@ class CostBoardDataTests(unittest.TestCase):
             "sub-cursor-pro-monthly": "cursor-pro",
             "sub-doubao-standard-monthly": "doubao-membership",
             "sub-mimo-lite-monthly": "mimo-token-plan",
+            "sub-glm-coding-lite-monthly": "glm-coding-plan",
+            "sub-perplexity-pro-monthly": "perplexity-pro",
         }
         tags = {x["id"] for x in self.tags["subscription"]}
         refs = {row["calculator_tag_id"]: row for row in self.subs["items"]
@@ -161,6 +163,23 @@ class CostBoardDataTests(unittest.TestCase):
                 self.assertEqual(row["status"], "verified")
                 self.assertTrue(any(side.get("amount") is not None and side.get("unit") == "month"
                                     for side in row["prices"].values()))
+
+    def test_new_official_prices_keep_promotion_and_region_limits(self) -> None:
+        by_id = {row["id"]: row for row in self.subs["items"]}
+        glm = by_id["glm-coding-plan"]
+        self.assertEqual(glm["status"], "verified")
+        self.assertEqual(glm["last_verified"], "2026-10-08")
+        self.assertEqual((glm["prices"]["cn"]["amount"], glm["prices"]["cn"]["promo_original"]), (94.4, 118))
+        self.assertEqual((glm["prices"]["us"]["amount"], glm["prices"]["us"]["promo_original"]), (12.6, 18))
+        self.assertTrue(glm["prices"]["cn"]["source_url"].startswith("https://bigmodel.cn/"))
+        self.assertTrue(glm["prices"]["us"]["source_url"].startswith("https://z.ai/"))
+        perplexity = by_id["perplexity-pro"]
+        self.assertEqual(perplexity["prices"]["us"]["amount"], 20)
+        self.assertEqual(perplexity["prices"]["us"]["unit"], "month")
+        self.assertEqual(perplexity["prices"]["cn"]["amount"], None)
+        self.assertTrue(perplexity["prices"]["cn"]["unverified"])
+        self.assertIsNone(perplexity["prices"]["cn"].get("derived_from"))
+        self.assertIsNone(perplexity["global_avg"]["amount"])
 
     def test_no_cross_region_or_vpn_copy_anywhere(self) -> None:
         blobs = [self.subs, self.api, self.tags, self.setups]

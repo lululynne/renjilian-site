@@ -29,6 +29,7 @@
   background:var(--card-block);color:var(--ink-soft);border:1px solid var(--line);
 }
 .cost-badge.draft{background:#f6efe6;color:#775a2e;border-color:#e6d7bc}
+.cost-badge.partial{background:#f6efe6;color:#775a2e;border-color:#e6d7bc}
 .cost-panel{
   background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   box-shadow:0 14px 40px rgba(48,70,82,.06);padding:18px 18px 8px;margin:18px 0 28px;
@@ -76,6 +77,9 @@
 .wall-page-note.is-error{color:var(--toast-error)}
 .cost-table .avg-scope{display:block;font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em;margin-top:2px}
 .cost-table .derived-tag{display:inline-block;margin-left:6px;font-size:10px;letter-spacing:.06em;padding:1px 5px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);vertical-align:1px}
+.cost-table .promo-old{display:inline-block;margin-left:5px;font-size:11px;color:var(--ink-soft)}
+.cost-table .promo-flag{display:inline-block;margin-left:6px;font-size:10px;padding:1px 5px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);vertical-align:1px}
+.cost-table .price-source{display:block;margin-top:3px;font-size:10px;color:var(--ink-soft);white-space:nowrap}
 .cost-spark{display:block;width:88px;height:28px}
 .cost-section{margin:36px 0 10px}
 .cost-section h3{
@@ -131,6 +135,7 @@
   .setup-wall{grid-template-columns:1fr}
   .calc-board{grid-template-columns:1fr;gap:12px}
   .cost-lang{margin-left:0}
+  .cost-table .price-source{display:flex;align-items:center;justify-content:flex-end;min-height:44px}
 }
 @media (prefers-reduced-motion:reduce){.calc-vendor summary::before{transition:none}}
 </style>
@@ -183,7 +188,7 @@
 
   <section class="cost-section" id="subs">
     <h3 data-i18n="secSubs">月订阅对照</h3>
-    <p class="lede" data-i18n="ledeSubs">全球均价 = 各国家和地区官方订阅价折成人民币后的平均，统计范围在页脚说明。国外模型在中国大陆没有官方渠道的，中国价一栏显示美国官方价按当期汇率折算的人民币，前面带 ≈。曲线要等攒够真实的周采样才会画出来，现在是一条平线。</p>
+    <p class="lede" data-i18n="ledeSubs">中国价、美国价按各自已核官方渠道当日展示价列出；页面优惠另作标记，个别地区没核到则写待核。只有确认中国大陆没有官方渠道的国外模型，才按所标汇率基准折算美国价并带 ≈。全球均价标明统计地区数，真实周采样攒够后才画曲线。</p>
     <div class="cost-panel">
       <div class="cost-scroll" tabindex="0" role="region" aria-label="月订阅对照表，可横向滚动">
       <table class="cost-table" id="subTable" aria-describedby="subDisclaimer">
@@ -230,7 +235,7 @@
           <button type="button" id="calcReset" data-i18n="calcReset">清空</button>
         </div>
         <p class="calc-state" id="calcState" role="status" aria-live="polite"></p>
-        <p class="calc-footnote" data-i18n="calcFootnote">这是按页面已核标价和你自行填入的金额作的试算，不是实际账单；年费和季费按 12／3 个月摊开。设备、API 用量和全球均价不计入。</p>
+        <p class="calc-footnote" data-i18n="calcFootnote">这是按页面已核标价和你自行填入的金额作的试算，不是实际账单；年费和季费按 12／3 个月摊开。页面优惠价可能变化，结算前请再核对；设备、API 用量和全球均价不计入。</p>
       </aside>
     </div>
   </section>
@@ -297,6 +302,6 @@
 <script src="rj-api.js"></script>
 <script src="rj-related.js"></script>
 <script src="rj-tags.js?v=20261008-c0"></script>
-<script src="cost.js?v=20261008-c0"></script>
+<script src="cost.js?v=20261008-e0"></script>
 </body>
 </html>

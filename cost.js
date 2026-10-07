@@ -27,7 +27,7 @@
       navSetups: "机友怎么配",
       navSetupsSmall: "月订阅配置 × 设备",
       secSubs: "月订阅对照",
-      ledeSubs: "中国价、美国价都是各自官方渠道的标价。国外模型在中国大陆没有官方渠道的，中国价一栏显示美国官方价按当期汇率折算的人民币，前面带 ≈。全球均价 = 各国家和地区官方订阅价折成人民币后的平均，均价旁标了统计的地区数。曲线要等攒够真实的周采样才会画出来，现在是一条平线。",
+      ledeSubs: "中国价、美国价按各自已核官方渠道当日展示价列出；页面优惠另作标记，个别地区没核到则写待核。只有确认中国大陆没有官方渠道的国外模型，才按所标汇率基准折算美国价并带 ≈。全球均价是多地区官方价折成人民币后的平均，旁边标统计地区数。曲线要等真实周采样，现在仍是平线。",
       thProduct: "产品",
       thCn: "中国价",
       thUs: "美国价",
@@ -41,12 +41,18 @@
       calcLoading: "正在摆订阅票根…",
       calcReceiptTitle: "你的试算",
       calcRegionLabel: "试算币种",
-      calcFootnote: "这是按页面已核标价和你自行填入的金额作的试算，不是实际账单；年费和季费按 12／3 个月摊开。设备、API 用量和全球均价不计入。",
+      calcFootnote: "这是按页面已核标价和你自行填入的金额作的试算，不是实际账单；年费和季费按 12／3 个月摊开。页面优惠价可能变化，结算前请再核对；设备、API 用量和全球均价不计入。",
       calcEmpty: "还没选订阅。",
       calcTotal: "月均试算",
       calcCounted: "已计入部分",
       calcUnpriced: "另 {n} 档待核价",
       calcNoPrice: "暂无可核价",
+      unverifiedPrice: "人民币待核",
+      promoLabel: "页面优惠",
+      promoHint: "当前页面优惠价，划线原价 {amount}；优惠期限与续费价未核，以结算页为准",
+      wallPromoHint: "含页面优惠价，优惠期限与续费价未核",
+      priceSource: "来源",
+      statusPartial: "部分已核",
       calcDerived: "含汇率折算，不是中国大陆官方售价",
       calcManualLabel: "我每次实际付（{period}，{currency}）",
       calcMonthly: "月费总额",
@@ -136,7 +142,7 @@
       navSetups: "How readers set up",
       navSetupsSmall: "Monthly plans × devices",
       secSubs: "Monthly plans",
-      ledeSubs: "China and US prices are each vendor’s official list price. Where a foreign model has no official channel in mainland China, the China column shows the US price converted to CNY at the current rate, marked with ≈. Global average = mean of official prices across countries and regions, converted to CNY; the region count sits next to each average. Sparklines appear only once real weekly samples accumulate; until then they are flat.",
+      ledeSubs: "China and US columns show checked prices displayed by their respective official channels on the dated check. Page offers are marked; a region without a checked price stays unverified. Only when the absence of a mainland-China official channel has been confirmed do we show a dated USD-to-CNY reference marked ≈. Global averages use multiple official regions and show the region count. Sparklines stay flat until real weekly samples accumulate.",
       thProduct: "Product",
       thCn: "China price",
       thUs: "US price",
@@ -150,12 +156,18 @@
       calcLoading: "Laying out plans…",
       calcReceiptTitle: "Your estimate",
       calcRegionLabel: "Estimate currency",
-      calcFootnote: "This uses checked list prices and amounts you enter, not your actual bill. Annual and quarterly payments are spread over 12 or 3 months. Devices, API usage and global averages are excluded.",
+      calcFootnote: "This uses checked list prices and amounts you enter, not your actual bill. Annual and quarterly payments are spread over 12 or 3 months. Page offers may change; check checkout before paying. Devices, API usage and global averages are excluded.",
       calcEmpty: "No plans picked yet.",
       calcTotal: "Estimated per month",
       calcCounted: "Counted so far",
       calcUnpriced: "{n} plan(s) still unpriced",
       calcNoPrice: "No checked price yet",
+      unverifiedPrice: "CN price unverified",
+      promoLabel: "Page offer",
+      promoHint: "Current page offer; struck-through regular price {amount}. End date and renewal price unverified; check checkout",
+      wallPromoHint: "Includes a page offer; end date and renewal price unverified",
+      priceSource: "Source",
+      statusPartial: "Partly verified",
       calcDerived: "Includes FX conversion; not an official mainland China price",
       calcManualLabel: "What you pay each {period} ({currency})",
       calcMonthly: "month",
@@ -264,17 +276,21 @@
   }
 
   function money(price) {
-    if (!price || price.amount == null) return '<span class="muted">—</span>';
+    if (!price || price.amount == null) {
+      if (price && price.unverified) return '<span class="muted" title="' + esc((lang === "en" && price.note_en) || price.note || t("unverifiedPrice")) + '">' + esc(t("unverifiedPrice")) + "</span>";
+      return '<span class="muted">—</span>';
+    }
     var cur = price.currency === "USD" ? "$" : price.currency === "CNY" ? "¥" : (price.currency + " ");
     var n = Number(price.amount);
     var text = n === 0 ? cur + "0" : cur + (Number.isInteger(n) ? String(n) : n.toFixed(2));
     var unit = price.unit === "month" ? t("perMonth") : "";
+    var promo = price.promo_original != null ? '<del class="promo-old">' + esc(cur + Number(price.promo_original).toFixed(2)) + '</del><span class="promo-flag" title="' + esc(t("promoHint").replace("{amount}", cur + Number(price.promo_original).toFixed(2))) + '">' + esc(t("promoLabel")) + "</span>" : "";
     if (price.derived_from) {
       var hint = price.derived_from === "global_avg" ? t("derivedHintAvg") : t("derivedHintUs");
       return '<span class="num derived" title="' + esc(hint) + '">≈' + esc(cur + n.toFixed(0)) + '</span><span class="muted">' + esc(unit) + "</span>" +
         '<span class="derived-tag">' + esc(t("derivedTag")) + "</span>";
     }
-    return '<span class="num">' + esc(text) + '</span><span class="muted">' + esc(unit) + "</span>";
+    return '<span class="num">' + esc(text) + '</span><span class="muted">' + esc(unit) + "</span>" + promo;
   }
 
   function avgCell(g) {
@@ -286,9 +302,19 @@
     return '<span class="num">' + esc(cur + (Number.isInteger(n) ? String(n) : n.toFixed(0))) + "</span>" + scope;
   }
 
-  function statusBadge(st) {
-    var label = st === "verified" ? t("statusVerified") : st === "stale" ? t("statusStale") : t("statusDraft");
-    return '<span class="cost-badge ' + esc(st || "draft") + '">' + esc(label) + "</span>";
+  function priceSource(price) {
+    if (!price || price.amount == null || !/^https:\/\//.test(price.source_url || "")) return "";
+    return '<a class="price-source" href="' + esc(price.source_url) + '" target="_blank" rel="noopener noreferrer">' +
+      '<time datetime="' + esc(price.as_of || "") + '">' + esc(price.as_of || "") + "</time> · " + esc(t("priceSource")) + "</a>";
+  }
+
+  function statusBadge(row) {
+    var st = row.status;
+    var partial = st === "verified" && ["cn", "us"].some(function (region) {
+      return row.prices && row.prices[region] && row.prices[region].unverified;
+    });
+    var label = partial ? t("statusPartial") : st === "verified" ? t("statusVerified") : st === "stale" ? t("statusStale") : t("statusDraft");
+    return '<span class="cost-badge ' + esc(partial ? "partial" : (st || "draft")) + '">' + esc(label) + "</span>";
   }
 
   function sparklineSvg(vals) {
@@ -322,11 +348,11 @@
       return '<tr id="' + esc(it.id) + '" class="' + (draft ? "is-draft" : "") + '"' + (draft ? ' title="' + esc(t("draftHint")) + '"' : "") + ">" +
         "<td><span class=\"product\">" + esc(it.product) + "</span>" +
         '<span class="vendor">' + esc(it.vendor) + "</span></td>" +
-        '<td class="num">' + money(it.prices && it.prices.cn) + "</td>" +
-        '<td class="num">' + money(it.prices && it.prices.us) + "</td>" +
+        '<td class="num">' + money(it.prices && it.prices.cn) + priceSource(it.prices && it.prices.cn) + "</td>" +
+        '<td class="num">' + money(it.prices && it.prices.us) + priceSource(it.prices && it.prices.us) + "</td>" +
         '<td class="num">' + avgCell(it.global_avg) + "</td>" +
         "<td>" + sparklineSvg(it.sparkline) + "</td>" +
-        "<td>" + statusBadge(it.status) + "</td>" +
+        "<td>" + statusBadge(it) + "</td>" +
         "</tr>";
     }).join("");
     // 「相关」挂在产品名那一格底下（只有已核对、带 related 的行才有）
@@ -407,7 +433,8 @@
           !Number.isFinite(Number(side.amount)) || Number(side.amount) < 0 ||
           side.as_of !== row.last_verified || !/^https:\/\//.test(side.source_url || "")) continue;
       return { amount: Number(side.amount), date: side.as_of,
-        derived: !!side.derived_from, source: side.source_url || "" };
+        derived: !!side.derived_from, source: side.source_url || "",
+        promoOriginal: side.promo_original == null ? null : Number(side.promo_original) };
     }
     return null;
   }
@@ -532,6 +559,9 @@
             ? t(current.quote.derived ? "calcQuoteDerived" : "calcQuote")
               .replace("{amount}", calcMoney(current.quote.amount)).replace("{date}", current.quote.date)
             : t("calcNoQuote");
+        if (current.source === "quote" && current.quote.promoOriginal != null) {
+          note.appendChild(document.createTextNode(" · " + t("promoHint").replace("{amount}", calcMoney(current.quote.promoOriginal))));
+        }
         if (current.source === "quote" && /^https:\/\//.test(current.quote.source)) {
           note.appendChild(document.createTextNode(" · "));
           var link = document.createElement("a");
@@ -701,6 +731,7 @@
         if (line.source === "manual") detail += " · " + t("calcMyPrice")
           .replace("{amount}", calcMoney(manualCents(calc.manual[calc.region][line.id]) / 100))
           .replace("{period}", line.period.label);
+        if (line.source === "quote" && line.quote.promoOriginal != null) detail += " · " + t("promoHint").replace("{amount}", calcMoney(line.quote.promoOriginal));
         lines.push((labels[line.id] || line.id) + "：" + detail);
       });
       lines.push(t("calcFootnote"));
@@ -718,8 +749,10 @@
   function estimateInner(ids) {
     var bill = calcBill(ids, false);
     var summary = calcSummary(bill, false);
+    var hasOffer = bill.lines.some(function (line) { return line.source === "quote" && line.quote.promoOriginal != null; });
     return esc(t("wallCostLabel")) + "：<strong>" + esc(summary) + "</strong>" +
-      (bill.derived ? " · " + esc(t("calcDerived")) : "");
+      (bill.derived ? " · " + esc(t("calcDerived")) : "") +
+      (hasOffer ? " · " + esc(t("wallPromoHint")) : "");
   }
 
   function estimateHtml(ids) {
@@ -886,7 +919,11 @@
     var meta = document.getElementById("costMeta");
     var updated = (subData && subData.updated_at) || "—";
     var fx = (subData && subData.fx_updated_at) || "—";
-    var draftN = ((subData && subData.items) || []).filter(function (it) { return it.status === "draft"; }).length;
+    var draftN = ((subData && subData.items) || []).filter(function (it) {
+      return it.status === "draft" || ["cn", "us"].some(function (region) {
+        return it.prices && it.prices[region] && it.prices[region].unverified;
+      });
+    }).length;
     var langToggle = meta.querySelector(".cost-lang");
     var langHtml = langToggle ? langToggle.outerHTML : "";
     meta.innerHTML =

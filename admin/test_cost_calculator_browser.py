@@ -193,6 +193,40 @@ class CostCalculatorBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_new_price_rows_show_offer_and_do_not_borrow_other_tiers(self) -> None:
+        context, page, errors = self.open()
+        try:
+            page.locator('details[data-calc-vendor="zhipu"] > summary').click()
+            page.locator('button[data-calc-tag="sub-glm-coding-lite-monthly"]').click()
+            self.assertIn("¥94.40", page.locator("#calcResult").inner_text())
+            self.assertIn("¥118.00", page.locator("#calcLines").inner_text())
+            self.assertIn("页面优惠", page.locator("#glm-coding-plan").inner_text())
+            self.assertEqual(page.locator("#glm-coding-plan del.promo-old").first.inner_text(), "¥118.00")
+            self.assertIn("2026-10-08", page.locator("#glm-coding-plan .price-source").first.inner_text())
+            self.assertTrue(page.locator("#glm-coding-plan .price-source").first.get_attribute("href").startswith("https://bigmodel.cn/"))
+            page.locator('details[data-calc-vendor="perplexity"] > summary').click()
+            page.locator('button[data-calc-tag="sub-perplexity-pro-monthly"]').click()
+            self.assertIn("另 1 档待核价", page.locator("#calcResult").inner_text())
+            self.assertIn("人民币待核", page.locator("#perplexity-pro").inner_text())
+            self.assertIn("部分已核", page.locator("#perplexity-pro .cost-badge").inner_text())
+            self.assertIn("1 行待核对", page.locator("#costMeta").inner_text())
+            self.assertTrue(page.locator("#perplexity-pro .price-source").first.get_attribute("href").startswith("https://www.perplexity.ai/"))
+            page.locator("#calcRegionUsd").click()
+            self.assertIn("$32.60", page.locator("#calcResult").inner_text())
+            self.assertIn("$18.00", page.locator("#calcLines").inner_text())
+            page.locator('button[data-calc-tag="sub-perplexity-pro-yearly"]').click()
+            page.locator('button[data-calc-tag="sub-perplexity-max-monthly"]').click()
+            self.assertIn("另 2 档待核价", page.locator("#calcResult").inner_text())
+            self.assertNotIn("$200.00", "\n".join(page.locator("#calcLines .calc-line-head").all_inner_texts()))
+            page.locator("#langEn").click()
+            self.assertIn("Page offer", page.locator("#glm-coding-plan").inner_text())
+            self.assertIn("CN price unverified", page.locator("#perplexity-pro").inner_text())
+            self.assertIn("Partly verified", page.locator("#perplexity-pro .cost-badge").inner_text())
+            self.assertIn("Only the US", page.locator("#perplexity-pro .num .muted").first.get_attribute("title"))
+            self.assertEqual(errors, [])
+        finally:
+            context.close()
+
     def test_quote_rejects_unverified_wrong_currency_date_or_source(self) -> None:
         source = json.loads((ROOT / "data/llm-cost.json").read_text(encoding="utf-8"))
         for fault in ("status", "currency", "date", "source"):
@@ -238,6 +272,10 @@ class CostCalculatorBrowserTests(unittest.TestCase):
                     "tags": {"subscription": ["sub-chatgpt-plus-monthly", "sub-claude-max-5x-monthly"],
                              "device": [], "route": []},
                     "bindings": [], "updated_on": "2026-10-08",
+                }, {
+                    "handle": "walloffer", "kind": "machine", "display_name": None,
+                    "tags": {"subscription": ["sub-glm-coding-lite-monthly"], "device": [], "route": []},
+                    "bindings": [], "updated_on": "2026-10-08",
                 }], "next_cursor": None}
             else:
                 data = {"ok": True}
@@ -255,16 +293,20 @@ class CostCalculatorBrowserTests(unittest.TestCase):
         page.route("http://mock.test/**", route_api)
         try:
             page.goto(self.base + "/cost.html?api=http%3A%2F%2Fmock.test", wait_until="networkidle")
-            card = page.locator("#setupWall a.setup-card.is-real")
+            card = page.locator("#setupWall a.setup-card.is-real").first
             card.wait_for()
             self.assertIn("134.18", card.inner_text())
             self.assertIn("待核价", card.inner_text())
+            promo_card = page.locator("#setupWall a.setup-card.is-real").nth(1)
+            self.assertIn("¥94.40", promo_card.inner_text())
+            self.assertIn("含页面优惠价", promo_card.inner_text())
             page.evaluate("""() => {
                 window.__costCard = document.querySelector('#setupWall a.setup-card.is-real');
                 window.__costCard.focus();
                 document.getElementById('calcRegionUsd').click();
             }""")
             self.assertIn("$19.99", card.inner_text())
+            self.assertIn("$12.60", promo_card.inner_text())
             self.assertNotIn("$100", card.inner_text(), "Claude Max 5x 不能借 Claude Pro 或备注价")
             self.assertTrue(page.evaluate("""() => window.__costCard.isConnected &&
                 window.__costCard === document.querySelector('#setupWall a.setup-card.is-real') &&
@@ -274,7 +316,7 @@ class CostCalculatorBrowserTests(unittest.TestCase):
                 manual: {us: {'sub-chatgpt-plus-monthly': '999'}, cn: {}}
             }))""")
             page.reload(wait_until="networkidle")
-            card = page.locator("#setupWall a.setup-card.is-real")
+            card = page.locator("#setupWall a.setup-card.is-real").first
             card.wait_for()
             self.assertIn("$999.00", page.locator("#calcResult").inner_text())
             self.assertIn("$19.99", card.locator(".setup-estimate").inner_text())

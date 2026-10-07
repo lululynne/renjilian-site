@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-25",
+  "updated_at": "2026-10-08",
   "fx_updated_at": "2026-09-24",
   "fx": {
     "usd_cny": 6.7126,
     "source": "https://api.frankfurter.app/2026-09-24?from=USD (ECB)",
     "note": "Frankfurter/ECB 当日中间价；全球均价把各地区官方价折成人民币后再平均。不含跨区购买或 VPN 提示。"
   },
-  "disclaimer": "这一页是价格的风向标，不是推荐：只记录主要大模型官方渠道的订阅价和隐性成本条件，用哪家机机由你自己权衡。每行标明核对日期与来源；标「草稿」的行尚未按当日官网核对。不含任何跨区购买、VPN 或「更便宜渠道」提示。",
+  "disclaimer": "这一页是价格的风向标，不是推荐：只记录主要大模型官方渠道的订阅价和隐性成本条件，用哪家机机由你自己权衡。每行标明核对日期与来源；页面优惠价另标期限／续费条件未核，单个地区没核到则写待核；草稿行尚未按官方页面核对。不含任何跨区购买、VPN 或「更便宜渠道」提示。",
   "items": [
     {
       "id": "chatgpt-plus",
@@ -407,24 +407,27 @@
     },
     {
       "id": "glm-coding-plan",
+      "calculator_tag_id": "sub-glm-coding-lite-monthly",
       "vendor": "智谱 / Z.ai",
-      "product": "GLM Coding Plan",
+      "product": "GLM Coding Plan（Lite）",
       "prices": {
         "cn": {
-          "amount": 118,
+          "amount": 94.4,
           "currency": "CNY",
           "unit": "month",
           "source_url": "https://bigmodel.cn/glm-coding?plantype=personal",
-          "as_of": "2026-09-24",
-          "note": "未能取到：bigmodel.cn 套餐页为 JS 渲染（HTML 4 KB 无价），docs.bigmodel.cn 套餐文档无价格；保持原 draft 值。（原稿说明：国内站 Lite 月费约 ¥118；另有 Pro ¥538、Max ¥1078。与智谱清言会员不同产品。）"
+          "as_of": "2026-10-08",
+          "promo_original": 118,
+          "note": "未登录官方页个人套餐／连续包月当前展示 Lite ¥94.4/月，划线原价 ¥118/月；优惠截止日及续费价未核，结算页为准。Pro 与 Max 是别档，不借给 Lite。"
         },
         "us": {
-          "amount": 18,
+          "amount": 12.6,
           "currency": "USD",
           "unit": "month",
           "source_url": "https://z.ai/subscribe",
-          "as_of": "2026-09-24",
-          "note": "未能取到渲染页价：z.ai/subscribe 为 JS 渲染。官方前端 JS 中 V3 套餐数组 Lite 月付 money:18,oldMoney:18（Pro 80、Max 168），另有 V2 数组 Lite money:16.2,oldMoney:18，具体展示哪套取决于前端开关；保持 draft 待人工看结账页。（原稿说明：国际站 Lite 约 $18/月；另有 Pro $80、Max $168。结账页为准，仍 draft。）"
+          "as_of": "2026-10-08",
+          "promo_original": 18,
+          "note": "未登录官方页当前展示 Lite $12.6/month，划线原价 $18/month；优惠截止日及续费价未核，结算页为准。Pro 与 Max 是别档，不借给 Lite。"
         }
       },
       "global_avg": {
@@ -436,13 +439,55 @@
         "channel": "web_console",
         "fx_date": "2026-09-24",
         "fx_usd_cny": 6.7126,
-        "checked": "2026-09-24",
+        "checked": "2026-10-08",
         "note": "CN 与国际站各一套统一标价，未公开多地区店面表，暂不作全球均价。"
       },
       "sparkline": [],
-      "status": "draft",
-      "last_verified": "2026-09-24",
-      "notes": "梅宝选定与「智谱清言」分两行；国内 bigmodel.cn、国际 z.ai，套餐价不同。"
+      "status": "verified",
+      "last_verified": "2026-10-08",
+      "notes": "代表档为 Lite 连续包月；与智谱清言分行。国内 BigModel、国际 Z.ai 各有官方显示价；两地当前均有划线优惠，期限及续费价未核，结算页为准。2026-10-08 渲染页截图和正文见 20261008-e0-price-audit。"
+    },
+    {
+      "id": "perplexity-pro",
+      "calculator_tag_id": "sub-perplexity-pro-monthly",
+      "vendor": "Perplexity",
+      "product": "Perplexity Pro",
+      "prices": {
+        "cn": {
+          "amount": null,
+          "currency": "CNY",
+          "unit": "month",
+          "source_url": null,
+          "as_of": "2026-10-08",
+          "unverified": true,
+          "note": "本轮仅核到美国官网价；中国区 App Store 对应链接返回 404，但不足以证明全部中国大陆官方渠道状态。人民币官方价待核，不用美国价冒充本地价，也不作汇率折算。",
+          "note_en": "Only the US website price was checked. The matching China App Store link returned 404, which does not establish the status of every mainland-China official channel. CNY price remains unverified; no USD conversion is presented as a local price."
+        },
+        "us": {
+          "amount": 20,
+          "currency": "USD",
+          "unit": "month",
+          "source_url": "https://www.perplexity.ai/hub",
+          "as_of": "2026-10-08",
+          "note": "官方 Hub FAQ 明写 Pro $20/month 或 $200/year；美区 Perplexity 自家 App Store IAP 列表也有 $20 和 $200。主表只取月付 $20，年付一次扣 $200，不借为月付价。"
+        }
+      },
+      "global_avg": {
+        "amount": null,
+        "currency": "CNY",
+        "method": "multi_region_mean",
+        "regions": [],
+        "region_count": 0,
+        "channel": "web_and_app",
+        "fx_date": "2026-09-24",
+        "fx_usd_cny": 6.7126,
+        "checked": "2026-10-08",
+        "note": "仅核美国官网／美区 App Store，不把单一地区当全球均价。"
+      },
+      "sparkline": [],
+      "status": "verified",
+      "last_verified": "2026-10-08",
+      "notes": "代表档 Pro 月付；官网年付 $200 不作月付价格。Max 官方帮助页写 $200/月或 $2000/年，是独立档位，未借给 Pro。中国大陆官方人民币价仍待核。"
     },
     {
       "id": "doubao-membership",
@@ -617,6 +662,6 @@
     }
   ],
   "history_note": "sparkline 只在攒够真实官方价周采样后填入；空数组=还没有历史，页面画一条平线。",
-  "coverage_note": "代表档：一产品一行，档位写在产品名括号里；同系其他档见该行 note。中国价＝中国大陆官方渠道标价；国外模型在中国大陆没有官方渠道的，中国价一栏显示美国官方价按当期汇率折算的人民币（derived_from=us，页面前缀 ≈），美国价缺失时退到全球均价（derived_from=global_avg）。美国价＝美国官方渠道标价；「—」且已核对＝该地区无官方渠道。",
-  "disclaimer_en": "A weathervane for prices, not a recommendation: this page records official-channel subscription prices and hidden-cost conditions for the main models; which machine you live with is your call. Each row shows its check date and source; rows marked draft are not yet checked against today’s official pages. No cross-region purchase, VPN or “cheaper channel” tips."
+  "coverage_note": "代表档：一产品一行，档位写在产品名括号里；同系其他档见该行 note。中国价＝中国大陆官方渠道已核展示价；国外模型确认中国大陆没有官方渠道的，才用标明日期的美国官方价与汇率折算人民币（derived_from=us，页面前缀 ≈），美国价缺失时退到全球均价（derived_from=global_avg）。单个地区证据不足写「待核」，不据此断言没有渠道；「—」且地区已核对才表示该地区无官方渠道。",
+  "disclaimer_en": "A weathervane for prices, not a recommendation: this page records official-channel subscription prices and hidden-cost conditions for the main models; which machine you live with is your call. Each row shows its check date and source. Page offers are marked when their end date or renewal terms are unverified; a region lacking a checked price stays unverified, while draft rows still await an official check. No cross-region purchase, VPN or “cheaper channel” tips."
 }
