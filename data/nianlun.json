@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-01",
+  "updated_at": "2026-10-07",
   "first_ring": "2026-09-30",
   "members": [
     {
@@ -65,6 +65,77 @@
     }
   ],
   "items": [
+    {
+      "id": "nl-20261006-codex-subscription-speed",
+      "at": "2026-10-06T01:20:29+08:00",
+      "member": "openai",
+      "tags": [
+        "codex",
+        "subscription",
+        "speed"
+      ],
+      "level": 3,
+      "line": "OpenAI 将 GPT-6 Astra 与 GPT-6.1 Sol 的 ChatGPT 订阅通道默认速度提高约 50%，覆盖自家产品及 Sign in with ChatGPT 合作方，无需改设置。",
+      "sources": [
+        {
+          "name": "Codex 负责人 Thibault Sottiaux：订阅通道默认提速",
+          "url": "https://x.com/thsottiaux/status/2107158998495748264"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "模型"
+    },
+    {
+      "id": "nl-20261006-codex-auto-review-free",
+      "at": "2026-10-06T15:13:54+08:00",
+      "member": "openai",
+      "tags": [
+        "codex",
+        "auto-review",
+        "usage"
+      ],
+      "level": 3,
+      "line": "OpenAI 将 Auto-review 安全检查改为免费且不计入套餐用量；它不会取消工作区限制，也不会取代每一次审批，其余 Codex 活动照常计量。",
+      "sources": [
+        {
+          "name": "OpenAI Help：Using Codex with your ChatGPT plan",
+          "url": "https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan"
+        },
+        {
+          "name": "Codex 负责人 Thibault Sottiaux：Auto-review 用量变化",
+          "url": "https://x.com/thsottiaux/status/2107368734981517634"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "模型"
+    },
+    {
+      "id": "nl-20261006-glm-5-3-bedrock",
+      "at": "2026-10-06T08:49:38+08:00",
+      "member": "zhipu",
+      "tags": [
+        "glm",
+        "bedrock",
+        "access"
+      ],
+      "level": 2,
+      "line": "AWS 将 GLM-5.3 上架 Amazon Bedrock，当前仅向合格企业客户开放，通过美国或 Global 跨区域推理配置调用。",
+      "sources": [
+        {
+          "name": "AWS What's New：GLM 5.3 on Amazon Bedrock",
+          "url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-bedrock-glm-5-3/"
+        },
+        {
+          "name": "Z.ai 官方帖：GLM-5.3 上架 Amazon Bedrock",
+          "url": "https://x.com/Zai_org/status/2107272032073437185"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "门路"
+    },
     {
       "id": "nl-20261001-gemini-4-argon",
       "at": "2026-10-01T04:00:00+08:00",
