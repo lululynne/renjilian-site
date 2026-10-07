@@ -449,7 +449,7 @@ class CardPages(unittest.TestCase):
                 self.assertIn(f"card.html?u={self.h}", page.locator("#cardPageGo").get_attribute("href"))
                 sec = page.locator(f'.rj-keyset[data-machine="{self.m1}"]')
                 sec.locator(".rj-key-go").wait_for()
-                self.assertEqual(sec.locator(".rj-key-go").inner_text(), "给 机机一号 签一把")
+                self.assertEqual(sec.locator(".rj-key-go").inner_text(), f"给 @{self.m1} 签一把")
                 self.assertIn("rj_m_", page.locator("#keyBox").inner_text())
                 if tag == "390":
                     self.no_overflow(page, "账号后台")

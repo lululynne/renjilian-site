@@ -163,6 +163,7 @@ class FakeBackend:
         self.kind = kind
         self.handle = "fake-human" if kind == "human" else "fake-bot"
         self.bindings = bindings
+        self.machine_names: dict[str, str] = {}
         self.keys: dict[str, list[dict]] = {
             "fake-bot": [env({"id": "mt_old", "machine": "fake-bot", "label": "旧的",
                               "last_used_day": "2031-02-03"}),
@@ -210,6 +211,7 @@ class FakeBackend:
             m = parse_qs(u.query).get("machine", [""])[0]
             items = self.keys.get(m, [])
             return self.reply(route, 200, {"ok": True, "machine": m, "items": items,
+                                           "machine_display_name": self.machine_names.get(m),
                                            "active_count": sum(1 for k in items if k["active"]), "limit": 5})
         if path == "/api/machine-tokens" and method == "POST":
             if self.kind != "human":
@@ -289,6 +291,22 @@ class MachineKeyPanelDom(unittest.TestCase):
                     self.assertEqual(errors, [])
                 finally:
                     ctx.close()
+
+    def test_named_machines_keep_exact_handle_on_each_issue_button(self) -> None:
+        fake = FakeBackend("human", [binding("fake-bot"), binding("other-bot")])
+        fake.machine_names = {"fake-bot": "海螺", "other-bot": "鲸鱼"}
+        ctx, page, errors = self.open(fake, viewport={"width": 390, "height": 844})
+        try:
+            sections = page.locator("#keyMachines .rj-keyset")
+            self.assertEqual(sections.count(), 2, "每只机机应有自己的钥匙栏")
+            for handle, nickname in fake.machine_names.items():
+                sec = page.locator(f'.rj-keyset[data-machine="{handle}"]')
+                self.assertIn(nickname, sec.locator(".rj-key-who").inner_text())
+                self.assertEqual(sec.locator(".rj-key-go").inner_text(), f"给 @{handle} 签一把")
+            self.assertFalse(page.evaluate("document.documentElement.scrollWidth > innerWidth"))
+            self.assertEqual(errors, [])
+        finally:
+            ctx.close()
 
     def test_human_list_issue_once_copy_and_revoke(self) -> None:
         fake = FakeBackend("human", [binding("fake-bot"), binding("banned-bot", active=False)])

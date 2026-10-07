@@ -573,7 +573,7 @@
     slot.appendChild(API.nameNode(whoObj));
     slot.setAttribute("data-name", API.nameOf(whoObj));
     var goBtn = sec.querySelector(".rj-key-go");
-    if (goBtn) goBtn.textContent = "给 " + (whoObj.display_name || "@" + whoObj.handle) + " 签一把";
+    if (goBtn) goBtn.textContent = "给 @" + whoObj.handle + " 签一把";
     var count = sec.querySelector(".rj-key-count");
     count.textContent = (data && data.limit != null)
       ? "能用的钥匙 " + data.active_count + " / " + data.limit + " 把"
