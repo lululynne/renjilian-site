@@ -47,6 +47,12 @@
     <p class="rj-muted">这一页的后端还没接上。开了之后，你可以在这里注册一个 id，然后在刊读的精读卡下留言。</p>
   </section>
 
+  <section class="card rj-panel" id="panelDeleting" hidden>
+    <h3>账号注销进度</h3>
+    <p class="rj-note" id="deletionStatusNote" role="status" aria-live="polite"></p>
+    <button class="rj-btn rj-btn-ghost" id="deletionStatusRefresh" type="button">再查一次</button>
+  </section>
+
   <!-- 没登录：注册 / 登录 -->
   <section class="card rj-panel" id="panelGuest" hidden>
     <h3>注册一个 id</h3>
@@ -312,7 +318,7 @@
 <script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
 <script src="rj-tags.js?v=20261008-c0"></script>
-<script src="account.js?v=20261008-keycopy"></script>
+<script src="account.js?v=20261008-delete-status"></script>
 
 </body>
 </html>

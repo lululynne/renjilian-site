@@ -26,6 +26,36 @@
     return r ? r.value : null;
   }
 
+  var deletionStatusEpoch = 0;
+  function refreshDeletionStatus() {
+    var epoch = ++deletionStatusEpoch;
+    API.get("/api/deletions/status").then(function (r) {
+      if (epoch !== deletionStatusEpoch || !$('panelMe').hidden) return;
+      if (!r.ok || !r.data) {
+        show($("panelDeleting"), true);
+        say($("deletionStatusNote"), "暂时查不到注销进度，不能据此当作已经删完。稍后再查。", true);
+        return;
+      }
+      if (r.data.state === "pending") {
+        show($("panelDeleting"), true);
+        say($("deletionStatusNote"), r.data.notice || "账号正在清理，完成前不会显示为已删除。");
+        show($("deletionStatusRefresh"), true);
+      } else if (r.data.state === "complete") {
+        show($("panelDeleting"), true);
+        say($("deletionStatusNote"), r.data.notice || "本站里的账号清理完成了。");
+        show($("deletionStatusRefresh"), false);
+      } else {
+        show($("panelDeleting"), false);
+      }
+    }).catch(function () {
+      if (epoch !== deletionStatusEpoch || !$('panelMe').hidden) return;
+      show($("panelDeleting"), true);
+      say($("deletionStatusNote"), "暂时查不到注销进度，不能据此当作已经删完。稍后再查。", true);
+    });
+  }
+
+  $("deletionStatusRefresh").addEventListener("click", refreshDeletionStatus);
+
   if (!API || !API.enabled) { show($("panelOffline"), true); return; }
 
   API.available().then(function (cfg) {
@@ -35,10 +65,12 @@
   }).catch(function () { show($("panelOffline"), true); });
 
   function paint(me, cfg) {
+    ++deletionStatusEpoch;
+    if (me) show($("panelDeleting"), false);
     show($("panelGuest"), !me);
     show($("panelMe"), !!me);
     show($("panelFeed"), !!me);
-    if (!me) { wireGuest(cfg); return; }
+    if (!me) { refreshDeletionStatus(); wireGuest(cfg); return; }
     loadFeed(true);
 
     keyMe = me.handle;
@@ -146,7 +178,10 @@
 
   /* ── 没登录 ── */
 
+  var guestWired = false;
   function wireGuest(cfg) {
+    if (guestWired) return;
+    guestWired = true;
     // 第一步选了身份，第二步才出来
     Array.prototype.forEach.call(document.querySelectorAll('input[name="regKind"]'), function (r) {
       r.addEventListener("change", function () { show($("regStep2"), true); });
@@ -224,12 +259,28 @@
 
     $("deleteGo").addEventListener("click", function () {
       var mode = picked("delMode") || "delete";
-      var warn = "注销这个号？这是真删，账号和恢复码都没了，站方也找不回来。\n\n"
+      var warn = "注销这个号？账号会先从公开页面撤下、停止登录；图片存储若还在清理，页面会明确显示进度，完成后才算删完。\n\n"
         + (mode === "keep" ? "你的留言会留下，但署名会被抹掉。\n\n" : "你的留言会一并删掉。\n\n")
         + (CFG.aiNotice || "");
       if (!window.confirm(warn)) return;
       API.del("/api/me", { comments: mode }).then(function (r) {
         if (!r.ok) { say($("meNote"), API.errorOf(r), true); return; }
+        if (r.data && r.data.deletion_pending) {
+          API.forget();
+          show($("panelMe"), false);
+          show($("panelFeed"), false);
+          show($("panelGuest"), true);
+          wireGuest({});
+          refreshDeletionStatus();
+          return;
+        }
+        if (!r.data || r.data.deleted !== true) {
+          say($("meNote"), "注销状态还没确定，不能当作已经删完。", true);
+          return;
+        }
+        show($("panelDeleting"), true);
+        say($("deletionStatusNote"), r.data.notice || "本站里的账号清理完成了。");
+        show($("deletionStatusRefresh"), false);
         API.forget();
         say($("meNote"), r.data.notice || "号删干净了。");
         show($("panelMe"), false);

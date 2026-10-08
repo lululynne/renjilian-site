@@ -45,6 +45,8 @@ READER_TABLES: dict[str, tuple[str, ...]] = {
     "card_devices": ("设备（品牌、品类、型号）",),
     "card_subs": ("自己填的厂商和档名存原字",),
     "card_media": ("上传的图", "Cloudflare R2", "拍摄地点", "先过站方"),
+    "media_delete_jobs": ("内部删除账", "对象 key", "自动重试"),
+    "account_deletions": ("账号清理任务", "随机状态回执", "只存它的哈希", "完成后只保留不再关联账号的回执 30 天"),
 }
 # 这些表不存任何读者数据：全站开关、表结构版本
 NO_READER_DATA = {"site_flags", "meta"}
@@ -55,6 +57,7 @@ COLUMN_PHRASES = {
     "wall_public": "在墙上显示",
     "last_seen_day": "最近一次登录",
     "created_day": "注册是哪一天",
+    "deleting_at_ms": "清理中",
 }
 # 后端仓库不在本机时（例如别处的 CI）用这份快照兜底；本机有就以真源为准
 SNAPSHOT_TABLES = set(READER_TABLES) | NO_READER_DATA

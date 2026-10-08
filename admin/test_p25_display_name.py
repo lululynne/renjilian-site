@@ -140,6 +140,8 @@ class Fake:
         self.calls.append((method, path, body))
         if path == "/api/config":
             return self.reply(route, 200, {"ok": True, "comments_enabled": True})
+        if path == "/api/deletions/status":
+            return self.reply(route, 200, {"ok": True, "state": None})
         if path == "/api/me" and method == "GET":
             if not self.signed_in:
                 return self.reply(route, 200, {"ok": True, "signed_in": False})
