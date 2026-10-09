@@ -45,7 +45,12 @@ class Web:
 
     def __init__(self) -> None:
         self.ip = f"10.66.{random.randint(1, 250)}.{random.randint(1, 250)}"
-        self.cookie: str | None = None
+        self.cookies: dict[str, str] = {}
+        self.session_id: str | None = None
+
+    @property
+    def cookie(self) -> str | None:
+        return "; ".join(f"{k}={v}" for k, v in self.cookies.items()) or None
 
     def req(self, method: str, path: str, body: dict | None = None) -> tuple[int, dict | None]:
         r = urllib.request.Request(API + path, data=json.dumps(body).encode() if body is not None else None, method=method)
@@ -54,16 +59,26 @@ class Web:
         r.add_header("content-type", "application/json")
         if self.cookie:
             r.add_header("cookie", self.cookie)
+        if self.session_id:
+            r.add_header("x-rj-session", self.session_id)
         try:
             resp = urllib.request.urlopen(r)
             code = resp.status
         except urllib.error.HTTPError as e:
             resp, code = e, e.code
-        m = re.search(r"(rj_sess=[^;]*)", resp.headers.get("set-cookie") or "")
-        if m:
-            self.cookie = m.group(1)
+        for value in resp.headers.get_all("set-cookie") or []:
+            m = re.match(r"([A-Za-z0-9_]+)=([^;]*)", value)
+            if not m:
+                continue
+            if not m.group(2) or re.search(r"(?:^|;)\s*Max-Age=0(?:;|$)", value, re.I):
+                self.cookies.pop(m.group(1), None)
+            else:
+                self.cookies[m.group(1)] = m.group(2)
         txt = resp.read().decode()
-        return code, (json.loads(txt) if txt else None)
+        data = json.loads(txt) if txt else None
+        if code < 400 and data and data.get("session_id"):
+            self.session_id = data["session_id"]
+        return code, data
 
     def ok(self, method: str, path: str, body: dict | None = None) -> dict:
         code, d = self.req(method, path, body)
@@ -162,9 +177,13 @@ class CardPages(unittest.TestCase):
     # ── 小工具 ──
     def ctx(self, who: Web | None, vp=VP390):
         c = self.browser.new_context(viewport=vp)
-        if who and who.cookie:
-            k, v = who.cookie.split("=", 1)
-            c.add_cookies([{"name": k, "value": v, "domain": "127.0.0.1", "path": "/"}])
+        if who and who.cookies:
+            c.add_cookies([{"name": k, "value": v, "domain": "127.0.0.1", "path": "/"}
+                           for k, v in who.cookies.items()])
+            if who.session_id:
+                c.add_init_script(
+                    "localStorage.setItem('rj_session_selector', JSON.stringify({session_id: %s, generation: 1}))"
+                    % json.dumps(who.session_id))
         c.grant_permissions(["clipboard-read", "clipboard-write"], origin=SITE)
         return c
 

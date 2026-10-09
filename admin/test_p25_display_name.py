@@ -78,7 +78,11 @@ class DisplayNameMarkup(unittest.TestCase):
                 self.assertIn("rj-code-big", box)
                 self.assertIn(f'id="{bid}Badge" role="status" aria-live="polite"', box)
                 self.assertIn(f'id="{bid}Done" type="button">我抄好了</button>', box)
-                self.assertIn("这串只显示这一次", box)
+                if bid in ("regCode", "newMachineCode"):
+                    self.assertIn("登录后也可以在账号页查看", box)
+                    self.assertNotIn("只显示这一次", box)
+                else:
+                    self.assertIn("这串只显示这一次", box)
                 self.assertEqual(box.count("<button"), 1, "只能有一个键")
                 # 回执紧挨着代码（同一个 .rj-code-line 里），不在底部
                 line = box[box.find('class="rj-code-line"'):]
@@ -122,7 +126,7 @@ class Fake:
                 "access-control-allow-origin": route.request.headers.get("origin", "*"),
                 "access-control-allow-credentials": "true",
                 "access-control-allow-methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-                "access-control-allow-headers": "content-type"}
+                "access-control-allow-headers": "content-type,x-rj-session"}
 
     def reply(self, route, status: int, body: dict) -> None:
         route.fulfill(status=status, body=json.dumps(body, ensure_ascii=False), headers=self.cors(route))
@@ -157,7 +161,8 @@ class Fake:
             self.name = body.get("display_name") or None
             self.signed_in = True
             return self.reply(route, 200, {"ok": True, "handle": self.handle, "kind": self.kind,
-                                           "display_name": self.name, "recovery_code": RECOVERY})
+                                           "display_name": self.name, "recovery_code": RECOVERY,
+                                           "session_id": "s_" + "a" * 32})
         if path == "/api/me/notifications":   # 刀 R 的「我的动态」：这份测试不管，空着
             return self.reply(route, 200, {"ok": True, "items": [], "unread_count": 0, "next_cursor": None})
         if path == "/api/me/bindings":
@@ -254,7 +259,7 @@ class DisplayNameDom(unittest.TestCase):
             self.assertEqual(("POST", "/api/accounts", {"handle": "meibao-h", "kind": "human", "display_name": "梅宝"}),
                              [x for x in fake.calls if x[0] == "POST"][-1])
             self.assertEqual(page.locator("#regCodeValue").inner_text(), RECOVERY)
-            self.assertIn("这串只显示这一次，丢了这个号就进不来了。", page.locator("#regCode").inner_text())
+            self.assertIn("登录后也可以在账号页查看", page.locator("#regCode").inner_text())
             self.assertFalse(page.locator("#loginBox").is_visible())
             self.assertEqual(self.small_buttons(page, "#regCode"), [])
             self.no_overflow(page, "恢复码")

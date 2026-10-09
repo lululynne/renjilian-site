@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>找回账号 · 第二人称</title>
+<link rel="stylesheet" href="style.css">
+<main style="max-width:640px;margin:40px auto;padding:0 20px">
+  <h1>找回账号</h1>
+  <section class="card rj-panel">
+    <p id="recoverNotice" role="status" aria-live="polite">正在核验链接。</p>
+    <p>绑定机机发起的申请有24小时可撤回期。完成后旧恢复码、旧设备登录和旧授权钥匙都会作废。</p>
+    <button class="rj-btn" type="button" id="recoverComplete" hidden>生成新的恢复码</button>
+    <div id="recoverResult" hidden>
+      <label class="rj-label" for="recoverCode">新恢复码</label>
+      <input class="rj-text" id="recoverCode" readonly autocomplete="off">
+      <button class="rj-btn" type="button" id="recoverCopy">复制新码</button>
+      <p>先把新码保存好，再回账号页登录。链接只重设一次；确认收好前，在有效期内可重读同一串码。</p>
+      <button class="rj-btn rj-btn-ghost" type="button" id="recoverAck">我已收好，关闭这次链接</button>
+    </div>
+    <p><a class="rj-btn rj-btn-ghost" href="account.html">回账号页</a></p>
+  </section>
+</main>
+<script src="rj-config.js"></script>
+<script src="rj-api.js?v=20261010-account"></script>
+<script src="account-recover.js?v=20261010-account"></script>
+</html>

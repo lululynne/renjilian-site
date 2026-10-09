@@ -55,22 +55,52 @@
   }
 
   $("deletionStatusRefresh").addEventListener("click", refreshDeletionStatus);
+  if ($("offlineRetry")) $("offlineRetry").addEventListener("click", function () { location.reload(); });
 
   if (!API || !API.enabled) { show($("panelOffline"), true); return; }
+
+  var accountCfg = null, accountPaintEpoch = 0;
+  function refreshAccount(force) {
+    var current = ++accountPaintEpoch, generation = API.sessionGeneration();
+    return API.me(force).then(function (me) {
+      if (current !== accountPaintEpoch || generation !== API.sessionGeneration()) return;
+      if (API.meUnavailable && API.meUnavailable()) {
+        show($("panelOffline"), true);
+        if ($("offlineSessionNote")) $("offlineSessionNote").textContent = "暂时核验不了登录状态，请重试；这次连接失败不会主动退出你的账号。";
+        if (!me) return;
+      }
+      if (!onceShowing("regCode")) paint(me, accountCfg);
+    });
+  }
+  window.addEventListener("rj-identity-change", function () {
+    ++accountPaintEpoch; ++deletionStatusEpoch;
+    meRef = null; keyMe = null;
+    if (window.RJ_ACCOUNT_SECURITY) window.RJ_ACCOUNT_SECURITY.paint(null, accountCfg);
+    ["regCode", "bindCode", "newMachineCode", "keyPlain"].forEach(function (id) {
+      show($(id), false); if ($(id + "Value")) $(id + "Value").textContent = "";
+    });
+    ["loginCode", "bindCodeInput", "recoveryEmail"].forEach(function (id) { if ($(id)) $(id).value = ""; });
+    onceOpen = 0; window.removeEventListener("beforeunload", guardLeave);
+    show($("panelMe"), false); show($("panelFeed"), false); show($("panelGuest"), false);
+    $("meHandle").textContent = "";
+    if (accountCfg) refreshAccount(true).catch(function () { show($("panelOffline"), true); });
+  });
 
   API.available().then(function (cfg) {
     if (!cfg) { show($("panelOffline"), true); return; }
     show($("panelOffline"), false);
-    return API.me().then(function (me) { paint(me, cfg); });
+    accountCfg = cfg;
+    return refreshAccount(false);
   }).catch(function () { show($("panelOffline"), true); });
 
   function paint(me, cfg) {
+    if (window.RJ_ACCOUNT_SECURITY) window.RJ_ACCOUNT_SECURITY.paint(me, cfg);
     ++deletionStatusEpoch;
     if (me) show($("panelDeleting"), false);
     show($("panelGuest"), !me);
     show($("panelMe"), !!me);
     show($("panelFeed"), !!me);
-    if (!me) { refreshDeletionStatus(); wireGuest(cfg); return; }
+    if (!me) { meRef = null; keyMe = null; refreshDeletionStatus(); wireGuest(cfg); return; }
     loadFeed(true);
 
     keyMe = me.handle;
@@ -202,6 +232,10 @@
         $("regGo").disabled = false;
         if (!r.ok) { say($("regNote"), API.errorOf(r), true); return; }
         say($("regNote"), "");
+        // 新会话已同步清掉旧身份；初次交码必须保持它的祖先面板可见。
+        ++accountPaintEpoch;
+        show($("panelGuest"), true);
+        show($("panelMe"), false); show($("panelFeed"), false);
         // 恢复码只显示这一次：收起之前注册／登录都锁住，别的操作盖不掉它
         show($("regStep2"), false);
         show($("loginBox"), false);
@@ -209,7 +243,7 @@
           r.data.recovery_code, function () {
             show($("loginBox"), true);
             API.forget();
-            API.me(true).then(function (me) { paint(me, cfg); });
+            refreshAccount(true);
           });
       }).catch(function () {
         $("regGo").disabled = false;
@@ -228,7 +262,7 @@
         if (!r.ok) { say($("loginNote"), API.errorOf(r), true); return; }
         say($("loginNote"), "");
         API.forget();
-        API.me(true).then(function (me) { paint(me, cfg); });
+        refreshAccount(true);
       }).catch(function () {
         $("loginGo").disabled = false;
         say($("loginNote"), "这一步没走通，稍后再试。", true);
@@ -238,7 +272,10 @@
 
   /* ── 已登录 ── */
 
+  var meWired = false;
   function wireMe() {
+    if (meWired) return;
+    meWired = true;
     $("kindGo").addEventListener("click", function () {
       var kind = picked("meKindPick");
       if (!kind) { say($("meNote"), "先选一个。", true); return; }
@@ -258,13 +295,16 @@
     });
 
     $("deleteGo").addEventListener("click", function () {
+      var target = meRef && meRef.handle;
+      if (!target || $("panelMe").hidden) return;
       var mode = picked("delMode") || "delete";
       var warn = "注销这个号？账号会先从公开页面撤下、停止登录；图片存储若还在清理，页面会明确显示进度，完成后才算删完。\n\n"
         + (mode === "keep" ? "你的留言会留下，但署名会被抹掉。\n\n" : "你的留言会一并删掉。\n\n")
         + (CFG.aiNotice || "");
       if (!window.confirm(warn)) return;
-      API.del("/api/me", { comments: mode }).then(function (r) {
+      API.del("/api/me", { comments: mode, expected_handle: target }).then(function (r) {
         if (!r.ok) { say($("meNote"), API.errorOf(r), true); return; }
+        ++accountPaintEpoch; ++deletionStatusEpoch;
         if (r.data && r.data.deletion_pending) {
           API.forget();
           show($("panelMe"), false);
@@ -593,14 +633,21 @@
       var scopes = el("div", "rj-kinds");
       scopes.appendChild(check);
       scopes.appendChild(check2);
+      var check3 = el("label", "rj-kind-pick");
+      var box3 = document.createElement("input");
+      box3.type = "checkbox"; box3.value = "recovery:request"; box3.checked = false;
+      box3.className = "rj-key-scope-box";
+      check3.appendChild(box3);
+      check3.appendChild(document.createTextNode(" 代我找回账号"));
+      scopes.appendChild(check3);
       var go = el("button", "rj-btn rj-key-go", "给 @" + handle + " 签一把");
       go.type = "button";
-      go.addEventListener("click", function () { issueKey(sec, input, [box, box2], go); });
+      go.addEventListener("click", function () { issueKey(sec, input, [box, box2, box3], go); });
       form.appendChild(lab);
       form.appendChild(input);
       form.appendChild(scopes);
       form.appendChild(el("p", "rj-muted rj-key-scope-say",
-        "勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）；勾了打扮名片，它就能自己换头像装扮、签名、怎么叫你。"));
+        "勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）；勾了打扮名片，它就能改自己的名片。勾了代我找回，它就能为你的账号提交邮箱找回申请（24小时可撤回）；邮箱通道未开通时会明确拒绝，不会改你的码。"));
       form.appendChild(go);
       sec.appendChild(form);
     }

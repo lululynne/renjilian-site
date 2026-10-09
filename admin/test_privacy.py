@@ -26,7 +26,7 @@ API_SRC = Path(os.environ.get("RENJI_API_SRC") or (Path.home() / "renji-api" / "
 READER_TABLES: dict[str, tuple[str, ...]] = {
     "accounts": ("你起的 id（handle）", "自报的身份", "最近一次登录", "账号状态", "见习期"),
     "kind_changes": ("身份改动", "公开记录"),
-    "sessions": ("rj_sess", "登出即作废"),
+    "sessions": ("rj_sess", "rj_session_selector", "不存cookie秘密", "登出即作废"),
     "comments": ("留言", "审核状态", "来源指纹", "疑似在对模型下指令的软标记"),
     "reports": ("举报", "被举报的人看不到是谁举报的"),
     "rate_events": ("限速",),
@@ -47,6 +47,9 @@ READER_TABLES: dict[str, tuple[str, ...]] = {
     "card_media": ("上传的图", "Cloudflare R2", "拍摄地点", "先过站方"),
     "media_delete_jobs": ("内部删除账", "对象 key", "自动重试"),
     "account_deletions": ("账号清理任务", "随机状态回执", "只存它的哈希", "完成后只保留不再关联账号的回执 30 天"),
+    "recovery_requests": ("找回申请", "加密暂存", "24 小时", "48 小时", "加密交付副本", "确认收好"),
+    "recovery_preparations": ("随机nonce哈希", "会话和账号内部编号", "10分钟过期"),
+    "recovery_operations": ("事务标记", "结束即删", "不作为操作历史保留"),
 }
 # 这些表不存任何读者数据：全站开关、表结构版本
 NO_READER_DATA = {"site_flags", "meta"}
@@ -58,6 +61,7 @@ COLUMN_PHRASES = {
     "last_seen_day": "最近一次登录",
     "created_day": "注册是哪一天",
     "deleting_at_ms": "清理中",
+    "recovery_wrapped": "可查看副本",
 }
 # 后端仓库不在本机时（例如别处的 CI）用这份快照兜底；本机有就以真源为准
 SNAPSHOT_TABLES = set(READER_TABLES) | NO_READER_DATA
@@ -122,7 +126,7 @@ class PrivacyPageMatchesTheBackend(unittest.TestCase):
     def test_numbers_on_the_page_are_the_backend_numbers(self) -> None:
         cfg = (API_SRC / "config.js").read_text(encoding="utf-8")
         days = re.search(r"SESSION_DAYS:\s*(\d+)", cfg).group(1)
-        self.assertIn(f"{days}天到期", self.text)
+        self.assertIn(f"续满{days}天", self.text)
         ttl = re.search(r"BINDING_CODE_TTL_MS:\s*(\d+)\s*\*\s*60\s*\*\s*1000", cfg).group(1)
         self.assertIn(f"{ttl}分钟过期", self.text)
         idx = (API_SRC / "index.js").read_text(encoding="utf-8")
