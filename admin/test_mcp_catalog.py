@@ -163,7 +163,15 @@ class McpCatalogContractTests(unittest.TestCase):
         self.assertEqual(schema["properties"]["schema_version"]["const"], 2)
         experience = schema["$defs"]["experience"]["oneOf"]
         allowed_levels = {ref["$ref"].rsplit("/", 1)[-1] for ref in experience}
-        self.assertEqual(allowed_levels, {"replay", "remote"})
+        # 2026-10-10：oneOf 加了 sandbox。replay / remote 的 level 判别子不动。
+        self.assertEqual(allowed_levels, {"replay", "remote", "sandbox"})
+        self.assertEqual(schema["$defs"]["replay"]["properties"]["level"]["const"], "replay")
+        self.assertEqual(schema["$defs"]["remote"]["properties"]["level"]["const"], "remote")
+        sandbox = schema["$defs"]["sandbox"]
+        self.assertEqual(set(sandbox["required"]), {"type", "label", "caption"})
+        self.assertEqual(sandbox["properties"]["type"]["const"], "sandbox")
+        self.assertNotIn("capability", sandbox["properties"])
+        self.assertIs(sandbox["additionalProperties"], False)
 
     def test_first_batch_cards_facts(self) -> None:
         by_id = {item["id"]: item for item in self.items}
@@ -239,6 +247,10 @@ class McpCatalogContractTests(unittest.TestCase):
                 with self.subTest(item=item["id"]):
                     self.assertTrue(item["installations"] or item["experiences"])
                     for experience in item["experiences"]:
+                        if experience.get("type") == "sandbox":
+                            self.assertNotIn("level", experience)
+                            self.assertNotIn("capability", experience)
+                            continue
                         self.assertIn(experience["level"], {"replay", "remote"})
 
     def test_all_outbound_urls_are_https(self) -> None:
@@ -250,6 +262,8 @@ class McpCatalogContractTests(unittest.TestCase):
                     self.assertEqual(urlparse(item["repo"]["url"]).scheme, "https")
                     self.assertEqual(urlparse(item["repo"]["license"]["source_url"]).scheme, "https")
                 for experience in item["experiences"]:
+                    if experience.get("type") == "sandbox":
+                        continue
                     if experience["level"] == "remote":
                         self.assertEqual(urlparse(experience["url"]).scheme, "https")
 

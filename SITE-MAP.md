@@ -10,7 +10,7 @@
 |---|---|---|---|
 | `index.html` | 顶栏「首页」 | 刊头＋双声（`voice-thesis` 是测试不变量）＋八个栏目的实情介绍＋刊读横条＋四块瓦片。刊读横条（刀 3 做法 A）：内联脚本取 `data/kanread.json` 最新一篇（verified/unavailable），直达 `kanread.html#<id>` 单篇；取数失败显示「精读目录」兜底。首页版式与「最近一期」属 1-门，等梅宝拍 | 链各板块；页脚 |
 | `games.html` | 顶栏「互动提问」 | `data/questions.json`（裸数组，无 status；全年龄／暧昧／18+ 三档）。收藏、点赞只存本机。`#q-…` 深链直接弹详情浮层，Esc 关、焦点回卡片 | 被精读的 related 链入 |
-| `baibao.html` | 顶栏「MCP / Skills」 | `data/mcps.json`＋schema；只有 verified 给安装入口；18+ 条目默认上锁。卡片 `id` = 条目 id | related → 精读、成本 |
+| `baibao.html` | 顶栏「MCP / Skills」 | `data/mcps.json`＋schema；只有 verified 给安装入口；18+ 条目默认上锁。卡片 `id` = 条目 id。`type=sandbox` 只声明该条目允许试玩，公开 JSON 不存短期口令；点击后以 item id 向 API 动态开启或复用限时预览 | related → 精读、成本 |
 | `codex.html` | 顶栏「额度重置」 | 第三方公开 JSON＋官方事件档案，自成一体 | 页脚 |
 | `cost.html` | 顶栏「大模型成本」 | `data/llm-cost*.json` 四份；未核对行 status=draft。表格行 `id` = 条目 id。`#setups` 机友墙（后端在就拉 `/api/wall`，不在就摆示例卡）；墙按钮没登录时写「没号？注册后挑好配置就能上墙」 | related → 百宝箱；墙卡 → `profile.html?u=` |
 | `kanread.html` | 顶栏「刊读」 | 刀 3 起两层：目录（无 hash，`#kanreadList`，按月分组，只列日期、标题、钩子、话题、出处）→ 单篇（`#kr-…`，`#krSingle`）；评论、相关、小纸条只在单篇。`data/kanread.json`（公开）＋`kanread.drafts.json`（不进仓库）。单篇阅读顺序：原文入口 → 人声／机声 → 相关 → 评论。评论区只有这里有（`renji-api` `TARGET_RE = kanread:…`）。已知代价：单篇由 JS 渲染，搜索引擎快照只有目录，每篇一个静态快照页另起一刀 | related → 脉搏、提问；留言 handle → 名片主页；框旁 → 守则、账号；小纸条弹层 → `ainotes.html#bk-…` |

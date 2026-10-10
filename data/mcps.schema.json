@@ -177,7 +177,8 @@
     "experience": {
       "oneOf": [
         { "$ref": "#/$defs/replay" },
-        { "$ref": "#/$defs/remote" }
+        { "$ref": "#/$defs/remote" },
+        { "$ref": "#/$defs/sandbox" }
       ]
     },
     "replay": {
@@ -200,6 +201,17 @@
         "url": { "type": "string", "format": "uri", "pattern": "^https://" },
         "operator": { "type": "string", "maxLength": 120 },
         "privacy_note": { "type": "string", "maxLength": 240 }
+      },
+      "additionalProperties": false
+    },
+    "sandbox": {
+      "type": "object",
+      "description": "目录只声明这个已核验项目允许限时试玩。点击时由 API 按条目 id 动态开启或复用预览；公开 JSON 永不保存短期口令。",
+      "required": ["type", "label", "caption"],
+      "properties": {
+        "type": { "const": "sandbox" },
+        "label": { "type": "string", "maxLength": 80 },
+        "caption": { "type": "string", "maxLength": 240 }
       },
       "additionalProperties": false
     },

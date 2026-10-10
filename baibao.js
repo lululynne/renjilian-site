@@ -187,6 +187,7 @@
     panel.hidden = true;
 
     (item.experiences || []).forEach((experience) => {
+      if (experience.type === "sandbox") return;
       if (experience.level === "replay") {
         const replay = node("div", "treasure-experience replay");
         replay.append(node("span", "treasure-level", "L1 · 安装后效果回放"));
@@ -220,6 +221,109 @@
       }
     });
     return panel;
+  }
+
+  function buildSandboxPanel(item) {
+    const panel = node("div", "treasure-panel");
+    panel.dataset.panel = "sandbox";
+    panel.id = `panel-${item.id}-sandbox`;
+    panel.hidden = true;
+    const status = node("p", "treasure-sandbox-status");
+    status.dataset.sandboxStatus = "";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    const bannerSlot = node("div", "treasure-sandbox-banner-slot");
+    bannerSlot.dataset.sandboxBanner = "";
+    const frameSlot = node("div", "treasure-sandbox-frame-slot");
+    frameSlot.dataset.sandboxFrame = "";
+    panel.append(status, bannerSlot, frameSlot);
+    return panel;
+  }
+
+  function clearSandbox(panel) {
+    if (!panel) return;
+    panel._sandboxGen = (panel._sandboxGen || 0) + 1;
+    if (panel._sandboxTimer) window.clearInterval(panel._sandboxTimer);
+    panel._sandboxTimer = 0;
+    if (panel._sandboxAbort) panel._sandboxAbort.abort();
+    panel._sandboxAbort = null;
+    const frameSlot = panel.querySelector("[data-sandbox-frame]");
+    if (frameSlot) frameSlot.replaceChildren();
+  }
+
+  function startSandbox(panel, item, entry) {
+    const preview = window.RJ_BAIBAO_PREVIEW;
+    if (!preview || !panel || !entry) return;
+    const status = panel.querySelector("[data-sandbox-status]");
+    const bannerSlot = panel.querySelector("[data-sandbox-banner]");
+    const frameSlot = panel.querySelector("[data-sandbox-frame]");
+    const setStatus = (next) => {
+      if (!status || !next) return;
+      status.dataset.phase = next.phase;
+      status.textContent = next.text;
+    };
+    const paint = (expiresAt) => {
+      if (!bannerSlot) return;
+      const repoUrl = item.repo && item.repo.url;
+      bannerSlot.replaceChildren(preview.paintBanner(document, preview.bannerModel({
+        repoUrl,
+        expiresAt,
+        now: Date.now(),
+      })));
+    };
+    try {
+      clearSandbox(panel);
+      const token = (panel._sandboxGen || 0) + 1;
+      panel._sandboxGen = token;
+      const controller = new AbortController();
+      panel._sandboxAbort = controller;
+      setStatus(preview.transition({type: "start"}));
+      paint(null);
+      if (frameSlot) frameSlot.replaceChildren();
+      const apiBase = (window.RJ_CONFIG && window.RJ_CONFIG.apiBase) || "";
+      const fetchPreview = (url, init) => window.fetch(url, {...init, signal: controller.signal});
+      preview.loadPreview(apiBase, entry.projectId, fetchPreview).then((next) => {
+        if (!panel.isConnected || panel._sandboxGen !== token) return;
+        panel._sandboxAbort = null;
+        setStatus(next);
+        paint(next.expiresAt);
+        if (next.phase !== "ready" || !next.previewUrl) return;
+        const frame = preview.paintIframe(document, next.previewUrl);
+        if (!frame) {
+          setStatus({phase: "network", text: preview.copy.network});
+          if (frameSlot) frameSlot.replaceChildren();
+          return;
+        }
+        if (frameSlot) frameSlot.replaceChildren(frame);
+        const expiresAt = next.expiresAt;
+        panel._sandboxTimer = window.setInterval(() => {
+          if (!panel.isConnected || panel._sandboxGen !== token) {
+            clearSandbox(panel);
+            return;
+          }
+          const expired = preview.transition({
+            type: "tick",
+            phase: "ready",
+            expiresAt,
+            now: Date.now(),
+          });
+          if (expired && expired.phase === "destroyed") {
+            clearSandbox(panel);
+            setStatus(expired);
+            if (frameSlot) frameSlot.replaceChildren();
+            paint(expired.expiresAt);
+            return;
+          }
+          paint(expiresAt);
+        }, 1000);
+      }).catch(() => {
+        if (!panel.isConnected || panel._sandboxGen !== token) return;
+        panel._sandboxAbort = null;
+        setStatus({phase: "network", text: preview.copy.network});
+      });
+    } catch (_error) {
+      setStatus({phase: "network", text: preview.copy.network});
+    }
   }
 
   function buildAdultLock(item) {
@@ -298,7 +402,18 @@
       tryOut.setAttribute("aria-expanded", "false");
       tryOut.setAttribute("aria-controls", `panel-${item.id}-try`);
       actions.append(bring, tryOut);
+      const previewApi = window.RJ_BAIBAO_PREVIEW;
+      const sandboxEntry = previewApi && previewApi.entryFor(item);
+      if (sandboxEntry) {
+        const sandbox = node("button", "", previewApi.copy.tryLabel);
+        sandbox.type = "button";
+        sandbox.dataset.action = "sandbox";
+        sandbox.setAttribute("aria-expanded", "false");
+        sandbox.setAttribute("aria-controls", `panel-${item.id}-sandbox`);
+        actions.append(sandbox);
+      }
       card.append(actions, buildBringPanel(item), buildTryPanel(item));
+      if (sandboxEntry) card.append(buildSandboxPanel(item));
     }
 
     const links = node("div", "treasure-links");
@@ -340,6 +455,7 @@
   }
 
   function render() {
+    grid.querySelectorAll('[data-panel="sandbox"]').forEach(clearSandbox);
     const visible = state.items.filter(matches);
     grid.replaceChildren(...visible.map(createCard));
     empty.hidden = visible.length !== 0;
@@ -403,8 +519,17 @@
         button.setAttribute("aria-expanded", selected ? "true" : "false");
       });
       card.querySelectorAll("[data-panel]").forEach((panel) => {
-        panel.hidden = panel.dataset.panel !== action.dataset.action;
+        const show = panel.dataset.panel === action.dataset.action;
+        panel.hidden = !show;
+        if (!show && panel.dataset.panel === "sandbox") clearSandbox(panel);
       });
+      if (action.dataset.action === "sandbox") {
+        const item = state.items.find((entry) => entry.id === card.dataset.cardId);
+        const preview = window.RJ_BAIBAO_PREVIEW;
+        const entry = item && preview && preview.entryFor(item);
+        const panel = card.querySelector('[data-panel="sandbox"]');
+        if (item && entry && panel) startSandbox(panel, item, entry);
+      }
     }
   });
 

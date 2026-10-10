@@ -209,6 +209,34 @@ body.treasure-page{
 .treasure-experience-caption{font-size:11.5px;color:var(--ink-soft);line-height:1.7}
 .treasure-experience .treasure-link{align-self:flex-start;min-height:44px}
 
+/* 限时预览壳（2026-10-10）。提示条画在父页面，压在 iframe 前面。
+   iframe 只给 allow-scripts，不给 allow-same-origin，内部页面盖不住这条。 */
+.treasure-sandbox-status,
+.treasure-sandbox-banner-slot{position:relative;z-index:2}
+.treasure-sandbox-status{
+  margin:0;font-size:12.5px;font-weight:700;color:var(--ink);
+}
+.treasure-sandbox-banner{
+  display:flex;flex-direction:column;gap:6px;
+  position:relative;z-index:2;
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;
+}
+.treasure-sandbox-banner p{
+  margin:0;font-size:12.5px;line-height:1.7;color:var(--ink);word-break:break-word;
+}
+.treasure-sandbox-repo{
+  align-self:flex-start;min-height:44px;display:inline-flex;align-items:center;
+  color:var(--ink);font-weight:700;word-break:break-word;
+}
+a.treasure-sandbox-repo{text-decoration:underline;text-underline-offset:3px}
+.treasure-sandbox-frame-slot{position:relative;z-index:1;min-width:0;max-width:100%}
+.treasure-sandbox-frame{
+  position:relative;z-index:1;display:block;box-sizing:border-box;
+  width:100%;max-width:100%;height:min(70vh,520px);margin:0;
+  border:1px solid var(--line);border-radius:12px;background:#fff;
+}
+
 .treasure-badge.adult{border-color:#b0524a;color:#8f3f39;background:#fdf0ee}
 
 .treasure-card.locked{min-height:0}
@@ -254,6 +282,7 @@ body.treasure-page{
     min-height:44px;display:inline-flex;align-items:center;
   }
   .treasure-actions button{flex:1}
+  .treasure-sandbox-frame{height:min(70vh,480px)}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -359,6 +388,9 @@ body.treasure-page .treasure-level{
 }
 body.treasure-page .treasure-experience{border-radius:12px;background:var(--card-block)}
 body.treasure-page .treasure-experience .treasure-link{border-radius:10px}
+body.treasure-page .treasure-sandbox-banner,
+body.treasure-page .treasure-sandbox-frame{border-radius:12px;background:var(--card)}
+body.treasure-page .treasure-sandbox-repo{color:var(--ink)}
 
 /* 18+ 锁：雾面刊物口径 */
 body.treasure-page .treasure-lock{

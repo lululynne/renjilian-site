@@ -50,6 +50,9 @@ READER_TABLES: dict[str, tuple[str, ...]] = {
     "recovery_requests": ("找回申请", "加密暂存", "24 小时", "48 小时", "加密交付副本", "确认收好"),
     "recovery_preparations": ("随机nonce哈希", "会话和账号内部编号", "10分钟过期"),
     "recovery_operations": ("事务标记", "结束即删", "不作为操作历史保留"),
+    # 百宝箱试玩投稿不绑定账号，但仓库地址和可选 commit 是读者主动提交的数据。
+    "baibao_preview_submissions": ("百宝箱试玩投稿", "GitHub 仓库地址", "可选的 commit", "不绑定你的账号",
+                                    "管理口令只存 SHA-256 哈希", "投稿记录目前不自动删除"),
 }
 # 这些表不存任何读者数据：全站开关、表结构版本
 NO_READER_DATA = {"site_flags", "meta"}
