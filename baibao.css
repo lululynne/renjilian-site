@@ -320,6 +320,8 @@ body.treasure-page .treasure-kicker{
 body.treasure-page .treasure-hero h2{
   font-size:clamp(46px,6.2vw,76px);line-height:1.15;letter-spacing:.04em;
 }
+body.treasure-page .treasure-mark{width:.85em;height:.85em;margin-right:.2em;vertical-align:-.08em}
+@media(max-width:600px){body.treasure-page nav.boards{gap:16px}}
 /* 收录说明与计数：回纸面/雾色系 */
 body.treasure-page .treasure-note{
   background:rgba(248,250,251,.8);border-color:var(--line);
