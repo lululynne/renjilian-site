@@ -247,8 +247,9 @@ td.k{color:var(--ink);width:28%;font-weight:600}
 }
 @media (max-width:420px){.metric-row{grid-template-columns:1fr}.tier-word{font-size:42px}}
 </style>
+<link rel="stylesheet" href="reset-board.css?v=20261012-paper">
 </head>
-<body>
+<body class="reset-collection">
 
 <header class="site">
   <div class="wrap">
@@ -287,20 +288,30 @@ td.k{color:var(--ink);width:28%;font-weight:600}
 
   <section class="summary-grid" aria-label="当前重置摘要">
     <a class="summary-card codex" href="#codex-board">
-      <span>Codex · 未来 24 小时</span>
-      <strong id="codexSummary">读取中</strong>
-      <small id="codexSummaryNote">等待公开预测源</small>
+      <img class="reset-card-art" src="img/reset/codex-card.svg" width="400" height="250" alt="" aria-hidden="true">
+      <div class="reset-card-copy">
+        <span class="reset-card-name">Codex</span>
+        <span class="reset-card-label">未来 24 小时 · 实验预测</span>
+        <strong id="codexSummary">读取中</strong>
+        <small id="codexSummaryNote">等待公开预测源</small>
+      </div>
     </a>
     <a class="summary-card claude" href="#claude-board">
-      <span>Claude · 额外重置概率</span>
-      <strong id="claudeSummary">低</strong>
-      <small id="claudeSummaryNote">没有官方重置公告时，默认按低处理</small>
+      <img class="reset-card-art" src="img/reset/claude-card.svg" width="400" height="250" alt="" aria-hidden="true">
+      <div class="reset-card-copy">
+        <span class="reset-card-name">Claude</span>
+        <span class="reset-card-label">额外重置 · 证据等级</span>
+        <strong id="claudeSummary">低</strong>
+        <small id="claudeSummaryNote">没有官方重置公告时，默认按低处理</small>
+      </div>
     </a>
   </section>
 
+  <div class="reset-desk">
+  <section class="reset-model reset-model-codex" aria-labelledby="codexModelTitle">
   <div class="mark board-anchor" id="codex-board">
     <span class="orb oa"><i>C</i></span>
-    <div><h2>Codex</h2><div class="sub">公开预测 + Tibo 原帖核验</div></div>
+    <div><h2 id="codexModelTitle">Codex</h2><div class="sub">公开预测 + Tibo 原帖核验</div></div>
   </div>
   <p class="lede">Codex 的额外重置没有固定日历。这里读取公开预测模型与最近一次已确认公告；真正到账仍以 <b>@thsottiaux</b> 原帖和你自己的 Codex 用量页为准。</p>
 
@@ -346,9 +357,11 @@ td.k{color:var(--ink);width:28%;font-weight:600}
     </article>
   </section>
 
+  </section>
+  <section class="reset-model reset-model-claude" aria-labelledby="claudeModelTitle">
   <div class="mark board-anchor" id="claude-board">
     <span class="orb an"><i>A</i></span>
-    <div><h2>Claude</h2><div class="sub">官方公告优先 · 周期额度另算</div></div>
+    <div><h2 id="claudeModelTitle">Claude</h2><div class="sub">官方公告优先 · 周期额度另算</div></div>
   </div>
   <p class="lede">Claude 也会发生额外重置。这里先看 Anthropic 官方开发账号有没有公开动作，再给低、中、高判断；你自己的 5 小时与周窗口只在自己的账户里查看。</p>
 
@@ -383,6 +396,16 @@ td.k{color:var(--ink);width:28%;font-weight:600}
       <p class="privacy-warning">竞品大模型发布可以进入观察清单，但不能单独把等级从低调到中。只有 Anthropic 同期出现扩容、故障或限额动作，才有升级依据。</p>
     </article>
 
+  </section>
+  </section>
+  </div>
+
+  <section class="reset-personal-area" aria-labelledby="resetPersonalTitle">
+    <div class="reset-personal-heading">
+      <h2 id="resetPersonalTitle">Claude 的个人用量，另放一页纸</h2>
+      <p>公开公告在上面；下面只说明怎样在自己的账号里查看，以及在这台设备记下恢复时间。</p>
+    </div>
+  <section class="bench">
     <article class="p">
       <p class="p-kicker">网页端</p>
       <h3>查看自己的 Claude 额度条</h3>
@@ -441,6 +464,7 @@ td.k{color:var(--ink);width:28%;font-weight:600}
     </article>
   </section>
 
+  </section>
   <div class="foot">
     <b>数据边界：</b>Codex 预测来自 codex-reset.com 公开 API；Claude 事件来自 claude-resets.com 对 @ClaudeDevs 的公开档案，并保留原帖链接。两者都不是 OpenAI 或 Anthropic 官方产品，额外重置只有原帖能够确认。<br>
     <b>隐私边界：</b>个人倒计时仅保存在当前浏览器；页面不会上传账户档位、剩余额度、恢复时刻或终端记录。

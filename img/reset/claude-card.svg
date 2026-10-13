@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" fill="none">
+  <rect x="2" y="2" width="396" height="246" rx="14" fill="#eee3d4" stroke="#302c24" stroke-width="3"/>
+  <path d="M18 49V20h29M353 20h29v29M18 200v29h29M353 229h29v-29" stroke="#a08465" stroke-width="2"/>
+  <path d="M99 111a102 102 0 0 1 204 0v76H99z" fill="#f9f0df" stroke="#bcaa90" stroke-width="2"/>
+  <path d="M201 14v18M154 25l8 14M248 25l-8 14M122 58l14 8M280 58l-14 8" stroke="#bcaa90" stroke-width="2" stroke-linecap="round"/>
+  <ellipse cx="200" cy="220" rx="116" ry="11" fill="#e0cfb8"/>
+  <path d="M133 197c-18 0-26-14-21-30 3-9 14-18 27-18M267 197c18 0 26-14 21-30-3-9-14-18-27-18" stroke="#302c24" stroke-width="4" stroke-linecap="round"/>
+  <path d="M149 93h103l20 25v75q0 19-19 19H148q-19 0-19-19v-72z" fill="#e6c27f" stroke="#302c24" stroke-width="4" stroke-linejoin="round"/>
+  <path d="m149 93 8 36-28-8M252 93l-8 36 28-11" fill="#f8e6b5" stroke="#302c24" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M152 145q9-10 18 0M232 145q9-10 18 0" stroke="#302c24" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M190 153q11 11 22 0" stroke="#302c24" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="155" cy="158" r="7" fill="#d5a984"/><circle cx="245" cy="158" r="7" fill="#d5a984"/>
+  <path d="M161 175h77M161 222h77" stroke="#302c24" stroke-width="4" stroke-linecap="round"/>
+  <path d="M169 179c0 11 24 12 30 21-6 9-30 10-30 18M230 179c0 11-25 12-31 21 6 9 31 10 31 18" fill="#fffaf0" stroke="#302c24" stroke-width="3"/>
+  <path d="m181 215 18-10 18 10" fill="#c7d6bc" stroke="#6b785a" stroke-width="2"/>
+  <path d="M128 187q9-10 32 3M273 187q-9-10-32 3" stroke="#302c24" stroke-width="5" stroke-linecap="round"/>
+  <path d="M56 197h49v21H56z" fill="#d4c9db" stroke="#302c24" stroke-width="2"/>
+  <path d="M61 182h39v15H61z" fill="#fffaf0" stroke="#302c24" stroke-width="2"/>
+  <path d="M65 187h27M63 204h34" stroke="#a08465" stroke-width="2" stroke-linecap="round"/>
+  <path d="M313 187v32M313 200q-20-4-20-20 19 0 20 20M313 211q20-4 20-20-19 0-20 20" stroke="#6b785a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m67 112 3-8 3 8 8 3-8 3-3 8-3-8-8-3zM326 130l2-6 2 6 6 2-6 2-2 6-2-6-6-2z" fill="#e6c27f" stroke="#302c24" stroke-width="1.5"/>
+</svg>
