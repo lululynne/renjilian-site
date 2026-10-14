@@ -1,0 +1,185 @@
+:root{--av-paper:var(--sp-paper,#fbf5e8);--av-card:var(--sp-panel,#fffaf0);--av-ink:var(--sp-ink,#302c24);--av-soft:var(--sp-ink-soft,#645d50);--av-line:var(--sp-line,#c9bda7);--av-wood:var(--sp-ochre,#e6c27f);--av-accent:#8d4439;--av-focus:#315d9a}
+.avatar-page{background:var(--av-paper);color:var(--av-ink);overflow-anchor:none}
+.avatar-topbar{min-height:60px;padding:8px max(16px,calc((100vw - 1120px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--av-line);background:rgba(255,250,241,.92)}
+.avatar-topbar a{color:inherit;text-decoration:none;min-height:44px;display:inline-flex;align-items:center;padding:0 10px;border-radius:10px}
+.avatar-topbar nav{display:flex;gap:4px}.avatar-brand{font:800 19px/1.2 "Songti SC","Noto Serif SC",serif}
+.avatar-shell{max-width:1120px;margin:auto;padding:28px 16px 64px}.avatar-hero{max-width:720px;margin-bottom:24px}
+.avatar-kicker{font-size:13px;color:var(--av-accent);font-weight:800;margin:0 0 6px}.avatar-hero h1{font:800 clamp(34px,4vw,40px)/1.2 "Songti SC","Noto Serif SC",serif;margin:0}
+.avatar-hero>p:last-child{color:var(--av-soft);font-size:16px;max-width:620px}.avatar-workbench{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:20px;align-items:start}
+.avatar-preview-card,.avatar-editor-card{background:var(--av-card);border:1.5px solid var(--av-ink);border-radius:8px;box-shadow:4px 4px 0 var(--sp-shadow,#d5c7ad);padding:18px}
+.avatar-preview-card{position:sticky;top:12px}.avatar-preview-label{margin:0;color:var(--av-soft);font-size:13px;font-weight:700}.avatar-preview{width:min(290px,80vw);aspect-ratio:1;margin:14px auto}
+.avatar-preview>.rj-character-avatar,.avatar-preview>.av{width:100%;height:100%}.avatar-preview-caption{text-align:center;min-height:24px;color:var(--av-soft)}
+.avatar-mode-switch{display:grid;grid-template-columns:1fr 1fr;background:#eee0ca;border-radius:14px;padding:4px;gap:4px}.avatar-mode-switch button,.avatar-save,.avatar-step-nav button,.avatar-page-button{min-height:44px;border-radius:11px;border:1px solid transparent;font:700 14px/1.2 inherit;cursor:pointer;color:var(--av-ink)}
+.avatar-mode-switch button{background:transparent}.avatar-mode-switch button[aria-pressed=true]{background:#fffaf1;border-color:var(--av-line);box-shadow:0 2px 7px rgba(80,45,20,.12)}
+.avatar-save{width:100%;background:var(--av-wood);color:var(--av-ink);border-color:var(--av-ink);margin-top:8px}.avatar-save:disabled{background:#e5d8c6;color:#736455;border-color:var(--av-line);cursor:not-allowed}
+.avatar-account-state{font-size:13px;line-height:1.5;min-height:40px;color:var(--av-soft)}.avatar-account-state.error{color:#9f2f29}
+.avatar-steps{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:12px}.avatar-steps button{flex:0 0 auto;min-height:44px;border:1px solid var(--av-line);border-radius:999px;background:#fff;padding:0 14px;color:var(--av-soft);font:700 13px/1 inherit;cursor:pointer}
+.avatar-steps button[aria-current=step]{background:var(--av-ink);color:#fff;border-color:var(--av-ink)}.avatar-section-title{font:800 22px/1.25 "Songti SC","Noto Serif SC",serif;margin:0 0 5px}.avatar-section-copy{color:var(--av-soft);margin:0 0 15px}
+.avatar-option-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.avatar-option-grid.dense{grid-template-columns:repeat(4,minmax(0,1fr))}
+.avatar-choice{min-height:48px;border:2px solid var(--av-line);border-radius:13px;background:#fff;padding:8px;color:var(--av-ink);font:700 13px/1.25 inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center}
+.avatar-choice[aria-pressed=true]{border-color:var(--av-accent);background:#fff2e9;box-shadow:0 0 0 2px rgba(198,95,84,.12)}.avatar-choice .rj-character-avatar{width:58px;height:58px;flex:none}
+.avatar-swatch{width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #bda78a;flex:none}.avatar-choice[aria-pressed=true] .avatar-swatch{box-shadow:0 0 0 3px var(--av-ink)}
+.avatar-group{border:0;padding:0;margin:18px 0}.avatar-group legend{font-weight:800;margin-bottom:8px}.avatar-step-nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px}.avatar-step-nav button{border-color:var(--av-line);background:#f5e8d3}.avatar-step-nav .primary{background:var(--av-wood);color:var(--av-ink);border-color:var(--av-ink)}.avatar-step-nav button:disabled{opacity:.4;cursor:not-allowed}
+.avatar-pager{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}.avatar-pager span{color:var(--av-soft);font-size:13px}.avatar-pager button{min-height:44px;border:1px solid var(--av-line);border-radius:11px;background:#fff;padding:0 14px;font-weight:700}.avatar-pager button:disabled{opacity:.35}
+.avatar-preset-list{margin-top:18px;border-top:1px dashed var(--av-line);padding-top:14px}.avatar-preset-list summary{min-height:44px;cursor:pointer;font-weight:800}.avatar-footnote{color:var(--av-soft);font-size:13px;max-width:720px;margin:20px auto 0;text-align:center}
+.avatar-page button:focus-visible,.avatar-page a:focus-visible{outline:3px solid var(--av-focus);outline-offset:3px}
+.avatar-page button{font-family:inherit;font-size:15px;font-weight:700;line-height:1.25}
+.avatar-account-state,.avatar-footnote,.avatar-preview-label{font-size:14px}
+@media(max-width:820px){.avatar-editor-card button,.avatar-editor-card summary{scroll-margin-top:170px}}
+@media(max-width:820px){.avatar-shell{padding-top:18px}.avatar-workbench{grid-template-columns:1fr}.avatar-preview-card{position:relative;top:auto}.avatar-preview{width:min(220px,62vw)}.avatar-option-grid,.avatar-option-grid.dense{grid-template-columns:repeat(2,minmax(0,1fr))}.avatar-editor-card{padding:14px}.avatar-step-nav{grid-template-columns:1fr 1fr}.avatar-step-nav .primary{grid-column:1/-1}}
+@media(max-width:820px){
+  .avatar-preview-card{position:relative;top:auto;transition:padding .18s ease,border-radius .18s ease}
+  .avatar-preview-card.is-mini{position:sticky;top:0;z-index:8;display:grid;grid-template-columns:64px minmax(0,1fr);grid-template-rows:52px 44px;gap:6px 10px;align-items:center;padding:8px 10px;border-radius:0 0 8px 8px;max-width:100%;max-height:180px;overflow-x:hidden}
+  .avatar-preview-card.is-mini .avatar-preview-label,.avatar-preview-card.is-mini .avatar-preview-caption{display:none}
+  .avatar-preview-card.is-mini .avatar-preview{grid-column:1;grid-row:1/3;width:64px;height:64px;margin:0}
+  .avatar-preview-card.is-mini .avatar-mode-switch{grid-column:2;grid-row:1;margin:0;height:52px}
+  .avatar-preview-card.is-mini .avatar-mode-switch button{min-height:44px;padding:0 4px;font-size:13px}
+  .avatar-preview-card.is-mini .avatar-save{grid-column:2;grid-row:2;min-width:0;min-height:44px;margin:0;overflow-wrap:anywhere}
+  .avatar-preview-card.is-mini .avatar-account-state{display:block;grid-column:1/-1;grid-row:3;min-height:0;max-height:42px;margin:0;overflow:auto;font-size:12px;line-height:1.3}
+}
+@media(prefers-reduced-motion:reduce){.avatar-preview-card{transition:none}}
+/* Existing card layouts size the avatar wrapper; inner SVGs remain one canvas. */
+.rjk .rj-character-avatar{width:100%;height:100%}
+.rjk .pol-av>.rj-character-avatar.big{width:170px;height:176px}
+.rjk .rpg-av>.rj-character-avatar.big{width:150px;height:156px}
+.rjk .fam-av .rj-character-avatar{width:34px;height:34px;margin-right:-6px;background:#fffdf8;border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:1px}
+.rjk .fam-av .rj-character-avatar:last-child{margin-right:2px}
+.rjk .rpg-pet .fam-av .rj-character-avatar,.rjk .biz-dl .fam-av .rj-character-avatar{width:28px;height:28px}
+.rjk .fam-av a .rj-character-avatar{margin-right:0}
+.rjk .bgpv-card>.rj-character-avatar{width:40px;height:40px}
+.rjk .rj-character-avatar>svg.av{width:100%;height:100%;margin:0;padding:0;border:0;background:none;box-shadow:none}
+/* v8 shared renderer: original motion contract, scoped and namespaced. */
+.rj-character-avatar{border-radius:50%;background:radial-gradient(circle at 40% 32%,#fbf0de,#ead3b2 75%);display:block;position:relative;overflow:visible}
+.rj-character-avatar>svg{display:block;width:100%;height:100%;border-radius:50%;overflow:hidden}
+.rj-character-avatar>svg.ov{position:absolute;inset:0;border-radius:0;overflow:visible;pointer-events:none;z-index:2}
+.rj-character-avatar .blink{animation:av8-blink var(--blink,4.5s) infinite var(--bd,0s)}
+@keyframes av8-blink{0%,93%,100%{transform:scaleY(1)}95.5%{transform:scaleY(.08)}}
+/* v4 motion: blink always; idle layer gated by svg class; emotes overlay */
+.rj-character-avatar svg *{transform-box:view-box}
+@keyframes av8-flt{0%,100%{transform:scale(1,1)}50%{transform:scale(1.035,.966)}}
+@keyframes av8-ear{0%,86%,100%{transform:rotate(0)}89%{transform:rotate(-10deg)}92%{transform:rotate(5deg)}95%{transform:rotate(-3deg)}97%{transform:rotate(0)}}
+.rj-character-avatar svg.idle-float .flt{animation:av8-flt 3.4s ease-in-out infinite var(--fd,0s)}
+.rj-character-avatar svg.idle-ear .ear,.rj-character-avatar svg.idle-special.sp-ear .ear{animation:av8-ear var(--et,8s) infinite var(--ed,0s)}
+.rj-character-avatar svg .ear2{animation-delay:calc(var(--ed,0s) - 3.1s)!important}
+@keyframes av8-nosem{0%,70%,100%{transform:scaleY(1)}75%{transform:scaleY(.4)}80%{transform:scaleY(1)}85%{transform:scaleY(.4)}}
+.rj-character-avatar svg.idle-special .nosem{animation:av8-nosem 2.2s infinite var(--md,0s)}
+@keyframes av8-puff{0%,60%,100%{transform:scale(1)}72%{transform:scale(1.14)}84%{transform:scale(1.04)}}
+.rj-character-avatar svg.idle-special .puff{animation:av8-puff 2.6s infinite var(--md,0s)}
+@keyframes av8-tail{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+.rj-character-avatar svg.idle-special .tail{animation:av8-tail 1.6s ease-in-out infinite}
+@keyframes av8-wool{0%,100%{transform:scale(1)}50%{transform:scale(1.04,1.06)}}
+.rj-character-avatar svg.idle-special .wool{animation:av8-wool 2.4s ease-in-out infinite var(--md,0s)}
+@keyframes av8-tilt{0%,60%,100%{transform:rotate(0)}70%,85%{transform:rotate(-5deg)}}
+.rj-character-avatar svg.idle-special .tilt{animation:av8-tilt 4.2s ease-in-out infinite var(--md,0s)}
+@keyframes av8-sway{0%,100%{transform:rotate(-3.5deg)}50%{transform:rotate(3.5deg)}}
+.rj-character-avatar svg.idle-special .sway{animation:av8-sway 2.4s ease-in-out infinite}
+@keyframes av8-curl{0%,70%,100%{transform:rotate(0)}80%{transform:rotate(14deg)}90%{transform:rotate(-4deg)}}
+.rj-character-avatar svg.idle-special .curl{animation:av8-curl 3.2s ease-in-out infinite var(--md,0s)}
+.rj-character-avatar svg.idle-special .curl2{animation-delay:-1.4s}
+@keyframes av8-glowb{0%,100%{opacity:.18}50%{opacity:.6}}
+@keyframes av8-lamp{0%,100%{opacity:.15}50%{opacity:.55}}
+.rj-character-avatar svg.idle-special .glowb{animation:av8-glowb 3.6s ease-in-out infinite}.rj-character-avatar svg.idle-special .lamp{animation:av8-lamp 3.6s ease-in-out infinite}
+@keyframes av8-drift{0%,100%{transform:skewX(0) translateX(0)}50%{transform:skewX(4deg) translateX(-1px)}}
+.rj-character-avatar svg.idle-special .drift{animation:av8-drift 3.2s ease-in-out infinite}
+@keyframes av8-swing{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
+.rj-character-avatar svg.idle-special .twin,.rj-character-avatar svg.idle-special .braid{animation:av8-swing 2s ease-in-out infinite}
+.rj-character-avatar svg.idle-special .twin2{animation-delay:-1s}
+@keyframes av8-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.8px)}}
+.rj-character-avatar svg.idle-special .bunm,.rj-character-avatar svg.idle-special .pom{animation:av8-bob 1.4s ease-in-out infinite}
+@keyframes av8-ahoge{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+.rj-character-avatar svg.idle-special .ahoge{animation:av8-ahoge 1.8s ease-in-out infinite}
+@keyframes av8-hairb{0%,100%{transform:scale(1)}50%{transform:scale(1.03,.97)}}
+.rj-character-avatar svg.idle-special .hairb{animation:av8-hairb 1.6s ease-in-out infinite}
+/* eye-own idles (these eyes don't blink) */
+@keyframes av8-smileup{0%,100%{transform:translateY(0)}50%{transform:translateY(-.9px)}}
+.rj-character-avatar svg .smileup{animation:av8-smileup 1.8s ease-in-out infinite}
+@keyframes av8-pulse{0%,100%{transform:scale(1)}40%{transform:scale(1.18)}60%{transform:scale(.95)}}
+.rj-character-avatar svg .pulse{animation:av8-pulse 1.1s ease-in-out infinite}
+@keyframes av8-spin{to{transform:rotate(360deg)}}
+.rj-character-avatar svg .spin{animation:av8-spin 2.4s linear infinite}
+/* squid shy blush */
+.rj-character-avatar .shyrise{transform:translateY(100px)}
+@keyframes av8-shy{0%{transform:translateY(100px)}40%,60%{transform:translateY(-30px)}100%{transform:translateY(100px)}}
+.rj-character-avatar.boing .shyrise{animation:av8-shy 1.6s ease-in-out}
+/* emotes */
+.rj-character-avatar .emo-mini{display:none}.rj-character-avatar.s44 .emo-mini{display:inline}
+@keyframes av8-emoup{0%{transform:translateY(4px);opacity:0}25%{opacity:1}100%{transform:translateY(-10px);opacity:0}}
+.rj-character-avatar svg .emo-up{animation:av8-emoup 2s ease-out infinite}
+@keyframes av8-emobounce{0%,100%{transform:scale(1)}30%{transform:scale(1.25)}55%{transform:scale(.9)}}
+.rj-character-avatar svg .emo-bounce{animation:av8-emobounce .9s ease-in-out infinite}
+@keyframes av8-emodrip{0%{transform:translateY(-3px);opacity:0}20%{opacity:1}100%{transform:translateY(8px);opacity:0}}
+.rj-character-avatar svg .emo-drip{animation:av8-emodrip 1.8s ease-in infinite}
+@keyframes av8-emosway{0%,100%{transform:rotate(-10deg) translateY(0)}50%{transform:rotate(10deg) translateY(-2px)}}
+.rj-character-avatar svg .emo-sway{animation:av8-emosway 1.4s ease-in-out infinite}
+@keyframes av8-twinkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+.rj-character-avatar svg .emo-twinkle{animation:av8-twinkle 1.2s ease-in-out infinite;transform-origin:80px 16px}
+@keyframes av8-nod{0%,100%{transform:translateY(0)}20%,60%{transform:translateY(2.4px) rotate(1deg)}40%,80%{transform:translateY(0)}}
+.rj-character-avatar svg.emo-nod .headm,.rj-character-avatar svg.emo-nod .headm2{animation:av8-nod 1.6s ease-in-out infinite}
+@keyframes av8-shake{0%,100%{transform:rotate(0)}15%,55%{transform:rotate(-6deg)}35%,75%{transform:rotate(6deg)}}
+.rj-character-avatar svg.emo-shake .headm,.rj-character-avatar svg.emo-shake .headm2{animation:av8-shake 1.4s ease-in-out infinite}
+/* 44px: only blink */
+.rj-character-avatar.s44 svg *:not(.blink):not(.shyrise):not(.shysteam):not(.tc){animation:none!important}
+.rj-character-avatar.s44 .emote{transform:scale(1.15);transform-origin:88px 6px}
+.rj-character-avatar.live{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rj-character-avatar.boing>svg{animation:av8-boing .55s cubic-bezier(.3,1.6,.5,1)}
+@keyframes av8-boing{0%{transform:scale(1)}30%{transform:scale(1.08,.92)}55%{transform:scale(.95,1.06)}80%{transform:scale(1.02,.98)}100%{transform:scale(1)}}
+.rj-character-avatar svg.heart{position:absolute;left:58%;top:22%;width:30%;z-index:4;height:auto;overflow:visible;border-radius:0;pointer-events:none;animation:av8-heart 1.1s ease-out forwards}
+@keyframes av8-heart{0%{transform:translate(-50%,10%) scale(.3);opacity:0}20%{opacity:1;transform:translate(-50%,-10%) scale(1.1)}100%{transform:translate(-10%,-120%) scale(.95);opacity:0}}
+@keyframes av8-bubl{0%{transform:translateY(4px);opacity:0}20%{opacity:1}100%{transform:translateY(-16px);opacity:0}}
+.rj-character-avatar .bubl{opacity:0}.rj-character-avatar svg.idle-special .bubl{animation:av8-bubl 2.4s ease-out infinite}
+.rj-character-avatar.s44 .bubl,.rj-character-avatar svg:not(.idle-special) .bubl{opacity:0}
+@keyframes av8-pad{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.rj-character-avatar svg.idle-special .pad{animation:av8-pad 2.6s ease-in-out infinite}
+@keyframes av8-quill{0%,70%,100%{transform:scale(1)}80%{transform:scale(1.06)}90%{transform:scale(.99)}}
+.rj-character-avatar svg.idle-special .quill{animation:av8-quill 2.8s ease-in-out infinite var(--md,0s)}
+@keyframes av8-rub{0%,55%,100%{transform:translateY(0)}65%,85%{transform:translateY(-16px)}75%{transform:translateY(-14px) translateX(1px)}}
+.rj-character-avatar svg.idle-special .rub{animation:av8-rub 3.4s ease-in-out infinite var(--md,0s)}
+@keyframes av8-gill{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.1) rotate(-6deg)}}
+.rj-character-avatar svg.idle-special .gill{animation:av8-gill 2.2s ease-in-out infinite}
+@keyframes av8-wing{0%,100%{transform:rotate(0)}50%{transform:rotate(-10deg)}}
+.rj-character-avatar svg .wing{animation:av8-wing 1.8s ease-in-out infinite}
+@keyframes av8-wave2{0%,100%{transform:rotate(0)}25%{transform:rotate(-26deg)}50%{transform:rotate(6deg)}75%{transform:rotate(-20deg)}}
+.rj-character-avatar svg .wave{animation:av8-wave2 1.6s ease-in-out infinite!important}
+/* squid: whole-body blush, steam, tentacles redden */
+.rj-character-avatar .shysteam{opacity:0}
+@keyframes av8-steam{0%,30%{opacity:0;transform:translateY(4px)}50%{opacity:1;transform:translateY(0)}90%{opacity:0;transform:translateY(-8px)}100%{opacity:0}}
+.rj-character-avatar.boing .shysteam{animation:av8-steam 1.8s ease-out}
+@keyframes av8-tcshy{0%,100%{stroke:var(--coral)}40%,60%{stroke:#ff5f8f}}
+.rj-character-avatar.boing .tc{animation:av8-tcshy 1.6s ease-in-out}
+/* v5 emotes */
+@keyframes av8-emodot{0%,100%{opacity:.25}30%{opacity:1}}
+.rj-character-avatar svg .emo-dot{animation:av8-emodot 1.2s ease-in-out infinite}
+@keyframes av8-ding{0%,60%,100%{transform:scale(1)}70%{transform:scale(1.25)}80%{transform:scale(.95)}}
+.rj-character-avatar svg .emo-ding{animation:av8-ding 1.8s ease-in-out infinite}
+@keyframes av8-rays{0%,60%,100%{opacity:.2}72%{opacity:1}}
+.rj-character-avatar svg .emo-rays{animation:av8-rays 1.8s ease-in-out infinite}
+.rj-character-avatar svg .emo-drip.slow{animation-duration:3s}
+@keyframes av8-emowave{0%,100%{transform:rotate(0)}25%{transform:rotate(-18deg)}50%{transform:rotate(8deg)}75%{transform:rotate(-14deg)}}
+.rj-character-avatar svg .emo-wave{animation:av8-emowave 1.3s ease-in-out infinite}
+@keyframes av8-spinhop{0%,55%{transform:translateY(0) rotate(0)}70%{transform:translateY(-6px) rotate(180deg)}85%{transform:translateY(-2px) rotate(360deg)}100%{transform:translateY(0) rotate(360deg)}}
+.rj-character-avatar svg.emo-spin .flt{animation:av8-spinhop 2.4s ease-in-out infinite;transform-origin:50px 55px!important}
+@keyframes av8-hop{0%,60%,100%{transform:translateY(0)}70%{transform:translateY(-5px)}80%{transform:translateY(0)}88%{transform:translateY(-2px)}}
+.rj-character-avatar svg.emo-hop .flt{animation:av8-hop 1.6s ease-out infinite}
+@keyframes av8-shiver{0%,100%{transform:translateX(0)}25%{transform:translateX(-.8px)}75%{transform:translateX(.8px)}}
+.rj-character-avatar svg.emo-shiver .flt{animation:av8-shiver .22s linear infinite}
+@keyframes av8-bow{0%,55%,100%{transform:translateY(0) rotate(0)}70%,85%{transform:translateY(4px) scaleY(.96)}}
+.rj-character-avatar svg.emo-bow .headm,.rj-character-avatar svg.emo-bow .headm2{animation:av8-bow 2.4s ease-in-out infinite}
+.rj-character-avatar.s44 .mono{display:none}
+.rj-character-avatar.s44 svg.av.dark{filter:drop-shadow(0 0 .6px #fff3cf) drop-shadow(0 0 .6px #fff3cf)}
+.rj-character-avatar.s44:has(svg.av.dark)::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,243,207,.95);pointer-events:none;z-index:3}
+@keyframes av8-pup{0%,55%,100%{transform:rotate(0)}62%,76%{transform:rotate(-20deg)}69%,83%{transform:rotate(4deg)}}
+.rj-character-avatar svg.idle-special .pup{animation:av8-pup 1.6s ease-in-out infinite}.rj-character-avatar svg.idle-special .pup2{animation-delay:-.05s}
+@keyframes av8-flap{0%,100%{transform:rotate(6deg)}50%{transform:rotate(-14deg)}}
+.rj-character-avatar svg.idle-special.m-flap .ear{animation:av8-flap 1.3s ease-in-out infinite}
+@keyframes av8-dazeup{0%{transform:translateY(5px)}82%{transform:translateY(-12px)}100%{transform:translateY(-13px)}}
+@keyframes av8-dazefade{0%{opacity:0}15%{opacity:1}80%{opacity:1}86%,100%{opacity:0}}
+@keyframes av8-dpop{0%,80%{opacity:0;transform:scale(.3)}87%{opacity:1;transform:scale(1.5)}100%{opacity:0;transform:scale(1.8)}}
+.rj-character-avatar svg .daze{animation:av8-dazeup 3.6s linear infinite}
+.rj-character-avatar svg .daze>circle{animation:av8-dazefade 3.6s linear infinite;animation-delay:inherit}
+.rj-character-avatar svg .daze .pop{opacity:0;transform-box:fill-box;transform-origin:center;animation:av8-dpop 3.6s linear infinite;animation-delay:inherit}
+.rj-character-avatar.s44 .daze .pop{display:none}
+@keyframes av8-seaglow{0%,100%{box-shadow:0 0 0 0 rgba(150,190,255,0)}25%,75%{box-shadow:0 0 16px 5px rgba(170,200,255,.85)}50%{box-shadow:0 0 8px 2px rgba(240,180,230,.7)}}
+@keyframes av8-seabreathe{0%,50%,100%{transform:scale(1)}25%,75%{transform:scale(1.06)}}
+.rj-character-avatar.seaglow{animation:av8-seaglow 2.6s ease-in-out}
+.rj-character-avatar.seaglow>svg{animation:av8-seabreathe 2.6s ease-in-out!important}
+@media(prefers-reduced-motion:reduce){.rj-character-avatar[class],.rj-character-avatar svg[class],.rj-character-avatar svg [class]{animation:none!important;transition:none!important}}

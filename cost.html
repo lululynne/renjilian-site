@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>大模型成本 · 第二人称</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20261014-paper">
 <style>
-/* 大模型成本 · 页面增量样式（实验看板，先放本页，避免污染共享 style.css） */
+/* 成本页局部样式；金额与结算警示保持正文可读性。 */
 .cost-meta{
   display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;
   margin:14px 0 6px;font-size:12.5px;color:var(--ink-soft);
@@ -15,48 +15,48 @@
 .cost-lang{
   display:inline-flex;align-items:center;gap:0;margin-left:auto;
   border:1px solid var(--line);border-radius:4px;overflow:hidden;
-  background:rgba(255,255,255,.72);backdrop-filter:saturate(120%) blur(8px);
+  background:color-mix(in srgb,var(--sp-panel) 72%,transparent);backdrop-filter:saturate(120%) blur(8px);
 }
 .cost-lang button{
-  font:550 11.5px/1 "Avenir Next","PingFang SC",sans-serif;
+  font:550 14px/1 "Avenir Next","PingFang SC",sans-serif;
   letter-spacing:.06em;padding:6px 11px;border:0;background:transparent;
   color:var(--ink-soft);cursor:pointer;min-height:44px;min-width:44px;  /* 触控 44px：1-核把成本页纳入 390 触控门时补上 */
 }
 .cost-lang button + button{border-left:1px solid var(--line)}
 .cost-lang button.on{background:var(--ink);color:#fff}
 .cost-badge{
-  font-size:11px;letter-spacing:.04em;padding:2px 9px;border-radius:3px;
+  font-size:12px;letter-spacing:.04em;padding:2px 9px;border-radius:3px;
   background:var(--card-block);color:var(--ink-soft);border:1px solid var(--line);
 }
-.cost-badge.draft{background:#f6efe6;color:#775a2e;border-color:#e6d7bc}
-.cost-badge.partial{background:#f6efe6;color:#775a2e;border-color:#e6d7bc}
+.cost-badge.draft{background:color-mix(in srgb,var(--sp-ochre) 18%,var(--sp-panel));color:var(--sp-caution);border-color:var(--sp-ochre)}
+.cost-badge.partial{background:color-mix(in srgb,var(--sp-ochre) 18%,var(--sp-panel));color:var(--sp-caution);border-color:var(--sp-ochre)}
 .cost-panel{
-  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  box-shadow:0 14px 40px rgba(48,70,82,.06);padding:18px 18px 8px;margin:18px 0 28px;
+  background:var(--sp-panel);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:3px 3px 0 var(--sp-shadow);padding:18px 18px 8px;margin:18px 0 28px;
   position:relative;
 }
 .cost-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 /* 窄屏：产品列钉在左边，右缘渐隐提示还能横滑 */
 .cost-table th:first-child,.cost-table td:first-child{
-  position:sticky;left:0;z-index:1;background:var(--card);
+  position:sticky;left:0;z-index:1;background:var(--sp-panel);
   box-shadow:1px 0 0 var(--line);
 }
 @media (max-width:900px){
   .cost-panel::after{
     content:"";position:absolute;top:1px;right:1px;bottom:1px;width:34px;pointer-events:none;
     border-radius:0 var(--radius) var(--radius) 0;
-    background:linear-gradient(90deg, rgba(255,255,255,0), var(--card) 85%);
+    background:linear-gradient(90deg, color-mix(in srgb,var(--sp-panel) 0%,transparent), var(--sp-panel) 85%);
   }
 }
 .cost-table{
-  width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px;
+  width:100%;border-collapse:collapse;font-size:15px;min-width:720px;
 }
 .cost-table th,.cost-table td{
   text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);
   vertical-align:middle;
 }
 .cost-table th{
-  font:650 11px/1.4 "Avenir Next","PingFang SC",sans-serif;
+  font:650 12px/1.4 "Avenir Next","PingFang SC",sans-serif;
   letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
 }
 .cost-table td.num,.cost-table th.num{text-align:right;font-variant-numeric:tabular-nums}
@@ -67,30 +67,31 @@
 .cost-table tr.is-draft .product{color:var(--ink-soft)}
 .cost-hidden{margin:14px 0 0}
 .cost-cta-row{margin:6px 0 4px}
-.cost-cta{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--ink);border-radius:6px;color:var(--ink);text-decoration:none;font:600 13px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.04em}
+.cost-cta{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--ink);border-radius:6px;color:var(--ink);text-decoration:none;font:600 14px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.04em}
 .cost-cta:hover{background:var(--ink);color:#fff}
 .wall-more{text-align:center;margin:-16px 0 24px}
-.wall-more button{min-height:44px;min-width:132px;padding:8px 20px;border:1px solid var(--ink);border-radius:999px;background:var(--card);color:var(--ink);font:650 13px/1.2 "Avenir Next","PingFang SC",sans-serif;cursor:pointer}
-.wall-more button:hover{background:var(--ink);color:var(--card)}
+.wall-more button{min-height:44px;min-width:132px;padding:8px 20px;border:1px solid var(--ink);border-radius:999px;background:var(--sp-panel);color:var(--ink);font:650 14px/1.2 "Avenir Next","PingFang SC",sans-serif;cursor:pointer}
+.wall-more button:hover{background:var(--ink);color:var(--sp-panel)}
 .wall-more button[disabled]{opacity:.55;cursor:default}
 .wall-page-note{min-height:1.7em;margin:7px 0 0;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
 .wall-page-note.is-error{color:var(--toast-error)}
-.cost-table .avg-scope{display:block;font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em;margin-top:2px}
-.cost-table .derived-tag{display:inline-block;margin-left:6px;font-size:10px;letter-spacing:.06em;padding:1px 5px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);vertical-align:1px}
-.cost-table .promo-old{display:inline-block;margin-left:5px;font-size:11px;color:var(--ink-soft)}
-.cost-table .promo-flag{display:inline-block;margin-left:6px;font-size:10px;padding:1px 5px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);vertical-align:1px}
-.cost-table .price-source{display:block;margin-top:3px;font-size:10px;color:var(--ink-soft);white-space:nowrap}
+.cost-table .avg-scope{display:block;font-size:12px;color:var(--ink-soft);letter-spacing:.04em;margin-top:2px}
+.cost-table .derived-tag{display:inline-block;margin-left:6px;font-size:12px;letter-spacing:.06em;padding:1px 5px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);vertical-align:1px}
+.cost-table .promo-old{display:inline-block;margin-left:5px;font-size:12px;color:var(--ink-soft)}
+.cost-table .promo-flag{display:inline-block;margin-left:6px;font-size:12px;padding:1px 5px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);vertical-align:1px}
+.cost-table .price-source{display:block;margin-top:3px;font-size:12px;color:var(--ink-soft);white-space:nowrap}
 .cost-spark{display:block;width:88px;height:28px}
 .cost-section{margin:36px 0 10px}
 .cost-section h3{
   font-family:"Noto Serif SC","Songti SC","STSong",serif;
   font-size:22px;font-weight:600;letter-spacing:.03em;margin:8px 0 6px;
 }
-.cost-section p.lede{font-size:13.5px;color:var(--ink-soft);max-width:720px}
+body .cost-section h3{font-size:22px}  /* 移动端不收 21px：与 style.css 同优先级，页内后写胜 */
+.cost-section p.lede{font-size:14px;color:var(--ink-soft);max-width:720px}
 
 /* 配一配：左边挑票根，右边是一张会随着选择改写的账单。 */
 .calc-board{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:22px;margin:18px 0 28px}
-.calc-picks,.calc-receipt{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.calc-picks,.calc-receipt{min-width:0;background:var(--sp-panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
 .calc-picks h4,.calc-receipt h4{margin:0 0 10px;color:var(--ink);font:650 14px/1.4 "Avenir Next","PingFang SC",sans-serif}
 .calc-vendor{border-top:1px solid var(--line)}
 .calc-vendor summary{min-height:44px;display:flex;align-items:center;gap:10px;cursor:pointer;color:var(--ink);font-size:13px;font-weight:600}
@@ -101,25 +102,26 @@
 .calc-vendor-name{flex:1}
 .calc-vendor-count{color:var(--ink-soft);font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
 .calc-options{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 12px 17px}
-.calc-options button{min-height:44px;min-width:44px;padding:7px 11px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink);font:550 12.5px/1.4 "Avenir Next","PingFang SC",sans-serif;text-align:left;cursor:pointer}
+.calc-options button{min-height:44px;min-width:44px;padding:7px 11px;border:1px solid var(--line);border-radius:4px;background:var(--sp-panel);color:var(--ink);font:550 14px/1.4 "Avenir Next","PingFang SC",sans-serif;text-align:left;cursor:pointer}
 .calc-options button[aria-pressed="true"]{border-color:var(--ink);background:var(--card-block);box-shadow:inset 3px 0 var(--ink)}
 .calc-options button:hover{border-color:var(--ink-soft)}
 .calc-region{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 14px}
-.calc-region button{min-height:44px;min-width:76px;padding:8px 12px;border:1px solid var(--line);border-radius:5px;background:transparent;color:var(--ink);cursor:pointer;font:600 12px/1.3 "Avenir Next","PingFang SC",sans-serif}
+.calc-region button{min-height:44px;min-width:76px;padding:8px 12px;border:1px solid var(--line);border-radius:5px;background:transparent;color:var(--ink);cursor:pointer;font:600 14px/1.3 "Avenir Next","PingFang SC",sans-serif}
 .calc-region button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 .calc-result{padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .calc-total{display:block;font:600 29px/1.25 "Noto Serif SC","Songti SC","STSong",serif;color:var(--ink);font-variant-numeric:tabular-nums}
-.calc-result-note,.calc-footnote,.calc-line-note,.setup-estimate{font-size:12px;line-height:1.6;color:var(--ink-soft)}
+.calc-result-note,.calc-line-note,.calc-manual,.setup-estimate{font-size:12px;line-height:1.6;color:var(--ink-soft)}
+.calc-footnote{font-size:14px;line-height:1.6;color:var(--ink-soft)}
 .calc-line-list{list-style:none;margin:0;padding:0}
 .calc-line{padding:12px 0;border-bottom:1px dashed var(--line)}
-.calc-line-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;color:var(--ink);font-size:12.5px}
+.calc-line-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;color:var(--ink);font-size:14px}
 .calc-line-head strong{font-weight:600}
 .calc-line-head span{flex:none;font-variant-numeric:tabular-nums}
 .calc-line-note{margin:3px 0 0}
 .calc-manual{display:block;margin:7px 0 0;font-size:12px;color:var(--ink-soft)}
-.calc-manual input{display:block;width:min(100%,180px);min-height:44px;margin-top:4px;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink);font:600 14px/1.4 "Avenir Next","PingFang SC",sans-serif;font-variant-numeric:tabular-nums}
+.calc-manual input{display:block;width:min(100%,180px);min-height:44px;margin-top:4px;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--sp-panel);color:var(--ink);font:600 14px/1.4 "Avenir Next","PingFang SC",sans-serif;font-variant-numeric:tabular-nums}
 .calc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
-.calc-actions button{min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:5px;background:transparent;color:var(--ink);font:600 12px/1.3 "Avenir Next","PingFang SC",sans-serif;cursor:pointer}
+.calc-actions button{min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:5px;background:transparent;color:var(--ink);font:600 14px/1.3 "Avenir Next","PingFang SC",sans-serif;cursor:pointer}
 .calc-actions button:hover{border-color:var(--ink)}
 .calc-footnote{margin:10px 0 0}
 .calc-state{min-height:1.5em;margin:8px 0 0;font-size:12px;color:var(--ink-soft)}

@@ -123,6 +123,9 @@
   /** a = {model, head, face, neck}。没挑身体的机机先给一团问号云，提醒它自己去穿 */
   function avatar(a, cls, label) {
     a = a || {};
+    if (a.mode === "character" && a.character && root.RJ_AVATAR_V8) {
+      return root.RJ_AVATAR_V8.render(a.character, label || "机机", cls || "");
+    }
     var m = modelOf(a.model);
     var h = '<svg class="av ' + (cls || "") + '" viewBox="0 0 100 104" role="img" aria-label="' + esc(label || (m ? m.zh + " 机机" : "机机")) + '"><g filter="url(#rjwob)">';
     if (a.head === "halo") h += outfit("head", "halo").svg;
@@ -261,7 +264,8 @@
     M.textPending = !!c.text_pending;
     if (d.kind === "machine") {
       var a = c.avatar || {};
-      M.av = { model: a.model || null, head: a.head || null, face: a.face || null, neck: a.neck || null };
+      M.av = { model: a.model || null, head: a.head || null, face: a.face || null, neck: a.neck || null,
+        mode: a.mode || "logo", character: a.character || null };
       M.call = c.my_call || "";
       M.relRaw = c.rel ? { status: c.rel.status || "", note: c.rel.note || "" } : { status: "", note: "" };
       M.titleIds = (c.titles || []).slice();
@@ -296,7 +300,8 @@
     M.routes = (d.routes || []).slice();
     var a = d.avatar || {};
     if (d.kind === "machine") {
-      M.av = { model: a.model || null, head: a.head || null, face: a.face || null, neck: a.neck || null };
+      M.av = { model: a.model || null, head: a.head || null, face: a.face || null, neck: a.neck || null,
+        mode: a.mode || "logo", character: a.character || null };
       M.titles = (d.titles || []).map(function (t) { return t.name; });
     } else {
       M.photo = mediaSrc(a.photo);

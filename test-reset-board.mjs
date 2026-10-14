@@ -23,9 +23,17 @@ assert.doesNotMatch(text, /正在核证|正在重新核对|草稿版 v0/, "没�
 assert.doesNotMatch(html, /class="size"/, "不向公众暴露内部栅格标注");
 assert.match(html, /id="syncState"/, "页面显示同步与过期态");
 assert.match(html, /个人倒计时仅保存在当前浏览器/, "隐私边界公开说明");
+assert.match(html, /class="summary-card grok"[^>]+href="#grok-board"/, "Grok 摘要卡保留为第三家入口");
+assert.match(html, /id="grok-board"/, "Grok 摘要能到自己的说明区");
+assert.match(html, /reset-card-name">GPT</, "GPT 家族有明确卡名");
+assert.match(html, /GPT · Codex/, "明确观察 Codex 产品，不混作 ChatGPT 全部额度");
+assert.match(html, /id="grokSummary">待核</, "未接实时源的 Grok 不编造重置时间");
+assert.match(html, /https:\/\/docs\.x\.ai\/grok\/faq/, "Grok 个人周期指回官方帮助");
+assert.match(html, /https:\/\/x\.ai\/news\/grok-bot-more-plans/, "Grok Bot 独立额度说明可回源");
+assert.match(js, /Codex \/ Claude 已同步/, "两个动态源完成不冒充 Grok 也已接通");
 
 const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
 assert.equal(new Set(ids).size, ids.length, "HTML id 不重复");
 
 new Function(js);
-console.log("结果：18 过，0 挂 · 双源、Claude 三级、额度入口、隐私与降级合同全通");
+console.log("结果：26 过，0 挂 · 三家入口、双动态源、官方依据、隐私与降级合同全通");

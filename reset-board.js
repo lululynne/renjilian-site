@@ -144,7 +144,7 @@
       } else { markClaudeFailure(); fresh = false; }
       var state = byId("syncState");
       if (state) {
-        state.textContent = ok === 2 && fresh ? "公开数据已同步" : (ok ? "部分数据可能过期" : "公开源暂不可用");
+        state.textContent = ok === 2 && fresh ? "Codex / Claude 已同步" : (ok ? "Codex / Claude 部分数据可能过期" : "Codex / Claude 公开源暂不可用");
         state.className = "source-state " + (ok === 2 && fresh ? "fresh" : "stale");
       }
       setText("syncTime", "本页核查 " + new Intl.DateTimeFormat("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date()));

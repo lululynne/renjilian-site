@@ -161,13 +161,14 @@ class SecondPersonShellTests(unittest.TestCase):
 
     def test_style_tokens_are_ratified_palette(self) -> None:
         css = read("style.css").lower()
-        for token in ("#f2f6f7", "#e8eff1", "#fff", "#202a33", "#d3dde1"):
+        for token in ("--sp-paper:#fbf5e8", "--sp-panel:#fffaf0", "--sp-ink:#302c24",
+                      "--sp-muted:#645d50", "--sp-line:#c9bda7", "--sp-shadow:#d5c7ad"):
             with self.subTest(token=token):
                 self.assertIn(token, css)
         # 双声只做图形点缀：人声珊瑚 / 机声长春花独立 token，不承载文字
         self.assertIn("--human:#dd7e70", css)
         self.assertIn("--machine:#7f8fca", css)
-        # 功能强调一律深蓝墨，承载白字/小字的底禁止用珊瑚
+        # 深墨强调保持可读，人/机身份色不承担站壳换肤。
         self.assertIn("--accent:var(--ink)", css)
         # 旧蜜桃/陶土配方退场
         for stale in ("#fdf1ea", "#c96f5e", "#e3b7ad"):

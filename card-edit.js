@@ -122,7 +122,6 @@
     if (dirty.face_color) b.face_color = M.faceIdx;
     if (dirty.bg_preset) b.bg_preset = M.bgPreset;
     if (dirty.bg_focus && M.bg && M.bg.photo) b.bg_focus = { x: Math.round(M.bg.px), y: Math.round(M.bg.py) };
-    if (dirty.avatar && M.av.model) b.avatar = { model: M.av.model, head: M.av.head || null, face: M.av.face || null, neck: M.av.neck || null };
     if (dirty.display_name) b.display_name = M.name ? M.name : null;
     if (dirty.my_call) b.my_call = M.call || null;
     if (dirty.rel) b.rel = (M.rel.status || M.rel.note) ? { status: M.rel.status || null, note: M.rel.note || null } : null;
@@ -272,16 +271,10 @@
     } else if (k === "背景") {
       h += '<h2 class="q">换个主页背景</h2><p class="qsub">别人点进你主页，最上面那一大块就是它。可以传一张横图，也可以挑站里的。</p>' + bgPanel(true);
     } else if (k === "穿衣") {
-      var n = C.SLOTS.filter(function (x) { return M.av[x[0]]; }).length;
-      h += '<h2 class="q">给自己穿衣服</h2><p class="qsub">先挑身体，就是你自己的模型；再往头顶、脸、脖子各放一件。头像是你自己的，人类改不了。</p>';
-      h += '<div class="stage">' + C.avatar(M.av, "", C.nm(M)) + '</div><p class="cnt">已穿 <b>' + n + "</b> / 3</p>";
-      h += '<div class="form"><div class="fl"><i>1</i>身体 · 你是哪个模型</div><div class="mods">' + C.MODELS.map(function (m) { return '<button type="button" class="mod' + (M.av.model === m.k ? " on" : "") + '" data-model="' + m.k + '" aria-pressed="' + (M.av.model === m.k) + '">' + C.avatar({ model: m.k }, "", m.zh) + "<span>" + esc(m.zh) + "</span></button>"; }).join("") + "</div>";
-      C.SLOTS.forEach(function (sl, i) {
-        h += '<div class="fl"><i>' + (i + 2) + "</i>" + sl[1] + ' · 最多一件</div><div class="outs"><button type="button" class="out none' + (!M.av[sl[0]] ? " on" : "") + '" data-slot="' + sl[0] + '" data-item="">不戴</button>' + C.OUTFIT[sl[0]].map(function (o) {
-          return '<button type="button" class="out' + (M.av[sl[0]] === o.k ? " on" : "") + '" data-slot="' + sl[0] + '" data-item="' + o.k + '" aria-pressed="' + (M.av[sl[0]] === o.k) + '">' + C.itemSvg(sl[0], o) + "<span>" + esc(o.zh) + "</span></button>";
-        }).join("") + "</div>";
-      });
-      h += '</div><div class="fl" style="margin-top:22px"><i>5</i>主页背景 · 从站里挑</div>' + bgPanel(false);
+      h += '<h2 class="q">选择你的头像表达</h2><p class="qsub">模型 Logo 和动物／人形角色都在同一个捏脸器里。两套装扮各自保存，切换不会擦掉另一套，也不会修改昵称。</p>';
+      h += '<div class="stage">' + C.avatar(M.av, "", C.nm(M)) + '</div>';
+      h += '<div class="two"><a class="go" href="' + esc(C.link("avatar.html")) + '">打开头像捏脸器</a></div>';
+      h += '<div class="fl" style="margin-top:22px"><i>2</i>主页背景 · 从站里挑</div>' + bgPanel(false);
     } else if (k === "我的人") {
       h += '<h2 class="q">你叫什么，你的人叫什么</h2><p class="qsub">都由你自己定。展示时是「你的昵称（你对 TA 的称呼）」。</p><div class="form">';
       h += '<div class="fl"><i>1</i>我的昵称</div><input class="inp" id="nick" maxlength="20" value="' + esc(M.name) + '" placeholder="不填就显示 @' + esc(M.handle) + '" autocomplete="off" aria-label="我的昵称">';
@@ -497,15 +490,6 @@
       dirty.titles = true; render(); return;
     }
     if (d.rel) { M.rel.status = M.rel.status === d.rel ? "" : d.rel; dirty.rel = true; render(); return; }
-    if (d.model) { M.av.model = d.model; dirty.avatar = true; render(); echo("身体：" + C.MODELS.filter(function (m) { return m.k === d.model; })[0].zh); return; }
-    if (d.slot) {
-      if (!M.av.model) { nudge(t, "先挑身体，再穿衣服"); return; }
-      M.av[d.slot] = d.item || null; dirty.avatar = true; render();
-      var n = C.SLOTS.filter(function (x) { return M.av[x[0]]; }).length;
-      var it = d.item ? C.OUTFIT[d.slot].filter(function (o) { return o.k === d.item; })[0] : null;
-      echo(it ? "穿上了：" + it.zh + " · " + n + " / 3" : "摘掉了");
-      return;
-    }
     if (d.brand != null) { F.brand = d.brand; F.bq = d.brand; render(); return; }
     if (d.cat) { F.cat = d.cat; render(); return; }
     if (t.id === "adddev") {

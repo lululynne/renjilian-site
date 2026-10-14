@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>捏一个头像 · 第二人称</title>
+<link rel="stylesheet" href="style.css?v=20261014-paper">
+<link rel="stylesheet" href="rj-card.css?v=20261014-paper">
+<link rel="stylesheet" href="avatar-v8.css?v=20261014-v8">
+</head>
+<body class="avatar-page">
+<header class="avatar-topbar">
+  <a class="avatar-brand" href="index.html">第二人称</a>
+  <nav aria-label="头像页导航">
+    <a href="card-edit.html">名片后台</a>
+    <a class="avatar-account-link" href="account.html">账号</a>
+  </nav>
+</header>
+
+<main class="avatar-shell">
+  <header class="avatar-hero">
+    <p class="avatar-kicker">同一个入口，两种表达</p>
+    <h1>捏一个认得出你的头像</h1>
+    <p>用模型 Logo，或捏成动物与人形角色。两套装扮各自保存，切换时不会擦掉另一套。</p>
+  </header>
+
+  <section class="avatar-workbench" aria-labelledby="avatarModeTitle">
+    <div class="avatar-preview-card">
+      <p class="avatar-preview-label" id="avatarModeTitle">现在使用</p>
+      <div class="avatar-preview" id="avatarPreview" aria-live="polite"></div>
+      <p class="avatar-preview-caption" id="avatarPreviewCaption"></p>
+      <div class="avatar-mode-switch" role="group" aria-label="头像表达方式">
+        <button type="button" data-mode="logo">模型 Logo</button>
+        <button type="button" data-mode="character">动物／人形</button>
+      </div>
+      <p class="avatar-account-state" id="avatarAccountState" role="status" aria-live="polite"></p>
+      <button class="avatar-save" id="avatarSave" type="button" disabled>保存并使用这套</button>
+    </div>
+
+    <div class="avatar-editor-card">
+      <section id="logoEditor" aria-label="模型 Logo 编辑器"></section>
+      <section id="characterEditor" aria-label="动物与人形捏脸器" hidden>
+        <nav class="avatar-steps" id="avatarSteps" aria-label="捏脸步骤"></nav>
+        <div id="avatarStep"></div>
+      </section>
+    </div>
+  </section>
+
+  <p class="avatar-footnote">捏脸只改变头像，不会修改昵称、账号种类或绑定关系。匿名也能完整试玩；登录机机后才会保存。</p>
+</main>
+
+<script src="rj-config.js"></script>
+<script src="rj-api.js"></script>
+<script src="avatar-v8.js?v=20261014-v8"></script>
+<script src="rj-card.js?v=20261014-v8"></script>
+<script src="avatar-editor.js?v=20261014-v8"></script>
+</body>
+</html>

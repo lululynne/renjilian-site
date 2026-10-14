@@ -1,32 +1,45 @@
-/* 第二人称 · SECOND PERSON —— 双声信号刊物
-   真源：BRAND-AND-EXPERIENCE-SPEC.md「第二人称 · 双声信号刊物」（2026-08-31 拍板）
-   信号雾底 × 纸面卡，深蓝墨为字；珊瑚（人声）/长春花（机声）只作图形点缀，
-   白字小字一律深蓝墨底，保证 ≥4.5:1。电脑版为主战场，手机版单栏适配 */
+/* 第二人称 · SECOND PERSON —— 暖纸刊物
+   羊皮纸底 × 深墨描边 × 克制的实体投影。人声珊瑚与机声长春花仍是身份色，
+   不参与站壳换肤，也不覆盖个人名片保存的皮肤。 */
 
 :root{
-  --bg:#f2f6f7;          /* 轻雾底 */
-  --bg-deep:#e8eff1;
-  --card:#fff;            /* 纸面 */
-  --card-block:#f3f6f7;   /* 卡内色块 */
-  --ink:#202a33;          /* 深蓝墨 */
-  --ink-soft:#65717a;
+  --sp-paper:#fbf5e8;
+  --sp-panel:#fffaf0;
+  --sp-ink:#302c24;
+  --sp-muted:#645d50;
+  --sp-line:#c9bda7;
+  --sp-shadow:#d5c7ad;
+  --sp-ochre:#e6c27f;
+  --sp-sage:#c7d6bc;
+  --sp-link:#65587c;
+  --sp-brand-text:#4f5d98;
+  --sp-positive:#52704c;
+  --sp-caution:#88642e;
+  --sp-error:#925148;
+  --sp-title:"Noto Serif SC","Songti SC","STSong",serif;
+  --bg:var(--sp-paper);
+  --bg-deep:#f1e7d4;
+  --card:var(--sp-panel);
+  --card-block:#f5eddd;
+  --ink:var(--sp-ink);
+  --ink-soft:var(--sp-muted);
   --human:#dd7e70;        /* 人声珊瑚 */
   --machine:#7f8fca;      /* 机声长春花 */
-  --accent:var(--ink);   /* 功能强调 = 深蓝墨：承载白字/小字的底必须 ≥4.5:1 */
-  --accent-soft:#e3c4bd;
-  --line:#d3dde1;        /* 结构线 */
-  --radius:16px;
+  --accent:var(--ink);   /* 深墨强调：承载白字/小字的底必须 ≥4.5:1 */
+  --accent-soft:var(--sp-shadow);
+  --line:var(--sp-line);
+  --radius:9px;
   /* ── 小红书化增量变量（沿用，按新色板校准）── */
-  --claim:#a8565f;          /* 原创认证 · 低饱和粉，明显弱于珊瑚主强调 */
-  --claim-deep:#8d434c;     /* 原创认证 hover 略深 */
-  --card-human:#f8fafb;     /* 人类卡面（纸面） */
-  --card-ai:#eef3f6;        /* 机机卡面 · 信号雾深一档，与纸面互补 */
-  --card-ai-block:#e2eaf0;  /* 机机卡内色块 */
-  --card-ai-block0:rgba(226,234,240,0); /* 机机卡渐隐截断起点（--card-ai-block 的透明态） */
-  --seg-bg:#fff;            /* 三版面分段控件白底 */
-  --seg-on-fg:#fff;         /* 分段控件选中态文字（深蓝墨底上） */
+  --claim:var(--sp-error);
+  --claim-deep:#743e37;
+  --card-human:var(--sp-panel);
+  --card-ai:color-mix(in srgb,var(--sp-sage) 32%,var(--sp-panel));
+  --card-ai-block:color-mix(in srgb,var(--sp-sage) 48%,var(--sp-panel));
+  --card-ai-block0:rgba(230,234,219,0);
+  --seg-bg:var(--sp-panel);
+  --seg-on-fg:var(--sp-panel);
   --toast-fg:#fff;          /* toast 文字 */
-  --toast-error:#b0524a;    /* 错误 toast 背景 */
+  --toast-error:var(--sp-error);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{color-scheme:light}
@@ -38,26 +51,34 @@ body{
   min-height:100vh;
 }
 a{color:inherit;text-decoration:none}
+::selection{background:var(--sp-ochre);color:var(--sp-ink)}
+img,video{max-width:100%}
+main.wrap{min-width:0}
+input,textarea,select{font:inherit;font-size:16px}
+main :where(p,li) > a:not([class]){
+  color:var(--sp-link);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;
+}
+main :where(p,li) > a:not([class]):visited{color:#745d72}
 
 .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
 
 /* ── 顶栏：刊物雾面平头，无渐变 ── */
 header.site{
-  background:rgba(255,255,255,.88);
-  border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--sp-paper) 94%,var(--sp-panel));
+  border-bottom:2px solid var(--ink);
   padding:25px 0 0;
   backdrop-filter:saturate(120%) blur(14px);
 }
 .masthead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 .masthead h1{
-  font-family:"Noto Serif SC","Songti SC","STSong",serif;
+  font-family:var(--sp-title);
   font-size:32px;letter-spacing:.08em;font-weight:600;line-height:1.15;
 }
 .masthead .masthead-en{
-  font:600 10px/1 "Avenir Next","Helvetica Neue",Arial,sans-serif;
-  letter-spacing:.2em;color:var(--machine);
+  font:600 12px/1 "Avenir Next","Helvetica Neue",Arial,sans-serif;
+  letter-spacing:.2em;color:var(--sp-brand-text);
 }
-.masthead .slogan{font-size:13px;color:var(--ink-soft);margin-left:auto}
+.masthead .slogan{font-size:14px;color:var(--ink-soft);margin-left:auto}
 /* 账号入口：顶栏右上角（梅宝 09-26 12:36「账号应该在右上角」）。
    绝对定位不参与 masthead 换行；masthead 右侧留出它的位置，标题/SECOND PERSON/slogan 不会被压 */
 .masthead{position:relative;padding-right:168px}
@@ -68,7 +89,7 @@ header.site{
   font-size:13px;font-weight:650;color:var(--ink);
   border:1px solid var(--line);background:var(--card);
 }
-.account-entry:hover{border-color:var(--ink);background:#fff}
+.account-entry:hover{border-color:var(--ink);background:var(--sp-panel)}
 /* 刀 R：名字和小红点分两格——名字太长自己省略，红点永远露全（微信／iOS 角标的样子） */
 .account-entry{gap:6px}
 .account-entry-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -98,7 +119,7 @@ nav.boards{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}
 nav.boards a,
 nav.boards span.soon{
   min-height:44px;display:inline-flex;align-items:center;
-  padding:6px 0;font-size:14px;color:var(--ink-soft);
+  padding:6px 0;font-size:15px;color:var(--ink-soft);
   background:transparent;border:1px solid transparent;border-bottom:2px solid transparent;
 }
 nav.boards a.on{border-bottom-color:var(--machine);color:var(--ink);font-weight:650}
@@ -109,9 +130,11 @@ nav.boards span.soon{opacity:.6}
 /* ── 首页板块格：刊物方卡，已开放栏目用长春花描边标记 ── */
 .hero{padding:44px 0 8px}
 .hero h2,.board-head h2{
-  font-family:"Noto Serif SC","Songti SC","STSong",serif;
-  font-size:clamp(36px,4.6vw,60px);line-height:1.18;letter-spacing:.01em;font-weight:600;margin-bottom:18px;
+  font-family:var(--sp-title);
+  line-height:1.18;letter-spacing:.01em;font-weight:600;margin-bottom:18px;
 }
+.hero h2{font-size:clamp(2.25rem,4.6vw,3.75rem)}
+.board-head h2{font-size:clamp(2.125rem,4vw,2.5rem)}
 .hero p{color:var(--ink-soft);font-size:15px;max-width:650px}
 .home-hero{
   display:grid;grid-template-columns:minmax(0,1.22fr) minmax(340px,.78fr);
@@ -125,8 +148,8 @@ nav.boards span.soon{opacity:.6}
 }
 .voice-thesis{position:relative;display:grid;gap:20px;padding:8px 0}
 .voice-note{
-  width:86%;background:var(--card);border:1px solid var(--line);border-radius:18px;
-  padding:22px 24px;position:relative;box-shadow:0 14px 36px rgba(48,70,82,.07);
+  width:86%;background:var(--card);border:1px solid var(--line);border-radius:8px;
+  padding:22px 24px;position:relative;box-shadow:3px 3px 0 var(--sp-shadow);
 }
 .voice-note span{
   display:block;margin-bottom:7px;
@@ -140,18 +163,17 @@ nav.boards span.soon{opacity:.6}
   padding:34px 0 34px;
 }
 .tile{
-  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--card);border:2px solid var(--ink);border-radius:12px;
   padding:30px 30px;min-height:210px;position:relative;
-  box-shadow:0 14px 40px rgba(48,70,82,.06);transition:transform .18s ease,box-shadow .18s ease;
+  box-shadow:5px 5px 0 var(--sp-shadow);transition:transform .18s ease,box-shadow .18s ease;
 }
-.tile:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(48,70,82,.1)}
-.tile h3{font-family:"Noto Serif SC","Songti SC","STSong",serif;font-size:26px;font-weight:600;margin:36px 0 10px}
+.tile:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--sp-shadow)}
+.tile h3{font-family:var(--sp-title);font-size:19px;font-weight:600;margin:36px 0 10px}
 .tile p{font-size:14px;color:var(--ink-soft);max-width:420px}
 .tile .tag-soon{
   position:absolute;top:14px;right:14px;font-size:11px;color:var(--ink-soft);
   background:var(--card-block);border-radius:var(--radius);padding:2px 9px;
 }
-.tile.live{outline:0}
 /* 双声各有其声：游戏（人出题问机机）描人声珊瑚，能力（机机长手）描机声长春花 */
 .tile.live[href="games.html"]{border-top:4px solid var(--human)}
 .tile.live[href="baibao.html"]{border-top:4px solid var(--machine)}
@@ -165,19 +187,20 @@ nav.boards span.soon{opacity:.6}
 
 /* ── 帖子板 ── */
 .board-head{padding:64px 0 18px}
-.board-head h2{font-size:clamp(38px,5vw,58px);margin:10px 0 12px}
-.board-head p{font-size:14px;color:var(--ink-soft);margin-top:4px;max-width:700px}
+.board-head h2{font-size:clamp(2.125rem,4vw,2.5rem);margin:10px 0 12px}
+.board-head p{font-size:15px;color:var(--ink-soft);margin-top:4px;max-width:700px}
 .toolbar{display:flex;gap:10px;margin:18px 0 6px;flex-wrap:wrap;align-items:center}
 .toolbar input{
   flex:1;min-width:220px;max-width:360px;
-  padding:8px 14px;border-radius:999px;border:1px solid var(--line);
-  background:#fff;font-size:14px;color:var(--ink);outline:none;
+  min-height:44px;padding:8px 14px;border-radius:8px;border:1px solid var(--ink);
+  background:var(--card);font-size:16px;color:var(--ink);
 }
 .toolbar input:focus{border-color:var(--accent-soft)}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{
-  font-family:inherit;font-size:13px;padding:5px 13px;border-radius:999px;cursor:pointer;
-  background:#fff;border:1px solid var(--line);color:var(--ink-soft);user-select:none;
+  min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;
+  font-family:inherit;font-size:14px;padding:5px 13px;border-radius:8px;cursor:pointer;
+  background:var(--card);border:1px solid var(--line);color:var(--ink-soft);user-select:none;
 }
 .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 /* 只展示、不可点的当前筛选标签（清除动作走旁边的原生按钮） */
@@ -186,13 +209,13 @@ nav.boards span.soon{opacity:.6}
   background:var(--accent);color:#fff;
 }
 /* 三版面切换（混合/人类/机机）· 分段控件，参照 NodeSeek 顶部 tab */
-.seg{display:inline-flex;background:var(--seg-bg);border:1px solid var(--line);border-radius:999px;padding:2px;gap:2px}
+.seg{display:inline-flex;background:var(--seg-bg);border:1px solid var(--line);border-radius:8px;padding:2px;gap:2px}
 .seg-tab{
-  font-family:inherit;font-size:13px;padding:4px 14px;border-radius:999px;cursor:pointer;
+  min-height:44px;min-width:44px;font-family:inherit;font-size:14px;padding:4px 14px;border-radius:6px;cursor:pointer;
   background:transparent;border:0;color:var(--ink-soft);user-select:none;
 }
 .seg-tab.on{background:var(--accent);color:var(--seg-on-fg)}
-.wall-empty{width:100%;text-align:center;color:var(--ink-soft);font-size:13px;padding:40px 0}
+.wall-empty{width:100%;text-align:center;color:var(--ink-soft);font-size:15px;padding:40px 0}
 #tag-filter{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-soft)}
 
 /* 瀑布流：错落是看家本领——JS 把每张卡放进当前最矮的列，卡高全跟内容走。
@@ -203,9 +226,9 @@ nav.boards span.soon{opacity:.6}
 }
 .cards .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
 .card{
-  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--card);border:1px solid var(--line);border-radius:8px;
   padding:20px 20px 16px;display:flex;flex-direction:column;gap:10px;cursor:pointer;
-  box-shadow:0 10px 28px rgba(48,70,82,.05);
+  box-shadow:2px 2px 0 var(--sp-shadow);
 }
 .card-media{
   position:relative;margin:-8px -8px 2px;overflow:hidden;border-radius:11px;
@@ -214,9 +237,9 @@ nav.boards span.soon{opacity:.6}
 .card-media img{width:100%;height:100%;display:block;object-fit:cover}
 .media-count{
   position:absolute;right:9px;top:9px;border-radius:999px;padding:3px 8px;
-  background:rgba(61,67,81,.76);color:#fff;font-size:10.5px;letter-spacing:.04em;
+  background:var(--sp-ink);color:var(--sp-panel);font-size:12px;letter-spacing:.04em;
 }
-.card h3{font-size:15px;line-height:1.5}
+.card h3{font:600 19px/1.5 var(--sp-title)}
 .card .body{
   background:var(--card-block);border-radius:10px;
   padding:14px 16px;white-space:pre-wrap;position:relative;overflow:hidden;
@@ -236,7 +259,7 @@ nav.boards span.soon{opacity:.6}
 }
 /* 标题位置跟卡型走：正文型标题沉底小字弱化；引流型标题置顶加重（见 .card h3 / .feature-title h3） */
 .card .title-foot{font-size:12px;color:var(--ink-soft);line-height:1.5}
-.card.feature-title h3{font-size:17px;font-weight:700}
+.card.feature-title h3{font-size:19px;font-weight:700}
 /* 人类卡 / 机机卡面互补色（变量见 :root，低饱和、放一起和谐） */
 .card[data-at="ai"]{background:var(--card-ai)}
 .card[data-at="ai"] .body{background:var(--card-ai-block)}
@@ -250,12 +273,13 @@ nav.boards span.soon{opacity:.6}
 }
 .card .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--ink-soft)}
 .card .meta .lv{
-  border-radius:999px;padding:1px 9px;background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:1px 9px;background:var(--card);border:1px solid var(--line);
 }
 .card .meta .lv.r18{border-color:var(--accent);color:var(--accent)}
 .card .meta .tag{
-  cursor:pointer;background:none;border:0;padding:0;
-  font-family:inherit;font-size:inherit;color:inherit;
+  min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;background:none;border:0;padding:4px 8px;
+  font-family:inherit;font-size:14px;color:inherit;
 }
 .card .meta .tag:hover{color:var(--accent)}
 .card .meta .tag.on{color:var(--accent);font-weight:600}
@@ -263,24 +287,24 @@ nav.boards span.soon{opacity:.6}
 .card .src{font-size:12px;color:var(--ink-soft)}
 .card .ops{display:flex;justify-content:flex-end;margin-top:auto;gap:8px;align-items:center}
 .btn-copy{
-  font-size:13px;padding:6px 18px;border-radius:999px;border:none;cursor:pointer;
-  background:var(--accent);color:#fff;font-family:inherit;
+  min-height:44px;min-width:44px;font-size:14px;padding:6px 18px;border-radius:8px;cursor:pointer;
+  background:var(--sp-ochre);color:var(--ink);border:1px solid var(--ink);font-family:inherit;
 }
-.btn-copy.done{background:#8fae9a}
+.btn-copy.done{background:var(--sp-sage)}
 /* 查看详情：每张卡的原生键盘入口，幽灵样式弱于复制主按钮 */
 .btn-detail{
-  font-size:13px;padding:6px 14px;border-radius:999px;cursor:pointer;font-family:inherit;
-  background:#fff;border:1px solid var(--line);color:var(--ink);
+  min-height:44px;min-width:44px;font-size:14px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit;
+  background:var(--card);border:1px solid var(--ink);color:var(--ink);
 }
 .btn-detail:hover{border-color:var(--ink);color:var(--ink)}
 .btn-claim{
-  font-size:12px;padding:4px 12px;border-radius:999px;cursor:pointer;font-family:inherit;
+  min-height:44px;min-width:44px;font-size:14px;padding:4px 12px;border-radius:8px;cursor:pointer;font-family:inherit;
   background:none;border:1px solid var(--claim);color:var(--claim);
 }
 .btn-claim:hover{color:var(--claim-deep);border-color:var(--claim-deep)}
 .btn-ghost{
-  font-size:13px;padding:6px 16px;border-radius:999px;cursor:pointer;font-family:inherit;
-  background:#fff;border:1px solid var(--line);color:var(--ink);
+  min-height:44px;min-width:44px;font-size:14px;padding:6px 16px;border-radius:8px;cursor:pointer;font-family:inherit;
+  background:var(--card);border:1px solid var(--ink);color:var(--ink);
 }
 .btn-ghost:hover{border-color:var(--accent-soft);color:var(--accent)}
 
@@ -292,9 +316,9 @@ body.no-scroll{overflow:hidden}
 }
 #rj-overlay[hidden],#claim-overlay[hidden]{display:none}
 .rj-modal{
-  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--card);border:2px solid var(--ink);border-radius:9px;
   width:100%;max-width:640px;max-height:84vh;overflow-y:auto;
-  padding:26px 26px 20px;position:relative;color:var(--ink);
+  padding:26px 26px 20px;position:relative;color:var(--ink);box-shadow:5px 5px 0 var(--sp-shadow);
   animation:rj-pop .16s ease;
 }
 /* 小红书式左右分栏详情浮层：左栏完整内容、右栏信息+评论，两栏各自滚动 */
@@ -314,7 +338,7 @@ body.no-scroll{overflow:hidden}
 }
 .rj-gallery-thumb{
   flex:0 0 64px;width:64px;height:64px;border:2px solid transparent;border-radius:9px;
-  padding:2px;background:#fff;cursor:pointer;
+  padding:2px;background:var(--card);cursor:pointer;
 }
 .rj-gallery-thumb.on{border-color:var(--accent)}
 .rj-gallery-thumb img{width:100%;height:100%;object-fit:cover;border-radius:6px;display:block}
@@ -324,27 +348,28 @@ body.no-scroll{overflow:hidden}
 }
 .rj-m-author{
   font-size:12.5px;color:var(--ink-soft);
-  border:1px dashed var(--line);border-radius:10px;padding:8px 12px;
+  border:1px dashed var(--line);border-radius:8px;padding:8px 12px;
 }
 .rj-c-empty{font-size:12px;color:var(--ink-soft);margin:2px 0 10px}
 @keyframes rj-pop{from{transform:scale(.96);opacity:.4}to{transform:scale(1);opacity:1}}
 .rj-m-close{
   position:absolute;top:12px;right:14px;border:none;background:none;cursor:pointer;
-  font-size:20px;color:var(--ink-soft);font-family:inherit;line-height:1;padding:4px;
+  width:44px;height:44px;font-size:20px;color:var(--ink-soft);font-family:inherit;line-height:1;padding:0;
 }
 .rj-m-close:hover{color:var(--accent)}
-.rj-m-title{font-size:17px;line-height:1.5;padding-right:28px}
+.rj-m-title{font:600 19px/1.5 var(--sp-title);padding-right:44px}
 .rj-m-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--ink-soft);margin-top:8px}
-.rj-m-meta .lv{border-radius:999px;padding:1px 9px;background:#fff;border:1px solid var(--line)}
+.rj-m-meta .lv{border-radius:999px;padding:1px 9px;background:var(--card);border:1px solid var(--line)}
 .rj-m-meta .lv.r18{border-color:var(--accent);color:var(--accent)}
 .rj-m-meta .tag{
-  cursor:pointer;background:none;border:0;padding:0;
-  font-family:inherit;font-size:inherit;color:inherit;
+  min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;background:none;border:0;padding:4px 8px;
+  font-family:inherit;font-size:14px;color:inherit;
 }
 .rj-m-meta .tag:hover{color:var(--accent)}
 .rj-m-meta .date{margin-left:auto}
 .rj-m-body{
-  margin-top:12px;font-size:14px;background:var(--card-block);border-radius:10px;
+  margin-top:12px;font-size:14px;background:var(--card-block);border-radius:8px;
   padding:14px 16px;white-space:pre-wrap;
 }
 .rj-m-src{margin-top:12px;font-size:12px;color:var(--ink-soft)}
@@ -353,16 +378,16 @@ body.no-scroll{overflow:hidden}
 /* ── 互动区骨架：点赞 / 收藏（本机 localStorage），评论外壳（未开放）── */
 .rj-inter{display:flex;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
 .rj-ibtn{
-  font-size:13px;padding:5px 14px;border-radius:999px;cursor:pointer;font-family:inherit;
-  background:#fff;border:1px solid var(--line);color:var(--ink-soft);
+  min-height:44px;min-width:44px;font-size:14px;padding:5px 14px;border-radius:8px;cursor:pointer;font-family:inherit;
+  background:var(--card);border:1px solid var(--line);color:var(--ink-soft);
 }
 .rj-ibtn:hover{border-color:var(--accent-soft)}
 .rj-ibtn.on{color:var(--accent);border-color:var(--accent)}
 .rj-comments{margin-top:16px}
 .rj-c-title{font-size:13px;margin-bottom:8px}
 .rj-c-input{
-  width:100%;padding:8px 14px;border-radius:999px;border:1px solid var(--line);
-  background:#fff;font-size:13px;color:var(--ink);font-family:inherit;outline:none;
+  width:100%;min-height:44px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);font-size:16px;color:var(--ink);font-family:inherit;outline:none;
 }
 .rj-c-input:disabled{opacity:.6;cursor:not-allowed}
 .rj-c-note{font-size:11.5px;color:var(--ink-soft);margin-top:6px}
@@ -385,12 +410,12 @@ body.no-scroll{overflow:hidden}
 .claim-form input[type=url],
 .claim-form input[type=file]{
   width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:9px;
-  background:#fff;font-size:13px;color:var(--ink);font-family:inherit;outline:none;margin-top:5px;
+  min-height:44px;background:var(--card);font-size:16px;color:var(--ink);font-family:inherit;margin-top:5px;
 }
-.claim-form input:focus{border-color:var(--accent-soft)}
+.claim-form input:focus{border-color:var(--ink)}
 .claim-form .radios{display:flex;gap:16px;margin-top:5px}
 .claim-form .radios label{
-  margin:0;color:var(--ink);font-size:13px;display:flex;gap:5px;align-items:center;
+  min-height:44px;margin:0;color:var(--ink);font-size:14px;display:flex;gap:5px;align-items:center;
 }
 .claim-note{font-size:11.5px;color:var(--ink-soft);margin-top:12px}
 .claim-ops{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
@@ -405,24 +430,24 @@ body.no-scroll{overflow:hidden}
 .changelog-main{padding-top:48px;padding-bottom:72px}
 .log-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,420px);gap:28px;align-items:end;padding-bottom:26px;border-bottom:2px solid var(--ink)}
 .log-head .hero-kicker{grid-column:1/-1;margin:0;color:var(--ink-soft)}
-.log-head h2{margin:0;font-size:clamp(34px,6vw,66px);line-height:.95;letter-spacing:-.035em}
-.log-head>p:last-child{margin:0;color:var(--ink-soft);font-size:13px;line-height:1.9}
+.log-head h2{margin:0;font:600 clamp(2.125rem,4vw,2.5rem)/1.12 var(--sp-title);letter-spacing:.01em}
+.log-head>p:last-child{margin:0;color:var(--ink-soft);font-size:16px;line-height:1.85}
 .release-ledger{counter-reset:release}
 .release-entry{counter-increment:release;display:grid;grid-template-columns:180px minmax(0,1fr);gap:30px;padding:30px 0;border-bottom:1px solid var(--line)}
 .release-entry>*{min-width:0}
 .release-entry>header{position:relative;padding-left:40px}
-.release-entry>header::before{content:counter(release,decimal-leading-zero);position:absolute;left:0;top:2px;color:var(--machine);font:700 11px/1 ui-monospace,"SFMono-Regular",Menlo,monospace;letter-spacing:.08em}
-.release-entry h3{margin:0;color:var(--ink);font:750 18px/1.35 ui-monospace,"SFMono-Regular",Menlo,monospace}
+.release-entry>header::before{content:counter(release,decimal-leading-zero);position:absolute;left:0;top:2px;color:var(--sp-brand-text);font:700 12px/1 ui-monospace,"SFMono-Regular",Menlo,monospace;letter-spacing:.08em}
+.release-entry h3{margin:0;color:var(--ink);font:600 19px/1.45 var(--sp-title)}
 .release-entry time{display:block;margin-top:7px;color:var(--ink-soft);font:10.5px/1.5 ui-monospace,"SFMono-Regular",Menlo,monospace;letter-spacing:.08em}
 .release-entry ul{margin:0;padding:0;list-style:none}
-.release-entry li{position:relative;margin:0;padding:0 0 12px 18px;color:var(--ink);font-size:13px;line-height:1.85}
+.release-entry li{position:relative;margin:0;padding:0 0 12px 18px;color:var(--ink);font-size:16px;line-height:1.85}
 .release-entry li::before{content:"";position:absolute;left:0;top:.72em;width:7px;height:2px;background:var(--human)}
-.log-state{padding:28px 0;color:var(--ink-soft);font-size:13px}
-.log-state.err{color:var(--human)}
+.log-state{padding:28px 0;color:var(--ink-soft);font-size:15px}
+.log-state.err{color:var(--sp-error)}
 
 footer.site{
-  border-top:1px solid var(--line);background:var(--bg-deep);
-  padding:32px 0 42px;font-size:12px;color:var(--ink);
+  border-top:2px solid var(--ink);background:var(--bg-deep);
+  padding:32px 0 42px;font-size:14px;color:var(--ink);
 }
 .sister-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .sister-footer>p{color:var(--ink-soft)}
@@ -432,26 +457,26 @@ footer.site{
   border:1px solid var(--line);background:var(--card);
 }
 .sister-footer nav a{font-weight:650}
-.sister-footer nav a:hover{border-color:var(--ink);background:#fff}
+.sister-footer nav a:hover{border-color:var(--ink);background:var(--card)}
 .sister-pending{color:var(--ink-soft);border-style:dashed!important}
 
 /* ── 刊读子栏（精读｜脉搏）与脉搏列表（2026-09-18）。零新增色值 ── */
 .subnav{display:flex;gap:10px;margin:4px 0 22px;flex-wrap:wrap}
 .subnav a{
   display:inline-flex;align-items:baseline;gap:8px;min-height:44px;padding:9px 18px;
-  border:1px solid var(--line);border-radius:999px;background:var(--card);
+  border:1px solid var(--line);border-radius:8px;background:var(--card);
   color:var(--ink-soft);font-size:14px;text-decoration:none;
 }
-.subnav a small{font-size:11.5px;color:var(--ink-soft)}
+.subnav a small{font-size:12px;color:var(--ink-soft)}
 .subnav a.here{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:650}
-.subnav a.here small{color:#fff;opacity:.78}
+.subnav a.here small{color:inherit;opacity:.78}
 .pulse-list{display:flex;flex-direction:column;gap:14px;max-width:760px;padding:2px 0 10px}
 .pulse-item{padding:18px 22px 16px}
 .pl-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft)}
 .pl-meta time{font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .pl-meta .chip{cursor:default;font-size:11.5px;padding:2px 10px;min-height:0;min-width:0}
 .pl-meta strong{color:var(--ink);font-weight:650;font-size:13px}
-.pl-line{margin-top:10px;font-size:14.5px;line-height:1.8;color:var(--ink)}
+.pl-line{margin-top:10px;font-size:16px;line-height:1.85;color:var(--ink)}
 .pl-rel{margin-top:10px;padding-left:12px;border-left:3px solid var(--machine);font-size:13.5px;line-height:1.75;color:var(--ink)}
 .pl-rel span{display:block;font:700 10.5px/1.6 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;color:var(--ink-soft)}
 .pl-evidence{font-size:11.5px;line-height:1.6;color:var(--ink-soft)}
@@ -461,13 +486,13 @@ footer.site{
 /* ── 首页「本周刊读」横条（2026-09-18）：一条窄卡，不抢三块瓦片的位 ── */
 .kanread-strip{
   display:flex;align-items:center;gap:20px;
-  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--card);border:1px solid var(--line);border-radius:8px;
   padding:18px 24px;margin-top:8px;text-decoration:none;color:var(--ink);
-  box-shadow:0 12px 32px rgba(48,70,82,.05);
+  box-shadow:3px 3px 0 var(--sp-shadow);
   transition:transform .18s ease,box-shadow .18s ease;
   border-left:4px solid var(--machine);
 }
-.kanread-strip:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(48,70,82,.09)}
+.kanread-strip:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--sp-shadow)}
 .ks-label{
   flex:0 0 auto;
   font:650 11px/1.4 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.17em;color:var(--ink-soft);
@@ -484,29 +509,30 @@ footer.site{
 .kanread-list{display:flex;flex-direction:column;gap:20px;max-width:760px;padding:6px 0 10px}
 .kanread-card{padding:26px 28px 22px}
 .kanread-card h3{font-size:19px;line-height:1.5;font-family:"Noto Serif SC","Songti SC","STSong",serif}
+#krSingle>.kanread-card>h3,#krSingle>article>h3{font-size:24px;line-height:1.45}
 .kr-original{margin-top:4px;font-size:12.5px;color:var(--ink-soft);font-style:italic}
 .kr-meta{margin-top:10px;font-size:11.5px;color:var(--ink-soft)}
 .kr-topics{margin-top:12px}
-.kr-topics .chip{cursor:default;font-size:11.5px;padding:3px 11px}
+.kr-topics .chip{cursor:default;font-size:12px;padding:3px 11px;min-height:0;min-width:0}
 .kr-hook{
   margin-top:16px;font-family:"Noto Serif SC","Songti SC","STSong",serif;
-  font-size:15.5px;line-height:1.8;color:var(--ink);
+  font-size:16px;line-height:1.85;color:var(--ink);
 }
 .kr-voice{
-  margin-top:14px;background:var(--card-block);border-radius:12px;
+  margin-top:14px;background:var(--card-block);border-radius:8px;
   padding:14px 16px;border-left:4px solid var(--line);
 }
 .kr-voice span{
   display:block;margin-bottom:7px;
   font:700 11px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;color:var(--ink-soft);
 }
-.kr-voice p{font-size:14px;line-height:1.85;color:var(--ink)}
+.kr-voice p{font-size:16px;line-height:1.85;color:var(--ink)}
 .kr-voice p+p{margin-top:11px}
 .kr-human{border-left-color:var(--human)}
 .kr-machine{border-left-color:var(--machine)}
-.kr-round{margin-top:14px;padding:14px 16px;border:1px dashed var(--line);border-radius:12px}
+.kr-round{margin-top:14px;padding:14px 16px;border:1px dashed var(--line);border-radius:8px}
 .kr-round span{display:block;margin-bottom:8px;font:700 11px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;color:var(--ink-soft)}
-.kr-round p{font-size:13.5px;line-height:1.8;color:var(--ink)}
+.kr-round p{font-size:15px;line-height:1.85;color:var(--ink)}
 .kr-round p+p{margin-top:9px}
 .kr-round strong{margin-right:8px;font-weight:650}
 .kr-round em{font-style:normal;color:var(--ink-soft);font-size:12px}
@@ -516,16 +542,16 @@ footer.site{
    只用既有 token（--ink / --card / --card-block / --line / --ink-soft），不新增色值 */
 .kr-source{
   margin-top:16px;padding:14px 16px;
-  background:var(--card-block);border:1px solid var(--line);border-radius:12px;
+  background:var(--card-block);border:1px solid var(--line);border-radius:8px;
 }
 .btn-source{
   display:inline-flex;align-items:center;justify-content:center;
   min-height:44px;min-width:44px;padding:9px 24px;
-  border-radius:999px;border:1px solid var(--ink);
-  background:var(--ink);color:var(--card);
-  font-family:inherit;font-size:14.5px;font-weight:650;letter-spacing:.02em;
+  border-radius:8px;border:1px solid var(--ink);
+  background:var(--sp-ochre);color:var(--ink);
+  font-family:inherit;font-size:14px;font-weight:650;letter-spacing:.02em;
 }
-.btn-source:hover{background:var(--ink-soft);border-color:var(--ink-soft)}
+.btn-source:hover{background:color-mix(in srgb,var(--sp-ochre) 82%,var(--ink));border-color:var(--ink)}
 .kr-source-note{margin-top:9px;font-size:12px;line-height:1.7;color:var(--ink-soft)}
 /* 卡底署名与最后核对：原文按钮已前置，这里不再重复 */
 .kr-foot{margin-top:14px}
@@ -540,19 +566,19 @@ footer.site{
 /* 刊读目录与单篇（刀 3） */
 /* 头部压矮、目录按月分组、单篇往返；只用既有 token，阴影沿用 .card 自带的 */
 .board-head.kr-head{padding:22px 0 10px}
-.kr-head h2{font-size:clamp(28px,4vw,40px);margin:4px 0 6px}
-.kr-head .kr-intro{font-size:14px;margin-top:0}
+.kr-head h2{font-size:clamp(2.125rem,4vw,2.5rem);margin:4px 0 6px}
+.kr-head .kr-intro{font-size:15px;margin-top:0}
 .kr-head + .subnav{margin:0 0 14px}
-.kr-status{margin:0 0 12px;font-size:13.5px;color:var(--ink)}
+.kr-status{margin:0 0 12px;font-size:15px;color:var(--ink)}
 .kr-month + .kr-month{margin-top:22px}
 .kr-month-head{font:650 12px/1.4 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.08em;color:var(--ink-soft);margin:0 0 10px}
 .kr-index-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
 .kr-index-item{position:relative;padding:16px 18px 14px;gap:6px}
 .kr-index-meta{font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
-.kr-index-title{font:600 17px/1.5 "Noto Serif SC","Songti SC","STSong",serif}
+.kr-index-title{font:600 19px/1.5 var(--sp-title)}
 .kr-index-link{display:block;min-height:44px;color:var(--ink)}
 .kr-index-link::after{content:"";position:absolute;inset:0;border-radius:inherit}
-.kr-index-item:focus-within{outline:2px solid var(--ink);outline-offset:2px}
+.kr-index-item:focus-within{outline:3px solid var(--sp-link);outline-offset:3px}
 .kr-index-hook{font-size:13.5px;line-height:1.7;color:var(--ink)}
 .kr-index .chip{cursor:default;min-height:0;min-width:0}   /* 盖掉 ≤760 的 .chip 44px 规则：这里的 chip 不可点 */
 .kr-index-by{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -568,13 +594,14 @@ footer.site{
 .nl-head .nl-ring{flex:none}
 .nl-filter{
   display:flex;gap:6px;overflow-x:auto;margin:0 0 4px;padding:2px 2px 4px;
-  scrollbar-width:none;-ms-overflow-style:none;
+  scrollbar-width:thin;scrollbar-color:var(--sp-line) transparent;
 }
-.nl-filter::-webkit-scrollbar{display:none}
+.nl-filter::-webkit-scrollbar{height:4px}
+.nl-filter::-webkit-scrollbar-thumb{background:var(--sp-line)}
 .nl-chip{
   flex:none;display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:4px 13px;
   border:1px solid var(--line);border-radius:999px;background:var(--card);
-  color:var(--ink);font-size:13px;cursor:pointer;
+  color:var(--ink);font-size:14px;cursor:pointer;
 }
 .nl-chip[aria-checked="true"]{border-color:var(--ink);font-weight:650}
 .nl-chip .nl-n{font-size:11px;color:var(--ink-soft)}
@@ -591,18 +618,18 @@ footer.site{
   display:flex;flex-direction:column;gap:12px}
 .nl-item{
   position:relative;background:var(--card);border:1px solid var(--line);
-  border-radius:14px;padding:10px 14px 8px;
+  border-radius:8px;padding:10px 14px 8px;
 }
 .nl-item::before{
   content:"";position:absolute;left:-23px;top:22px;width:10px;height:10px;
   border-radius:50%;background:var(--human);border:2px solid var(--card);
 }
-.nl-item.nl-hit{outline:2px solid var(--ink);outline-offset:2px}
+.nl-item.nl-hit{outline:3px solid var(--sp-link);outline-offset:3px}
 .nl-time{margin:0 0 4px;font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
 .nl-battery{position:absolute;top:12px;right:14px}
 .nl-tags{margin:0 0 6px}
 .nl-tags .chip{cursor:default;min-height:0;min-width:0}
-.nl-line{margin:0 0 6px;font-size:14px;line-height:1.75}
+.nl-line{margin:0 0 6px;font-size:16px;line-height:1.85}
 .nl-srcs{display:flex;flex-wrap:wrap;gap:0 16px;margin:2px 0 0;font-size:13px}
 .nl-srcs a,.nl-srcs span{display:inline-flex;align-items:center;min-height:44px}
 .nl-srcs a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
@@ -650,30 +677,30 @@ footer.site{
   min-height:44px;min-width:44px;padding:4px 14px;
   display:inline-flex;align-items:center;justify-content:center;
   border:1px solid var(--line);border-radius:999px;background:var(--card);
-  font-family:inherit;font-size:12.5px;color:var(--ink-soft);cursor:pointer;
+  font-family:inherit;font-size:14px;color:var(--ink-soft);cursor:pointer;
 }
 .rjc-op:hover{color:var(--ink);border-color:var(--ink-soft)}
 .rjc-compose{margin-top:15px;padding-top:14px;border-top:1px solid var(--line)}
 /* 这句话固定挂在发表框正上方，不藏进隐私页 */
 .rjc-warn{
-  font-size:12.5px;line-height:1.7;color:var(--ink);
-  padding:10px 13px;border-radius:10px;
+  font-size:15px;line-height:1.75;color:var(--ink);
+  padding:10px 13px;border-radius:8px;
   background:var(--card-block);border-left:3px solid var(--machine);
 }
 .rjc-input{
   display:block;width:100%;margin-top:11px;padding:10px 12px;min-height:88px;
-  border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);
-  font-family:inherit;font-size:14px;line-height:1.8;resize:vertical;
+  border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);
+  font-family:inherit;font-size:16px;line-height:1.8;resize:vertical;
 }
 .rjc-row{display:flex;align-items:center;gap:12px;margin-top:9px}
 .rjc-count{font-size:11.5px;color:var(--ink-soft)}
 .rjc-send{
   margin-left:auto;min-height:44px;min-width:88px;padding:9px 22px;
   display:inline-flex;align-items:center;justify-content:center;
-  border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--card);
+  border-radius:8px;border:1px solid var(--ink);background:var(--sp-ochre);color:var(--ink);
   font-family:inherit;font-size:14px;font-weight:650;cursor:pointer;
 }
-.rjc-send:hover{background:var(--ink-soft);border-color:var(--ink-soft)}
+.rjc-send:hover{background:color-mix(in srgb,var(--sp-ochre) 82%,var(--ink));border-color:var(--ink)}
 .rjc-send[disabled]{opacity:.55;cursor:default}
 .rjc-signin{margin-top:11px;font-size:13px;color:var(--ink-soft)}
 .rjc-link{
@@ -687,9 +714,9 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
 
 /* ── 账号页与留言守则页（P2-a）。同样零新增色值 ── */
 .rj-panel{margin-top:18px;cursor:auto;gap:0}  /* .card 默认 cursor:pointer，账号面板不是可点卡 */
-.rj-panel h3{font-size:16px;margin-bottom:8px}
-.rj-muted{font-size:13px;line-height:1.75;color:var(--ink-soft)}
-.rj-field{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:15px}
+.rj-panel h3{font:600 19px/1.5 var(--sp-title);margin-bottom:8px}
+.rj-muted{font-size:15px;line-height:1.75;color:var(--ink-soft)}
+.rj-field{border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-top:15px}
 .rj-field legend{
   padding:0 6px;font:700 11px/1 "Avenir Next","PingFang SC",sans-serif;
   letter-spacing:.14em;color:var(--ink-soft);
@@ -706,36 +733,36 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
 .rj-text{
   display:block;width:100%;max-width:420px;margin-top:6px;
   min-height:44px;padding:10px 12px;
-  border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);
-  font-family:inherit;font-size:15px;
+  border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);
+  font-family:inherit;font-size:16px;
 }
 .rj-btn{
   margin-top:15px;min-height:44px;min-width:88px;padding:9px 24px;
   display:inline-flex;align-items:center;justify-content:center;
-  border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--card);
-  font-family:inherit;font-size:14.5px;font-weight:650;cursor:pointer;
+  border-radius:8px;border:1px solid var(--ink);background:var(--sp-ochre);color:var(--ink);
+  font-family:inherit;font-size:14px;font-weight:650;cursor:pointer;
 }
-.rj-btn:hover{background:var(--ink-soft);border-color:var(--ink-soft)}
+.rj-btn:hover{background:color-mix(in srgb,var(--sp-ochre) 82%,var(--ink));border-color:var(--ink)}
 .rj-btn[disabled]{opacity:.55;cursor:default}
 .rj-btn-ghost{background:var(--card);color:var(--ink)}
 .rj-btn-ghost:hover{background:var(--card-block);color:var(--ink);border-color:var(--ink)}
 .rj-btn-danger{background:var(--claim);border-color:var(--claim);color:var(--card)}
 .rj-btn-danger:hover{background:var(--claim-deep);border-color:var(--claim-deep)}
 .rj-sep{margin:22px 0;border:0;border-top:1px solid var(--line)}
-.rj-note{margin-top:11px;font-size:13px;line-height:1.7;color:var(--ink-soft)}
+.rj-note{margin-top:11px;font-size:15px;line-height:1.75;color:var(--ink-soft)}
 .rj-note.is-error{color:var(--toast-error)}
 /* 恢复码只显示这一次 */
 .rj-code{
   margin-top:15px;padding:14px 16px;border:1px dashed var(--line);
-  border-radius:12px;background:var(--card-block);
+  border-radius:8px;background:var(--card-block);
 }
 .rj-code>strong{display:block;font-size:13px;color:var(--ink)}
-.rj-code>p{margin-top:9px;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
+.rj-code>p{margin-top:9px;font-size:15px;line-height:1.75;color:var(--ink-soft)}
 .rj-code-value{
-  display:block;margin-top:11px;padding:12px 14px;border-radius:10px;
+  display:block;margin-top:11px;padding:12px 14px;border-radius:8px;
   background:var(--card);border:1px solid var(--line);color:var(--ink);
   font-family:"SFMono-Regular",Menlo,Consolas,monospace;
-  font-size:15px;letter-spacing:.06em;overflow-wrap:anywhere;
+  font-size:16px;letter-spacing:.06em;overflow-wrap:anywhere;
 }
 /* 绑定（P2-b）。零新增色值 */
 .rj-slots{margin-top:10px;font-size:14px;font-weight:650;color:var(--ink)}
@@ -754,7 +781,7 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
 .rj-keyset:first-child{border-top:0;margin-top:6px;padding-top:0}
 .rj-keys{list-style:none;margin:8px 0 0;padding:0}
 .rj-keys:empty{display:none}
-.rj-key{border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;margin-top:8px;background:var(--card)}
+.rj-key{border:1px solid var(--line);border-radius:8px;padding:10px 12px 12px;margin-top:8px;background:var(--card)}
 .rj-key.is-dead{background:var(--card-block)}
 .rj-key-name{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:14.5px;font-weight:650;overflow-wrap:anywhere}
 .rj-key-state{font-size:12px;font-weight:600;color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
@@ -773,7 +800,7 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
 .rj-key-how code{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:12px;color:var(--ink);overflow-wrap:anywhere}
 /* 只显示一次的恢复码：大号等宽 */
 .rj-code-big{font-size:18px;letter-spacing:.08em;line-height:1.6}
-.rj-once-warn{font-weight:650;color:var(--ink)!important;margin-top:6px}
+.rj-once-warn{font-size:15px;font-weight:650;color:var(--sp-caution)!important;margin-top:6px}
 .rj-code-line{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin-top:11px}
 .rj-code-line .rj-code-value{margin-top:0;flex:1 1 260px;min-width:0}
 .rj-copy-badge{font-size:14px;font-weight:650;color:var(--ink);white-space:nowrap}
@@ -799,9 +826,10 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
   color:var(--ink);text-decoration:underline;
   display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;
 }
-.rj-rules h3{margin-top:22px;font-size:15.5px}
+.rj-rules{max-width:760px;box-shadow:none;cursor:auto}
+.rj-rules h3{margin-top:22px;font:600 19px/1.55 var(--sp-title)}
 .rj-rules h3:first-child{margin-top:0}
-.rj-rules p{margin-top:9px;font-size:14px;line-height:1.9;color:var(--ink)}
+.rj-rules p{margin-top:9px;font-size:16px;line-height:1.9;color:var(--ink)}
 .rj-rules a{
   color:var(--ink);text-decoration:underline;
   display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;
@@ -816,16 +844,16 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
 
 /* ── 机友怎么配 · 纸面卡 + 票根长条标签（从 cost.html 搬来：成本页的墙、账号页、配置页共用）── */
 .setup-card{
-  background:linear-gradient(165deg, rgba(255,255,255,.96) 0%, var(--card) 48%, #f7fafb 100%);
-  border:1px solid var(--line);border-radius:14px;
-  padding:0;box-shadow:0 16px 40px rgba(48,70,82,.07);
+  background:var(--card);
+  border:1px solid var(--line);border-radius:8px;
+  padding:0;box-shadow:2px 2px 0 var(--sp-shadow);
   display:flex;flex-direction:column;overflow:hidden;
   backdrop-filter:saturate(118%) blur(6px);
 }
 .setup-card-top{
   padding:18px 18px 14px;
   border-bottom:1px solid color-mix(in srgb, var(--line) 70%, transparent);
-  background:rgba(255,255,255,.55);
+  background:color-mix(in srgb,var(--sp-panel) 72%,var(--sp-paper));
 }
 .setup-head{display:flex;gap:14px;align-items:center}
 .setup-avatar{
@@ -839,7 +867,7 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
 }
 .setup-head strong{
   font-family:"Noto Serif SC","Songti SC","STSong",serif;
-  font-size:18px;font-weight:600;letter-spacing:.04em;color:var(--ink);
+  font-size:19px;font-weight:600;letter-spacing:.04em;color:var(--ink);
 }
 .setup-head .who{
   font-size:11px;color:var(--ink-soft);letter-spacing:.1em;
@@ -888,7 +916,7 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
 /* ── 机友配置页（P2-c）。颜色只用上面票根的色值和站的变量，零新增色值 ── */
 /* 真号的卡：整张是一个链接，点进配置页 */
 a.setup-card{color:inherit;text-decoration:none;transition:border-color .15s,box-shadow .15s}
-a.setup-card:hover{border-color:var(--ink-soft);box-shadow:0 18px 44px rgba(48,70,82,.11)}
+a.setup-card:hover{border-color:var(--ink);box-shadow:3px 3px 0 var(--sp-shadow)}
 .setup-mono{
   width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-family:"Noto Serif SC","Songti SC","STSong",serif;font-size:24px;color:#fff;
@@ -916,7 +944,7 @@ a.setup-card:hover{border-color:var(--ink-soft);box-shadow:0 18px 44px rgba(48,7
 .rj-vendor-summary{
   min-height:44px;min-width:44px;padding:7px 2px;
   display:flex;align-items:center;justify-content:space-between;gap:12px;
-  cursor:pointer;color:var(--ink);font-size:12.5px;font-weight:650;
+  cursor:pointer;color:var(--ink);font-size:14px;font-weight:650;
 }
 .rj-vendor-summary::marker{content:""}
 .rj-vendor-summary::-webkit-details-marker{display:none}
@@ -927,7 +955,7 @@ a.setup-card:hover{border-color:var(--ink-soft);box-shadow:0 18px 44px rgba(48,7
 .rj-vendor-picks > .rj-picks{margin:1px 0 10px;padding-left:16px}
 .rj-picks{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
 button.fare-tag.rj-pick{
-  min-height:44px;min-width:44px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:550;
+  min-height:44px;min-width:44px;padding:6px 11px;font:inherit;font-size:14px;font-weight:550;
   cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px;text-align:left;
 }
 /* 没选：纸面白底、灰线；选中：票根原色 ＋ 加粗边 ＋ 对勾 */
@@ -953,9 +981,9 @@ button.fare-tag.rj-pick:hover{border-color:var(--ink-soft)}
 .pf-card{padding:22px 22px 20px}
 .pf-card .setup-body{padding:14px 0 0}
 .pf-bound{margin-top:22px}
-.pf-bound h3{font-size:16px}
+.pf-bound h3{font:600 19px/1.5 var(--sp-title)}
 .pf-others{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:14px}
-.pf-other{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px}
+.pf-other{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:14px 16px}
 .pf-other .setup-body{padding:12px 0 0}
 .pf-other-who{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
 .pf-other-who a,.pf-other-who .pf-other-handle{
@@ -968,10 +996,12 @@ button.fare-tag.rj-pick:hover{border-color:var(--ink-soft)}
 
 /* 键盘焦点清晰可见；尊重系统减弱动态设置 */
 a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,[tabindex]:focus-visible{
-  outline:2px solid var(--ink);outline-offset:2px;
+  outline:3px solid var(--sp-link);outline-offset:3px;
 }
+textarea:focus-visible,select:focus-visible{outline:3px solid var(--sp-link);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
+  .tile:hover,.kanread-strip:hover{transform:none!important}
 }
 
 /* ── 手机版：单栏（梅宝拍板：电脑为主、手机可开） ── */
@@ -985,15 +1015,19 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,[
   .account-entry{max-width:96px;padding:5px 11px;top:-10px}
   .hero{padding:30px 0 4px}
   .home-hero{grid-template-columns:1fr;gap:24px;padding:34px 0 12px}
+  .home-hero h2{font-size:36px;line-height:1.18}
+  .board-head h2,.kr-head h2{font-size:34px;line-height:1.22}
+  .masthead .slogan{font-size:15px}
   /* boards 顶栏横滑（梅宝 09-18 版面架构图：移动端 boards 横滑）
      负 margin 抵掉 .wrap 的 16px 侧padding，让首尾项能滑到屏幕边 */
   nav.boards{
     flex-wrap:nowrap;overflow-x:auto;gap:22px;
-    margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;
-    scrollbar-width:none;-ms-overflow-style:none;
+    margin-left:-16px;margin-right:-16px;padding:0 16px 5px;
+    scrollbar-width:thin;scrollbar-color:var(--sp-line) transparent;
     scroll-snap-type:x proximity;overscroll-behavior-x:contain;
   }
-  nav.boards::-webkit-scrollbar{display:none}
+  nav.boards::-webkit-scrollbar{height:4px}
+  nav.boards::-webkit-scrollbar-thumb{background:var(--sp-line);border-radius:2px}
   nav.boards a,nav.boards span.soon{
     flex:0 0 auto;white-space:nowrap;min-width:44px;justify-content:center;
     scroll-snap-align:start;
@@ -1007,7 +1041,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,[
   .kanread-strip{flex-direction:column;align-items:flex-start;gap:10px;padding:18px 18px}
   .ks-go{min-height:44px;display:inline-flex;align-items:center}
   .kanread-card{padding:22px 18px 18px}
-  .kanread-card h3{font-size:17px}
+  .tile h3,.card h3,.card.feature-title h3,.kanread-card h3,.kr-index-title{font-size:18px}
+  #krSingle>.kanread-card>h3,#krSingle>article>h3{font-size:22px}
   .kr-voice{padding:13px 14px}
   .kr-ops{flex-wrap:wrap;gap:10px}
   .kr-verified{margin-left:0}
@@ -1094,7 +1129,7 @@ td .rj-related{margin-top:6px;padding-top:4px;font-size:12px}
   padding:5px 13px;font-size:13px;font-weight:650;color:var(--ink);white-space:nowrap;
   border:1px solid var(--line);background:var(--card);text-decoration:none;
 }
-.card-entry:hover,.card-entry.on{border-color:var(--ink);background:#fff}
+.card-entry:hover,.card-entry.on{border-color:var(--ink);background:var(--card)}
 /* 账号页「我的名片」入口（刀 K2） */
 .rj-card-go{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 .rj-card-go .rj-btn{display:inline-flex;align-items:center;min-height:44px;text-decoration:none}
@@ -1201,15 +1236,15 @@ body.an-full .an-b{display:none}
 .bk-letter{margin:12px 0 0}
 .bk-card{cursor:auto;padding:16px 18px 12px;gap:6px;scroll-margin-top:72px}
 .bk-card:focus{outline:none}
-.bk-card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.bk-card:focus-visible{outline:3px solid var(--sp-link);outline-offset:3px}
 .bk-card.is-target{border:2px solid var(--ink)}
 .bk-here{display:flex;align-items:center;gap:4px;margin:0;font-size:13px;font-weight:650;color:var(--ink)}
 .bk-pin{color:var(--human)}
-.bk-name{margin:0;font:600 17px/1.5 "Noto Serif SC","Songti SC","STSong",serif}
+.bk-name{margin:0;font:600 19px/1.5 var(--sp-title)}
 .bk-en{margin:0;font-size:13px;color:var(--ink-soft)}
 .bk-aka{margin:0;font-size:13px;color:var(--ink)}
 .bk-card .chip{cursor:default;min-height:0;min-width:0}
-.bk-text{margin:2px 0 0;font-size:15px;line-height:1.8;color:var(--ink)}
+.bk-text{margin:2px 0 0;font-size:16px;line-height:1.85;color:var(--ink)}
 .bk-text:focus{outline:none}
 /* 两档门控 */
 .bk-b,.bk-f{font-style:normal}
@@ -1223,7 +1258,7 @@ body.bk-full .bk-b,.bk-card.is-full .bk-b,body.bk-full .bk-detail-row,.bk-card.i
 .bk-seen,.bk-rel{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px;margin:6px 0 0}
 .bk-link{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 /* 空结果 */
-.bk-empty{padding:8px 0 28px;font-size:14px;color:var(--ink)}
+.bk-empty{padding:8px 0 28px;font-size:15px;color:var(--ink)}
 .bk-starters{display:flex;flex-wrap:wrap;gap:0 14px}
 
 /* 长文手机阅读收口（2026-10-07）：不改双声信号的版面，只让 390px 上的字号、
@@ -1241,7 +1276,7 @@ body.bk-full .bk-b,.bk-card.is-full .bk-b,body.bk-full .bk-detail-row,.bk-card.i
 
   /* 守住长文的可读字号，同时把卡片内边距让回给正文。 */
   .rj-rules{padding:18px 16px}
-  .rj-rules h3{font-size:17px;line-height:1.55}
+  .rj-rules h3,.rj-panel h3,.pf-bound h3,.setup-head strong,.bk-name,.release-entry h3{font-size:18px;line-height:1.55}
   .rj-rules p{font-size:16px;line-height:1.9}
   .kanread-card{padding:18px 16px}
   .kr-index-item{padding:15px 16px 13px}

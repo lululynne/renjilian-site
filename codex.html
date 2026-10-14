@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>额度重置 · 第二人称</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20261014-paper">
 <style>
 :root{
   --ink:#202a33; --muted:#65717a; --faint:#87929a;
@@ -247,7 +247,7 @@ td.k{color:var(--ink);width:28%;font-weight:600}
 }
 @media (max-width:420px){.metric-row{grid-template-columns:1fr}.tier-word{font-size:42px}}
 </style>
-<link rel="stylesheet" href="reset-board.css?v=20261012-paper">
+<link rel="stylesheet" href="reset-board.css?v=20261014-paper">
 </head>
 <body class="reset-collection">
 
@@ -279,9 +279,9 @@ td.k{color:var(--ink);width:28%;font-weight:600}
   <section class="hero quota-hero">
     <p class="kicker">公开额度观察</p>
     <h1>先看官方，再决定要不要等</h1>
-    <p>这里分开追踪 <b>Codex</b> 与 <b>Claude Code</b> 的额外额度重置。公开公告与个人周期不是一回事：公告只认来源，自己的剩余额度只在自己的登录态里查看。</p>
+    <p>三张卡分别看 <b>GPT · Codex</b>、<b>Claude</b> 与 <b>Grok</b>。公开额外重置与个人周期分开：公告认来源，自己的剩余额度和恢复时间在自己的账户里查看。</p>
     <div class="hero-meta" aria-live="polite">
-      <span class="source-state" id="syncState">正在同步公开数据</span>
+      <span class="source-state" id="syncState">正在同步 Codex / Claude 公开数据</span>
       <span id="syncTime">页面尚未完成同步</span>
     </div>
   </section>
@@ -290,8 +290,8 @@ td.k{color:var(--ink);width:28%;font-weight:600}
     <a class="summary-card codex" href="#codex-board">
       <img class="reset-card-art" src="img/reset/codex-card.svg" width="400" height="250" alt="" aria-hidden="true">
       <div class="reset-card-copy">
-        <span class="reset-card-name">Codex</span>
-        <span class="reset-card-label">未来 24 小时 · 实验预测</span>
+        <span class="reset-card-name">GPT</span>
+        <span class="reset-card-label">Codex · 未来 24 小时实验预测</span>
         <strong id="codexSummary">读取中</strong>
         <small id="codexSummaryNote">等待公开预测源</small>
       </div>
@@ -305,15 +305,24 @@ td.k{color:var(--ink);width:28%;font-weight:600}
         <small id="claudeSummaryNote">没有官方重置公告时，默认按低处理</small>
       </div>
     </a>
+    <a class="summary-card grok" href="#grok-board">
+      <img class="reset-card-art" src="img/reset/grok-card.svg" width="400" height="250" alt="" aria-hidden="true">
+      <div class="reset-card-copy">
+        <span class="reset-card-name">Grok</span>
+        <span class="reset-card-label">SuperGrok 与 Bot · 分开查看</span>
+        <strong id="grokSummary">待核</strong>
+        <small>额外重置尚未接入实时追踪；个人周期以账户页面为准</small>
+      </div>
+    </a>
   </section>
 
   <div class="reset-desk">
   <section class="reset-model reset-model-codex" aria-labelledby="codexModelTitle">
   <div class="mark board-anchor" id="codex-board">
     <span class="orb oa"><i>C</i></span>
-    <div><h2 id="codexModelTitle">Codex</h2><div class="sub">公开预测 + Tibo 原帖核验</div></div>
+    <div><h2 id="codexModelTitle">GPT · Codex</h2><div class="sub">Codex 产品的公开预测 + Tibo 原帖核验</div></div>
   </div>
-  <p class="lede">Codex 的额外重置没有固定日历。这里读取公开预测模型与最近一次已确认公告；真正到账仍以 <b>@thsottiaux</b> 原帖和你自己的 Codex 用量页为准。</p>
+  <p class="lede">这张 GPT 家族卡观察的是 <b>Codex</b>，不代表 ChatGPT 全部产品的额度。这里读取公开预测模型与最近一次已确认公告；真正到账仍以 <b>@thsottiaux</b> 原帖和你自己的 Codex 用量页为准。</p>
 
   <section class="bench">
     <article class="p">
@@ -398,6 +407,28 @@ td.k{color:var(--ink);width:28%;font-weight:600}
 
   </section>
   </section>
+  <section class="reset-model reset-model-grok" aria-labelledby="grokModelTitle">
+    <div class="mark board-anchor" id="grok-board">
+      <span class="orb xai"><i>G</i></span>
+      <div><h2 id="grokModelTitle">Grok</h2><div class="sub">个人周额度与 Bot 独立额度，各看各的</div></div>
+    </div>
+    <p class="lede">SuperGrok 的个人周期可在 Settings → Usage 查看。Grok Bot 的额度另算，不能把两种产品的时间混在一起。本站暂未接入 Grok 的额外重置实时源，当前不提供概率或倒计时。</p>
+    <section class="bench">
+      <article class="p">
+        <p class="p-kicker">个人周期</p>
+        <h3>SuperGrok：回 Usage 看恢复时间</h3>
+        <p class="body">官方 FAQ 说明，付费产品共用周用量池，Settings → Usage 显示自己的周重置日期和时间。这里不读取你的账户，也不推算统一的全球重置时刻。</p>
+        <div class="action-row"><a class="action-link" href="https://grok.com/" target="_blank" rel="noopener noreferrer">打开 Grok，进入 Settings → Usage</a><a class="action-link secondary" href="https://docs.x.ai/grok/faq#how-do-supergroks-weekly-usage-limits-work" target="_blank" rel="noopener noreferrer">官方用量 FAQ</a></div>
+      </article>
+      <article class="p">
+        <p class="p-kicker">独立额度</p>
+        <h3>Grok Bot：与 Grok 订阅用量分开</h3>
+        <p class="body">官方公告明确 Bot 有自己的用量，不扣现有 Grok 与 Cursor 的额度。Bot 的具体恢复时间，请以 Bot 客户端的实际用量提示为准。</p>
+        <div class="action-row"><a class="action-link secondary" href="https://x.ai/news/grok-bot-more-plans" target="_blank" rel="noopener noreferrer">查看 Bot 独立额度公告</a></div>
+        <p class="note">资料核验：2026-10-14。以上是产品规则说明，不表示今天发生过额外重置。</p>
+      </article>
+    </section>
+  </section>
   </div>
 
   <section class="reset-personal-area" aria-labelledby="resetPersonalTitle">
@@ -460,13 +491,13 @@ td.k{color:var(--ink);width:28%;font-weight:600}
         <a href="https://code.claude.com/docs/en/statusline" target="_blank" rel="noopener noreferrer"><span>Claude Code 状态条能力</span><span>官方文档</span></a>
         <a href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work" target="_blank" rel="noopener noreferrer"><span>Claude 用量与长度限制</span><span>官方帮助</span></a>
       </div>
-      <p class="note">本页不连接 OpenAI 或 Anthropic 账户，不读取个人订阅数据。动态源失败或超过新鲜度门槛时，页面会明确降级，不把旧快照写成“今天”。</p>
+      <p class="note">本页不连接 OpenAI、Anthropic 或 Grok 账户，不读取个人订阅数据。Codex 与 Claude 动态源失败或超过新鲜度门槛时，页面会明确降级，不把旧快照写成“今天”；Grok 另行标明实时追踪尚未接入。</p>
     </article>
   </section>
 
   </section>
   <div class="foot">
-    <b>数据边界：</b>Codex 预测来自 codex-reset.com 公开 API；Claude 事件来自 claude-resets.com 对 @ClaudeDevs 的公开档案，并保留原帖链接。两者都不是 OpenAI 或 Anthropic 官方产品，额外重置只有原帖能够确认。<br>
+    <b>数据边界：</b>Codex 预测来自 codex-reset.com 公开 API；Claude 事件来自 claude-resets.com 对 @ClaudeDevs 的公开档案，并保留原帖链接。两者都不是 OpenAI 或 Anthropic 官方产品，额外重置只有原帖能够确认。Grok 目前仅列官方规则和查看入口，实时额外重置追踪、预测与消息提醒仍待接入。<br>
     <b>隐私边界：</b>个人倒计时仅保存在当前浏览器；页面不会上传账户档位、剩余额度、恢复时刻或终端记录。
     <div class="seal"><i></i>第二人称 · 公开额度观察 · 2026-09-03</div>
   </div>
@@ -487,7 +518,7 @@ td.k{color:var(--ink);width:28%;font-weight:600}
   </div>
 </footer>
 
-<script src="reset-board.js?v=20260903b"></script>
+<script src="reset-board.js?v=20261014-paper"></script>
 
 <!-- 顶栏右上角的小红点（刀 R）：只在这个浏览器登录过时才问一次 /api/me -->
 <script src="rj-config.js"></script>
