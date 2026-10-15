@@ -2209,6 +2209,286 @@
       "added_at": "2026-10-15",
       "last_verified": "2026-10-15",
       "status": "verified"
+    },
+    {
+      "id": "bk-prompt",
+      "zh": "提示词",
+      "en": "Prompt",
+      "aliases": [
+        "提示语"
+      ],
+      "tags": [
+        "概念",
+        "写作与办公"
+      ],
+      "brief": "交给模型的问题、任务与参考信息。",
+      "line": "提示词是这次交给模型处理的输入，例如问题、任务要求、参考资料或示例。它不一定只是一句命令，也不只是几个关键词；把目标、材料和希望的回答形式说清楚，通常更容易得到可用结果。",
+      "more": "例如“把下面的记录整理成三点，并附对应原句”同时交代了任务与输出要求。[1]\n\n提示词是输入本身；提示工程则是设计、试验和改进这些输入的做法。写得更长不代表效果一定更好，仍要对照实际回答调整。[1]",
+      "for_us": "给机机布置共同项目时，先说要完成什么、可用什么材料、怎样算完成。示例与这个表达建议由本站整理。",
+      "related": [
+        "bk-system-prompt",
+        "bk-context-window",
+        "bk-prompt-caching"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Google 官方文档：Prompt design strategies",
+          "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-system-prompt",
+      "zh": "系统提示词",
+      "en": "System prompt",
+      "aliases": [
+        "系统指令",
+        "system instruction"
+      ],
+      "tags": [
+        "概念",
+        "编程"
+      ],
+      "brief": "应用给模型的角色、规则或回答方式说明。",
+      "line": "系统提示词是一类用来说明模型角色、任务边界和回答方式的指令，通常由应用设置。它与这次聊天里提出的问题有不同用途；各家接口的角色与优先级规则不同，不能把某一种接口字段当成所有产品的通用规则。",
+      "more": "例如应用可以要求用某种格式回答，或围绕指定任务工作。[1]\n\n系统提示词不能代替登录和权限检查，也不应装入密码或连接密钥。能看到一段提示词，不等于获得了应用权限；真正的权限要由应用代码检查。[2]",
+      "for_us": "分清“应用设定的规则”“这次交代的任务”和“供阅读的材料”，有助于理解机机为什么会采用某种回答方式。",
+      "related": [
+        "bk-prompt",
+        "bk-prompt-injection",
+        "bk-context-window"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Google 官方文档：System instructions",
+          "url": "https://ai.google.dev/gemini-api/docs/text-generation#system-instructions"
+        },
+        {
+          "name": "OWASP：System Prompt Leakage",
+          "url": "https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-temperature",
+      "zh": "温度",
+      "en": "Temperature",
+      "aliases": [
+        "采样温度"
+      ],
+      "tags": [
+        "概念",
+        "模型"
+      ],
+      "brief": "部分生成方式中，调节候选词概率分布的参数。",
+      "line": "温度是部分模型生成方式中的采样参数，用来调整下一个 token 的概率分布。通常调低会让选择更集中，调高会让选择更分散；它不是智力或事实正确率旋钮，而且有些模型不支持自定义温度。",
+      "more": "温度作用于采样概率，不能简单解释成“越高越聪明”。具体支持范围、默认值和是否生效，要看所用模型与接口文档；有些模式会忽略这个设置。[1][2]",
+      "for_us": "同一段话写得变化多或变化少，不足以证明机机理解得更深。重要结论仍应回到材料核对，这是本站建议。",
+      "related": [
+        "bk-token",
+        "bk-prompt",
+        "bk-effort",
+        "bk-hallucination"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Hugging Face 官方文档：GenerationConfig temperature",
+          "url": "https://huggingface.co/docs/transformers/main/en/main_classes/text_generation#transformers.GenerationConfig.temperature"
+        },
+        {
+          "name": "Google 官方文档：Text generation",
+          "url": "https://ai.google.dev/gemini-api/docs/text-generation"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-hallucination",
+      "zh": "幻觉",
+      "en": "Hallucination",
+      "aliases": [
+        "AI幻觉",
+        "模型幻觉"
+      ],
+      "tags": [
+        "概念"
+      ],
+      "brief": "模型生成了事实错误或与给定材料不一致的内容。",
+      "line": "AI 领域的“幻觉”指模型生成了不正确、缺乏依据，或与给定材料不一致的内容。回答可能写得很顺、语气很确定，但流畅和自信都不能证明它是真的；这也不等同于已经证明模型在故意说谎。",
+      "more": "允许模型承认不确定、要求它指出原文和来源，有助于核实回答。引用本身也需要打开检查，不能只看见一串链接就当结论成立。[1][2]",
+      "for_us": "核对共同项目的进度时，可以问清“对应哪份文件、哪次测试、哪个线上结果”。这些是本站给出的具体核对例子。",
+      "related": [
+        "bk-rag",
+        "bk-structured-outputs",
+        "bk-effort"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Anthropic 官方文档：Reduce hallucinations",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        },
+        {
+          "name": "IBM：What are AI hallucinations?",
+          "url": "https://www.ibm.com/think/topics/ai-hallucinations"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-function-calling",
+      "zh": "函数调用",
+      "en": "Function calling",
+      "aliases": [
+        "函数呼叫"
+      ],
+      "tags": [
+        "概念",
+        "编程"
+      ],
+      "brief": "模型提出函数名与参数，再由应用决定如何执行。",
+      "line": "函数调用是一种让模型以结构化数据提出函数名及参数的机制，例如查询天气的地点。实际执行由应用代码或平台的工具运行环境负责，再把结果交回模型；写出了调用请求，并不等于操作已经成功完成。",
+      "more": "流程通常是：声明可用函数，模型返回函数名和参数，应用或平台执行，再把结果交回模型继续回答。[1][3]\n\n它常归在工具调用的功能里；MCP 则是连接工具和资料的一种协议，两者各自解决不同层面的问题。[2]",
+      "for_us": "机机说“准备查询”时，可以继续看是否真的发出调用、拿到结果。函数执行成功与最终答对问题也需要分别核对。",
+      "related": [
+        "bk-mcp",
+        "bk-agent",
+        "bk-structured-outputs"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Google 官方文档：Function calling",
+          "url": "https://ai.google.dev/gemini-api/docs/function-calling"
+        },
+        {
+          "name": "MCP 官方文档：Tools",
+          "url": "https://modelcontextprotocol.io/specification/2025-11-25/server/tools"
+        },
+        {
+          "name": "Anthropic 官方文档：工具执行的两种位置",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-vector-database",
+      "zh": "向量数据库",
+      "en": "Vector database",
+      "aliases": [
+        "向量库"
+      ],
+      "tags": [
+        "概念",
+        "记忆",
+        "编程"
+      ],
+      "brief": "保存向量，并按相似程度检索的数据库。",
+      "line": "向量数据库是保存数字向量并支持按相似程度检索的数据库。嵌入模型负责生成向量，数据库负责存储和检索；检索结果可以指回原文件，它不是生成答案的模型，也不是 RAG 整套流程。",
+      "more": "向量检索可用于语义搜索、推荐和分类。具体实现可以支持精确搜索、近似搜索或两者；结果相似并不等于事实相同。[1][2]\n\n需要核实某段内容时，仍应查看检索结果指向的原文。",
+      "for_us": "机机找到“相关旧内容”之后，继续确认原文的位置和时间，避免把相似片段当成同一件事。这是本站建议。",
+      "related": [
+        "bk-embedding",
+        "bk-rag",
+        "bk-hallucination"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Cloudflare 官方文档：Vector databases",
+          "url": "https://developers.cloudflare.com/vectorize/reference/what-is-a-vector-database/"
+        },
+        {
+          "name": "pgvector 官方仓库：精确与近似相似搜索",
+          "url": "https://github.com/pgvector/pgvector"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-fine-tuning",
+      "zh": "微调",
+      "en": "Fine-tuning",
+      "aliases": [
+        "模型微调",
+        "fine-tune"
+      ],
+      "tags": [
+        "概念",
+        "编程"
+      ],
+      "brief": "在已有模型基础上继续训练，调整模型参数。",
+      "line": "微调是在预训练模型基础上，用选定数据继续训练，让模型适应某类任务或表达方式。它会调整模型参数，和只改提示词、或检索资料后再回答的 RAG 不同；这些方法也可以组合使用。",
+      "more": "有全量微调，也有仅训练少量参数的高效微调。LoRA 是高效微调方法之一，不是所有微调的别名。[1][2]\n\n是否适合某个项目，要看数据、目标和评估结果；本词条不代表具体产品都开放了微调。",
+      "for_us": "希望机机按某种格式写作时，可以先把目标和评估样例说清楚，再判断是否需要训练；不必把每次改提示词都叫微调。",
+      "related": [
+        "bk-prompt",
+        "bk-rag",
+        "bk-open-source"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Hugging Face 官方文档：Fine-tuning",
+          "url": "https://huggingface.co/docs/transformers/training"
+        },
+        {
+          "name": "Hugging Face 官方文档：PEFT",
+          "url": "https://huggingface.co/docs/peft/index"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-prompt-injection",
+      "zh": "提示词注入",
+      "en": "Prompt Injection",
+      "aliases": [
+        "提示注入"
+      ],
+      "tags": [
+        "概念",
+        "编程"
+      ],
+      "brief": "借输入或外部材料，诱导模型偏离原任务的攻击。",
+      "line": "提示词注入是把有操纵意图的内容放进模型会读取的输入，诱导它偏离原任务。它可能直接出现在输入里，也可能藏在网页、邮件或文件中；阅读到这些字，不代表应用就该照着它们行动。",
+      "more": "间接注入的关键风险，是把外部资料中的内容误当成有权发令的指令。[1]\n\n区分资料与指令、限制工具权限、检查输出都有帮助；单靠一段系统提示词或加标签，不能保证杜绝所有注入。[1]",
+      "for_us": "让机机读陌生来信或网页时，先分清是谁在交代任务、谁只是被阅读的内容。这是本站的阅读提醒。",
+      "related": [
+        "bk-system-prompt",
+        "bk-function-calling",
+        "bk-mcp"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "OWASP GenAI：Prompt Injection",
+          "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
     }
   ]
 }
