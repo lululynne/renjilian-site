@@ -67,9 +67,18 @@ READER_TABLES: dict[str, tuple[str, ...]] = {
                                      "提醒档位", "不收 Grok 或 Cursor 账号", "退订", "13 个周周期"),
     "reset_reminder_cancellations": ("最小取消墓碑", "feed 哈希", "事件编号", "删除期限",
                                      "不含产品、时间、时区、提醒档位和管理码哈希", "14 天后删除"),
+    # N20：人类 MCP、频道偏好、Web Push 设备与诚实送达账。
+    "human_update_tokens": ("机友 MCP 钥匙", "SHA-256 哈希", "权限范围", "180 天", "明文只显示一次"),
+    "human_update_preferences": ("三个频道开关", "偏好版本", "默认都关闭"),
+    "human_push_subscriptions": ("推送设备", "endpoint 只另存一份 SHA-256 哈希", "加密保存", "p256dh", "auth", "密钥版本"),
+    "update_events": ("已经公开的事件", "公开标题", "站内路由", "撤下状态"),
+    "event_fanout_jobs": ("内部扇出账", "账号内部编号游标", "租约", "重试"),
+    "human_update_inbox": ("更新收件账", "看过的时间", "保留 90 天"),
+    "push_deliveries": ("逐设备投递账", "推送服务接收", "显示调用完成", "点击", "库里只存回执哈希",
+                        "错误类别"),
 }
 # 这些表不存任何读者数据：全站开关、表结构版本
-NO_READER_DATA = {"site_flags", "meta", "mail_write_barrier"}
+NO_READER_DATA = {"site_flags", "meta", "mail_write_barrier", "update_source_state"}
 # accounts 上后加的列、以及几列关键字段，也要各有一句
 COLUMN_PHRASES = {
     "recovery_hash": "慢哈希",
@@ -89,6 +98,8 @@ SNAPSHOT_TABLES = {
     "media_delete_jobs", "meta", "notifications", "profile_tags", "rate_events", "recovery_operations",
     "recovery_preparations", "recovery_requests", "reports", "reset_reminder_cancellations",
     "reset_reminder_subscriptions", "sessions", "site_flags",
+    "event_fanout_jobs", "human_push_subscriptions", "human_update_inbox", "human_update_preferences",
+    "human_update_tokens", "push_deliveries", "update_events", "update_source_state",
 }
 
 

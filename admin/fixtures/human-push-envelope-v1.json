@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "max_serialized_bytes": 3993,
+  "allowed_route_keys": [
+    "account_updates",
+    "card",
+    "kanread",
+    "pulse",
+    "reset_claude",
+    "reset_codex",
+    "reset_grok"
+  ],
+  "allowed_fields": [
+    "version",
+    "event_id",
+    "kind",
+    "tag",
+    "title",
+    "body",
+    "route_key",
+    "route_ref",
+    "display_receipt",
+    "click_receipt"
+  ],
+  "sample": {
+    "version": 1,
+    "event_id": "ue_contract_example",
+    "kind": "kanread_published",
+    "tag": "ue_contract_example",
+    "title": "刊读有一篇新文章",
+    "body": "已经公开，可以打开阅读。",
+    "route_key": "kanread",
+    "route_ref": "contract-example",
+    "display_receipt": "rj_pd_contract_example_only",
+    "click_receipt": "rj_pc_contract_example_only"
+  }
+}
