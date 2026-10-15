@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "revision": 2,
+  "revision": 3,
   "events": [
     {
       "id": "u8-kanread-20261015",
-      "revision": 1,
+      "revision": 2,
       "channel": "kanread_updates",
       "kind": "kanread_published",
       "route_key": "kanread",
@@ -12,12 +12,12 @@
       "title": "U8 生产合成验收 · 刊读",
       "body": "用于核验第二人称多设备通知；验收后撤回并清理。",
       "occurred_at_ms": 1792086027555,
-      "tombstone": false,
-      "payload_sha256": "6627ba764c7429a5910d41040b430a5f0daa91b8b6616a8b52cbef38e15f0a42"
+      "tombstone": true,
+      "payload_sha256": "fb007a2b3ad5098fd4e2bcab7242605e37e7006adf4a8bd50fc4908918870c71"
     },
     {
       "id": "u8-reset-codex-20261015",
-      "revision": 1,
+      "revision": 2,
       "channel": "reset_updates",
       "kind": "reset_published",
       "route_key": "reset_codex",
@@ -25,8 +25,8 @@
       "title": "U8 生产合成验收 · 公共重置",
       "body": "用于核验第二人称多设备通知；验收后撤回并清理。",
       "occurred_at_ms": 1792086027556,
-      "tombstone": false,
-      "payload_sha256": "d3e30950ae6937f37baef40bc565874c23356e69643ffd07d9dc318c3a852332"
+      "tombstone": true,
+      "payload_sha256": "c16257b1351019baea7c38019d02b7c2cebff15efcea4aebc3dddd344fc0e71f"
     }
   ]
 }
