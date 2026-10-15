@@ -46,8 +46,20 @@ class SecondPersonShellTests(unittest.TestCase):
                 html = read(page)
                 self.assertIn("<h1>第二人称</h1>", html)
                 self.assertIn("SECOND PERSON", html)
+                self.assertEqual(html.count('class="site-beta"'), 1)
+                self.assertIn('aria-label="试营业">beta</span>', html)
                 self.assertNotIn("人机恋日报", html)
                 self.assertNotIn("名字待定", html)
+
+    def test_beta_badge_reaches_the_mailbox_and_avatar_shells(self) -> None:
+        for page in ("mailbox.html", "avatar.html"):
+            with self.subTest(page=page):
+                html = read(page)
+                self.assertEqual(html.count('class="site-beta"'), 1)
+                self.assertIn('aria-label="试营业">beta</span>', html)
+        css = read("style.css")
+        self.assertIn(".site-beta{", css)
+        self.assertIn(".avatar-brand .site-beta", css)
 
     def test_nav_only_real_routes_and_no_fake_entries(self) -> None:
         for page in PAGES:
@@ -180,7 +192,7 @@ class SecondPersonShellTests(unittest.TestCase):
         for page in PAGES + ("mailbox.html",):
             with self.subTest(page=page):
                 links = re.findall(r'<link rel="stylesheet" href="(style\.css(?:\?v=[^"]+)?)">', read(page))
-                self.assertEqual(links, ["style.css?v=20261015-paper"])
+                self.assertEqual(links, ["style.css?v=20261015-r0"])
 
     def test_games_board_survival(self) -> None:
         html = read("games.html")
@@ -197,6 +209,20 @@ class SecondPersonShellTests(unittest.TestCase):
         js = read("baibao.js")
         self.assertIn("data/mcps.json", js)
         self.assertIn("treasure-grid", html + js)
+        self.assertIn('id="renji-access"', html)
+        self.assertIn("https://mcp.renji.love/mcp", html)
+        self.assertIn("https://write.mcp.renji.love/mcp", html)
+        self.assertIn("GitHub Pages", html)
+        self.assertIn("Cloudflare Workers", html)
+        self.assertIn("Cloudflare D1", html)
+        self.assertIn("私有收件 MCP", html)
+        self.assertIn("data-guide-copy", html + js)
+
+    def test_live_backend_comments_do_not_claim_production_is_unwired(self) -> None:
+        self.assertNotIn("线上现在就是这个状态", read("rj-config.js"))
+        self.assertNotIn("线上现在就是这个状态", read("comments.js"))
+        self.assertNotIn("后端没接上时显示", read("account.html"))
+        self.assertIn('var PROD_API = "https://api.renji.love";', read("rj-config.js"))
 
 
 if __name__ == "__main__":

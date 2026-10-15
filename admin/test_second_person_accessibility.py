@@ -19,6 +19,12 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 VIEWPORT_390 = {"width": 390, "height": 844}
+BETA_PAGES = (
+    "index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html",
+    "cost.html", "nianlun.html", "ainotes.html", "changelog.html", "account.html",
+    "profile.html", "rules.html", "privacy.html", "card.html", "card-edit.html",
+    "mailbox.html", "avatar.html",
+)
 
 # 所有可见、可用、指针可点的目标 ≥44×44；单选按关联 label 盒判定
 TOUCH_JS = """
@@ -111,6 +117,23 @@ class AccessibilityClosureTests(unittest.TestCase):
                 return True
             page.keyboard.press("Tab")
         return page.evaluate(predicate_js)
+
+    def test_beta_badge_stays_visible_without_mobile_overflow(self) -> None:
+        for name in BETA_PAGES:
+            with self.subTest(page=name):
+                context, page, errors = self.open_page(name)
+                try:
+                    badge = page.locator(".site-beta")
+                    self.assertEqual(badge.count(), 1)
+                    self.assertTrue(badge.is_visible())
+                    box = badge.bounding_box()
+                    self.assertIsNotNone(box)
+                    self.assertGreaterEqual(box["x"], 0)
+                    self.assertLessEqual(box["x"] + box["width"], 390)
+                    self.assert_widths_390(page)
+                    self.assertEqual(errors, [])
+                finally:
+                    context.close()
 
     # ── 语义：不存在假 span 控件 ──
     def test_no_fake_span_controls(self) -> None:
@@ -284,6 +307,9 @@ class AccessibilityClosureTests(unittest.TestCase):
             self.assertGreaterEqual(box["height"], 44)
             self.assert_widths_390(page)
             self.assert_touch_ok(page)
+            self.assertEqual(page.locator(".site-beta").count(), 1)
+            self.assertTrue(page.locator(".site-beta").is_visible())
+            self.assertEqual(page.locator("#renji-access .renji-access-row").count(), 3)
             bring = page.locator('.treasure-card [data-action="bring"]').first
             bring.click()
             panel = page.locator('.treasure-card [data-panel="bring"]').first

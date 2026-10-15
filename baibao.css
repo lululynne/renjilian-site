@@ -42,6 +42,49 @@ body.treasure-page{
   background:var(--card);font-size:15px;line-height:1.75;color:var(--ink-soft);padding:18px 20px;
 }
 .treasure-note strong{color:var(--ink);white-space:nowrap}
+.renji-access{
+  display:grid;grid-template-columns:minmax(260px,.48fr) minmax(0,1.52fr);
+  margin:8px 0 24px;border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);
+}
+.renji-access-intro{padding:26px 24px 26px 0;border-right:1px solid var(--line)}
+.renji-access-intro>p:first-child{
+  margin:0 0 7px;color:var(--sp-brand-text);font-size:12px;font-weight:700;
+}
+.renji-access-intro h3{
+  margin:0;font-family:var(--sp-title);font-size:clamp(1.65rem,3vw,2rem);font-weight:600;line-height:1.28;
+}
+.renji-access-intro h3+p{margin:13px 0 17px;color:var(--ink-soft);font-size:15px;line-height:1.8}
+.renji-access-intro a,
+.renji-access-row>a{
+  min-height:44px;display:inline-flex;align-items:center;color:var(--sp-link);
+  text-decoration:underline;text-underline-offset:3px;font-weight:700;
+}
+.renji-access-ledger{min-width:0;padding-left:24px}
+.renji-access-row{
+  display:grid;grid-template-columns:minmax(138px,.32fr) minmax(220px,1fr) minmax(220px,.74fr);
+  gap:18px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);
+}
+.renji-access-row>div:first-child strong{display:block;font:600 17px/1.35 var(--sp-title)}
+.renji-access-row>div:first-child span{display:block;margin-top:3px;color:var(--ink-soft);font-size:12px;line-height:1.45}
+.renji-access-row>p{margin:0;color:var(--ink-soft);font-size:14px;line-height:1.75}
+.renji-access-endpoint{min-width:0;display:grid;gap:8px;justify-items:start}
+.renji-access-endpoint code{
+  max-width:100%;padding:3px 6px;background:var(--card-block);border:1px solid var(--line);
+  color:var(--ink);font:600 12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;
+  overflow-wrap:anywhere;
+}
+.renji-access-endpoint button{
+  min-height:44px;padding:7px 12px;border:1px solid var(--ink);border-radius:6px;
+  background:var(--card);color:var(--ink);font:700 13px/1.25 inherit;cursor:pointer;
+}
+.renji-access-hosting,.renji-access-boundary{margin:0;padding:15px 0;font-size:13px;line-height:1.75;color:var(--ink-soft)}
+.renji-access-hosting{border-bottom:1px dashed var(--line)}
+.renji-access-hosting strong,.renji-access-boundary strong{color:var(--ink)}
+.renji-access-hosting a{
+  min-height:44px;display:inline-flex;align-items:center;color:var(--sp-link);
+  text-decoration:underline;text-underline-offset:3px;
+}
+.renji-access-boundary{padding-bottom:18px}
 .treasure-toolbar{
   display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:22px 0 4px;
 }
@@ -113,6 +156,11 @@ body.treasure-page{
   .treasure-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .treasure-hero{grid-template-columns:1fr}
   .treasure-counts{max-width:520px}
+  .renji-access{grid-template-columns:1fr}
+  .renji-access-intro{padding-right:0;border-right:0;border-bottom:1px solid var(--line)}
+  .renji-access-ledger{padding-left:0}
+  .renji-access-row{grid-template-columns:minmax(138px,.35fr) minmax(0,1fr)}
+  .renji-access-row> :last-child{grid-column:2}
 }
 @media (max-width:620px){
   .treasure-hero{padding-top:32px;gap:18px}
@@ -125,6 +173,10 @@ body.treasure-page{
   .treasure-filters button{flex:0 0 auto}
   .treasure-grid{grid-template-columns:1fr;padding-bottom:48px}
   .treasure-card{min-height:0}
+  .renji-access-intro{padding:22px 0 20px}
+  .renji-access-row{grid-template-columns:1fr;gap:8px;padding:16px 0}
+  .renji-access-row> :last-child{grid-column:auto}
+  .renji-access-endpoint{width:100%}
 }
 
 /* ── v2 · 第二人称「安装与配置 / 在线体验」扩展（2026-08-31 Phase 1）── */

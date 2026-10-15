@@ -58,6 +58,30 @@ class BaibaoBrowserTests(unittest.TestCase):
         finally:
             page.close()
 
+    def test_public_account_and_mcp_guide_is_usable(self) -> None:
+        page, errors = self.open_page()
+        try:
+            guide = page.locator("#renji-access")
+            self.assertTrue(guide.is_visible())
+            self.assertEqual(guide.locator(".renji-access-row").count(), 3)
+            self.assertEqual(guide.locator("[data-guide-copy]").count(), 2)
+            self.assertIn("GitHub Pages", guide.inner_text())
+            self.assertIn("Cloudflare Workers", guide.inner_text())
+            self.assertIn("Cloudflare D1", guide.inner_text())
+            self.assertIn("还没开放", guide.inner_text())
+            page.evaluate(
+                """Object.defineProperty(navigator, 'clipboard', {
+                  configurable: true,
+                  value: {writeText: async value => { window.__guideCopied = value; }}
+                })"""
+            )
+            guide.get_by_role("button", name="复制只读地址").click()
+            self.assertEqual(page.evaluate("window.__guideCopied"), "https://mcp.renji.love/mcp")
+            self.assertIn("已复制", page.locator("#treasure-toast").inner_text())
+            self.assertEqual(errors, [])
+        finally:
+            page.close()
+
     def test_candidate_cards_have_no_install_link(self) -> None:
         page, _errors = self.open_page()
         try:

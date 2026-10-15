@@ -1,11 +1,10 @@
 /* 全站唯一的后端地址配置。
 
-   apiBase 默认是空字符串 —— 意思是「这个站没有后端」。
-   空的时候，评论区保持原来那句占位文案，账号页显示「还没开」，页面一切照旧、不报错。
-   线上现在就是这个状态，所以这个分支合进去也不会弄坏线上。
+   apiBase 默认是空字符串，供本机静态预览保持无后端形态。
+   空的时候，评论区保留占位文案，账号页显示离线状态，页面不报错。
 
    本机联调：把下面改成 "http://127.0.0.1:8798"，或者在 localhost 上带 ?api=… 参数。
-   将来上线：改成 "https://api.renji.love"（同站不同源，会话 cookie 走 SameSite=Lax）。 */
+   线上 renji.love 已指向 "https://api.renji.love"（同站不同源，会话 cookie 走 SameSite=Lax）。 */
 window.RJ_CONFIG = (function () {
   "use strict";
   // 2026-09-25 上线：站在 renji.love，API 在 api.renji.love（同站不同源，SameSite=Lax）。

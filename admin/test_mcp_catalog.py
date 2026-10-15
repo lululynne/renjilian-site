@@ -71,7 +71,7 @@ class McpCatalogContractTests(unittest.TestCase):
     def test_public_assets_reference_catalog(self) -> None:
         html = (ROOT / "baibao.html").read_text(encoding="utf-8")
         script = (ROOT / "baibao.js").read_text(encoding="utf-8")
-        self.assertIn('src="baibao.js"', html)
+        self.assertIn('src="baibao.js?v=20261015-r0"', html)
         self.assertIn("data/mcps.json", script)
         self.assertIn("人机百宝箱", html)
         self.assertIn("MCP / Skills", html)
@@ -119,7 +119,7 @@ class McpCatalogContractTests(unittest.TestCase):
         self.assertNotIn("planned-renji-love", by_id)
         item = {i["id"]: i for i in self.items}["renji-love-mcp"]
         self.assertEqual(item["status"], "verified")
-        self.assertEqual(item["last_verified"], "2026-09-19")
+        self.assertEqual(item["last_verified"], "2026-10-15")
         self.assertEqual(item["access_mode"], "direct")
         self.assertIn(
             "https://mcp.renji.love/mcp",
@@ -132,6 +132,8 @@ class McpCatalogContractTests(unittest.TestCase):
         self.assertFalse(generic["needs_secret"])
         self.assertFalse(item["risks"]["secrets"])
         self.assertFalse(item["risks"]["external_write"])
+        self.assertIn("十二个工具", item["summary"])
+        self.assertIn("十二个工具", item["verdict"])
         requirements = " ".join(
             req for inst in item["installations"] for req in inst.get("requirements", [])
         )

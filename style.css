@@ -74,6 +74,14 @@ header.site{
   font-family:var(--sp-title);
   font-size:32px;letter-spacing:.08em;font-weight:600;line-height:1.15;
 }
+.site-beta{
+  display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;
+  padding:2px 5px 3px;border:1px solid var(--sp-caution);border-radius:2px;
+  background:color-mix(in srgb,var(--sp-ochre) 28%,var(--sp-panel));color:var(--sp-caution);
+  font:700 10px/1 "Avenir Next","Helvetica Neue",Arial,sans-serif;letter-spacing:.02em;
+}
+.masthead > .site-beta{margin-left:-10px;margin-right:-4px;transform:translateY(-11px) rotate(-4deg)}
+.avatar-brand .site-beta{margin-left:3px;transform:translateY(-5px) rotate(-4deg)}
 .masthead .masthead-en{
   font:600 12px/1 "Avenir Next","Helvetica Neue",Arial,sans-serif;
   letter-spacing:.2em;color:var(--sp-brand-text);
@@ -1011,6 +1019,9 @@ textarea:focus-visible,select:focus-visible{outline:3px solid var(--sp-link);out
   .wrap{padding:0 16px}
   .grid,.cards{grid-template-columns:1fr}
   .masthead h1{font-size:22px}
+  .masthead > .site-beta{
+    position:absolute;left:96px;top:-6px;margin:0;transform:rotate(-4deg);z-index:1;
+  }
   .masthead{padding-right:104px}
   .account-entry{max-width:96px;padding:5px 11px;top:-10px}
   .hero{padding:30px 0 4px}

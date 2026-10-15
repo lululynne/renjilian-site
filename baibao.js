@@ -39,6 +39,7 @@
   const error = document.getElementById("treasure-error");
   const queryInput = document.getElementById("treasure-query");
   const toast = document.getElementById("treasure-toast");
+  const accessGuide = document.getElementById("renji-access");
 
   function showToast(message) {
     if (!toast) return;
@@ -46,6 +47,15 @@
     toast.classList.add("show");
     window.clearTimeout(showToast.timer);
     showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 1600);
+  }
+
+  async function copyToClipboard(value) {
+    try {
+      await navigator.clipboard.writeText(value);
+      showToast("已复制，粘贴到你的客户端里用");
+    } catch (_error) {
+      showToast("浏览器没有开放剪贴板，请手动选择地址或命令复制");
+    }
   }
 
   function node(tag, className, text) {
@@ -501,12 +511,7 @@
 
     const copyButton = event.target.closest("[data-copy]");
     if (copyButton) {
-      try {
-        await navigator.clipboard.writeText(copyButton.dataset.copy);
-        showToast("已复制，粘贴到你的客户端里用");
-      } catch (_error) {
-        showToast("浏览器没有开放剪贴板，请手动选择命令复制");
-      }
+      await copyToClipboard(copyButton.dataset.copy);
       return;
     }
 
@@ -532,6 +537,14 @@
       }
     }
   });
+
+  if (accessGuide) {
+    accessGuide.addEventListener("click", async (event) => {
+      const copyButton = event.target.closest("[data-guide-copy]");
+      if (!copyButton) return;
+      await copyToClipboard(copyButton.dataset.guideCopy);
+    });
+  }
 
   queryInput.addEventListener("input", () => {
     state.query = queryInput.value.trim().toLocaleLowerCase("zh-CN");
