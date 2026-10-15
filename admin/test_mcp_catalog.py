@@ -154,7 +154,7 @@ class McpCatalogContractTests(unittest.TestCase):
         by_id = {item["id"]: item for item in self.items}
         self.assertEqual(by_id["renji-love-mcp"]["license_label"], "自建 · 未开源")
         labelled = {item["id"] for item in self.items if "license_label" in item}
-        self.assertEqual(labelled, {"renji-love-mcp"}, "只有我们自己那条能用这个字段，其它卡保持原样")
+        self.assertEqual(labelled, {"renji-love-mcp", "renji-human-updates-mcp"}, "只有我们自己的入口能用这个字段，其它卡保持原样")
 
         script = (ROOT / "baibao.js").read_text(encoding="utf-8")
         self.assertIn("item.license_label", script, "渲染必须读这个字段")

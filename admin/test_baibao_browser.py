@@ -46,8 +46,8 @@ class BaibaoBrowserTests(unittest.TestCase):
     def test_catalog_renders_counts_and_filters(self) -> None:
         page, errors = self.open_page()
         try:
-            self.assertEqual(page.locator(".treasure-card").count(), 8)
-            self.assertEqual(page.locator("#count-all").inner_text(), "8")
+            self.assertEqual(page.locator(".treasure-card").count(), 9)
+            self.assertEqual(page.locator("#count-all").inner_text(), "9")
             page.get_by_role("button", name="互动娱乐", exact=True).click()
             self.assertEqual(page.locator(".treasure-card").count(), 4)
             page.get_by_role("button", name="全部", exact=True).click()
@@ -63,12 +63,12 @@ class BaibaoBrowserTests(unittest.TestCase):
         try:
             guide = page.locator("#renji-access")
             self.assertTrue(guide.is_visible())
-            self.assertEqual(guide.locator(".renji-access-row").count(), 3)
-            self.assertEqual(guide.locator("[data-guide-copy]").count(), 2)
+            self.assertEqual(guide.locator(".renji-access-row").count(), 4)
+            self.assertEqual(guide.locator("[data-guide-copy]").count(), 3)
             self.assertIn("GitHub Pages", guide.inner_text())
             self.assertIn("Cloudflare Workers", guide.inner_text())
             self.assertIn("Cloudflare D1", guide.inner_text())
-            self.assertIn("还没开放", guide.inner_text())
+            self.assertIn("仍未开放", guide.inner_text())
             page.evaluate(
                 """Object.defineProperty(navigator, 'clipboard', {
                   configurable: true,
@@ -78,6 +78,8 @@ class BaibaoBrowserTests(unittest.TestCase):
             guide.get_by_role("button", name="复制只读地址").click()
             self.assertEqual(page.evaluate("window.__guideCopied"), "https://mcp.renji.love/mcp")
             self.assertIn("已复制", page.locator("#treasure-toast").inner_text())
+            guide.get_by_role("button", name="复制机友更新地址").click()
+            self.assertEqual(page.evaluate("window.__guideCopied"), "https://human.mcp.renji.love/mcp")
             self.assertEqual(errors, [])
         finally:
             page.close()
@@ -87,8 +89,8 @@ class BaibaoBrowserTests(unittest.TestCase):
         try:
             candidates = page.locator('.treasure-status[data-status="candidate"]')
             self.assertEqual(candidates.count(), 2)
-            # 卡片链接 10 条；v8 起页面头部另有一条「捏一个头像」正式入口。
-            self.assertEqual(page.locator(".treasure-link").count(), 11)
+            # 卡片链接 13 条；v8 起页面头部另有一条「捏一个头像」正式入口。
+            self.assertEqual(page.locator(".treasure-link").count(), 14)
             self.assertEqual(page.get_by_text("来源尚未核验，暂不提供安装入口").count(), 3)
         finally:
             page.close()
@@ -98,7 +100,7 @@ class BaibaoBrowserTests(unittest.TestCase):
         try:
             button = page.get_by_role("button", name="关键动作确认", exact=True)
             button.click()
-            self.assertEqual(page.locator(".treasure-card").count(), 5)
+            self.assertEqual(page.locator(".treasure-card").count(), 6)
             self.assertEqual(button.get_attribute("aria-pressed"), "true")
             self.assertEqual(
                 page.get_by_role("button", name="全部方式", exact=True).get_attribute("aria-pressed"),
@@ -111,11 +113,13 @@ class BaibaoBrowserTests(unittest.TestCase):
     def test_verified_cards_have_dual_actions_candidates_have_none(self) -> None:
         page, errors = self.open_page()
         try:
-            self.assertEqual(page.locator(".treasure-actions").count(), 4)
-            self.assertEqual(page.locator('[data-action="bring"]').count(), 4)
-            self.assertEqual(page.locator('[data-action="try"]').count(), 4)
+            self.assertEqual(page.locator(".treasure-actions").count(), 5)
+            self.assertEqual(page.locator('[data-action="bring"]').count(), 5)
+            self.assertEqual(page.locator('[data-action="try"]').count(), 5)
             renji = page.locator('.treasure-card[data-card-id="renji-love-mcp"]')
             self.assertEqual(renji.locator("[data-action]").count(), 2)
+            human_updates = page.locator('.treasure-card[data-card-id="renji-human-updates-mcp"]')
+            self.assertEqual(human_updates.locator("[data-action]").count(), 2)
             for card_id in ("candidate-mcdonalds", "candidate-alipay", "planned-lutopia-entry"):
                 card = page.locator(f'.treasure-card[data-card-id="{card_id}"]')
                 self.assertEqual(card.locator("[data-action]").count(), 0)

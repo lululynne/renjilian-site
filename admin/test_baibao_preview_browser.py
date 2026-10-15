@@ -170,9 +170,9 @@ class BaibaoPreviewBrowserTests(unittest.TestCase):
     def test_production_catalog_has_no_try_button(self) -> None:
         page, errors = self.open_page(inject=False)
         self.goto_baibao(page)
-        self.assertEqual(page.locator("#treasure-grid .treasure-card").count(), 8)
+        self.assertEqual(page.locator("#treasure-grid .treasure-card").count(), 9)
         self.assertEqual(page.locator("[data-action='sandbox']").count(), 0)
-        self.assertEqual(page.locator("[data-action='try']").count(), 4)
+        self.assertEqual(page.locator("[data-action='try']").count(), 5)
         self.assertEqual(errors, [])
 
     def test_ready_banner_iframe_and_credentials(self) -> None:
