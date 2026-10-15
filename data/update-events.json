@@ -1,32 +1,5 @@
 {
   "schema_version": 1,
-  "revision": 3,
-  "events": [
-    {
-      "id": "u8-kanread-20261015",
-      "revision": 2,
-      "channel": "kanread_updates",
-      "kind": "kanread_published",
-      "route_key": "kanread",
-      "route_ref": "kr-liu-shengyu-bury-talent",
-      "title": "U8 生产合成验收 · 刊读",
-      "body": "用于核验第二人称多设备通知；验收后撤回并清理。",
-      "occurred_at_ms": 1792086027555,
-      "tombstone": true,
-      "payload_sha256": "fb007a2b3ad5098fd4e2bcab7242605e37e7006adf4a8bd50fc4908918870c71"
-    },
-    {
-      "id": "u8-reset-codex-20261015",
-      "revision": 2,
-      "channel": "reset_updates",
-      "kind": "reset_published",
-      "route_key": "reset_codex",
-      "route_ref": "codex",
-      "title": "U8 生产合成验收 · 公共重置",
-      "body": "用于核验第二人称多设备通知；验收后撤回并清理。",
-      "occurred_at_ms": 1792086027556,
-      "tombstone": true,
-      "payload_sha256": "c16257b1351019baea7c38019d02b7c2cebff15efcea4aebc3dddd344fc0e71f"
-    }
-  ]
+  "revision": 4,
+  "events": []
 }
