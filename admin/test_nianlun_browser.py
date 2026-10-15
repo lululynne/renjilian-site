@@ -294,7 +294,8 @@ class NianlunBrowserTests(unittest.TestCase):
 
     # ── 8. 第一屏两格、360/390 不溢出、触控 ≥44 ──
     def test_first_screen_width_and_touch(self) -> None:
-        ctx, page, errors = self.open()
+        # 第一屏合同必须对真实线上数据生效；短夹具只能守交互，不能替生产卡片过版面门。
+        ctx, page, errors = self.open(use_fixture=False)
         try:
             page.locator(".nl-item").first.wait_for()
             second = page.locator(".nl-item").nth(1).bounding_box()
@@ -304,7 +305,7 @@ class NianlunBrowserTests(unittest.TestCase):
             ctx.close()
         for width in (360, 390):
             with self.subTest(width=width):
-                ctx, page, errors = self.open(width=width)
+                ctx, page, errors = self.open(width=width, use_fixture=False)
                 try:
                     page.locator(".nl-item").first.wait_for()
                     self.assertLessEqual(page.evaluate(OVERFLOW), 0, f"{width} 横向溢出")

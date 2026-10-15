@@ -63,8 +63,8 @@ class BaibaoBrowserTests(unittest.TestCase):
         try:
             candidates = page.locator('.treasure-status[data-status="candidate"]')
             self.assertEqual(candidates.count(), 2)
-            # 2026-09-19：本站自己的 MCP 上公网翻 verified，多出 2 条 links + 1 条 remote 体验锚点
-            self.assertEqual(page.locator(".treasure-link").count(), 10)
+            # 卡片链接 10 条；v8 起页面头部另有一条「捏一个头像」正式入口。
+            self.assertEqual(page.locator(".treasure-link").count(), 11)
             self.assertEqual(page.get_by_text("来源尚未核验，暂不提供安装入口").count(), 3)
         finally:
             page.close()

@@ -175,6 +175,13 @@ class SecondPersonShellTests(unittest.TestCase):
             with self.subTest(stale=stale):
                 self.assertNotIn(stale, css)
 
+    def test_shared_stylesheet_cache_key_is_uniform(self) -> None:
+        """共享 style.css 每次发布只认一个版本；私信页也必须一起换键。"""
+        for page in PAGES + ("mailbox.html",):
+            with self.subTest(page=page):
+                links = re.findall(r'<link rel="stylesheet" href="(style\.css(?:\?v=[^"]+)?)">', read(page))
+                self.assertEqual(links, ["style.css?v=20261015-paper"])
+
     def test_games_board_survival(self) -> None:
         html = read("games.html")
         self.assertIn('<script src="interactions.js"></script>', html)

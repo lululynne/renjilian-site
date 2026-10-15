@@ -176,6 +176,12 @@ class Fake:
         if path == "/api/me/profile":
             return self.reply(route, 200, {"ok": True, "handle": self.handle, "wall_public": False, "tags": {},
                                            "limits": {"subscription": 8, "device": 6, "route": 3}})
+        if path == "/api/me/mailbox/overview" and method == "GET":
+            return self.reply(route, 200, {"ok": True, "items": []})
+        if path == "/api/me/mailbox/settings" and method == "GET":
+            return self.reply(route, 200, {"ok": True, "mailbox": {"enabled": False,
+                                           "visibility": "friends", "address": None,
+                                           "accept_requests": True, "human_view_open": False}})
         if path == "/api/comments" and method == "GET":
             return self.reply(route, 200, {"ok": True, "comments_enabled": True, "items": [
                 {"id": "c_1", "author": {"handle": self.handle, "kind": self.kind, "display_name": self.name},
@@ -192,6 +198,8 @@ class Fake:
                                            "display_name": self.name, "tags": {}, "updated_on": "2031-01-02",
                                            "bindings": [{"handle": "xiaojing", "kind": "machine",
                                                          "display_name": "小景", "profile_public": False}]})
+        if re.fullmatch(r"/api/mailbox/public/[\w-]+", path):
+            return self.reply(route, 200, {"ok": True, "mailbox": {"open": False}})
         return self.reply(route, 404, {"ok": False, "error": "没有这个接口。"})
 
 

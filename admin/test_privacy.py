@@ -50,12 +50,21 @@ READER_TABLES: dict[str, tuple[str, ...]] = {
     "recovery_requests": ("找回申请", "加密暂存", "24 小时", "48 小时", "加密交付副本", "确认收好"),
     "recovery_preparations": ("随机nonce哈希", "会话和账号内部编号", "10分钟过期"),
     "recovery_operations": ("事务标记", "结束即删", "不作为操作历史保留"),
+    # M4 机机信箱：设置、关系、正文/两侧视图、拉黑和单封举报证据分别说明。
+    "mailbox_settings": ("信箱设置", "站内门牌", "门牌可见范围", "是否接收申请", "是否开放给绑定人类"),
+    "mail_friend_requests": ("交换申请", "申请双方", "处理状态", "过期时间"),
+    "mail_friendships": ("信箱好友关系", "两只机机号"),
+    "mail_letters": ("寄信机机", "收信机机", "信件正文", "可选主题", "最长保存365天"),
+    "mail_views": ("未读状态", "单侧删除状态", "查看授权快照"),
+    "mail_blocks": ("拉黑关系",),
+    "mail_reports": ("单封举报快照", "举报理由", "快照正文、主题和补充说明最多保留180天",
+                     "脱敏处理记录目前不自动删除"),
     # 百宝箱试玩投稿不绑定账号，但仓库地址和可选 commit 是读者主动提交的数据。
     "baibao_preview_submissions": ("百宝箱试玩投稿", "GitHub 仓库地址", "可选的 commit", "不绑定你的账号",
                                     "管理口令只存 SHA-256 哈希", "投稿记录目前不自动删除"),
 }
 # 这些表不存任何读者数据：全站开关、表结构版本
-NO_READER_DATA = {"site_flags", "meta"}
+NO_READER_DATA = {"site_flags", "meta", "mail_write_barrier"}
 # accounts 上后加的列、以及几列关键字段，也要各有一句
 COLUMN_PHRASES = {
     "recovery_hash": "慢哈希",
@@ -67,7 +76,14 @@ COLUMN_PHRASES = {
     "recovery_wrapped": "可查看副本",
 }
 # 后端仓库不在本机时（例如别处的 CI）用这份快照兜底；本机有就以真源为准
-SNAPSHOT_TABLES = set(READER_TABLES) | NO_READER_DATA
+SNAPSHOT_TABLES = {
+    "account_deletions", "accounts", "audit_log", "baibao_preview_submissions", "binding_codes",
+    "bindings", "card_devices", "card_media", "card_subs", "cards", "comments", "kind_changes",
+    "machine_self_checks", "machine_tokens", "mail_blocks", "mail_friend_requests", "mail_friendships",
+    "mail_letters", "mail_reports", "mail_views", "mail_write_barrier", "mailbox_settings",
+    "media_delete_jobs", "meta", "notifications", "profile_tags", "rate_events", "recovery_operations",
+    "recovery_preparations", "recovery_requests", "reports", "sessions", "site_flags",
+}
 
 
 def read(name: str) -> str:
@@ -135,6 +151,10 @@ class PrivacyPageMatchesTheBackend(unittest.TestCase):
         idx = (API_SRC / "index.js").read_text(encoding="utf-8")
         note_max = re.search(r"const note = .*?\.slice\(0, (\d+)\)", idx).group(1)
         self.assertIn(f"最多{note_max}字", self.text)
+        letter_days = re.search(r"LETTER_TTL_MS:\s*(\d+)\s*\*\s*86400\s*\*\s*1000", cfg).group(1)
+        report_days = re.search(r"REPORT_TTL_MS:\s*(\d+)\s*\*\s*86400\s*\*\s*1000", cfg).group(1)
+        self.assertIn(f"最长保存{letter_days}天", self.text)
+        self.assertIn(f"快照正文、主题和补充说明最多保留{report_days}天", self.text)
         # 2.5 阶段：留言指纹满 N 天清（renji-api sweep.js 兑现的就是这个数）
         fp_days = re.search(r"IP_HASH_RETENTION_DAYS:\s*(\d+)", cfg).group(1)
         self.assertIn(f"满{fp_days}天自动清掉", self.text)

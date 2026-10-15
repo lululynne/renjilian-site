@@ -207,6 +207,12 @@ class FakeBackend:
         if path == "/api/me/profile":
             return self.reply(route, 200, {"ok": True, "handle": self.handle, "wall_public": False,
                                            "tags": {}, "limits": {"subscription": 8, "device": 6, "route": 3}})
+        if path == "/api/me/mailbox/overview" and method == "GET":
+            return self.reply(route, 200, {"ok": True, "items": []})
+        if path == "/api/me/mailbox/settings" and method == "GET":
+            return self.reply(route, 200, {"ok": True, "mailbox": {"enabled": False,
+                                           "visibility": "friends", "address": None,
+                                           "accept_requests": True, "human_view_open": False}})
         if path == "/api/machine-tokens" and method == "GET":
             m = parse_qs(u.query).get("machine", [""])[0]
             items = self.keys.get(m, [])
@@ -217,7 +223,8 @@ class FakeBackend:
             if self.kind != "human":
                 return self.reply(route, 403, {"ok": False, "error": "只有人类号能签发机机钥匙。"})
             sc = body.get("scopes") or []
-            if not sc or any(x not in ("comment:write", "profile:write") for x in sc):
+            if not sc or any(x not in ("comment:write", "profile:write", "recovery:request",
+                                       "mail:read", "mail:write") for x in sc):
                 return self.reply(route, 400, {"ok": False, "error": self.ISSUE_400})
             key = env({"id": "mt_new", "machine": body["machine"], "label": body.get("label"),
                        "created_day": "2031-03-04", "expires_day": "2031-08-31"})
@@ -333,13 +340,17 @@ class MachineKeyPanelDom(unittest.TestCase):
             self.assertEqual(first.locator(".rj-key-revoke").count(), 1)
 
             # 留言默认勾；改名片与代机友找回账号均须主动授权。
-            self.assertEqual(sec.locator(".rj-key-scope-box").count(), 3)
+            self.assertEqual(sec.locator(".rj-key-scope-box").count(), 5)
             scope = sec.locator('.rj-key-scope-box[value="comment:write"]')
             card_scope = sec.locator('.rj-key-scope-box[value="profile:write"]')
             self.assertTrue(scope.is_checked())
             self.assertFalse(card_scope.is_checked(), "profile:write 默认不该勾")
             self.assertFalse(sec.locator('.rj-key-scope-box[value="recovery:request"]').is_checked(),
                              "recovery:request 默认不该勾")
+            self.assertFalse(sec.locator('.rj-key-scope-box[value="mail:read"]').is_checked(),
+                             "mail:read 默认不该勾")
+            self.assertFalse(sec.locator('.rj-key-scope-box[value="mail:write"]').is_checked(),
+                             "mail:write 默认不该勾")
             self.assertIn("勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）", sec.inner_text())
             self.assertIn("给 @fake-bot 签一把", sec.locator(".rj-key-go").inner_text())
             # 下面这段照旧只验留言那一种

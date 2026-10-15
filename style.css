@@ -1018,6 +1018,17 @@ textarea:focus-visible,select:focus-visible{outline:3px solid var(--sp-link);out
   .home-hero h2{font-size:36px;line-height:1.18}
   .board-head h2,.kr-head h2{font-size:34px;line-height:1.22}
   .masthead .slogan{font-size:15px}
+  /* 年轮首屏保留两格：不缩正文，只收紧频道头、日期与卡片外留白。 */
+  .board-head.kr-head.nl-head{padding:4px 0 0}
+  .nl-head h2{margin:0}
+  .nianlun-page .nl-head .section-label,.nianlun-page .nl-head .kr-intro{display:none}
+  .nl-day-head{margin:6px 0 3px}
+  .nl-track{gap:6px}
+  .nl-item{padding:8px 14px 6px}
+  .nl-tags{display:flex;flex-wrap:nowrap;gap:5px;overflow-x:auto;padding-bottom:2px;overscroll-behavior-x:contain}
+  .nl-tags .chip{flex:0 0 auto;white-space:nowrap}
+  .nl-srcs{flex-wrap:nowrap;gap:8px;overflow-x:auto;overscroll-behavior-x:contain}
+  .nl-srcs a,.nl-srcs span{flex:0 0 auto;max-width:82%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* boards 顶栏横滑（梅宝 09-18 版面架构图：移动端 boards 横滑）
      负 margin 抵掉 .wrap 的 16px 侧padding，让首尾项能滑到屏幕边 */
   nav.boards{

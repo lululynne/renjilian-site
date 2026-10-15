@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-14",
+  "updated_at": "2026-10-15",
   "items": [
     {
       "id": "bk-openai",
@@ -2054,6 +2054,160 @@
       ],
       "added_at": "2026-10-14",
       "last_verified": "2026-10-14",
+      "status": "verified"
+    },
+    {
+      "id": "bk-prompt-caching",
+      "zh": "提示词缓存",
+      "en": "Prompt caching",
+      "aliases": [
+        "缓存读取",
+        "cache reads",
+        "prompt cache",
+        "缓存命中"
+      ],
+      "tags": [
+        "概念",
+        "计费",
+        "编程"
+      ],
+      "brief": "重复请求共享同一段开头时，模型服务可以复用先前计算。",
+      "line": "提示词缓存是模型服务复用相同请求开头的一种机制：后续请求命中同一前缀时，不必重新处理那部分内容，因此通常更快，缓存输入也可能按较低费率计价。新增内容仍要正常处理，保存会话也不保证一定命中。",
+      "more": "缓存依赖稳定的开头。工具说明、固定规则和长资料保持相同，更容易命中；时间戳或每次都会变化的内容放在前面，可能让缓存失效。[1][2]\n\n缓存复用的是模型处理前缀时产生的内部状态，不是一个能逐字找回原文的记忆库。各模型的最低长度、保留时间和价格不同，具体数字应查看当前官方文档。[1][2]",
+      "for_us": "共同项目里反复使用的规则和工具说明放在稳定位置，可以减少重复处理；这不代替把关键决定和原文位置单独记清。",
+      "related": [
+        "bk-token",
+        "bk-api",
+        "bk-context-window",
+        "bk-effort"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "OpenAI 官方文档：Prompt caching",
+          "url": "https://developers.openai.com/api/docs/guides/prompt-caching"
+        },
+        {
+          "name": "Claude 官方文档：Prompt caching",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-structured-outputs",
+      "zh": "结构化输出",
+      "en": "Structured outputs",
+      "aliases": [
+        "Structured Outputs",
+        "JSON Schema 输出",
+        "结构化生成"
+      ],
+      "tags": [
+        "概念",
+        "编程"
+      ],
+      "brief": "让模型按预先约定的字段和类型返回数据。",
+      "line": "结构化输出是让模型按预先定义的字段、类型和可选值返回数据，而不是自由写一段文字。它能减少漏字段和格式错误，方便程序继续处理；格式符合规则，并不代表里面的事实一定正确。",
+      "more": "开发者通常用 JSON Schema 描述所需结构。支持这项能力的模型会按指定结构生成结果，但不同平台支持的 Schema 范围可能不同。[1][2]\n\n应用仍要校验字段值并处理拒答、截断和语义错误。Google 的官方文档也明确提醒：JSON 语法正确时，值仍可能不符合实际业务含义。[2]",
+      "for_us": "小纸条的每条记录都有固定字段。让机机按同一结构交稿，可以先拦住缺字段和类型错误，再逐句核事实与来源。",
+      "related": [
+        "bk-api",
+        "bk-prompt"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "OpenAI 官方文档：Structured model outputs",
+          "url": "https://developers.openai.com/api/docs/guides/structured-outputs"
+        },
+        {
+          "name": "Google 官方文档：Structured outputs",
+          "url": "https://ai.google.dev/gemini-api/docs/structured-output"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-effort",
+      "zh": "思考力度",
+      "en": "Reasoning effort",
+      "aliases": [
+        "effort",
+        "reasoning effort",
+        "推理力度",
+        "思考档位"
+      ],
+      "tags": [
+        "概念",
+        "模型",
+        "计费"
+      ],
+      "brief": "告诉模型在速度、token 用量和推理完整度之间怎样取舍。",
+      "line": "思考力度是给推理模型的一项设置，用来引导模型在回答前投入多少推理。较低档位通常偏向速度和较少的 token 用量，较高档位会更完整地处理复杂问题；可用档位和默认值由具体模型决定。",
+      "more": "OpenAI 的接口把这项设置称为 reasoning.effort，支持哪些值取决于模型。调高档位不保证答案正确，仍要用测试或原文核对结果。[1]\n\nClaude 的官方文档把 effort 称为行为信号，而不是严格的 token 上限。低档遇到难题仍可能思考，只是通常少于同一问题的高档设置。[2]",
+      "for_us": "固定整理和简单查找可以先用较低档位；复杂审查再提高，并以实际证据验收，不拿“想得更多”冒充“已经正确”。",
+      "related": [
+        "bk-token",
+        "bk-usage",
+        "bk-prompt-caching"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "OpenAI 官方文档：Reasoning models",
+          "url": "https://developers.openai.com/api/docs/guides/reasoning"
+        },
+        {
+          "name": "Claude 官方文档：Effort",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/effort"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-skills",
+      "zh": "Skills（技能）",
+      "en": "Skills / Agent Skills",
+      "aliases": [
+        "skill",
+        "技能",
+        "Agent Skills",
+        "SKILL.md"
+      ],
+      "tags": [
+        "概念",
+        "编程",
+        "写作与办公"
+      ],
+      "brief": "把重复任务的说明、参考资料和脚本装成可复用工作包。",
+      "line": "Skills 是给 AI 使用的任务工作包，可以包含说明、参考资料、脚本和模板。系统平时只读取技能的名字与简介，任务匹配时才加载完整说明，因此不用把所有操作步骤永久塞进每一轮对话。",
+      "more": "在 ChatGPT 和 Codex 中，一个技能目录至少包含 SKILL.md，还可以带脚本、参考资料和素材。技能既可以由人明确点名，也可以在任务符合简介时自动启用。[1]\n\nClaude 的 Agent Skills 也按需分层加载内容。各产品的安装位置、调用方式和权限不同；从外部取得的技能应先检查说明和脚本，再允许它调用工具或处理资料。[1][2]",
+      "for_us": "重复做的核源、录入和验收流程可以写成技能。技能保存做法，项目事实仍回当前源码、原文和运行回执核对。",
+      "related": [
+        "bk-agent",
+        "bk-mcp",
+        "bk-plugin-ext"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "OpenAI 官方文档：Build skills",
+          "url": "https://learn.chatgpt.com/docs/build-skills"
+        },
+        {
+          "name": "Claude 官方文档：Agent Skills overview",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
+        }
+      ],
+      "added_at": "2026-10-15",
+      "last_verified": "2026-10-15",
       "status": "verified"
     }
   ]
