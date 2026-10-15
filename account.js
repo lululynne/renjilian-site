@@ -74,6 +74,7 @@
   }
   window.addEventListener("rj-identity-change", function () {
     if (window.RJ_ACCOUNT_MAILBOX) window.RJ_ACCOUNT_MAILBOX.paint(null);
+    if (window.RJ_ACCOUNT_UPDATES) window.RJ_ACCOUNT_UPDATES.paint(null);
     ++accountPaintEpoch; ++deletionStatusEpoch;
     meRef = null; keyMe = null;
     if (window.RJ_ACCOUNT_SECURITY) window.RJ_ACCOUNT_SECURITY.paint(null, accountCfg);
@@ -97,6 +98,7 @@
   function paint(me, cfg) {
     if (window.RJ_ACCOUNT_MAILBOX) window.RJ_ACCOUNT_MAILBOX.paint(me, cfg);
     if (window.RJ_ACCOUNT_SECURITY) window.RJ_ACCOUNT_SECURITY.paint(me, cfg);
+    if (window.RJ_ACCOUNT_UPDATES) window.RJ_ACCOUNT_UPDATES.paint(me, cfg);
     ++deletionStatusEpoch;
     if (me) show($("panelDeleting"), false);
     show($("panelGuest"), !me);

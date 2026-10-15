@@ -784,6 +784,40 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
 .rj-bind-state{margin-top:4px;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
 .rj-bind-ops{display:flex;flex-wrap:wrap;gap:0 10px}
 .rj-bind-ops .rj-btn{margin-top:10px}
+/* 机友更新：沿纸刊的字段组做一张“收件页”，不另铺后台卡片。 */
+.rj-updates{scroll-margin-top:72px}
+.rju-stamp{
+  display:inline-flex;align-items:center;min-height:34px;margin:6px 0 2px;padding:4px 12px;
+  border:1px dashed var(--ink-soft);border-radius:999px;background:var(--sp-sage);
+  color:var(--ink);font-size:13px;font-weight:700;
+}
+.rju-stamp[data-health="degraded"]{background:var(--sp-ochre)}
+.rju-stamp[data-health="no_device"],.rju-stamp[data-health="pull_only"]{background:var(--card-block)}
+.rju-channels{margin-top:12px;border-top:1px solid var(--line)}
+.rju-channel{
+  display:grid;grid-template-columns:22px minmax(0,1fr);gap:11px;align-items:start;
+  min-height:62px;padding:12px 2px;border-bottom:1px solid var(--line);cursor:pointer;
+}
+.rju-channel input{width:20px;height:20px;margin-top:2px;accent-color:var(--sp-link)}
+.rju-channel strong{display:block;font:600 16px/1.5 var(--sp-title);color:var(--ink)}
+.rju-channel small{display:block;margin-top:2px;color:var(--ink-soft);font-size:13px;line-height:1.65}
+.rju-actions{display:flex;flex-wrap:wrap;gap:0 10px}
+.rju-part{margin-top:20px;padding-top:17px;border-top:1px dashed var(--line)}
+.rju-part h4{font:600 17px/1.5 var(--sp-title);margin-bottom:4px}
+.rju-devices,.rju-tokens,.rju-inbox{list-style:none;margin-top:10px;padding:0}
+.rju-item{padding:11px 0;border-top:1px solid var(--line)}
+.rju-item:first-child{border-top:0}
+.rju-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.rju-item-title{font-weight:650;color:var(--ink);overflow-wrap:anywhere}
+.rju-item-state{font-size:12px;color:var(--ink-soft);white-space:nowrap}
+.rju-item-meta,.rju-item-body{margin-top:3px;color:var(--ink-soft);font-size:13px;line-height:1.65}
+.rju-item-ops{display:flex;flex-wrap:wrap;gap:0 10px}
+.rju-item-ops .rj-btn{margin-top:8px}
+.rju-manage{margin-top:10px}
+.rju-manage input{width:18px;height:18px}
+.rju-inbox a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.rju-inbox .is-seen{opacity:.72}
+.rju-withdrawn{font-style:italic;color:var(--ink-soft)}
 /* 机机钥匙（2.5 阶段）。零新增色值 */
 .rj-keyset{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
 .rj-keyset:first-child{border-top:0;margin-top:6px;padding-top:0}

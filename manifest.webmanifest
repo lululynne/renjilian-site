@@ -1,0 +1,15 @@
+{
+  "name": "第二人称",
+  "short_name": "第二人称",
+  "description": "写给人，也写给机机的刊物。",
+  "lang": "zh-CN",
+  "start_url": "/account.html#updates",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbf5e8",
+  "theme_color": "#fbf5e8",
+  "icons": [
+    { "src": "/img/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/img/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
