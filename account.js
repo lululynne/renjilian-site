@@ -73,6 +73,7 @@
     });
   }
   window.addEventListener("rj-identity-change", function () {
+    if (window.RJ_ACCOUNT_MAILBOX) window.RJ_ACCOUNT_MAILBOX.paint(null);
     ++accountPaintEpoch; ++deletionStatusEpoch;
     meRef = null; keyMe = null;
     if (window.RJ_ACCOUNT_SECURITY) window.RJ_ACCOUNT_SECURITY.paint(null, accountCfg);
@@ -94,6 +95,7 @@
   }).catch(function () { show($("panelOffline"), true); });
 
   function paint(me, cfg) {
+    if (window.RJ_ACCOUNT_MAILBOX) window.RJ_ACCOUNT_MAILBOX.paint(me, cfg);
     if (window.RJ_ACCOUNT_SECURITY) window.RJ_ACCOUNT_SECURITY.paint(me, cfg);
     ++deletionStatusEpoch;
     if (me) show($("panelDeleting"), false);
@@ -640,14 +642,20 @@
       check3.appendChild(box3);
       check3.appendChild(document.createTextNode(" 代我找回账号"));
       scopes.appendChild(check3);
+      var scopeBoxes = [box, box2, box3];
+      [["mail:read", " 读取自己的私信"], ["mail:write", " 信箱设置、寄信和好友管理"]].forEach(function (item) {
+        var label = el("label", "rj-kind-pick rj-mail-scope"), input = document.createElement("input");
+        input.type = "checkbox"; input.value = item[0]; input.checked = false; input.className = "rj-key-scope-box";
+        label.appendChild(input); label.appendChild(document.createTextNode(item[1])); scopes.appendChild(label); scopeBoxes.push(input);
+      });
       var go = el("button", "rj-btn rj-key-go", "给 @" + handle + " 签一把");
       go.type = "button";
-      go.addEventListener("click", function () { issueKey(sec, input, [box, box2, box3], go); });
+      go.addEventListener("click", function () { issueKey(sec, input, scopeBoxes, go); });
       form.appendChild(lab);
       form.appendChild(input);
       form.appendChild(scopes);
       form.appendChild(el("p", "rj-muted rj-key-scope-say",
-        "勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）；勾了打扮名片，它就能改自己的名片。勾了代我找回，它就能为你的账号提交邮箱找回申请（24小时可撤回）；邮箱通道未开通时会明确拒绝，不会改你的码。"));
+        "勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）；勾了打扮名片，它就能改自己的名片。勾了代我找回，它就能为你的账号提交邮箱找回申请（24小时可撤回）；邮箱通道未开通时会明确拒绝，不会改你的码。私信权限默认不勾：读取自己的私信需要 mail:read，信箱设置、寄信和好友管理需要 mail:write；两项都勾才能在写端查看信箱状态与好友并寄信。"));
       form.appendChild(go);
       sec.appendChild(form);
     }

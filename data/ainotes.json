@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-02",
+  "updated_at": "2026-10-14",
   "items": [
     {
       "id": "bk-openai",
@@ -1906,6 +1906,154 @@
       ],
       "added_at": "2026-09-30",
       "last_verified": "2026-09-30",
+      "status": "verified"
+    },
+    {
+      "id": "bk-context-window",
+      "zh": "上下文窗口",
+      "en": "Context window",
+      "aliases": [
+        "上下文长度",
+        "上下文容量",
+        "context length"
+      ],
+      "tags": [
+        "概念",
+        "记忆",
+        "模型"
+      ],
+      "brief": "模型这次处理信息时，可容纳的上下文总量。",
+      "line": "上下文窗口是一张有大小限制的工作台：问题、对话和参考资料要在这里一起处理。不同模型的输入、思考和输出如何占用容量，要看各自说明；窗口大，也不保证每个细节都能用对。",
+      "more": "容量通常以 token 计，不宜直接当作固定字数。长资料可能需要分批、检索或压缩。[1]\n\n长窗口能容纳更多材料，但信息放进去并不等于模型一定能准确找到它。核对重要结论时，仍应回到原文；具体容量以所用模型和服务的当前说明为准。[1][2]",
+      "for_us": "让机机接续长对话时，可以把关键决定和原文位置单独交代清楚。这里的工作台比喻是本站解释。",
+      "related": [
+        "bk-token",
+        "bk-rag"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Google 官方文档：Long context",
+          "url": "https://ai.google.dev/gemini-api/docs/long-context"
+        },
+        {
+          "name": "Anthropic 工程文章：Effective context engineering for AI agents",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
+      ],
+      "added_at": "2026-10-14",
+      "last_verified": "2026-10-14",
+      "status": "verified"
+    },
+    {
+      "id": "bk-embedding",
+      "zh": "嵌入／向量",
+      "en": "Embedding",
+      "aliases": [
+        "嵌入",
+        "向量",
+        "向量嵌入",
+        "文本嵌入"
+      ],
+      "tags": [
+        "概念",
+        "记忆",
+        "模型"
+      ],
+      "brief": "把内容表示成数字向量，便于比较相似程度。",
+      "line": "Embedding 是把内容转成一组数字，也叫向量。系统可以比较向量之间的相似程度，用来按意思找资料、分类或匹配；它并不是把原文完整压缩进一个能逐字还原的记忆盒。",
+      "more": "嵌入模型生成数值表示，检索系统用这些表示寻找语义相关的内容。语义搜索、分类和聚类都是常见用途。[1]\n\n它是通用方法，不是一款特定产品。检索时仍要把找到的原文交给后续步骤处理；向量相似不能单独证明两段内容事实相同。[1][2]",
+      "for_us": "看到机机说“找回一段记忆”时，可以继续确认它找到了哪份原文。相关片段与准确结论之间还需要核对，这是本站建议。",
+      "related": [
+        "bk-rag",
+        "bk-context-window"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Google 官方文档：Embeddings",
+          "url": "https://ai.google.dev/gemini-api/docs/embeddings"
+        },
+        {
+          "name": "AWS 官方：RAG 的外部数据与检索流程",
+          "url": "https://aws.amazon.com/what-is/retrieval-augmented-generation/"
+        }
+      ],
+      "added_at": "2026-10-14",
+      "last_verified": "2026-10-14",
+      "status": "verified"
+    },
+    {
+      "id": "bk-rag",
+      "zh": "检索增强生成",
+      "en": "Retrieval-Augmented Generation",
+      "aliases": [
+        "RAG",
+        "检索增强",
+        "Retrieval Augmented Generation"
+      ],
+      "tags": [
+        "概念",
+        "记忆",
+        "模型"
+      ],
+      "brief": "先找相关资料，再把资料交给模型回答。",
+      "line": "RAG 是“先查资料，再作答”的做法：系统先从文件、网页或数据库中取回相关内容，再与问题一起交给模型。资料库可以独立更新，但找到了资料仍不等于回答必然正确。",
+      "more": "它把信息检索和文本生成接在一起，让模型在回答时使用训练数据以外的资料；这与直接重新训练模型不同。[1][2]\n\n检索到什么、资料是否过时，以及模型有没有正确理解原文，都会影响结果。有出处便于核对，不应把出现引用当作结论已经验证。[1]",
+      "for_us": "机机回答关于旧聊天或共同项目的问题时，先找相关原文，再据原文回答，就是一种常见用法示例。私有资料应按各自权限取用，这是本站建议。",
+      "related": [
+        "bk-embedding",
+        "bk-context-window"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "AWS 官方：What is Retrieval-Augmented Generation?",
+          "url": "https://aws.amazon.com/what-is/retrieval-augmented-generation/"
+        },
+        {
+          "name": "原始论文：Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401"
+        }
+      ],
+      "added_at": "2026-10-14",
+      "last_verified": "2026-10-14",
+      "status": "verified"
+    },
+    {
+      "id": "bk-github",
+      "zh": "GitHub",
+      "en": "GitHub",
+      "aliases": [
+        "GitHub 平台"
+      ],
+      "tags": [
+        "建站",
+        "开源",
+        "编程"
+      ],
+      "brief": "托管代码、记录版本并协作做项目的平台。",
+      "line": "GitHub 是用来托管代码和协作开发的平台，一个项目通常放在一个 repository（仓库）里。它使用 Git 记录版本；GitHub Pages 则是其中的静态网站托管服务，两者不能与 Git 这个版本控制工具混为一谈。",
+      "more": "在 GitHub 上可以查看项目文件、提交问题、讨论修改和审阅代码。Git 是版本控制工具，GitHub 提供围绕它的托管与协作功能。[1]\n\nGitHub Pages 可以从仓库发布 HTML、CSS、JavaScript 等静态网页。账号、数据库等动态功能需要另配后端，不能只靠放几个网页文件实现。[2]",
+      "for_us": "让机机帮忙做一个网站时，可以把代码放在仓库里保留版本；改坏之后先比较差异，不必把整个项目重写。这是本站的使用建议。",
+      "related": [
+        "bk-gitlab",
+        "bk-deploy",
+        "bk-open-source"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "GitHub 官方文档：What is GitHub?",
+          "url": "https://docs.github.com/en/get-started/start-your-journey/what-is-github"
+        },
+        {
+          "name": "GitHub 官方文档：What is GitHub Pages?",
+          "url": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages"
+        }
+      ],
+      "added_at": "2026-10-14",
+      "last_verified": "2026-10-14",
       "status": "verified"
     }
   ]
