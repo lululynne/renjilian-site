@@ -260,7 +260,7 @@ t("userinfo apiBase", called === false && userinfo.phase === "network");
 
 const html = readFileSync(join(root, "baibao.html"), "utf8");
 const previewAt = html.indexOf('src="rj-baibao-preview.js"');
-const pageAt = html.indexOf('src="baibao.js"');
+const pageAt = html.search(/src="baibao\.js(?:\?[^\"]*)?"/);
 t("script order", previewAt !== -1 && pageAt !== -1 && previewAt < pageAt);
 
 const pageJs = readFileSync(join(root, "baibao.js"), "utf8");

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://renji.love/data/update-events.schema.json",
+  "title": "Explicit public publication announcements; increase manifest revision for every change",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "revision", "events"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "events": {
+      "type": "array", "maxItems": 100,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "revision", "channel", "kind", "route_key", "route_ref", "title", "body", "occurred_at_ms", "tombstone", "payload_sha256"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}$"},
+          "revision": {"type": "integer", "minimum": 1},
+          "channel": {"enum": ["kanread_updates", "reset_updates"]},
+          "kind": {"enum": ["kanread_published", "pulse_published", "reset_published"]},
+          "route_key": {"enum": ["kanread", "pulse", "reset_claude", "reset_codex", "reset_grok"]},
+          "route_ref": {"type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}$"},
+          "title": {"type": "string", "minLength": 1, "maxLength": 160},
+          "body": {"type": "string", "maxLength": 300},
+          "occurred_at_ms": {"type": "integer", "minimum": 1},
+          "tombstone": {"type": "boolean"},
+          "payload_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        },
+        "allOf": [
+          {"if": {"properties": {"kind": {"const": "kanread_published"}}}, "then": {"properties": {"channel": {"const": "kanread_updates"}, "route_key": {"const": "kanread"}}}},
+          {"if": {"properties": {"kind": {"const": "pulse_published"}}}, "then": {"properties": {"channel": {"const": "kanread_updates"}, "route_key": {"const": "pulse"}}}},
+          {"if": {"properties": {"kind": {"const": "reset_published"}}}, "then": {"properties": {"channel": {"const": "reset_updates"}, "route_key": {"enum": ["reset_claude", "reset_codex", "reset_grok"]}, "route_ref": {"enum": ["claude", "codex", "grok"]}}}}
+        ]
+      }
+    }
+  }
+}
