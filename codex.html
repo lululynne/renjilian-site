@@ -247,7 +247,7 @@ td.k{color:var(--ink);width:28%;font-weight:600}
 }
 @media (max-width:420px){.metric-row{grid-template-columns:1fr}.tier-word{font-size:42px}}
 </style>
-<link rel="stylesheet" href="reset-board.css?v=20261014-paper">
+<link rel="stylesheet" href="reset-board.css?v=20261015-grok-reminder">
 </head>
 <body class="reset-collection">
 
@@ -281,7 +281,7 @@ td.k{color:var(--ink);width:28%;font-weight:600}
     <h1>先看官方，再决定要不要等</h1>
     <p>三张卡分别看 <b>GPT · Codex</b>、<b>Claude</b> 与 <b>Grok</b>。公开额外重置与个人周期分开：公告认来源，自己的剩余额度和恢复时间在自己的账户里查看。</p>
     <div class="hero-meta" aria-live="polite">
-      <span class="source-state" id="syncState">正在同步 Codex / Claude 公开数据</span>
+      <span class="source-state" id="syncState">正在同步 Codex / Claude / Grok 公开数据</span>
       <span id="syncTime">页面尚未完成同步</span>
     </div>
   </section>
@@ -309,9 +309,9 @@ td.k{color:var(--ink);width:28%;font-weight:600}
       <img class="reset-card-art" src="img/reset/grok-card.svg" width="400" height="250" alt="" aria-hidden="true">
       <div class="reset-card-copy">
         <span class="reset-card-name">Grok</span>
-        <span class="reset-card-label">SuperGrok 与 Bot · 分开查看</span>
-        <strong id="grokSummary">待核</strong>
-        <small>额外重置尚未接入实时追踪；个人周期以账户页面为准</small>
+        <span class="reset-card-label">当前共用周池 · 旧版单独核对</span>
+        <strong id="grokSummary">读取中</strong>
+        <small id="grokSummaryNote">核对官方规则与预测样本</small>
       </div>
     </a>
   </section>
@@ -410,22 +410,70 @@ td.k{color:var(--ink);width:28%;font-weight:600}
   <section class="reset-model reset-model-grok" aria-labelledby="grokModelTitle">
     <div class="mark board-anchor" id="grok-board">
       <span class="orb xai"><i>G</i></span>
-      <div><h2 id="grokModelTitle">Grok</h2><div class="sub">个人周额度与 Bot 独立额度，各看各的</div></div>
+      <div><h2 id="grokModelTitle">Grok</h2><div class="sub">当前共用周池 · 旧版 Bot 单独核对</div></div>
     </div>
-    <p class="lede">SuperGrok 的个人周期可在 Settings → Usage 查看。Grok Bot 的额度另算，不能把两种产品的时间混在一起。本站暂未接入 Grok 的额外重置实时源，当前不提供概率或倒计时。</p>
+    <p class="lede" id="grokRuleLede">正在读取 2026-10-15 的官方规则快照；读取失败或过期时，这里不会沿用旧规则。</p>
     <section class="bench">
       <article class="p">
-        <p class="p-kicker">个人周期</p>
-        <h3>SuperGrok：回 Usage 看恢复时间</h3>
-        <p class="body">官方 FAQ 说明，付费产品共用周用量池，Settings → Usage 显示自己的周重置日期和时间。这里不读取你的账户，也不推算统一的全球重置时刻。</p>
-        <div class="action-row"><a class="action-link" href="https://grok.com/" target="_blank" rel="noopener noreferrer">打开 Grok，进入 Settings → Usage</a><a class="action-link secondary" href="https://docs.x.ai/grok/faq#how-do-supergroks-weekly-usage-limits-work" target="_blank" rel="noopener noreferrer">官方用量 FAQ</a></div>
+        <p class="p-kicker">当前订阅</p>
+        <h3 id="grokCurrentTitle">正在核对当前方案</h3>
+        <p class="body" id="grokCurrentBody">规则快照新鲜且字段完整后才显示。</p>
+        <div class="action-row"><a class="action-link" href="https://grok.com/dashboard" target="_blank" rel="noopener noreferrer">打开 Grok Usage</a><a class="action-link secondary" href="https://prod.cursor.com/help/grok-bot/plans" target="_blank" rel="noopener noreferrer">官方方案说明</a></div>
       </article>
       <article class="p">
-        <p class="p-kicker">独立额度</p>
-        <h3>Grok Bot：与 Grok 订阅用量分开</h3>
-        <p class="body">官方公告明确 Bot 有自己的用量，不扣现有 Grok 与 Cursor 的额度。Bot 的具体恢复时间，请以 Bot 客户端的实际用量提示为准。</p>
-        <div class="action-row"><a class="action-link secondary" href="https://x.ai/news/grok-bot-more-plans" target="_blank" rel="noopener noreferrer">查看 Bot 独立额度公告</a></div>
-        <p class="note">资料核验：2026-10-14。以上是产品规则说明，不表示今天发生过额外重置。</p>
+        <p class="p-kicker">旧版账号</p>
+        <h3 id="grokLegacyTitle">正在核对旧版两块表</h3>
+        <p class="body" id="grokLegacyBody">旧版 Grok 网页／App 与旧版 Bot 的规则会分别显示，不把两个钟压成一个。</p>
+        <div class="action-row"><a class="action-link secondary" href="https://prod.cursor.com/help/grok-bot/faqs#why-doesnt-my-supergrok-limit-match-my-grok-bot-usage" target="_blank" rel="noopener noreferrer">官方旧版说明</a></div>
+        <p class="note">规则核验：<span id="grokVerifiedAt">读取中</span>。产品规则不等于今天发生过额外重置。</p>
+      </article>
+      <article class="p wide grok-prediction-card">
+        <p class="p-kicker">公开预测边界</p>
+        <h3>没有够用的公开历史样本，就不写一个漂亮数字</h3>
+        <div class="status-answer"><span class="status-pill wait" id="grokPredictionBadge">核对中</span><strong id="grokPredictionValue">—</strong></div>
+        <p class="body" id="grokPredictionNote">正在读取本站的官方来源核验快照。</p>
+        <div class="source-list">
+          <a href="data/grok-reset.json" target="_blank" rel="noopener noreferrer"><span>Grok 重置规则结构化快照</span><span>本站证据</span></a>
+          <a href="https://docs.x.ai/grok/faq#how-do-supergroks-weekly-usage-limits-work" target="_blank" rel="noopener noreferrer"><span>Grok 周额度与个人重置时间</span><span>官方文档</span></a>
+          <a href="https://prod.cursor.com/help/grok-bot/plans" target="_blank" rel="noopener noreferrer"><span>当前共用周池与旧版 Bot 规则</span><span>官方文档</span></a>
+        </div>
+      </article>
+      <article class="p wide grok-reminder-card">
+        <p class="p-kicker">私密日历提醒</p>
+        <h3>把你自己的下一次重置时刻订进日历</h3>
+        <p class="body">从官方 Usage 页面抄时间和它显示的时区。本站生成带 24 小时、1 小时或到点 <code>VALARM</code> 的私密订阅源；是否真的弹出通知，由日历客户端的订阅支持和系统通知权限决定。每次临时额外重置后回来校准一次。</p>
+        <form id="grokReminderForm" class="reminder-form" novalidate>
+          <div class="reminder-fields">
+            <label class="reminder-field" for="grokReminderProduct"><b>你从哪块用量表抄时间</b><select id="grokReminderProduct" name="product">
+              <option value="grok_shared">当前共用周池（Premium／Super／Ultra 含 Bot）</option>
+              <option value="grok_app_legacy">旧版 Grok 网页／App 周池</option>
+              <option value="grok_bot_legacy">旧版 Grok Bot 周池</option>
+            </select></label>
+            <label class="reminder-field" for="grokReminderAt"><b>下一次重置时间</b><input id="grokReminderAt" name="reset_at" type="datetime-local" required></label>
+            <label class="reminder-field" for="grokReminderTimezone"><b>Usage 显示的时区</b><input id="grokReminderTimezone" name="timezone" type="text" list="grokTimezoneChoices" autocomplete="off" required></label>
+          </div>
+          <datalist id="grokTimezoneChoices"><option value="Asia/Shanghai"></option><option value="America/Los_Angeles"></option><option value="UTC"></option></datalist>
+          <fieldset class="reminder-offsets"><legend>提醒我</legend>
+            <label><input type="checkbox" name="grok-reminder" value="1440" checked> 提前 24 小时</label>
+            <label><input type="checkbox" name="grok-reminder" value="60" checked> 提前 1 小时</label>
+            <label><input type="checkbox" name="grok-reminder" value="0" checked> 到点</label>
+          </fieldset>
+          <div class="action-row"><button class="clock-btn" id="saveGrokReminder" type="submit">建立私密日历</button></div>
+          <p class="reminder-status" id="grokReminderStatus" role="status" aria-live="polite">还没有建立提醒。</p>
+          <p class="note" id="grokReminderCount">此浏览器还没有保存 Grok 日历。</p>
+        </form>
+        <div class="reminder-active" id="grokReminderActive" hidden>
+          <p><b id="grokReminderActiveName">日历源已经准备好。</b>同一份订阅更新时沿用固定事件编号，不会重复堆事件。</p>
+          <div class="action-row">
+            <a class="action-link" id="grokCalendarLink">订阅到日历</a>
+            <button class="copy-btn secondary" id="copyGrokCalendar" type="button">复制订阅地址</button>
+            <button class="copy-btn secondary" id="copyGrokManagement" type="button">复制管理回执</button>
+            <button class="clock-btn secondary" id="cancelGrokReminder" type="button">取消这份提醒</button>
+          </div>
+          <p class="note" id="grokReminderExpiry"></p>
+        </div>
+        <p class="privacy-warning">iPhone／Mac 可点“订阅到日历”；Google Calendar 的手机 App 不能直接从 URL 添加订阅，请在电脑网页版用“通过网址添加日历”，再等它同步到手机。订阅完成前，本站只证明日历源可读，不冒充手机已经响过。</p>
+        <div class="source-line"><a href="https://support.google.com/calendar/answer/37100" target="_blank" rel="noopener noreferrer">Google Calendar 官方添加说明</a></div>
       </article>
     </section>
   </section>
@@ -491,15 +539,15 @@ td.k{color:var(--ink);width:28%;font-weight:600}
         <a href="https://code.claude.com/docs/en/statusline" target="_blank" rel="noopener noreferrer"><span>Claude Code 状态条能力</span><span>官方文档</span></a>
         <a href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work" target="_blank" rel="noopener noreferrer"><span>Claude 用量与长度限制</span><span>官方帮助</span></a>
       </div>
-      <p class="note">本页不连接 OpenAI、Anthropic 或 Grok 账户，不读取个人订阅数据。Codex 与 Claude 动态源失败或超过新鲜度门槛时，页面会明确降级，不把旧快照写成“今天”；Grok 另行标明实时追踪尚未接入。</p>
+      <p class="note">本页不连接 OpenAI、Anthropic 或 Grok 账户，不读取个人订阅数据。Codex 与 Claude 动态源失败或超过新鲜度门槛时，页面会明确降级，不把旧快照写成“今天”；Grok 规则读本站的有日期快照，没有公开历史样本就不输出概率。</p>
     </article>
   </section>
 
   </section>
   <div class="foot">
-    <b>数据边界：</b>Codex 预测来自 codex-reset.com 公开 API；Claude 事件来自 claude-resets.com 对 @ClaudeDevs 的公开档案，并保留原帖链接。两者都不是 OpenAI 或 Anthropic 官方产品，额外重置只有原帖能够确认。Grok 目前仅列官方规则和查看入口，实时额外重置追踪、预测与消息提醒仍待接入。<br>
-    <b>隐私边界：</b>个人倒计时仅保存在当前浏览器；页面不会上传账户档位、剩余额度、恢复时刻或终端记录。
-    <div class="seal"><i></i>第二人称 · 公开额度观察 · 2026-09-03</div>
+    <b>数据边界：</b>Codex 预测来自 codex-reset.com 公开 API；Claude 事件来自 claude-resets.com 对 @ClaudeDevs 的公开档案，并保留原帖链接。两者都不是 OpenAI 或 Anthropic 官方产品，额外重置只有原帖能够确认。Grok 当前只给官方规则、个人时间换算与日历提醒；没有够用的公开历史样本，不输出额外重置概率。<br>
+    <b>隐私边界：</b>Claude 个人倒计时仅存在当前浏览器。Grok 日历与本站登录账号无关：同一浏览器资料下的任何使用者都能管理本机保存的日历。服务端活跃期只存随机令牌哈希、用量表类型、UTC 重置时刻、IANA 时区与提醒档位；不收账号、密码、Cookie、邮箱或剩余额度。退订时这些日程字段和管理码哈希立即删除，只留 feed 哈希、事件编号与删除期限组成的最小取消回执，14 天后真删。
+    <div class="seal"><i></i>第二人称 · 公开额度观察 · 2026-10-15</div>
   </div>
 
 </main>
@@ -518,10 +566,10 @@ td.k{color:var(--ink);width:28%;font-weight:600}
   </div>
 </footer>
 
-<script src="reset-board.js?v=20261014-paper"></script>
+<script src="rj-config.js"></script>
+<script src="reset-board.js?v=20261015-grok-reminder"></script>
 
 <!-- 顶栏右上角的小红点（刀 R）：只在这个浏览器登录过时才问一次 /api/me -->
-<script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
 </body>
 </html>

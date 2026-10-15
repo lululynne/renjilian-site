@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-08",
+  "updated_at": "2026-10-15",
   "fx_updated_at": "2026-09-24",
   "fx": {
     "usd_cny": 6.7126,
@@ -186,21 +186,23 @@
       "sparkline": [],
       "status": "verified",
       "last_verified": "2026-09-25",
-      "notes": "权益／额度分池（梅宝 2026-09-24）：同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）额度同一池；Grok Bot 额度为单独一池，两边分开算。勿写成「开一份到处通用」。Lite／Plus／Heavy 见备注与配置墙标签。",
+      "notes": "额度规则 2026-10-15 复核：当前 The X Subscription 的 Premium／Super／Ultra（含相应团队席位）包含 Grok Bot，并与 Grok／Cursor 共用周池；Plus／Free 不含 Bot。旧版 Cursor 计划或旧账号链接的 Bot 仍在 Cursor 账户单独计量。先认当前／旧版，不能一律写成同池或分池。Lite／Plus／Heavy 价格仍见原核价备注与配置墙标签。",
       "entitlements": {
         "membership": "SuperGrok（一份会员）",
         "quota_pools": [
           {
-            "name": "SuperGrok（含 Grok CLI）",
+            "name": "当前 The X Subscription 周池",
             "shared": true,
-            "note": "梅宝观察：网页／App 与 CLI 同一额度池；待 accounts.x.ai 再核。"
+            "note": "官方当前规则：Premium／Super／Ultra 中已包含的 Grok Bot 与 Grok／Cursor 共用一个周额度池；Plus／Free 不含 Bot。下一次重置日期在 grok.com Usage 查看。"
           },
           {
-            "name": "Grok Bot",
+            "name": "旧版 Grok Bot 周池",
             "shared": false,
-            "note": "单独额度，与 SuperGrok／CLI 池分开。"
+            "note": "只指旧版 Cursor 计划或旧账号链接：Bot 用量在 Cursor 账户查看，不是 Grok App 的同一块表。"
           }
-        ]
+        ],
+        "verified_at": "2026-10-15",
+        "source_url": "https://prod.cursor.com/help/grok-bot/plans"
       }
     },
     {

@@ -1,0 +1,51 @@
+{
+  "updated_at": "2026-10-15",
+  "scope": "Grok consumer subscriptions and Grok Bot usage",
+  "rules": [
+    {
+      "id": "grok-current-shared",
+      "audience": "current",
+      "label": "当前 Premium／Super／Ultra：Grok、Cursor 与 Bot 共用周池",
+      "cadence": "weekly",
+      "meter": "shared",
+      "statement": "当前 The X Subscription 只有 Premium、Super、Ultra（含相应团队席位）包含 Grok Bot；这些方案下 Bot 与 Grok／Cursor 共用周池。Plus 与 Free 不含 Bot，不能把“共用”误读成所有档都能使用 Bot。下一次重置日期在 grok.com 的 Usage 页面查看。",
+      "source_url": "https://prod.cursor.com/help/grok-bot/plans",
+      "source_kind": "official",
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "grok-app-legacy",
+      "audience": "legacy",
+      "label": "旧版 Grok 网页／App 周池",
+      "cadence": "weekly",
+      "meter": "separate",
+      "statement": "旧版 SuperGrok 网页／App 的付费周池仍从 Grok Settings → Usage 看个人重置日期与时间；它不能替代旧版 Bot 的 Cursor 用量表。",
+      "source_url": "https://docs.x.ai/grok/faq#how-do-supergroks-weekly-usage-limits-work",
+      "source_kind": "official",
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "grok-bot-legacy",
+      "audience": "legacy",
+      "label": "旧版 Cursor／账号链接的 Grok Bot",
+      "cadence": "weekly",
+      "meter": "separate",
+      "statement": "旧版 Cursor 计划和旧账号链接下的 Grok Bot 仍按 Cursor 账户的周用量表计；它不是 Grok App 里的同一块表，旧版用户可以同时保存两份提醒。",
+      "source_url": "https://prod.cursor.com/help/grok-bot/plans#how-does-grok-bot-usage-work",
+      "source_kind": "official",
+      "verified_at": "2026-10-15"
+    }
+  ],
+  "prediction": {
+    "state": "insufficient_public_history",
+    "probability_24h": null,
+    "probability_48h": null,
+    "statement": "尚未找到可独立核验、样本量足够的 Grok 全员额外重置历史，因此不输出概率。个人日历只换算用户自己填写的周重置时刻。",
+    "verified_at": "2026-10-15"
+  },
+  "unknowns": [
+    "官方没有公布一个适用于所有账户的统一重置时刻。",
+    "官方没有提供可用于全员额外重置概率模型的公开历史样本接口。",
+    "临时额外重置可能改变个人 Usage 页面显示的时间，发生后需要重新填写。"
+  ]
+}

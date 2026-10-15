@@ -55,6 +55,7 @@
 .reset-collection .reset-model-grok { grid-column:1 / -1; }
 .reset-collection .reset-model-grok .bench { grid-template-columns:repeat(2,minmax(0,1fr)); }
 .reset-collection .reset-model-grok .p { grid-column:auto; border-top:8px solid #a5a2ad; }
+.reset-collection .reset-model-grok .p.wide { grid-column:1 / -1; }
 .reset-collection .reset-model-grok .lede { min-height:0; max-width:85ch; }
 .reset-collection .orb.xai { background:#dddde0; }
 .reset-collection .p-kicker { font-family:inherit; font-size:12px; letter-spacing:0; color:var(--muted); text-transform:none; font-weight:600; }
@@ -86,6 +87,28 @@
 .reset-collection .action-link.secondary,.reset-collection .copy-btn.secondary,.reset-collection .clock-btn.secondary { background:var(--panel); color:var(--ink); border-color:var(--ink); }
 .reset-collection .command-row code { min-width:0; flex:1 1 180px; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:12px; }
 .reset-collection .clock-field input { min-height:44px; min-width:0; width:100%; background:var(--panel); font-size:16px; border:1.5px solid var(--ink); border-radius:6px; }
+.reminder-form { display:grid; gap:14px; }
+.reminder-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.reminder-field { display:grid; gap:7px; min-width:0; color:var(--muted); font-size:13px; }
+.reminder-field b { color:var(--ink); font-size:14px; }
+.reminder-field select,.reminder-field input {
+  min-width:0; width:100%; min-height:46px; padding:9px 11px;
+  border:1.5px solid var(--ink); border-radius:6px; background:var(--panel);
+  color:var(--ink); font:inherit; font-size:16px;
+}
+.timezone-line { margin:0; color:var(--muted); font-size:13px; }
+.timezone-line b { color:var(--ink); overflow-wrap:anywhere; }
+.reminder-offsets { min-width:0; margin:0; padding:12px 14px 13px; border:1px solid var(--line); border-radius:7px; }
+.reminder-offsets legend { padding:0 6px; color:var(--muted); font-size:13px; font-weight:600; }
+.reminder-offsets label { display:inline-flex; align-items:center; gap:8px; min-height:44px; margin-right:18px; font-size:14px; }
+.reminder-offsets input { width:44px; height:44px; margin:0; flex:0 0 44px; accent-color:var(--pick); }
+.reminder-status { min-height:1.7em; margin:0; color:var(--muted); font-size:14px; }
+.reminder-status[data-state="error"] { color:var(--no); font-weight:600; }
+.reminder-status[data-state="ok"] { color:var(--ok); font-weight:600; }
+.reminder-active { padding:14px; border:1.5px solid var(--ok); border-radius:7px; background:#edf1e4; }
+.reminder-active[hidden] { display:none; }
+.reminder-active p { margin:0 0 10px; }
+.reminder-active .note { margin:8px 0 0; }
 .reset-collection .privacy-warning { border-left:4px solid #b99759; border-radius:0 6px 6px 0; background:#f4ecd9; font-size:14px; }
 .reset-collection .source-list a { font-size:12px; width:100%; overflow-wrap:anywhere; }
 .reset-personal-area { margin-top:38px; padding-top:28px; border-top:2px dashed var(--line); }
@@ -105,6 +128,7 @@
 @media (max-width:780px) {
   .reset-collection .summary-grid,.reset-desk { grid-template-columns:minmax(0,1fr); }
   .reset-collection .reset-model-grok .bench { grid-template-columns:minmax(0,1fr); }
+  .reset-collection .reset-model-grok .p.wide { grid-column:1; }
   .reset-collection .summary-grid { gap:22px; margin-bottom:38px; }
   .reset-desk { gap:34px; }
   .reset-collection .hero { padding-top:28px; }
@@ -112,6 +136,7 @@
   .reset-collection .lede { min-height:0; }
   .reset-collection .source-line { flex-direction:row; align-items:center; }
   .reset-collection .reset-personal-area .bench,.reset-collection .reset-personal-area .guide-grid,.reset-collection .reset-personal-area .tool-grid,.reset-collection .reset-personal-area .clock-grid { grid-template-columns:minmax(0,1fr); }
+  .reminder-fields { grid-template-columns:minmax(0,1fr); }
 }
 @media (max-width:420px) {
   .reset-collection .summary-card { padding:8px; }
@@ -122,6 +147,7 @@
   .reset-collection .metric-row { grid-template-columns:1fr; }
   .reset-collection .action-row>* { flex:1 1 150px; }
   .reset-collection .source-list a { flex-wrap:wrap; gap:4px; }
+  .reminder-offsets label { display:flex; margin-right:0; }
 }
 @media (prefers-reduced-motion:reduce) {
   .reset-collection *, .reset-collection *::before,.reset-collection *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }

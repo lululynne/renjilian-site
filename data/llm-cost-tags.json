@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-24",
+  "updated_at": "2026-10-15",
   "subscription": [
     {
       "id": "sub-chatgpt-go-monthly",
@@ -403,7 +403,7 @@
       "tone": "graphite",
       "source": "https://x.ai/pricing",
       "official": true,
-      "note": "x.ai/pricing JS 档名；US App Store IAP 亦列 SuperGrok Lite。未在公开价表确认独立年费 SKU；同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
+      "note": "x.ai/pricing JS 档名；US App Store IAP 亦列 SuperGrok Lite。未在公开价表确认独立年费 SKU；当前共用周池与旧版 Bot 分表须按账号方案区分，不能一律写成分开。"
     },
     {
       "id": "sub-supergrok-monthly",
@@ -412,7 +412,7 @@
       "tone": "graphite",
       "source": "https://x.ai/pricing",
       "official": true,
-      "note": "同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
+      "note": "当前 Premium／Super／Ultra 中已包含的 Grok Bot 与 Grok／Cursor 共用周池；Plus／Free 不含 Bot；旧版 Cursor／账号链接仍可能分表。"
     },
     {
       "id": "sub-supergrok-yearly",
@@ -421,7 +421,7 @@
       "tone": "graphite",
       "source": "https://apps.apple.com/us/app/grok-ai-assistant/id6670324846",
       "official": true,
-      "note": "US App Store IAP 列出同名 SuperGrok $300（另有 $30 月费）；x.ai planPrices 仅见 monthly 键；同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
+      "note": "US App Store IAP 列出同名 SuperGrok $300（另有 $30 月费）；x.ai planPrices 仅见 monthly 键；当前共用周池与旧版 Bot 分表须按账号方案区分。"
     },
     {
       "id": "sub-supergrok-plus-monthly",
@@ -430,7 +430,7 @@
       "tone": "graphite",
       "source": "https://x.ai/pricing",
       "official": true,
-      "note": "未在公开价表确认独立年费 SKU；同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
+      "note": "未在公开价表确认独立年费 SKU；当前共用周池与旧版 Bot 分表须按账号方案区分。"
     },
     {
       "id": "sub-supergrok-heavy-monthly",
@@ -439,7 +439,7 @@
       "tone": "graphite",
       "source": "https://x.ai/pricing",
       "official": true,
-      "note": "同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
+      "note": "当前 Premium／Super／Ultra 中已包含的 Grok Bot 与 Grok／Cursor 共用周池；Plus／Free 不含 Bot；旧版 Cursor／账号链接仍可能分表。"
     },
     {
       "id": "sub-supergrok-heavy-yearly",
@@ -448,7 +448,7 @@
       "tone": "graphite",
       "source": "https://docs.x.ai/grok/faq",
       "official": true,
-      "note": "docs.x.ai FAQ 原文提及 SuperGrok Heavy yearly subscription；同一份 SuperGrok 会员资格；SuperGrok（含 Grok CLI）与 Grok Bot 额度分开算。"
+      "note": "docs.x.ai FAQ 原文提及 SuperGrok Heavy yearly subscription；当前共用周池与旧版 Bot 分表须按账号方案区分。"
     },
     {
       "id": "sub-x-premium-monthly",

@@ -62,6 +62,11 @@ READER_TABLES: dict[str, tuple[str, ...]] = {
     # 百宝箱试玩投稿不绑定账号，但仓库地址和可选 commit 是读者主动提交的数据。
     "baibao_preview_submissions": ("百宝箱试玩投稿", "GitHub 仓库地址", "可选的 commit", "不绑定你的账号",
                                     "管理口令只存 SHA-256 哈希", "投稿记录目前不自动删除"),
+    # E02：匿名私密日历，只存两把令牌哈希和日历执行所需最小字段。
+    "reset_reminder_subscriptions": ("Grok 重置日历", "SHA-256 哈希", "UTC 重置时刻", "IANA 时区",
+                                     "提醒档位", "不收 Grok 或 Cursor 账号", "退订", "13 个周周期"),
+    "reset_reminder_cancellations": ("最小取消墓碑", "feed 哈希", "事件编号", "删除期限",
+                                     "不含产品、时间、时区、提醒档位和管理码哈希", "14 天后删除"),
 }
 # 这些表不存任何读者数据：全站开关、表结构版本
 NO_READER_DATA = {"site_flags", "meta", "mail_write_barrier"}
@@ -82,7 +87,8 @@ SNAPSHOT_TABLES = {
     "machine_self_checks", "machine_tokens", "mail_blocks", "mail_friend_requests", "mail_friendships",
     "mail_letters", "mail_reports", "mail_views", "mail_write_barrier", "mailbox_settings",
     "media_delete_jobs", "meta", "notifications", "profile_tags", "rate_events", "recovery_operations",
-    "recovery_preparations", "recovery_requests", "reports", "sessions", "site_flags",
+    "recovery_preparations", "recovery_requests", "reports", "reset_reminder_cancellations",
+    "reset_reminder_subscriptions", "sessions", "site_flags",
 }
 
 
@@ -155,6 +161,11 @@ class PrivacyPageMatchesTheBackend(unittest.TestCase):
         report_days = re.search(r"REPORT_TTL_MS:\s*(\d+)\s*\*\s*86400\s*\*\s*1000", cfg).group(1)
         self.assertIn(f"最长保存{letter_days}天", self.text)
         self.assertIn(f"快照正文、主题和补充说明最多保留{report_days}天", self.text)
+        reset = (API_SRC / "reset-reminders.js").read_text(encoding="utf-8")
+        feed_weeks = re.search(r"const FEED_WEEKS = (\d+)", reset).group(1)
+        cancel_days = re.search(r"const CANCEL_GRACE_MS = (\d+) \* DAY_MS", reset).group(1)
+        self.assertIn(f"{feed_weeks}个周周期", self.text)
+        self.assertIn(f"{cancel_days}天后", self.text)
         # 2.5 阶段：留言指纹满 N 天清（renji-api sweep.js 兑现的就是这个数）
         fp_days = re.search(r"IP_HASH_RETENTION_DAYS:\s*(\d+)", cfg).group(1)
         self.assertIn(f"满{fp_days}天自动清掉", self.text)
@@ -164,7 +175,8 @@ class PrivacyPageMatchesTheBackend(unittest.TestCase):
     def test_what_the_site_does_not_collect(self) -> None:
         for phrase in ("不收邮箱", "不收手机号", "不存原始IP", "当天轮换的盐", "注销是真删",
                        "留言留下，抹掉署名", "已经被别的AI读走的部分，站方收不回来",
-                       "指纹当场清掉", "被站方隐藏（不是删除）的留言，指纹照留"):
+                       "指纹当场清掉", "被站方隐藏（不是删除）的留言，指纹照留",
+                       "不收Grok或Cursor账号、密码、Cookie、邮箱或剩余额度"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.text)
 
