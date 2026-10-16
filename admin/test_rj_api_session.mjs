@@ -7,13 +7,23 @@ const source = readFileSync(new URL('../rj-api.js', import.meta.url), 'utf8');
 const A = 's_' + 'a'.repeat(32);
 const B = 's_' + 'b'.repeat(32);
 
-function runtime({ webLocks, storage, activity }) {
+function runtime({ webLocks, storage, activity, fetcher, objectURLs } = {}) {
   const values = storage || new Map();
   const requests = [];
   let active = 0, maxActive = 0, lockCalls = 0;
   const sharedActivity = activity || { active: 0, maxActive: 0 };
   const context = {
-    URLSearchParams, URL, Response, Headers, AbortController,
+    URLSearchParams, URL: class extends URL {
+      static createObjectURL(blob) {
+        const value = `blob:test-${(objectURLs || []).length + 1}`;
+        if (objectURLs) objectURLs.push({ value, blob, revoked: false });
+        return value;
+      }
+      static revokeObjectURL(value) {
+        const row = objectURLs && objectURLs.find((item) => item.value === value);
+        if (row) row.revoked = true;
+      }
+    }, Response, Headers, Blob, AbortController,
     Promise, JSON, Math, Date, setTimeout, clearTimeout,
     console,
     localStorage: {
@@ -38,6 +48,7 @@ function runtime({ webLocks, storage, activity }) {
     return run;
   } } } : {};
   context.fetch = async (_url, init) => {
+    if (fetcher) return fetcher(_url, init);
     active++; maxActive = Math.max(maxActive, active);
     sharedActivity.active++; sharedActivity.maxActive = Math.max(sharedActivity.maxActive, sharedActivity.active);
     requests.push({ method: init.method, headers: { ...init.headers }, body: init.body });
@@ -107,4 +118,66 @@ test('same-event-loop contexts without IndexedDB fence stale selector publicatio
   const blob = JSON.stringify(Object.fromEntries(storage));
   assert.equal(blob.includes('left-secret'), false);
   assert.equal(blob.includes('right-secret'), false);
+});
+
+test('pending media uses the selected session, validates image bytes, and revokes its Blob URL', async () => {
+  const values = new Map([['rj_session_selector', JSON.stringify({ session_id: A, generation: 7 })]]);
+  const objectURLs = [], requests = [];
+  const r = runtime({ webLocks: true, storage: values, objectURLs, fetcher: async (url, init) => {
+    requests.push({ url, init });
+    return new Response(new Blob(['image'], { type: 'image/png' }), {
+      status: 200, headers: { 'content-type': 'image/png' },
+    });
+  } });
+  const preview = await r.api.mediaPreview({ url: '/api/media/m_pending', state: 'pending' });
+  assert.equal(preview.ok, true);
+  assert.equal(preview.src, 'blob:test-1');
+  assert.equal(requests[0].url, 'https://api.example.test/api/media/m_pending');
+  assert.equal(requests[0].init.credentials, 'include');
+  assert.equal(requests[0].init.redirect, 'error');
+  assert.equal(requests[0].init.headers['X-RJ-Session'], A);
+  assert.equal(requests[0].url.includes(A), false, 'selector must never enter the URL');
+  preview.release();
+  assert.equal(objectURLs[0].revoked, true);
+});
+
+test('approved media remains a public URL and pending media rejects redirects/non-images', async () => {
+  const publicPreview = await runtime({ webLocks: true }).api.mediaPreview({
+    url: '/api/media/m_approved', state: 'approved',
+  });
+  assert.deepEqual({ ok: publicPreview.ok, src: publicPreview.src, public: publicPreview.public },
+    { ok: true, src: 'https://api.example.test/api/media/m_approved', public: true });
+
+  const redirected = new Response(new Blob(['x'], { type: 'image/png' }), {
+    status: 200, headers: { 'content-type': 'image/png' },
+  });
+  Object.defineProperty(redirected, 'redirected', { value: true });
+  for (const response of [
+    new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } }),
+    redirected,
+  ]) {
+    const r = runtime({ webLocks: true, fetcher: async () => response });
+    const preview = await r.api.mediaPreview({ url: '/api/media/m_pending', state: 'pending' });
+    assert.equal(preview.ok, false);
+  }
+});
+
+test('a pending media response from an old selector generation cannot reach the new UI', async () => {
+  const values = new Map([['rj_session_selector', JSON.stringify({ session_id: A, generation: 3 })]]);
+  const objectURLs = [];
+  let release;
+  const waiting = new Promise((resolve) => { release = resolve; });
+  const r = runtime({ webLocks: true, storage: values, objectURLs, fetcher: async () => {
+    await waiting;
+    return new Response(new Blob(['old'], { type: 'image/webp' }), {
+      status: 200, headers: { 'content-type': 'image/webp' },
+    });
+  } });
+  const pending = r.api.mediaPreview({ url: '/api/media/m_old', state: 'pending' });
+  values.set('rj_session_selector', JSON.stringify({ session_id: B, generation: 4 }));
+  release();
+  const preview = await pending;
+  assert.equal(preview.ok, false);
+  assert.equal(preview.stale, true);
+  assert.equal(objectURLs.length, 0, 'stale bytes must not create a Blob URL');
 });

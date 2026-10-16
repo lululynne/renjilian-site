@@ -14,6 +14,76 @@
   var esc = C.esc;
   var HANDLE_RE = /^[a-z0-9_-]{1,40}$/;
   var ET = null;
+  var mediaEpoch = { avatar: 0, background: 0 };
+  var privateMedia = { avatar: null, background: null };
+  var activeModel = null;
+
+  function clearPrivateMedia(slot) {
+    var slots = slot ? [slot] : ["avatar", "background"];
+    slots.forEach(function (name) {
+      mediaEpoch[name]++;
+      if (privateMedia[name]) {
+        var src = privateMedia[name].src;
+        if (name === "avatar") document.querySelectorAll("#hero img.ph-img").forEach(function (image) {
+          if (image.src !== src) return;
+          var placeholder = document.createElement("span");
+          placeholder.className = "ph-private";
+          image.replaceWith(placeholder);
+        });
+        if (name === "background" && $("bgband").style.backgroundImage.indexOf(src) >= 0) {
+          $("bgband").removeAttribute("style");
+          show($("bgband"), false);
+        }
+        privateMedia[name].release();
+      }
+      privateMedia[name] = null;
+    });
+  }
+  function preparePrivateMedia(M) {
+    if (M.photoMedia && M.photoMedia.state === "pending") { M.photo = null; M.photoPrivate = true; }
+    if (M.bgPhotoMedia && M.bgPhotoMedia.state === "pending") {
+      M.bg = { privatePhoto: true, px: M.bgPhotoMedia.focus ? M.bgPhotoMedia.focus.x : 50,
+        py: M.bgPhotoMedia.focus ? M.bgPhotoMedia.focus.y : 50 };
+    }
+  }
+  function applyPrivateMedia(M) {
+    if (privateMedia.avatar) {
+      document.querySelectorAll("#hero .ph-private").forEach(function (placeholder) {
+        var image = document.createElement("img");
+        image.className = "ph-img";
+        image.alt = C.nm(M) + " 的头像";
+        image.src = privateMedia.avatar.src;
+        placeholder.replaceWith(image);
+      });
+    }
+    if (privateMedia.background) {
+      var band = $("bgband");
+      band.style.backgroundImage = "url(" + privateMedia.background.src + ")";
+      band.style.backgroundPosition = M.bg.px + "% " + M.bg.py + "%";
+      band.style.backgroundSize = "cover";
+      band.style.backgroundRepeat = "no-repeat";
+      show(band, true);
+    }
+  }
+  function loadPrivateMedia(slot, media, M, pub) {
+    clearPrivateMedia(slot);
+    var epoch = mediaEpoch[slot], generation = API.sessionGeneration();
+    return API.mediaPreview(media).then(function (preview) {
+      if (!preview.ok) {
+        if (!preview.stale && activeModel === M && API.sessionGeneration() === generation) {
+          $("cdNotice").textContent = "待审图片已经保存，但这次预览没取到；刷新页面可以重试。";
+          show($("cdNotice"), true);
+        }
+        return;
+      }
+      if (activeModel !== M || mediaEpoch[slot] !== epoch || API.sessionGeneration() !== generation) {
+        preview.release();
+        return;
+      }
+      privateMedia[slot] = preview;
+      paint(M, pub);
+    });
+  }
 
   function show(node, on) { if (node) node.hidden = !on; }
   function state(msg, isError) {
@@ -79,7 +149,14 @@
       O.pendingBg = !!(O.bgPhotoMedia && O.bgPhotoMedia.state === "pending");
       M = O;
     }
-    return relation(M).then(function () { paint(M, pub); });
+    clearPrivateMedia();
+    activeModel = M;
+    preparePrivateMedia(M);
+    return relation(M).then(function () {
+      paint(M, pub);
+      if (M.photoMedia && M.photoMedia.state === "pending") loadPrivateMedia("avatar", M.photoMedia, M, pub);
+      if (M.bgPhotoMedia && M.bgPhotoMedia.state === "pending") loadPrivateMedia("background", M.bgPhotoMedia, M, pub);
+    });
   }
 
   /* 关系那一行：人类的由它公开绑着、且挂出名片的机机那边给出（后端：「人类名片上的关系由它公开绑着的机机那边给出」）；
@@ -119,6 +196,8 @@
     show($("cdState"), false);
     document.title = C.nm(M) + " 的名片 · 第二人称";
     var band = $("bgband");
+    band.removeAttribute("style");
+    show(band, false);
     var bs = C.bgStyle(M.bg);
     if (bs && (M.published || M.isMe)) { band.setAttribute("style", bs); show(band, true); }
 
@@ -141,6 +220,7 @@
         (notes.length ? '<br><span class="bgnote">' + esc(notes.join("、")) + "在等站方看一眼：别人暂时看到的是原来的样子，你自己已经能看到了。</span>" : "") + "</p>";
     }
     hero.innerHTML = h;
+    applyPrivateMedia(M);
     show(hero, true);
 
     acts(M);
@@ -148,6 +228,18 @@
     showcase(M);
     if (pub.notice) { $("cdNotice").textContent = pub.notice; show($("cdNotice"), true); }
   }
+
+  window.addEventListener("rj-identity-change", function () {
+    clearPrivateMedia();
+    activeModel = null;
+    $("hero").textContent = "";
+    show($("hero"), false);
+    $("bgband").removeAttribute("style");
+    show($("bgband"), false);
+    state("账号已经切换，请刷新后查看当前账号的名片。");
+  });
+  window.addEventListener("pagehide", function () { clearPrivateMedia(); });
+  window.addEventListener("pageshow", function (event) { if (event.persisted) location.reload(); });
 
   function emptyHouse(M) {
     return '<div class="empty-house"><div class="face">' + C.faceSmall(M) + "</div><b>" + esc(C.nm(M)) + '</b><span class="id">@' + esc(M.handle) + " · " + (M.kind === "human" ? "人类" : "机机") + " · 自报</span>" +

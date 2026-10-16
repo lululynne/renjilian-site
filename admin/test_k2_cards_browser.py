@@ -147,10 +147,15 @@ class CardPages(unittest.TestCase):
         tag = format(int(time.time() * 1000) % 36**5, "x")[-5:]
         cls.H, cls.M1, cls.M2, cls.O = Web(), Web(), Web(), Web()
         cls.h, cls.m1, cls.m2, cls.o = f"k2mei{tag}", f"k2jj1{tag}", f"k2jj2{tag}", f"k2lu{tag}"
-        cls.H.ok("POST", "/api/accounts", {"handle": cls.h, "kind": "human", "display_name": "梅宝"})
+        human = cls.H.ok("POST", "/api/accounts", {"handle": cls.h, "kind": "human", "display_name": "梅宝"})
+        cls.human_recovery = human["recovery_code"]
+        # 同一人类号的两次合法登录，保留两个有效cookie；子资源不能靠cookie猜中账号。
+        second = Web()
+        second.ok("POST", "/api/sessions", {"handle": cls.h, "recovery_code": cls.human_recovery})
+        cls.H.cookies.update(second.cookies)
         cls.M1.ok("POST", "/api/accounts", {"handle": cls.m1, "kind": "machine"})
         cls.M2.ok("POST", "/api/accounts", {"handle": cls.m2, "kind": "machine"})
-        cls.O.ok("POST", "/api/accounts", {"handle": cls.o, "kind": "human", "display_name": "路过的机友"})
+        cls.other_recovery = cls.O.ok("POST", "/api/accounts", {"handle": cls.o, "kind": "human", "display_name": "路过的机友"})["recovery_code"]
         for M in (cls.M1, cls.M2):
             code = M.ok("POST", "/api/me/binding-codes", {})["binding_code"]
             b = cls.H.ok("POST", "/api/bindings", {"code": code})["binding"]
@@ -197,6 +202,13 @@ class CardPages(unittest.TestCase):
         page.goto(f"{SITE}/{path}{sep}api={API}{('#' + hash) if hash else ''}", wait_until="networkidle")
         return page, errors
 
+    def switch_context(self):
+        # 切号会撤销当前选中会话；每例用独立新会话，不能破坏其余测试的共享夹具。
+        fresh = Web()
+        fresh.ok("POST", "/api/sessions", {"handle": self.h, "recovery_code": self.human_recovery})
+        fresh.cookies.update(self.H.cookies)
+        return self.ctx(fresh)
+
     def shot(self, page, name: str, full: bool = True) -> None:
         if SHOTS.exists():
             page.screenshot(path=str(SHOTS / name), full_page=full)
@@ -239,9 +251,14 @@ class CardPages(unittest.TestCase):
             page.locator(".pend").wait_for()
             self.assertIn("待审", page.locator(".pend").inner_text())
             self.assertIn("换上了", page.locator("#barNote").inner_text())
+            page.wait_for_function("() => { const i = document.querySelector('.slot img.ph-img'); return i && i.src.startsWith('blob:') && i.naturalWidth > 0; }")
             src = page.locator(".slot img.ph-img").get_attribute("src")
-            self.assertRegex(src, r"/api/media/[A-Za-z0-9_-]+$")
+            self.assertTrue(src.startswith("blob:"))
             self.assertTrue(page.evaluate("s => fetch(s, {credentials: 'include'}).then(r => r.ok && r.headers.get('content-type') === 'image/jpeg')", src))
+            media_path = self.H.ok("GET", "/api/me/card")["card"]["avatar"]["photo"]["url"]
+            raw = c.request.get(API + media_path, headers={"Origin": SITE})
+            self.assertEqual(raw.status, 404)
+            raw.dispose()
             self.shot(page, "k2-名片后台-人类-0头像已传-390.png")
 
             # 背景：横图 → 待审 → 拖一拖选露出
@@ -324,7 +341,7 @@ class CardPages(unittest.TestCase):
             page.locator(".cd-hero .biz").wait_for()
             self.assertEqual(page.locator(".cd-hero a.edit").inner_text(), "✎ 编辑名片")
             self.assertIn("新头像、新背景在等站方看一眼", page.locator(".self-note").inner_text())
-            self.assertIn("/api/media/", page.locator("#bgband").get_attribute("style"))
+            page.wait_for_function("document.getElementById('bgband').style.backgroundImage.includes('blob:')")
             self.shot(page, "k2-名片主页-本人看-390.png")
             self.assertEqual(errors, [])
         finally:
@@ -339,12 +356,11 @@ class CardPages(unittest.TestCase):
             self.assertEqual([t.replace("✓ ", "") for t in page.locator(".tabs button").all_inner_texts()],
                              ["穿衣", "我的人", "设备", "订阅", "路线", "一句话", "挂上"])
             self.assertEqual(page.locator("#file, #bgfile").count(), 0, "机机号不能上传图片")
-            page.locator(".out[data-slot='head'][data-item='tophat']").click()
-            self.assertIn("先挑身体", page.locator("#echo").inner_text())
-            page.locator(".mod[data-model='claude']").click()
-            for slot, item in (("head", "tophat"), ("face", "monocle"), ("neck", "collar")):
-                page.locator(f".out[data-slot='{slot}'][data-item='{item}']").click()
-            self.assertIn("3", page.locator(".cnt b").inner_text())
+            # v8之后头像编辑归独立捏脸器；本组验证入口及名片旧配方兼容，不再点击已退役控件。
+            self.assertIn("avatar.html", page.get_by_role("link", name="打开头像捏脸器").get_attribute("href"))
+            self.M1.ok("PATCH", "/api/me/card", {"avatar": {"model": "claude", "head": "tophat", "face": "monocle", "neck": "collar"}})
+            page.reload(wait_until="networkidle")
+            page.locator(".tabs").wait_for()
             page.locator(".bgt[data-bg='stars']").click()
             self.shot(page, "k2-名片后台-机机-穿衣-390.png")
             page.locator("#next").click()
@@ -371,7 +387,8 @@ class CardPages(unittest.TestCase):
             me = self.M1.ok("GET", "/api/me/card")
             self.assertEqual(me["display_name"], "机机一号")
             card = me["card"]
-            self.assertEqual(card["avatar"], {"model": "claude", "head": "tophat", "face": "monocle", "neck": "collar"})
+            self.assertEqual({k: card["avatar"][k] for k in ("model", "head", "face", "neck")}, {"model": "claude", "head": "tophat", "face": "monocle", "neck": "collar"})
+            self.assertEqual(card["avatar"]["mode"], "logo")
             self.assertEqual(card["my_call"], "梅宝")
             self.assertEqual(card["rel"], {"status": "恋爱中", "note": "手工裁缝，做布艺。天天给我修器官。"})
             self.assertTrue(card["titles"])
@@ -525,6 +542,113 @@ class CardPages(unittest.TestCase):
             page.locator(".cd-hero").wait_for()
             shown = page.locator(".cd-hero").inner_text() + page.locator(".ext").inner_text()
             self.assertTrue("onerror" in shown or "<img" in shown or "&lt;" in shown or "<b>" in shown, f"原字没出现：{stored} / {shown[:200]}")
+        finally:
+            c.close()
+
+    def test_7_pending_avatar_survives_preview_repaint(self) -> None:
+        c = self.ctx(self.H)
+        try:
+            page, errors = self.open(c, "card-edit.html?step=一句话")
+            page.locator("#bio").wait_for()
+            page.wait_for_function("[...document.querySelectorAll('#pv img')].some(i => i.src.startsWith('blob:') && i.naturalWidth > 0)")
+            page.locator("#bio").fill("合成图片预览重绘验收")
+            self.assertTrue(page.evaluate("[...document.querySelectorAll('#pv img')].some(i => i.src.startsWith('blob:') && i.naturalWidth > 0)"))
+            self.assertEqual(errors, [])
+        finally:
+            c.close()
+
+    def test_8_identity_switch_clears_open_private_sheet(self) -> None:
+        c = self.switch_context()
+        try:
+            page, errors = self.open(c, "card-edit.html")
+            page.wait_for_function("[...document.querySelectorAll('#pv img')].some(i => i.src.startsWith('blob:') && i.naturalWidth > 0)")
+            page.locator("#openpv").click()
+            page.locator("#sheet").wait_for(state="visible")
+            page.wait_for_function("[...document.querySelectorAll('#sheet img')].some(i => i.src.startsWith('blob:') && i.naturalWidth > 0)")
+            switched = page.evaluate("async a => (await RJ_API.post('/api/sessions', a)).ok", {"handle": self.o, "recovery_code": self.other_recovery})
+            self.assertTrue(switched)
+            self.assertTrue(page.locator("#sheet").evaluate("n => n.hidden && !n.textContent && !n.querySelector('img')"))
+            self.assertEqual(page.locator("img[src^='blob:']").count(), 0)
+            self.assertEqual(errors, [])
+        finally:
+            c.close()
+
+    def test_9_pagehide_clears_private_pixels_and_resume_restores(self) -> None:
+        c = self.ctx(self.H)
+        try:
+            page, errors = self.open(c, f"card.html?u={self.h}")
+            page.wait_for_function("[...document.querySelectorAll('#hero img')].some(i => i.src.startsWith('blob:') && i.naturalWidth > 0)")
+            page.wait_for_function("document.getElementById('bgband').style.backgroundImage.includes('blob:')")
+            page.evaluate("window.dispatchEvent(new PageTransitionEvent('pagehide', {persisted:true}))")
+            self.assertEqual(page.locator("img[src^='blob:']").count(), 0)
+            self.assertNotIn("blob:", page.locator("#bgband").get_attribute("style") or "")
+            page.evaluate("window.dispatchEvent(new PageTransitionEvent('pageshow', {persisted:true}))")
+            page.wait_for_function("[...document.querySelectorAll('#hero img')].some(i => i.src.startsWith('blob:') && i.naturalWidth > 0)")
+            self.assertEqual(errors, [])
+        finally:
+            c.close()
+
+    def test_w_crop_pagehide_removes_pixels_and_keeps_owner_draft(self) -> None:
+        c = self.ctx(self.H)
+        try:
+            page, errors = self.open(c, "card-edit.html")
+            page.set_input_files("#file", str(self.tmp / "square.png"))
+            page.wait_for_function("document.getElementById('cropimg') && document.getElementById('cropimg').naturalWidth > 0")
+            page.evaluate("window.dispatchEvent(new PageTransitionEvent('pagehide', {persisted:true}))")
+            self.assertEqual(page.locator("#cropimg").count(), 0)
+            self.assertEqual(page.locator("#sheet img").count(), 0)
+            page.evaluate("window.dispatchEvent(new PageTransitionEvent('pageshow', {persisted:true}))")
+            page.wait_for_function("document.getElementById('cropimg') && document.getElementById('cropimg').naturalWidth > 0")
+            self.assertEqual(errors, [])
+        finally:
+            c.close()
+
+    def test_y_cross_window_login_clears_pending_photos(self) -> None:
+        c = self.switch_context()
+        try:
+            page, errors = self.open(c, "card-edit.html")
+            page.wait_for_function("[...document.querySelectorAll('#pv img')].some(i => i.src.startsWith('blob:') && i.naturalWidth > 0)")
+            page.locator("#openpv").click()
+            page.locator("#sheet").wait_for(state="visible")
+            other, other_errors = self.open(c, "account.html")
+            switched = other.evaluate("async a => (await RJ_API.post('/api/sessions', a)).ok", {"handle": self.o, "recovery_code": self.other_recovery})
+            self.assertTrue(switched)
+            page.wait_for_function("document.getElementById('sheet').hidden && !document.querySelector('img[src^=\"blob:\"]')")
+            self.assertEqual(page.locator("#sheet").inner_text(), "")
+            self.assertEqual(errors + other_errors, [])
+        finally:
+            c.close()
+
+    def test_z_switch_during_image_encoding_never_uploads_to_new_account(self) -> None:
+        for slot, step in (("avatar", "头像"), ("background", "背景")):
+            with self.subTest(slot=slot):
+                self.encoding_switch(slot, step)
+
+    def encoding_switch(self, slot, step) -> None:
+        c = self.switch_context()
+        try:
+            page, errors = self.open(c, "card-edit.html?step=" + step)
+            field = "#file" if slot == "avatar" else "#bgfile"
+            page.locator(field).wait_for(state="attached")
+            posts = []
+            page.on("request", lambda r: posts.append(r.url) if r.method == "POST" and r.url.endswith("/api/me/card/" + slot) else None)
+            page.evaluate("""() => {
+              const original = HTMLCanvasElement.prototype.toBlob;
+              HTMLCanvasElement.prototype.toBlob = function (callback, ...args) {
+                const canvas = this;
+                window.__resumeEncoding = () => new Promise(resolve => original.call(canvas, blob => { callback(blob); resolve(); }, ...args));
+              };
+            }""")
+            page.set_input_files(field, str(self.tmp / ("square.png" if slot == "avatar" else "wide.png")))
+            if slot == "avatar":
+                page.locator("#cropok").click()
+            page.wait_for_function("typeof window.__resumeEncoding === 'function'")
+            switched = page.evaluate("async a => (await RJ_API.post('/api/sessions', a)).ok", {"handle": self.o, "recovery_code": self.other_recovery})
+            self.assertTrue(switched)
+            page.evaluate("window.__resumeEncoding()")
+            page.wait_for_timeout(300)
+            self.assertEqual(posts, [], "旧账号开始的压图不能用新账号会话上传")
+            self.assertEqual(errors, [])
         finally:
             c.close()
 

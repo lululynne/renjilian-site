@@ -15,6 +15,7 @@
   var $ = function (id) { return document.getElementById(id); };
 
   var M = null;            // 名片（RJ_CARD 的统一形状）
+  var modelGeneration = 0, cropReadEpoch = 0, backgroundUpload = null;
   var LIM = { devices: 6, subs: 8, routes: 3, bio: 40, my_call: 12, rel_status: 8, rel_note: 40, titles: 3 };
   var AS = false;          // 机机号
   var STEPS = [], step = 0;
@@ -25,6 +26,8 @@
   var CROP = { src: null };
   var catalog = null;
   var ET = null;
+  var mediaEpoch = { avatar: 0, background: 0 };
+  var privateMedia = { avatar: null, background: null };
   var REL_SUG = ["恋爱中", "搭档", "同居中", "饲养中", "打工人"];   // 占位，阿景之后亲笔改
   var BIO_SUG = ["订阅比衣服多，机机比朋友多。", "主业聊天，副业破产。", "只对 API 纯爱。", "白天上班，晚上给机机当保姆。"];
 
@@ -48,6 +51,80 @@
   function cps(s) { return [...String(s || "")].length; }
   function cut(s, n) { return [...String(s || "")].slice(0, n).join(""); }
   function K() { return STEPS[step]; }
+  function hasPhoto() { return !!(M && (M.photo || M.photoPrivate)); }
+  function hasBgPhoto() { return !!(M && M.bg && (M.bg.photo || M.bg.privatePhoto)); }
+  function clearPrivateMedia(slot) {
+    var slots = slot ? [slot] : ["avatar", "background"];
+    slots.forEach(function (name) {
+      mediaEpoch[name]++;
+      if (privateMedia[name]) {
+        var src = privateMedia[name].src;
+        if (name === "avatar") document.querySelectorAll(".rjk-edit img.ph-img").forEach(function (image) {
+          if (image.src !== src) return;
+          var placeholder = document.createElement("span");
+          placeholder.className = "ph-private";
+          image.replaceWith(placeholder);
+        });
+        if (name === "background" && $("bgpv") && $("bgpv").style.backgroundImage.indexOf(src) >= 0) {
+          $("bgpv").style.removeProperty("background-image");
+        }
+        privateMedia[name].release();
+      }
+      privateMedia[name] = null;
+    });
+  }
+  function mediaIdentity() { return { model: M, generation: API.sessionGeneration() }; }
+  function ownsMediaIdentity(identity) {
+    return identity.model && identity.model === M && identity.generation === API.sessionGeneration();
+  }
+  function preparePrivateModel() {
+    if (M.photoMedia && M.photoMedia.state === "pending") { M.photo = null; M.photoPrivate = true; }
+    if (M.bgPhotoMedia && M.bgPhotoMedia.state === "pending") {
+      M.bg = { privatePhoto: true, px: M.bgPhotoMedia.focus ? M.bgPhotoMedia.focus.x : 50,
+        py: M.bgPhotoMedia.focus ? M.bgPhotoMedia.focus.y : 50 };
+    }
+  }
+  function applyPrivateMedia() {
+    if (!M) return;
+    if (privateMedia.avatar) {
+      document.querySelectorAll(".rjk-edit .ph-private").forEach(function (placeholder) {
+        var image = document.createElement("img");
+        image.className = "ph-img";
+        image.alt = C.nm(M) + " 的头像";
+        image.src = privateMedia.avatar.src;
+        placeholder.replaceWith(image);
+      });
+    }
+    if (privateMedia.background) {
+      var bg = $("bgpv");
+      if (bg) {
+        bg.style.backgroundImage = "url(" + privateMedia.background.src + ")";
+        bg.style.backgroundPosition = M.bg.px + "% " + M.bg.py + "%";
+        bg.style.backgroundSize = "cover";
+        bg.style.backgroundRepeat = "no-repeat";
+      }
+    }
+  }
+  function loadPrivateMedia(slot, media, uploaded) {
+    clearPrivateMedia(slot);
+    var epoch = mediaEpoch[slot], generation = API.sessionGeneration();
+    return API.mediaPreview(media).then(function (preview) {
+      if (!preview.ok) {
+        if (!preview.stale && M && mediaEpoch[slot] === epoch && API.sessionGeneration() === generation) {
+          barNote(uploaded
+            ? "✓ 图片已经上传并在待审；这次预览没取到，刷新页面可以重试。"
+            : "待审图片这次预览没取到，刷新页面可以重试。", true);
+        }
+        return;
+      }
+      if (!M || mediaEpoch[slot] !== epoch || API.sessionGeneration() !== generation) {
+        preview.release();
+        return;
+      }
+      privateMedia[slot] = preview;
+      render();
+    });
+  }
 
   if (!API || !API.enabled) { state("名片后台还没开：这一页的后端还没接上。"); return; }
   C.avDefs();
@@ -93,6 +170,9 @@
 
   function start(own, pub) {
     M = C.fromOwn(own);
+    modelGeneration = API.sessionGeneration();
+    clearPrivateMedia();
+    preparePrivateModel();
     AS = M.kind === "machine";
     if (pub) {
       var P = C.fromPublic(pub);
@@ -112,6 +192,8 @@
     show($("ceState"), false);
     show($("lay"), true);
     render();
+    if (M.photoMedia && M.photoMedia.state === "pending") loadPrivateMedia("avatar", M.photoMedia, false);
+    if (M.bgPhotoMedia && M.bgPhotoMedia.state === "pending") loadPrivateMedia("background", M.bgPhotoMedia, false);
     if (M.textPending) barNote("有几句字在等站方看一眼；你自己照常看得到。");
   }
 
@@ -121,7 +203,7 @@
     var b = {};
     if (dirty.face_color) b.face_color = M.faceIdx;
     if (dirty.bg_preset) b.bg_preset = M.bgPreset;
-    if (dirty.bg_focus && M.bg && M.bg.photo) b.bg_focus = { x: Math.round(M.bg.px), y: Math.round(M.bg.py) };
+    if (dirty.bg_focus && hasBgPhoto()) b.bg_focus = { x: Math.round(M.bg.px), y: Math.round(M.bg.py) };
     if (dirty.display_name) b.display_name = M.name ? M.name : null;
     if (dirty.my_call) b.my_call = M.call || null;
     if (dirty.rel) b.rel = (M.rel.status || M.rel.note) ? { status: M.rel.status || null, note: M.rel.note || null } : null;
@@ -176,6 +258,7 @@
   }
   function paintPv() {
     $("pv").innerHTML = '<div class="cap">实时预览 · ' + esc(C.SKINS[M.skin][0]) + "</div>" + mini() + '<div class="pvfull">' + C.render(M, M.skin) + "</div>";
+    applyPrivateMedia();
   }
   function tabs() {
     return '<nav class="tabs" aria-label="名片的几步">' + STEPS.map(function (s, i) {
@@ -198,10 +281,10 @@
   }
   function bgPanel(canUpload) {
     var cardFace = '<div class="bgpv-card">' + C.faceSmall(M) + "<b>" + C.whoLine(M) + "</b></div>";
-    var h = '<div class="bgpv" id="bgpv" style="' + C.bgAttr(M.bg, "background:var(--bg-deep)") + '">' + cardFace + (M.bg && M.bg.photo ? '<span class="bgpv-tip">拖动选露出的部分</span>' : "") + "</div>";
+    var h = '<div class="bgpv" id="bgpv" style="' + C.bgAttr(M.bg, "background:var(--bg-deep)") + '">' + cardFace + (hasBgPhoto() ? '<span class="bgpv-tip">拖动选露出的部分</span>' : "") + "</div>";
     if (canUpload) {
       h += '<div class="two"><label class="go" for="bgfile">传一张横图</label><input type="file" id="bgfile" accept="image/jpeg,image/png,image/webp" hidden>' + (M.bg ? '<button type="button" class="go ghost" id="nobg">不要背景</button>' : "") + "</div>";
-      if (M.bg && M.bg.photo && M.bgPhotoMedia && M.bgPhotoMedia.state === "pending") h += '<p class="pend">已换上。背景图也要先过站方（待审），这段时间别人看到的是原来的背景；你自己马上就能看到。</p>';
+      if (hasBgPhoto() && M.bgPhotoMedia && M.bgPhotoMedia.state === "pending") h += '<p class="pend">已换上。背景图也要先过站方（待审），这段时间别人看到的是原来的背景；你自己马上就能看到。图片是否公开与名片正文是否挂出分别管理。</p>';
     }
     h += '<div class="fl" style="margin-top:14px">站里的背景 · 点一下就换</div><div class="bgs">' + C.BGS.map(function (b) {
       return '<button type="button" class="bgt' + (M.bg && !M.bg.photo && M.bg.preset === b.k ? " on" : "") + '" data-bg="' + b.k + '"><span style="background:' + b.css + '"></span>' + esc(b.zh) + "</button>";
@@ -264,9 +347,9 @@
         h += '<div class="two"><button type="button" class="go ghost" id="cropno">取消</button><button type="button" class="go" id="cropok">用这张</button></div>';
       } else {
         h += '<label class="slot" for="file" title="从相册选一张">' + C.faceSmall(M, "big") + '<span class="cam">换</span></label><input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden>';
-        h += '<div class="two"><label class="go" for="file">从相册选一张</label>' + (M.photo ? '<button type="button" class="go ghost" id="nophoto">不用照片了</button>' : "") + "</div>";
-        if (M.photo && M.photoMedia && M.photoMedia.state === "pending") h += '<p class="pend">已换上。别人看到之前要先过站方（待审），这段时间他们看到的还是原来的头像；你自己马上就能看到新的。</p>';
-        if (!M.photo) h += '<div class="fl" style="margin-top:18px">首字头像的底色</div><div class="sw">' + C.FACE_COLORS.map(function (c, i) { return '<button type="button" class="swc' + ((M.faceIdx == null ? 0 : M.faceIdx) === i ? " on" : "") + '" data-color="' + i + '" style="background:' + c + '" aria-label="底色 ' + (i + 1) + '"></button>'; }).join("") + '<button type="button" class="swc dice" data-color="rand" aria-label="随机挑一个底色">随机</button></div>';
+        h += '<div class="two"><label class="go" for="file">从相册选一张</label>' + (hasPhoto() ? '<button type="button" class="go ghost" id="nophoto">不用照片了</button>' : "") + "</div>";
+        if (hasPhoto() && M.photoMedia && M.photoMedia.state === "pending") h += '<p class="pend">已换上。别人看到之前要先过站方（待审），这段时间他们看到的还是原来的头像；你自己马上就能看到新的。图片是否公开与名片正文是否挂出分别管理。</p>';
+        if (!hasPhoto()) h += '<div class="fl" style="margin-top:18px">首字头像的底色</div><div class="sw">' + C.FACE_COLORS.map(function (c, i) { return '<button type="button" class="swc' + ((M.faceIdx == null ? 0 : M.faceIdx) === i ? " on" : "") + '" data-color="' + i + '" style="background:' + c + '" aria-label="底色 ' + (i + 1) + '"></button>'; }).join("") + '<button type="button" class="swc dice" data-color="rand" aria-label="随机挑一个底色">随机</button></div>';
       }
     } else if (k === "背景") {
       h += '<h2 class="q">换个主页背景</h2><p class="qsub">别人点进你主页，最上面那一大块就是它。可以传一张横图，也可以挑站里的。</p>' + bgPanel(true);
@@ -292,7 +375,7 @@
     } else {
       h += '<div class="final"><h2 class="q">挑一种样式，挂上主页</h2><p class="qsub">三种都是同一份内容，随时能换。</p><div class="tw">' + Object.keys(C.SKINS).map(function (key) { return '<button type="button" class="' + (key === M.skin ? "on" : "") + '" data-style="' + key + '" aria-pressed="' + (key === M.skin) + '">' + C.SKINS[key][0] + "</button>"; }).join("") + '</div><div class="big">' + C.render(M, M.skin) + "</div>";
       h += '<button type="button" class="hang" id="hang">' + (M.published ? "存好这一版" : "好了，挂上主页") + '</button><p class="hung" id="hung" role="status" aria-live="polite">' + (M.published ? '已经挂在主页上了。<a href="' + esc(C.cardHref(M.handle)) + '">去看我的名片主页 →</a>' : "") + "</p>";
-      if (M.published) h += '<div class="two" style="margin-top:14px"><button type="button" class="go ghost" id="unhang">先从主页收起来</button></div>';
+      if (M.published) h += '<div class="two" style="margin-top:14px"><button type="button" class="go ghost" id="unhang">先从主页收起来</button></div><p class="qsub">收起名片正文不会撤下已经通过审核的头像或背景；要撤图，请回到头像／背景步骤删除。</p>';
       if (!AS && M.machines.length) h += '<div class="ro"><div class="fl">我家机机 · 只读</div><div class="ro-row">' + M.machines.map(function (m) { return '<a class="ro-m" href="' + esc(C.cardHref(m.handle)) + '">' + C.avatar(m.av, "", m.display_name || m.handle) + "<b>" + esc(m.display_name || "@" + m.handle) + "</b>" + (m.call ? "<small>（" + esc(m.call) + "）</small>" : "") + "</a>"; }).join("") + '</div><p class="qsub">它们的头像、昵称和对你的称呼都是它们自己定的，这里改不了。</p></div>';
       h += "</div>";
     }
@@ -300,6 +383,7 @@
     paintPv();
     cropSetup();
     bgSetup();
+    applyPrivateMedia();
     $("prev").style.visibility = step ? "visible" : "hidden";
     $("next").hidden = k === "挂上";
     $("next").textContent = k === "一句话" ? "看看大卡 →" : "下一步 →";
@@ -353,6 +437,8 @@
     return round();
   }
   function cropDone() {
+    var identity = mediaIdentity();
+    if (!ownsMediaIdentity(identity)) return;
     var img = $("cropimg");
     var s = CROP.C / Math.min(CROP.w, CROP.h) * CROP.z, cv = document.createElement("canvas");
     cv.width = cv.height = 512;
@@ -363,25 +449,37 @@
     var btn = $("cropok");
     if (btn) { btn.disabled = true; btn.textContent = "正在传…"; }
     squeeze(cv, max, 256).then(function (blob) {
+      if (!ownsMediaIdentity(identity)) return;
       if (!blob) { echo("这张图压不下来，换一张试试"); if (btn) { btn.disabled = false; btn.textContent = "用这张"; } return; }
       return API.upload("/api/me/card/avatar", blob, "image/jpeg").then(function (r) {
+        if (!ownsMediaIdentity(identity)) return;
         if (!r.ok || !r.data) { echo(API.errorOf(r)); barNote(API.errorOf(r), true); if (btn) { btn.disabled = false; btn.textContent = "用这张"; } return; }
+        clearPrivateMedia("avatar");
         M.photoMedia = r.data.media;
-        M.photo = C.mediaSrc(r.data.media);
+        M.photo = null;
+        M.photoPrivate = true;
         CROP = { src: null };
         render();
         echo("换上了；别人那边要等站方看过");
         barNote("✓ " + (r.data.notice || "头像换上了"));
+        loadPrivateMedia("avatar", r.data.media, true);
       });
-    }).catch(function () { echo("这一步没走通，稍后再试"); if (btn) { btn.disabled = false; btn.textContent = "用这张"; } });
+    }).catch(function () { if (!ownsMediaIdentity(identity)) return; echo("这一步没走通，稍后再试"); if (btn) { btn.disabled = false; btn.textContent = "用这张"; } });
   }
 
   /* ── 背景：横图，宽 640–1600，宽高比 ≥ 1.3（不够就上下居中裁） ── */
   function uploadBg(file) {
+    if (backgroundUpload) { echo("上一张背景还在处理，完成后再换一张"); return; }
+    var identity = mediaIdentity();
+    if (!ownsMediaIdentity(identity)) return;
+    backgroundUpload = identity;
+    function finished() { if (backgroundUpload === identity) backgroundUpload = null; }
     var fr = new FileReader();
     fr.onload = function () {
+      if (!ownsMediaIdentity(identity)) { finished(); return; }
       var img = new Image();
       img.onload = function () {
+        if (!ownsMediaIdentity(identity)) { finished(); return; }
         var sw = img.naturalWidth, sh = img.naturalHeight, sy = 0;
         if (sw / sh < 1.3) { var nh = Math.round(sw / 1.5); sy = Math.round((sh - nh) / 2); sh = nh; }
         var W = Math.max(640, Math.min(1600, sw)), H = Math.round(W * sh / sw);
@@ -391,25 +489,30 @@
         var max = catalog && catalog.upload ? catalog.upload.background.max_bytes : 1536 * 1024;
         barNote("正在传背景…");
         squeeze(cv, max, 640).then(function (blob) {
+          if (!ownsMediaIdentity(identity)) return;
           if (!blob) { echo("这张图压不下来，换一张试试"); return; }
           return API.upload("/api/me/card/background", blob, "image/jpeg").then(function (r) {
+            if (!ownsMediaIdentity(identity)) return;
             if (!r.ok || !r.data) { echo(API.errorOf(r)); barNote(API.errorOf(r), true); return; }
+            clearPrivateMedia("background");
             M.bgPhotoMedia = r.data.media;
-            M.bg = { photo: C.mediaSrc(r.data.media), px: 50, py: 50 };
+            M.bg = { privatePhoto: true, px: 50, py: 50 };
             render();
             echo("背景换上了；拖一拖选露出的部分");
             barNote("✓ " + (r.data.notice || "背景换上了"));
+            loadPrivateMedia("background", r.data.media, true);
           });
-        }).catch(function () { echo("这一步没走通，稍后再试"); });
+        }).catch(function () { if (ownsMediaIdentity(identity)) echo("这一步没走通，稍后再试"); }).finally(finished);
       };
-      img.onerror = function () { echo("这张图读不出来，换一张试试"); };
+      img.onerror = function () { finished(); if (ownsMediaIdentity(identity)) echo("这张图读不出来，换一张试试"); };
       img.src = fr.result;
     };
+    fr.onerror = function () { finished(); if (ownsMediaIdentity(identity)) echo("这张图读不出来，换一张试试"); };
     fr.readAsDataURL(file);
   }
   function bgSetup() {
     var el = $("bgpv");
-    if (!el || !M.bg || !M.bg.photo) return;
+    if (!el || !hasBgPhoto()) return;
     var drag = null;
     el.addEventListener("pointerdown", function (ev) { if (ev.target.closest(".bgpv-card")) return; drag = { x: ev.clientX, y: ev.clientY, px: M.bg.px, py: M.bg.py }; el.setPointerCapture(ev.pointerId); });
     el.addEventListener("pointermove", function (ev) {
@@ -434,8 +537,9 @@
     if (f.size > 25 * 1024 * 1024) { echo("这张太大了，挑一张 25MB 以内的"); t.value = ""; return; }
     if (t.id === "bgfile") { uploadBg(f); return; }
     if (t.id !== "file") return;
+    var identity = mediaIdentity(), readEpoch = ++cropReadEpoch;
     var r = new FileReader();
-    r.onload = function () { CROP = { src: r.result, w: 0, h: 0, x: 0, y: 0, z: 1, C: 0, first: true }; render(); };
+    r.onload = function () { if (!ownsMediaIdentity(identity) || readEpoch !== cropReadEpoch) return; CROP = { src: r.result, w: 0, h: 0, x: 0, y: 0, z: 1, C: 0, first: true }; render(); };
     r.readAsDataURL(f);
   });
   app.addEventListener("input", function (e) {
@@ -454,30 +558,33 @@
   function nudge(btn, msg) { btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake"); echo(msg); }
   app.addEventListener("click", function (e) {
     var t = e.target.closest("button");
-    if (!t) return;
+    if (!t || !M) return;
+    var clickIdentity = mediaIdentity();
     var d = t.dataset;
     if (d.step != null) { go(+d.step); return; }
     if (t.id === "cropok") { cropDone(); return; }
     if (t.id === "cropno") { CROP = { src: null }; render(); return; }
     if (t.id === "nophoto") {
       API.del("/api/me/card/avatar").then(function (r) {
+        if (!ownsMediaIdentity(clickIdentity)) return;
         if (!r.ok) { echo(API.errorOf(r)); return; }
-        M.photo = null; M.photoMedia = null; render(); echo("换回首字头像");
+        clearPrivateMedia("avatar"); M.photo = null; M.photoPrivate = false; M.photoMedia = null; render(); echo("换回首字头像");
       });
       return;
     }
     if (t.id === "nobg") {
-      var hadPhoto = !!(M.bg && M.bg.photo);
+      var hadPhoto = hasBgPhoto();
       (hadPhoto ? API.del("/api/me/card/background") : Promise.resolve({ ok: true })).then(function (r) {
+        if (!ownsMediaIdentity(clickIdentity)) return;
         if (!r.ok) { echo(API.errorOf(r)); return; }
-        M.bg = null; M.bgPhotoMedia = null; M.bgPreset = null; dirty.bg_preset = true; render(); echo("背景拿掉了");
+        clearPrivateMedia("background"); M.bg = null; M.bgPhotoMedia = null; M.bgPreset = null; dirty.bg_preset = true; render(); echo("背景拿掉了");
       });
       return;
     }
     if (d.bg) {
-      var pick = function () { M.bg = { preset: d.bg }; M.bgPreset = d.bg; dirty.bg_preset = true; render(); echo("背景：" + C.BGS.filter(function (b) { return b.k === d.bg; })[0].zh); };
-      if (!AS && M.bg && M.bg.photo) {
-        API.del("/api/me/card/background").then(function (r) { if (!r.ok) { echo(API.errorOf(r)); return; } M.bgPhotoMedia = null; pick(); });
+      var pick = function () { if (!ownsMediaIdentity(clickIdentity)) return; M.bg = { preset: d.bg }; M.bgPreset = d.bg; dirty.bg_preset = true; render(); echo("背景：" + C.BGS.filter(function (b) { return b.k === d.bg; })[0].zh); };
+      if (!AS && hasBgPhoto()) {
+        API.del("/api/me/card/background").then(function (r) { if (!ownsMediaIdentity(clickIdentity)) return; if (!r.ok) { echo(API.errorOf(r)); return; } clearPrivateMedia("background"); M.bgPhotoMedia = null; pick(); });
       } else pick();
       return;
     }
@@ -549,6 +656,7 @@
     if (!e.target.closest("#openpv")) return;
     var s = $("sheet");
     s.innerHTML = '<div style="width:100%;max-width:400px">' + C.render(M, M.skin) + '<p style="text-align:center;color:#fff;font-size:13px;margin-top:18px">点任意处收起</p></div>';
+    applyPrivateMedia();
     s.hidden = false;
   });
   $("sheet").addEventListener("click", function () { this.hidden = true; });
@@ -557,5 +665,35 @@
   // 还有没存的改动就离开：先问一句
   window.addEventListener("beforeunload", function (e) {
     if (M && Object.keys(dirty).length) { e.preventDefault(); e.returnValue = ""; return ""; }
+  });
+  function identityChanged() {
+    clearPrivateMedia();
+    cropReadEpoch++;
+    CROP = { src: null };
+    backgroundUpload = null;
+    M = null;
+    $("app").textContent = "";
+    $("pv").textContent = "";
+    $("sheet").textContent = "";
+    $("sheet").hidden = true;
+    show($("bar"), false);
+    show($("lay"), false);
+    state("账号已经切换，请刷新后继续编辑当前账号的名片。");
+  }
+  window.addEventListener("rj-identity-change", identityChanged);
+  window.addEventListener("pagehide", function () {
+    clearPrivateMedia();
+    var cropImage = $("cropimg");
+    if (cropImage) cropImage.remove();
+    $("sheet").textContent = "";
+    $("sheet").hidden = true;
+    // 未提交裁切只留内存；pageshow核对modelGeneration后才重绘，切号会清CROP。
+  });
+  window.addEventListener("pageshow", function (event) {
+    if (!event.persisted || !M) return;
+    if (API.sessionGeneration() !== modelGeneration) { identityChanged(); return; }
+    render();
+    if (M.photoMedia && M.photoMedia.state === "pending") loadPrivateMedia("avatar", M.photoMedia, false);
+    if (M.bgPhotoMedia && M.bgPhotoMedia.state === "pending") loadPrivateMedia("background", M.bgPhotoMedia, false);
   });
 })();

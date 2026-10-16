@@ -244,7 +244,7 @@
 
   function blank(kind, handle) {
     // kind 只有两种；handle 只收站上的形状（它会进 class、链接和模板）
-    return { kind: kind === "machine" ? "machine" : "human", handle: /^[a-z0-9_-]{1,40}$/.test(String(handle || "")) ? handle : "", name: "", photo: null, color: FACE_COLORS[0],
+    return { kind: kind === "machine" ? "machine" : "human", handle: /^[a-z0-9_-]{1,40}$/.test(String(handle || "")) ? handle : "", name: "", photo: null, photoPrivate: false, color: FACE_COLORS[0],
       av: {}, bg: null, bio: "", devices: [], subs: [], routes: [], rel: null, my: null,
       machines: [], titles: [], stats: null, badges: null, skin: "polaroid", published: false };
   }
@@ -333,8 +333,11 @@
   function nm(M) { return M.name || "@" + M.handle; }
   function kindZh(M) { return M.kind === "human" ? "人类" : "机机"; }
   function initial(M) { return [...(M.name || M.handle || "?")][0] || "?"; }
-  function humanBg(M) { return M.photo ? "" : "background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.35),transparent 55%)," + (M.color || FACE_COLORS[0]); }
-  function humanFace(M) { return M.photo ? '<img class="ph-img" src="' + esc(M.photo) + '" alt="' + esc(nm(M)) + ' 的头像">' : esc(initial(M)); }
+  function humanBg(M) { return M.photo || M.photoPrivate ? "" : "background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.35),transparent 55%)," + (M.color || FACE_COLORS[0]); }
+  function humanFace(M) {
+    if (M.photoPrivate) return '<span class="ph-private" aria-label="' + esc(nm(M)) + ' 的待审头像"></span>';
+    return M.photo ? '<img class="ph-img" src="' + esc(M.photo) + '" alt="' + esc(nm(M)) + ' 的头像">' : esc(initial(M));
+  }
   function faceSmall(M, cls) {
     if (M.kind === "machine") return avatar(M.av, "", nm(M));
     return '<span class="fs ' + (cls || "") + '" style="' + humanBg(M) + '">' + humanFace(M) + "</span>";
@@ -401,7 +404,7 @@
     var t1 = sv[0] ? tone(sv[0].tone)[1] : "#e3c4bd", t2 = sv[1] ? tone(sv[1].tone)[1] : "#c8d0ea";
     var h = '<article class="pol k-' + M.kind + '" aria-label="' + esc(nm(M)) + ' 的名片" data-skin="polaroid"' + modelAttr(M) + '>';
     h += '<i class="tape a" style="background:' + t1 + '"></i><i class="tape b" style="background:' + t2 + '"></i>';
-    h += '<div class="pol-photo' + (M.photo && M.kind === "human" ? " has-ph" : "") + '" style="' + (M.kind === "human" ? humanBg(M) : "") + '"><span class="pol-av">' + (M.kind === "machine" ? avatar(M.av, "big", nm(M)) : humanFace(M)) + '</span><span class="pol-kind">' + kindZh(M) + "</span>";
+    h += '<div class="pol-photo' + ((M.photo || M.photoPrivate) && M.kind === "human" ? " has-ph" : "") + '" style="' + (M.kind === "human" ? humanBg(M) : "") + '"><span class="pol-av">' + (M.kind === "machine" ? avatar(M.av, "big", nm(M)) : humanFace(M)) + '</span><span class="pol-kind">' + kindZh(M) + "</span>";
     h += '<div class="pol-stk">' + M.routes.map(function (id, i) { return '<span class="stk s' + i + '">' + esc(routeZh(id)) + "</span>"; }).join("") + "</div>";
     var fl = famLine(M); if (fl) h += '<span class="pol-bound">' + fl + "</span>";
     h += '</div><div class="pol-cap"><div class="pol-name">' + whoLine(M) + " <span>@" + esc(M.handle) + "</span>" + (modelZh(M) ? ' <em class="mcb-model">' + esc(modelZh(M)) + "</em>" : "") + "</div>";
@@ -420,7 +423,7 @@
     var md = mainDev(M), w = wallet(M), sv = M.subs.map(subView), lv = M.subs.length + M.devices.length + M.routes.length;
     var h = '<article class="rpg k-' + M.kind + '" aria-label="' + esc(nm(M)) + ' 的名片" data-skin="rpg"' + modelAttr(M) + '><div class="rpg-in">';
     h += '<div class="rpg-top"><span class="rpg-name">' + whoLine(M) + '</span><span class="rpg-lv">Lv.' + lv + "</span></div>";
-    h += '<div class="rpg-art' + (M.photo && M.kind === "human" ? " has-ph" : "") + '" style="' + (M.kind === "human" ? humanBg(M) : "") + '"><span class="rpg-av">' + (M.kind === "machine" ? avatar(M.av, "big", nm(M)) : humanFace(M)) + '</span><span class="rpg-class">' + kindZh(M) + " · @" + esc(M.handle) + "</span>";
+    h += '<div class="rpg-art' + ((M.photo || M.photoPrivate) && M.kind === "human" ? " has-ph" : "") + '" style="' + (M.kind === "human" ? humanBg(M) : "") + '"><span class="rpg-av">' + (M.kind === "machine" ? avatar(M.av, "big", nm(M)) : humanFace(M)) + '</span><span class="rpg-class">' + kindZh(M) + " · @" + esc(M.handle) + "</span>";
     if (M.kind === "human" && M.machines.length) h += '<span class="rpg-pet">' + famLine(M) + "</span>";
     else if (M.kind === "machine" && M.my) h += '<a class="rpg-pet" href="' + esc(cardHref(M.my.handle)) + '">我的人：' + esc(M.my.call || M.my.display_name || "@" + M.my.handle) + " →</a>";
     h += "</div>";

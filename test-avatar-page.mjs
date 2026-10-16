@@ -6,6 +6,8 @@ const editor = readFileSync(new URL("./avatar-editor.js", import.meta.url), "utf
 const css = readFileSync(new URL("./avatar-v8.css", import.meta.url), "utf8");
 const card = readFileSync(new URL("./rj-card.js", import.meta.url), "utf8");
 const cardEditor = readFileSync(new URL("./card-edit.js", import.meta.url), "utf8");
+const cardPage = readFileSync(new URL("./card.js", import.meta.url), "utf8");
+const api = readFileSync(new URL("./rj-api.js", import.meta.url), "utf8");
 
 assert.ok(html.indexOf("avatar-v8.js") < html.indexOf("rj-card.js"), "shared card renderer loads after the v8 engine");
 assert.match(html, /data-mode="logo"/);
@@ -35,5 +37,14 @@ assert.match(css, /prefers-reduced-motion:reduce/);
 assert.match(card, /a\.mode === "character" && a\.character/, "the shared card renderer honors active character mode");
 assert.match(cardEditor, /C\.link\("avatar\.html"\)/, "the legacy card editor routes avatar work into the unified editor");
 assert.doesNotMatch(cardEditor, /dirty\.avatar/, "the legacy card editor cannot overwrite the resting logo recipe or active mode");
+assert.match(api, /redirect:\s*"error"/, "private media fetch rejects redirects");
+assert.match(api, /X-RJ-Session/, "private media fetch carries the selected session header");
+for (const page of [cardEditor, cardPage]) {
+  assert.match(page, /rj-identity-change/, "private media is cleared when the selected account changes");
+  assert.match(page, /pagehide/, "private media is revoked when the page leaves");
+  assert.match(page, /\.release\(\)/, "private media Blob URLs have an explicit release path");
+  assert.match(page, /image\.src\s*=\s*privateMedia\.avatar\.src/, "private avatar Blob URLs are assigned as DOM properties");
+}
+assert.doesNotMatch(card, /SAFE_PHOTO[^\n]*blob|blob:[^\n]*SAFE_PHOTO/, "the shared HTML renderer never widens its photo URL allowlist to Blob URLs");
 
 console.log("avatar page integration contract: ok");

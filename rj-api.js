@@ -248,6 +248,49 @@ window.RJ_API = (function () {
     });
   }
 
+  /**
+   * 名片图片预览：approved 沿公开 URL；pending 用当前选中会话取字节，再只在内存中造 Blob URL。
+   * 返回的 release 必须由页面在替换、切号或离页时调用。
+   */
+  function mediaPreview(media) {
+    var path = media && typeof media.url === "string" ? media.url : "";
+    if (!/^\/api\/media\/[A-Za-z0-9_-]{1,64}$/.test(path)) {
+      return Promise.resolve({ ok: false, status: 0, data: null });
+    }
+    var target = url(path);
+    if (media.state === "approved") {
+      return Promise.resolve({ ok: true, status: 200, src: target, public: true, release: function () {} });
+    }
+    if (media.state !== "pending") return Promise.resolve({ ok: false, status: 0, data: null });
+
+    var active = selectorState();
+    var headers = {};
+    if (active.session_id) headers["X-RJ-Session"] = active.session_id;
+    function current() {
+      var value = selectorState();
+      return value.generation === active.generation && value.session_id === active.session_id;
+    }
+    return fetch(target, { method: "GET", credentials: "include", cache: "no-store",
+      redirect: "error", headers: headers }).then(function (response) {
+      var type = String(response.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+      if (!response.ok || response.redirected || (response.url && response.url !== target)
+          || !/^image\/(jpeg|png|webp)$/.test(type)) {
+        return { ok: false, status: response.status, data: null };
+      }
+      return response.blob().then(function (blob) {
+        if (!current()) return { ok: false, status: 0, stale: true, data: null };
+        var src = URL.createObjectURL(blob);
+        if (!current()) {
+          URL.revokeObjectURL(src);
+          return { ok: false, status: 0, stale: true, data: null };
+        }
+        var released = false;
+        return { ok: true, status: response.status, src: src, public: false,
+          release: function () { if (!released) { released = true; URL.revokeObjectURL(src); } } };
+      });
+    }).catch(function () { return { ok: false, status: 0, data: null }; });
+  }
+
   /** 后端在不在。探一次就记住；探不到不抛异常、不打 console.error */
   function available() {
     if (!base) return Promise.resolve(null);
@@ -436,6 +479,7 @@ window.RJ_API = (function () {
     forget: forget,
     meUnavailable: function () { return meProblem; },
     sessionGeneration: function () { return selectorState().generation; },
+    mediaPreview: mediaPreview,
     errorOf: errorOf,
     nameOf: nameOf,
     nameNode: nameNode,
@@ -449,14 +493,18 @@ window.RJ_API = (function () {
     del: function (p, b, options) { return call("DELETE", p, b === undefined ? {} : b, options); },
     /** 传一张图（刀 K2 名片头像／背景）：请求体就是图片本身，content-type 是图片类型 */
     upload: function (p, blob, type) {
-      var active = selector();
+      var active = selectorState();
       var headers = { "content-type": type || blob.type };
-      if (active) headers["X-RJ-Session"] = active.session_id;
+      if (active.session_id) headers["X-RJ-Session"] = active.session_id;
       return fetch(url(p), { method: "POST", credentials: "include", cache: "no-store",
         headers: headers, body: blob }).then(function (r) {
         return r.text().then(function (t) {
           var data = null;
           try { data = t ? JSON.parse(t) : null; } catch (e) { data = null; }
+          var current = selectorState();
+          if (current.generation !== active.generation || current.session_id !== active.session_id) {
+            return { status: 0, ok: false, stale: true, data: null };
+          }
           return { status: r.status, ok: r.ok, data: data };
         });
       });
