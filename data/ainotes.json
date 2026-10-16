@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-15",
+  "updated_at": "2026-10-16",
   "items": [
     {
       "id": "bk-openai",
@@ -2488,6 +2488,82 @@
       ],
       "added_at": "2026-10-15",
       "last_verified": "2026-10-15",
+      "status": "verified"
+    },
+    {
+      "id": "bk-streaming",
+      "zh": "流式处理",
+      "en": "Stream Processing",
+      "aliases": [
+        "流处理",
+        "数据流处理"
+      ],
+      "tags": [
+        "概念",
+        "编程"
+      ],
+      "brief": "持续处理陆续到达的数据，不必等整批收齐。",
+      "line": "流式处理是对陆续到达的数据持续进行计算的方式，例如一边接收服务日志，一边更新统计。处理也可以按时间窗口汇总，并不是每来一条就必须立刻显示一个结果。",
+      "more": "数据流可以有明确终点，也可以持续产生。没有终点的流无法等到所有输入收齐后再开工，因此需要持续处理；有终点的数据也可以按批处理。[1]\n\nFlink 的流处理接口提供变换、聚合、窗口和状态等能力。流式处理描述的是数据如何被处理，不代表某个界面一定能做到零延迟。[2]\n\n这里讲的是数据计算；聊天界面逐段显示模型回答，通常说的是流式输出，阅读时要分清两个语境。",
+      "for_us": "遇到自动化里的实时统计，先看数据什么时候到、按条还是按窗口汇总，再看结果多久更新。这是本站的阅读提醒。",
+      "related": [
+        "bk-api",
+        "bk-webhook"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Apache Flink：有界与无界数据流",
+          "url": "https://flink.apache.org/what-is-flink/flink-architecture/"
+        },
+        {
+          "name": "Apache Flink：流处理接口、窗口与状态",
+          "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/overview/"
+        }
+      ],
+      "added_at": "2026-10-16",
+      "last_verified": "2026-10-16",
+      "status": "verified"
+    },
+    {
+      "id": "bk-webhook",
+      "zh": "Webhook",
+      "en": "Webhook",
+      "aliases": [
+        "网络钩子",
+        "事件回调"
+      ],
+      "tags": [
+        "概念",
+        "编程",
+        "建站"
+      ],
+      "brief": "发生指定事件后，主动把消息发到约定的网址。",
+      "line": "Webhook 是一种事件通知机制：订阅事件并留下接收地址，事件发生时，系统会向这个地址发送带有事件数据的 HTTP 请求。接收程序再按自己的规则处理，省去定时反复查询有没有新消息。",
+      "more": "例如 GitHub 仓库收到新提交后，可以用 Webhook 通知另一项服务去执行构建或发送提醒。Webhook 负责传递事件，后续动作仍要由接收端实现。[1]\n\n接收端应校验来源、使用 HTTPS，并处理漏送与重复投递。GitHub 不会自动重新投递失败的 Webhook，需要手动或通过 API 重新投递；同一次投递在重新发送时保留相同的投递标识，可以据此去重。不能把收到一次请求等同于任务已成功执行。[2][3]",
+      "for_us": "连接机器人和网站时，分清谁发事件、谁接请求、谁执行动作。回调地址里别塞 API 密钥；能收到通知，也不等于后续步骤已经完成。这是本站的使用提醒。",
+      "related": [
+        "bk-api",
+        "bk-streaming",
+        "bk-function-calling"
+      ],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "GitHub：关于 Webhook 与事件投递",
+          "url": "https://docs.github.com/en/webhooks/about-webhooks"
+        },
+        {
+          "name": "GitHub：Webhook 来源校验、补送与去重",
+          "url": "https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks"
+        },
+        {
+          "name": "GitHub：处理失败投递",
+          "url": "https://docs.github.com/en/webhooks/using-webhooks/handling-failed-webhook-deliveries"
+        }
+      ],
+      "added_at": "2026-10-16",
+      "last_verified": "2026-10-16",
       "status": "verified"
     }
   ]
