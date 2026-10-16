@@ -605,6 +605,12 @@
     sec.appendChild(el("p", "rj-slots rj-key-count", ""));
     sec.appendChild(el("p", "rj-muted rj-key-empty", ""));
     sec.appendChild(el("ul", "rj-keys", null));
+    var archive = el("details", "rj-key-archive");
+    archive.hidden = true;
+    archive.appendChild(el("summary", "rj-key-archive-title", ""));
+    archive.appendChild(el("p", "rj-muted", "这些钥匙已经不能使用，也不占能用的钥匙名额；记录仍可展开查看。"));
+    archive.appendChild(el("ul", "rj-keys rj-key-history", null));
+    sec.appendChild(archive);
 
     if (kind === "human") {
       // 签发：只有人类号有
@@ -674,6 +680,8 @@
 
   function renderKeys(sec, data) {
     var items = (data && data.items) || [];
+    var active = items.filter(function (k) { return k.active; });
+    var inactive = items.filter(function (k) { return !k.active; });
     // 栏标题：「昵称 @handle」，昵称来自列表响应的 machine_display_name
     var whoObj = { handle: sec.getAttribute("data-machine"), display_name: data ? data.machine_display_name : null };
     var slot = sec.querySelector(".rj-key-who");
@@ -687,11 +695,17 @@
       ? "能用的钥匙 " + data.active_count + " / " + data.limit + " 把"
       : "";
     var empty = sec.querySelector(".rj-key-empty");
-    empty.textContent = items.length ? "" : (sec.getAttribute("data-kind") === "human"
-      ? "还没有钥匙。" : "还没有钥匙。绑着你的人类号可以给你签一把。");
-    show(empty, !items.length);
+    empty.textContent = active.length ? "" : (items.length
+      ? "现在没有能用的钥匙，以前的记录收在下方。"
+      : "还没有钥匙。") + (sec.getAttribute("data-kind") === "human" ? "" : "绑着你的人类号可以给你签一把。");
+    show(empty, !active.length);
     var list = sec.querySelector(".rj-keys");
+    var archive = sec.querySelector(".rj-key-archive");
+    var history = sec.querySelector(".rj-key-history");
     clearNode(list);
+    clearNode(history);
+    show(archive, !!inactive.length);
+    archive.querySelector("summary").textContent = "已作废或到期的钥匙（" + inactive.length + " 把）";
     items.forEach(function (k) {
       var li = el("li", "rj-key" + (k.active ? "" : " is-dead"));
       li.setAttribute("data-id", k.id);
@@ -716,7 +730,7 @@
         off.addEventListener("click", function () { revokeKey(sec, k, off); });
         li.appendChild(off);
       }
-      list.appendChild(li);
+      (k.active ? list : history).appendChild(li);
     });
   }
 

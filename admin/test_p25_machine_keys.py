@@ -334,6 +334,7 @@ class MachineKeyPanelDom(unittest.TestCase):
             for piece in ("旧的", "能用", "comment:write", "2031-01-02", "2031-07-01", "2031-02-03"):
                 self.assertIn(piece, t)
             dead = sec.locator('.rj-key[data-id="mt_dead"]')
+            sec.locator(".rj-key-archive > summary").click()
             self.assertIn("已作废", dead.inner_text())
             self.assertIn("还没用过", dead.inner_text())
             self.assertEqual(dead.locator(".rj-key-revoke").count(), 0, "作废了的钥匙不该还有作废按钮")
@@ -378,7 +379,10 @@ class MachineKeyPanelDom(unittest.TestCase):
             sec.locator('.rj-key[data-id="mt_new"]').wait_for()
             html = page.content()
             self.assertEqual(html.count(FakeBackend.TOKEN), 1, "明文只能出现在明文框里一次")
-            self.assertNotIn(FakeBackend.TOKEN, sec.locator(".rj-keys").inner_html())
+            self.assertNotIn(FakeBackend.TOKEN, "".join(sec.locator(".rj-keys").evaluate_all(
+                "nodes => nodes.map(node => node.innerHTML)")))
+            self.assertTrue(sec.locator(".rj-key-archive").evaluate("n => n.open"),
+                            "列表刷新应保留已经展开的历史记录")
             self.assertIn("2031-08-31", sec.locator('.rj-key[data-id="mt_new"]').inner_text())
             self.assertEqual(sec.locator(".rj-key-label").input_value(), "", "签完备注框清空")
 
@@ -409,6 +413,59 @@ class MachineKeyPanelDom(unittest.TestCase):
             self.assertEqual(errors, ["Failed to load resource: the server responded with a status of 400 (Bad Request)"])
         finally:
             ctx.close()
+
+    def test_inactive_keys_are_collapsed_for_both_account_kinds(self) -> None:
+        for kind in ("human", "machine"):
+            with self.subTest(kind=kind):
+                fake = FakeBackend(kind, [binding("fake-bot")] if kind == "human"
+                                   else [binding("fake-human", kind="human")])
+                fake.keys["fake-bot"].append(env({"id": "mt_expired", "machine": "fake-bot",
+                                                 "label": "到期的", "expired": True, "active": False}))
+                ctx, page, errors = self.open(fake, VP390)
+                page.set_default_timeout(2000)
+                try:
+                    sec = page.locator('.rj-keyset[data-machine="fake-bot"]')
+                    archive = sec.locator("details.rj-key-archive")
+                    archive.wait_for(state="visible")
+                    self.assertFalse(archive.evaluate("n => n.open"))
+                    self.assertTrue(sec.locator('[data-id="mt_old"]').is_visible())
+                    self.assertFalse(sec.locator('[data-id="mt_dead"]').is_visible())
+                    self.assertFalse(sec.locator('[data-id="mt_expired"]').is_visible())
+                    self.assertIn("2", archive.locator("summary").inner_text())
+                    self.assertEqual(sec.locator(".rj-key-count").inner_text(), "能用的钥匙 1 / 5 把")
+                    summary = archive.locator("summary")
+                    summary.focus()
+                    summary.press("Enter")
+                    self.assertTrue(sec.locator('[data-id="mt_dead"]').is_visible())
+                    self.assertIn("已过期", sec.locator('[data-id="mt_expired"]').inner_text())
+                    self.assertEqual(archive.locator(".rj-key-revoke").count(), 0)
+                    self.assertFalse(any(c[0] == "DELETE" for c in fake.calls))
+                    self.assertFalse(page.evaluate("document.documentElement.scrollWidth > innerWidth"))
+                    self.assertGreaterEqual(summary.bounding_box()["height"], 44)
+                    self.assertEqual(errors, [])
+                finally:
+                    ctx.close()
+
+    def test_all_inactive_and_empty_lists_keep_issuing_available(self) -> None:
+        for keys in ([], [env({"id": "mt_dead", "machine": "fake-bot", "active": False, "revoked": True})]):
+            with self.subTest(keys=len(keys)):
+                fake = FakeBackend("human", [binding("fake-bot")])
+                fake.keys["fake-bot"] = keys
+                ctx, page, errors = self.open(fake)
+                page.set_default_timeout(2000)
+                try:
+                    sec = page.locator('.rj-keyset[data-machine="fake-bot"]')
+                    sec.locator(".rj-key-count").wait_for()
+                    self.assertIn("能用的钥匙 0 / 5 把", sec.inner_text())
+                    self.assertTrue(sec.locator(".rj-key-empty").is_visible())
+                    self.assertEqual(sec.locator("details.rj-key-archive").is_visible(), bool(keys))
+                    sec.locator(".rj-key-go").click()
+                    sec.locator('[data-id="mt_new"]').wait_for(state="visible")
+                    self.assertIn("能用的钥匙 1 / 5 把", sec.locator(".rj-key-count").inner_text())
+                    self.assertFalse(any(c[0] == "DELETE" for c in fake.calls))
+                    self.assertEqual(errors, [])
+                finally:
+                    ctx.close()
 
     def test_machine_sees_own_list_and_revoke_but_no_issue(self) -> None:
         fake = FakeBackend("machine", [binding("fake-human", kind="human")])

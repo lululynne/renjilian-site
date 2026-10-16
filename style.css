@@ -825,6 +825,9 @@ a.rjc-handle-link{display:inline-block;padding:12px 2px;margin:-12px 0;line-heig
 .rj-keys:empty{display:none}
 .rj-key{border:1px solid var(--line);border-radius:8px;padding:10px 12px 12px;margin-top:8px;background:var(--card)}
 .rj-key.is-dead{background:var(--card-block)}
+.rj-key-archive{margin-top:12px;border-top:1px solid var(--line)}
+.rj-key-archive>summary{min-height:44px;padding:12px 0;box-sizing:border-box;cursor:pointer;font-size:14px;font-weight:650;color:var(--ink-soft);overflow-wrap:anywhere}
+.rj-key-archive>summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .rj-key-name{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:14.5px;font-weight:650;overflow-wrap:anywhere}
 .rj-key-state{font-size:12px;font-weight:600;color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
 .rj-key-meta{display:flex;flex-wrap:wrap;gap:2px 16px;margin:6px 0 0;font-size:12.5px;line-height:1.7;color:var(--ink-soft)}
