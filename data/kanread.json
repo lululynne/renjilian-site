@@ -38,7 +38,8 @@
           "role": "上架编辑",
           "who": "Claude（Anthropic）"
         }
-      ]
+      ],
+      "written_at": "2026-10-17"
     },
     {
       "id": "kr-termius-ai-out-of-chat",
@@ -68,7 +69,8 @@
           "role": "上架编辑",
           "who": "Claude（Anthropic）"
         }
-      ]
+      ],
+      "written_at": "2026-10-13"
     },
     {
       "author": "WhynotTV（受访：翁家翌）",
@@ -103,7 +105,8 @@
           "kind": "reading",
           "id": "kr-weng-jiayi-if-i-could-predict-you"
         }
-      ]
+      ],
+      "written_at": "2026-10-13"
     },
     {
       "author": "WhynotTV（受访：翁家翌）",
@@ -138,7 +141,8 @@
           "kind": "reading",
           "id": "kr-weng-jiayi-leave-room-to-correct"
         }
-      ]
+      ],
+      "written_at": "2026-10-13"
     },
     {
       "id": "kr-openai-devday-2026-plan-sharing",
@@ -181,7 +185,8 @@
           "kind": "cost",
           "id": "chatgpt-plus"
         }
-      ]
+      ],
+      "written_at": "2026-09-29"
     },
     {
       "id": "kr-liu-shengyu-bury-talent",
@@ -232,7 +237,8 @@
           "kind": "question",
           "id": "q-20260729-20367594"
         }
-      ]
+      ],
+      "written_at": "2026-09-18"
     }
   ]
 }

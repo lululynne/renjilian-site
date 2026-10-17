@@ -366,9 +366,11 @@
     }
 
     var meta = [];
+    // 梅宝 2026-10-17：页面上的时间是我们写完稿的日期；原文日期是人家的，跟在出处后面
+    if (it.written_at) meta.push("写于 " + esc(it.written_at));
     if (it.author) meta.push(esc(it.author));
     meta.push(esc(it.source_name));
-    meta.push(esc(it.published_at));
+    meta.push((it.written_at ? "原文 " : "") + esc(it.published_at));
     parts.push('<p class="kr-meta">' + meta.join(" · ") + '</p>');
 
     // 阅读顺序（梅宝 2026-09-18 定）：原文入口在最前 → 人声／机声 → 评论区。
@@ -461,8 +463,10 @@
   var DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
   // 目录项：只列日期、标题、钩子、标签、出处；整张卡可点（.kr-index-link::after 铺满）
+  function krDate(it) { return String(it.written_at || it.published_at || ""); }
+
   function indexItemHtml(it) {
-    var d = String(it.published_at || "");
+    var d = krDate(it);
     var meta = '<p class="kr-index-meta">' +
       (DATE_RE.test(d) ? '<time datetime="' + esc(d) + '">' + esc(d.slice(5)) + "</time>" : "") +
       (it.status === "unavailable" ? '<span class="kr-index-stale">原文入口已失效</span>' : "") + "</p>";
@@ -482,16 +486,16 @@
   }
 
   function buildIndex(items) {
-    // 先按 published_at 从新到旧稳定排序，再按月分组；日期不合规的沉到最后「未注明日期」
+    // 先按写稿日期（written_at，没有就退回 published_at）从新到旧稳定排序，再按月分组；日期不合规的沉到最后「未注明日期」
     var sorted = items.map(function (it, i) { return [it, i]; });
     sorted.sort(function (a, b) {
-      var cmp = String(b[0].published_at || "").localeCompare(String(a[0].published_at || ""));
+      var cmp = krDate(b[0]).localeCompare(krDate(a[0]));
       return cmp || a[1] - b[1];
     });
     var groups = [], byKey = {};
     sorted.forEach(function (pair) {
       var it = pair[0];
-      var d = String(it.published_at || "");
+      var d = krDate(it);
       var key = DATE_RE.test(d) ? d.slice(0, 7) : "";
       if (!byKey[key]) { byKey[key] = []; groups.push(key); }
       byKey[key].push(it);
