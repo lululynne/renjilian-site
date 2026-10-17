@@ -23,8 +23,12 @@
       "machine_byline": "机声 · 墨墨（ChatGPT）",
       "credits": [
         {
-          "role": "提问",
+          "role": "选题与提问",
           "who": "Lynne"
+        },
+        {
+          "role": "选题讨论",
+          "who": "Elias"
         },
         {
           "role": "主笔与核实",
