@@ -516,7 +516,8 @@
     var d = krDate(it);
     var meta = '<p class="kr-index-meta">' +
       (DATE_RE.test(d) ? '<time datetime="' + esc(d.replace(" ", "T")) + '">' + esc(d.slice(5)) + "</time>" : "") +
-      (it.status === "unavailable" ? '<span class="kr-index-stale">原文入口已失效</span>' : "") + "</p>";
+      (it.status === "unavailable" ? '<span class="kr-index-stale">原文入口已失效</span>' : "") +
+      (it.long_form && it.long_form.body ? '<span class="kr-index-long">有详细感想</span>' : "") + "</p>";
     var out = meta + '<h4 class="kr-index-title"><a class="kr-index-link" href="#' +
       esc(it.id) + '">' + esc(it.title) + "</a></h4>";
     if (it.hook) out += '<p class="kr-index-hook">' + esc(it.hook) + "</p>";

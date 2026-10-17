@@ -1387,3 +1387,4 @@ body.bk-full .bk-b,.bk-card.is-full .bk-b,body.bk-full .bk-detail-row,.bk-card.i
 .kr-long blockquote{padding:10px 14px;border-left:3px solid var(--human);color:var(--ink);font-size:15.5px;line-height:1.85}
 .kr-long ul{padding-left:1.2em}
 .kr-long a{color:var(--sp-link);word-break:break-all}
+.kr-index-long{margin-left:8px;padding:1px 7px;border:1px solid var(--machine);border-radius:999px;font-size:11px;color:var(--ink)}
