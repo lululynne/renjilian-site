@@ -354,6 +354,39 @@
     setMode(next.getAttribute("data-mode"));
   });
 
+  // 详细感想：只认几种最简单的写法（## 小标题、> 引用、- 列表、[字](https://…) 链接），其余一律当普通段落转义
+  function longInline(t) {
+    return esc(t).replace(/\[([^\]]+)\]\((https:\/\/[^\s)]+)\)/g, function (_, a, u) {
+      return '<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + a + '</a>';
+    }).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  }
+  function longHtml(body) {
+    return String(body).split(/\n{2,}/).map(function (b) {
+      b = b.trim();
+      if (!b) return "";
+      var m = b.match(/^(#{2,4})\s+(.+)$/);
+      if (m && b.indexOf("\n") < 0) return m[1].length === 2 ? "<h4>" + longInline(m[2]) + "</h4>" : "<h5>" + longInline(m[2]) + "</h5>";
+      var lines = b.split("\n");
+      if (lines.every(function (l) { return /^>\s?/.test(l); })) {
+        return "<blockquote>" + lines.map(function (l) { return longInline(l.replace(/^>\s?/, "")); }).join("<br>") + "</blockquote>";
+      }
+      if (lines.every(function (l) { return /^[-*]\s+/.test(l); })) {
+        return "<ul>" + lines.map(function (l) { return "<li>" + longInline(l.replace(/^[-*]\s+/, "")) + "</li>"; }).join("") + "</ul>";
+      }
+      return "<p>" + lines.map(longInline).join("<br>") + "</p>";
+    }).join("");
+  }
+
+  document.addEventListener("click", function (e) {
+    var t = e.target && e.target.closest ? e.target.closest(".kr-tab") : null;
+    if (!t) return;
+    var v = t.getAttribute("data-view"), box = t.closest("article");
+    if (!box) return;
+    box.querySelectorAll(".kr-tab").forEach(function (b) { b.setAttribute("aria-selected", String(b === t)); });
+    box.querySelectorAll(".kr-panel").forEach(function (pn) { pn.hidden = pn.getAttribute("data-view") !== v; });
+    try { localStorage.setItem("rj.kanread.view", v); } catch (_) {}
+  });
+
   function card(it) {
     var art = document.createElement("article");
     art.className = "card kanread-card" + (it.status === "unavailable" ? " is-stale" : "");
@@ -366,9 +399,11 @@
     }
 
     var meta = [];
+    // 梅宝 2026-10-17：页面上的时间是我们写完稿的日期；原文日期是人家的，跟在出处后面
+    if (it.written_at) meta.push("编辑于 " + esc(it.written_at));
     if (it.author) meta.push(esc(it.author));
     meta.push(esc(it.source_name));
-    meta.push(esc(it.published_at));
+    meta.push((it.written_at ? "原文 " : "") + esc(it.published_at));
     parts.push('<p class="kr-meta">' + meta.join(" · ") + '</p>');
 
     // 阅读顺序（梅宝 2026-09-18 定）：原文入口在最前 → 人声／机声 → 评论区。
@@ -387,6 +422,7 @@
         "</p>");
     }
     if (it.hook) parts.push('<p class="kr-hook">' + esc(it.hook) + "</p>");
+    var vStart = parts.length;   // 双读面板从这里开始（有 long_form 时整段收进第一个分页）
     // 小纸条：两个声部先各自算好正文与页下注；有任何一处可显示标记才放开关（在人声段上方）
     var mk = NOTES && NOTES.marks[it.id];
     var hv = it.human_voice ? voiceBody(it.human_voice, mk && mk.human_voice) : null;
@@ -418,6 +454,19 @@
               '<em class="kr-context">' + esc(r.context) + '</em></p>'
             : '') + body;
         }).join("") + '</div>');
+    }
+    if (it.long_form && it.long_form.body) {
+      // 梅宝 2026-10-17：一张卡两种读法——「人声／机声双读」是原来那样，「详细感想」是作者的长文全稿
+      var dual = parts.splice(vStart, parts.length - vStart).join("");
+      var view = "dual";
+      try { if (localStorage.getItem("rj.kanread.view") === "long") view = "long"; } catch (_) {}
+      parts.push('<div class="kr-tabs" role="tablist" aria-label="阅读模式">' +
+        '<button type="button" role="tab" class="kr-tab" data-view="dual" aria-selected="' + (view === "dual") + '">人声／机声双读</button>' +
+        '<button type="button" role="tab" class="kr-tab" data-view="long" aria-selected="' + (view === "long") + '">详细感想</button></div>' +
+        '<div class="kr-panel" data-view="dual" role="tabpanel"' + (view === "dual" ? "" : " hidden") + '>' + dual + '</div>' +
+        '<div class="kr-panel kr-long" data-view="long" role="tabpanel"' + (view === "long" ? "" : " hidden") + '>' +
+        (it.long_form.byline ? '<span class="kr-long-by">' + esc(it.long_form.byline) + '</span>' : '') +
+        longHtml(it.long_form.body) + '</div>');
     }
     if (it.credits && it.credits.length) {
       parts.push('<p class="kr-credits">' + it.credits.map(function (c) {
@@ -458,14 +507,17 @@
     try { return decodeURIComponent(raw); } catch (_) { return raw; }
   }
 
-  var DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  var DATE_RE = /^\d{4}-\d{2}-\d{2}( \d{2}:\d{2})?$/;
 
   // 目录项：只列日期、标题、钩子、标签、出处；整张卡可点（.kr-index-link::after 铺满）
+  function krDate(it) { return String(it.written_at || it.published_at || ""); }
+
   function indexItemHtml(it) {
-    var d = String(it.published_at || "");
+    var d = krDate(it);
     var meta = '<p class="kr-index-meta">' +
-      (DATE_RE.test(d) ? '<time datetime="' + esc(d) + '">' + esc(d.slice(5)) + "</time>" : "") +
-      (it.status === "unavailable" ? '<span class="kr-index-stale">原文入口已失效</span>' : "") + "</p>";
+      (DATE_RE.test(d) ? '<time datetime="' + esc(d.replace(" ", "T")) + '">' + esc(d.slice(5)) + "</time>" : "") +
+      (it.status === "unavailable" ? '<span class="kr-index-stale">原文入口已失效</span>' : "") +
+      (it.long_form && it.long_form.body ? '<span class="kr-index-long">有详细感想</span>' : "") + "</p>";
     var out = meta + '<h4 class="kr-index-title"><a class="kr-index-link" href="#' +
       esc(it.id) + '">' + esc(it.title) + "</a></h4>";
     if (it.hook) out += '<p class="kr-index-hook">' + esc(it.hook) + "</p>";
@@ -482,16 +534,16 @@
   }
 
   function buildIndex(items) {
-    // 先按 published_at 从新到旧稳定排序，再按月分组；日期不合规的沉到最后「未注明日期」
+    // 先按写稿日期（written_at，没有就退回 published_at）从新到旧稳定排序，再按月分组；日期不合规的沉到最后「未注明日期」
     var sorted = items.map(function (it, i) { return [it, i]; });
     sorted.sort(function (a, b) {
-      var cmp = String(b[0].published_at || "").localeCompare(String(a[0].published_at || ""));
+      var cmp = krDate(b[0]).localeCompare(krDate(a[0]));
       return cmp || a[1] - b[1];
     });
     var groups = [], byKey = {};
     sorted.forEach(function (pair) {
       var it = pair[0];
-      var d = String(it.published_at || "");
+      var d = krDate(it);
       var key = DATE_RE.test(d) ? d.slice(0, 7) : "";
       if (!byKey[key]) { byKey[key] = []; groups.push(key); }
       byKey[key].push(it);

@@ -106,7 +106,7 @@
       });
       if (!items.length) return;
       var latest = items.slice().sort(function (a, b) {
-        return String(b.published_at || "").localeCompare(String(a.published_at || ""));
+        return String(b.written_at || b.published_at || "").localeCompare(String(a.written_at || a.published_at || ""));
       })[0];
       strip.setAttribute("href", "kanread.html#" + encodeURIComponent(latest.id));
       strip.querySelector(".ks-label").textContent = "刊读 · 最新精读";
