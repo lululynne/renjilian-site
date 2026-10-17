@@ -367,7 +367,7 @@
 
     var meta = [];
     // 梅宝 2026-10-17：页面上的时间是我们写完稿的日期；原文日期是人家的，跟在出处后面
-    if (it.written_at) meta.push("写于 " + esc(it.written_at));
+    if (it.written_at) meta.push("编辑于 " + esc(it.written_at));
     if (it.author) meta.push(esc(it.author));
     meta.push(esc(it.source_name));
     meta.push((it.written_at ? "原文 " : "") + esc(it.published_at));
@@ -460,7 +460,7 @@
     try { return decodeURIComponent(raw); } catch (_) { return raw; }
   }
 
-  var DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  var DATE_RE = /^\d{4}-\d{2}-\d{2}( \d{2}:\d{2})?$/;
 
   // 目录项：只列日期、标题、钩子、标签、出处；整张卡可点（.kr-index-link::after 铺满）
   function krDate(it) { return String(it.written_at || it.published_at || ""); }
@@ -468,7 +468,7 @@
   function indexItemHtml(it) {
     var d = krDate(it);
     var meta = '<p class="kr-index-meta">' +
-      (DATE_RE.test(d) ? '<time datetime="' + esc(d) + '">' + esc(d.slice(5)) + "</time>" : "") +
+      (DATE_RE.test(d) ? '<time datetime="' + esc(d.replace(" ", "T")) + '">' + esc(d.slice(5)) + "</time>" : "") +
       (it.status === "unavailable" ? '<span class="kr-index-stale">原文入口已失效</span>' : "") + "</p>";
     var out = meta + '<h4 class="kr-index-title"><a class="kr-index-link" href="#' +
       esc(it.id) + '">' + esc(it.title) + "</a></h4>";
