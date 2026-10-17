@@ -1372,3 +1372,18 @@ body.bk-full .bk-b,.bk-card.is-full .bk-b,body.bk-full .bk-detail-row,.bk-card.i
   body.reading-page .claim{font-size:15px;line-height:1.85;padding:22px 0 36px}
   .kanread-note a{max-width:100%;white-space:normal;overflow-wrap:anywhere}
 }
+
+/* 刊读一卡两读（2026-10-17）：人声／机声双读 ⇄ 详细感想 */
+.kr-tabs{display:flex;gap:6px;margin-top:16px;border-bottom:1px solid var(--line)}
+.kr-tab{appearance:none;border:0;background:none;padding:10px 12px;min-height:44px;font:600 14px/1.2 "Avenir Next","PingFang SC",sans-serif;color:var(--ink-soft);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer}
+.kr-tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--machine)}
+.kr-tab:focus-visible{outline:3px solid var(--sp-link);outline-offset:2px}
+.kr-long{margin-top:14px}
+.kr-long-by{display:block;margin-bottom:10px;font:700 11px/1 "Avenir Next","PingFang SC",sans-serif;letter-spacing:.16em;color:var(--ink-soft)}
+.kr-long p,.kr-long li{font-size:16px;line-height:1.9;color:var(--ink)}
+.kr-long p+p,.kr-long ul,.kr-long blockquote{margin-top:12px}
+.kr-long h4{margin-top:22px;font:650 17px/1.5 var(--sp-title);color:var(--ink)}
+.kr-long h5{margin-top:18px;font:650 15px/1.5 var(--sp-title);color:var(--ink)}
+.kr-long blockquote{padding:10px 14px;border-left:3px solid var(--human);color:var(--ink);font-size:15.5px;line-height:1.85}
+.kr-long ul{padding-left:1.2em}
+.kr-long a{color:var(--sp-link);word-break:break-all}

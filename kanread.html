@@ -354,6 +354,39 @@
     setMode(next.getAttribute("data-mode"));
   });
 
+  // 详细感想：只认几种最简单的写法（## 小标题、> 引用、- 列表、[字](https://…) 链接），其余一律当普通段落转义
+  function longInline(t) {
+    return esc(t).replace(/\[([^\]]+)\]\((https:\/\/[^\s)]+)\)/g, function (_, a, u) {
+      return '<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + a + '</a>';
+    }).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  }
+  function longHtml(body) {
+    return String(body).split(/\n{2,}/).map(function (b) {
+      b = b.trim();
+      if (!b) return "";
+      var m = b.match(/^(#{2,4})\s+(.+)$/);
+      if (m && b.indexOf("\n") < 0) return m[1].length === 2 ? "<h4>" + longInline(m[2]) + "</h4>" : "<h5>" + longInline(m[2]) + "</h5>";
+      var lines = b.split("\n");
+      if (lines.every(function (l) { return /^>\s?/.test(l); })) {
+        return "<blockquote>" + lines.map(function (l) { return longInline(l.replace(/^>\s?/, "")); }).join("<br>") + "</blockquote>";
+      }
+      if (lines.every(function (l) { return /^[-*]\s+/.test(l); })) {
+        return "<ul>" + lines.map(function (l) { return "<li>" + longInline(l.replace(/^[-*]\s+/, "")) + "</li>"; }).join("") + "</ul>";
+      }
+      return "<p>" + lines.map(longInline).join("<br>") + "</p>";
+    }).join("");
+  }
+
+  document.addEventListener("click", function (e) {
+    var t = e.target && e.target.closest ? e.target.closest(".kr-tab") : null;
+    if (!t) return;
+    var v = t.getAttribute("data-view"), box = t.closest("article");
+    if (!box) return;
+    box.querySelectorAll(".kr-tab").forEach(function (b) { b.setAttribute("aria-selected", String(b === t)); });
+    box.querySelectorAll(".kr-panel").forEach(function (pn) { pn.hidden = pn.getAttribute("data-view") !== v; });
+    try { localStorage.setItem("rj.kanread.view", v); } catch (_) {}
+  });
+
   function card(it) {
     var art = document.createElement("article");
     art.className = "card kanread-card" + (it.status === "unavailable" ? " is-stale" : "");
@@ -389,6 +422,7 @@
         "</p>");
     }
     if (it.hook) parts.push('<p class="kr-hook">' + esc(it.hook) + "</p>");
+    var vStart = parts.length;   // 双读面板从这里开始（有 long_form 时整段收进第一个分页）
     // 小纸条：两个声部先各自算好正文与页下注；有任何一处可显示标记才放开关（在人声段上方）
     var mk = NOTES && NOTES.marks[it.id];
     var hv = it.human_voice ? voiceBody(it.human_voice, mk && mk.human_voice) : null;
@@ -420,6 +454,19 @@
               '<em class="kr-context">' + esc(r.context) + '</em></p>'
             : '') + body;
         }).join("") + '</div>');
+    }
+    if (it.long_form && it.long_form.body) {
+      // 梅宝 2026-10-17：一张卡两种读法——「人声／机声双读」是原来那样，「详细感想」是作者的长文全稿
+      var dual = parts.splice(vStart, parts.length - vStart).join("");
+      var view = "dual";
+      try { if (localStorage.getItem("rj.kanread.view") === "long") view = "long"; } catch (_) {}
+      parts.push('<div class="kr-tabs" role="tablist" aria-label="阅读模式">' +
+        '<button type="button" role="tab" class="kr-tab" data-view="dual" aria-selected="' + (view === "dual") + '">人声／机声双读</button>' +
+        '<button type="button" role="tab" class="kr-tab" data-view="long" aria-selected="' + (view === "long") + '">详细感想</button></div>' +
+        '<div class="kr-panel" data-view="dual" role="tabpanel"' + (view === "dual" ? "" : " hidden") + '>' + dual + '</div>' +
+        '<div class="kr-panel kr-long" data-view="long" role="tabpanel"' + (view === "long" ? "" : " hidden") + '>' +
+        (it.long_form.byline ? '<span class="kr-long-by">' + esc(it.long_form.byline) + '</span>' : '') +
+        longHtml(it.long_form.body) + '</div>');
     }
     if (it.credits && it.credits.length) {
       parts.push('<p class="kr-credits">' + it.credits.map(function (c) {
