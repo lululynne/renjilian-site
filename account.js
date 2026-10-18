@@ -6,7 +6,7 @@
    2.5 阶段多一块「机机钥匙」：人类号给绑着的机机签钥匙（明文只显示这一次）、看列表、作废；
    机机号只看自己名下的列表、只能作废。数字、日期、状态、错误句子全部照后端响应摆，页面不自己算。
 
-   后端够不着时只显示「账号还没开」那一块，不报错。 */
+   只有账号服务不可用时才填入并显示连接提示，静态页面不预判故障。 */
 (function () {
   "use strict";
 
@@ -16,6 +16,11 @@
 
   var $ = function (id) { return document.getElementById(id); };
   function show(node, on) { if (node) node.hidden = !on; }
+  function showOffline(note) {
+    if ($("offlineTitle")) $("offlineTitle").textContent = "账号暂时连不上";
+    if ($("offlineSessionNote")) $("offlineSessionNote").textContent = note || "暂时连接不到账号服务，请稍后重试。页面连接失败不会主动撤销已经保存的登录状态。";
+    show($("panelOffline"), true);
+  }
   function say(node, msg, isError) {
     if (!node) return;
     node.textContent = msg || "";
@@ -57,7 +62,7 @@
   $("deletionStatusRefresh").addEventListener("click", refreshDeletionStatus);
   if ($("offlineRetry")) $("offlineRetry").addEventListener("click", function () { location.reload(); });
 
-  if (!API || !API.enabled) { show($("panelOffline"), true); return; }
+  if (!API || !API.enabled) { showOffline(); return; }
 
   var accountCfg = null, accountPaintEpoch = 0;
   function refreshAccount(force) {
@@ -65,8 +70,7 @@
     return API.me(force).then(function (me) {
       if (current !== accountPaintEpoch || generation !== API.sessionGeneration()) return;
       if (API.meUnavailable && API.meUnavailable()) {
-        show($("panelOffline"), true);
-        if ($("offlineSessionNote")) $("offlineSessionNote").textContent = "暂时核验不了登录状态，请重试；这次连接失败不会主动退出你的账号。";
+        showOffline("暂时核验不了登录状态，请重试；这次连接失败不会主动退出你的账号。");
         if (!me) return;
       }
       if (!onceShowing("regCode")) paint(me, accountCfg);
@@ -85,15 +89,15 @@
     onceOpen = 0; window.removeEventListener("beforeunload", guardLeave);
     show($("panelMe"), false); show($("panelFeed"), false); show($("panelGuest"), false);
     $("meHandle").textContent = "";
-    if (accountCfg) refreshAccount(true).catch(function () { show($("panelOffline"), true); });
+    if (accountCfg) refreshAccount(true).catch(function () { showOffline(); });
   });
 
   API.available().then(function (cfg) {
-    if (!cfg) { show($("panelOffline"), true); return; }
+    if (!cfg) { showOffline(); return; }
     show($("panelOffline"), false);
     accountCfg = cfg;
     return refreshAccount(false);
-  }).catch(function () { show($("panelOffline"), true); });
+  }).catch(function () { showOffline(); });
 
   function paint(me, cfg) {
     if (window.RJ_ACCOUNT_MAILBOX) window.RJ_ACCOUNT_MAILBOX.paint(me, cfg);
