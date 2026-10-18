@@ -134,6 +134,9 @@
     var ed = $("cardEditGo"), pg = $("cardPageGo");
     if (!ed || !pg) return;
     ed.href = CFG.link ? CFG.link("card-edit.html") : "card-edit.html";
+    var detailLink = $("cardDetailsFromProfile");
+    var detailHref = "card-edit.html?step=" + encodeURIComponent("设备");
+    if (detailLink) detailLink.href = CFG.link ? CFG.link(detailHref) : detailHref;
     pg.href = API.cardHref(me.handle);
     $("cardEntrySay").textContent = me.kind === "machine"
       ? "头像、昵称、签名、「我的人」怎么叫，都是你自己定的。"
@@ -800,8 +803,8 @@
     btn.textContent = prof.wall ? "在墙上显示：开" : "在墙上显示：关";
     btn.setAttribute("aria-pressed", prof.wall ? "true" : "false");
     $("wallState").textContent = prof.wall
-      ? "别人在成本页的墙上、在你的配置页上看得到。"
-      : "现在只有你自己看得到。";
+      ? "这组徽章会显示在成本页机友墙和公开配置页；名片是否挂出仍由名片页管理。"
+      : "这组徽章目前只有你自己看得到；名片公开状态不受这个开关影响。";
     if (prof.wall) showLink();
   }
 
@@ -951,6 +954,9 @@
       };
       renderPicks();
       paintWall();
+      if (location.hash === "#profileBox") {
+        $("profileBox").scrollIntoView({ block: "start" });
+      }
     }).catch(function () { say($("profileNote"), "配置没取到，稍后再试。", true); });
   }
 

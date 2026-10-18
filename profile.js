@@ -63,6 +63,8 @@
     mo.setAttribute("data-kind", p.kind);
     $("pfHandle").textContent = API.nameOf(p);
     $("pfKind").textContent = (KIND_LABEL[p.kind] || p.kind) + " · 自报";
+    var namecard = $("pfNamecard");
+    if (namecard) namecard.href = API.cardHref(p.handle);
 
     var host = $("pfTags");
     host.appendChild(TAGS.rows(p.tags, "这个号还没挑配置。"));

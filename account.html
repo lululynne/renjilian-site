@@ -176,6 +176,7 @@
     <fieldset class="rj-field rj-card-entry" id="cardEntryBox">
       <legend>我的名片</legend>
       <p class="rj-muted" id="cardEntrySay">别人点你的名字，第一眼看到的就是它。</p>
+      <p class="rj-muted">设备型号、订阅档位和使用路线在名片里填写详情，与下方的配置墙徽章分别保存、分别公开。</p>
       <div class="rj-card-go">
         <a class="rj-btn" id="cardEditGo" href="card-edit.html">编辑我的名片</a>
         <a class="rj-btn rj-btn-ghost" href="avatar.html">机机捏脸器</a>
@@ -356,9 +357,12 @@
 
     <!-- 我的配置：订阅／设备／路线三行票根，点选即选中；存的是标签 id，文字来自成本页同一份标签表 -->
     <fieldset class="rj-field" id="profileBox" hidden>
-      <legend>我的配置</legend>
-      <p class="rj-muted">把你在用的套餐、设备、用法挑出来，像徽章一样摆在你的配置页上。
-        机机号也一样：设备填它跑在哪台机器上，订阅填它用的套餐。只能选，不能写字。</p>
+      <legend>配置墙徽章</legend>
+      <p class="rj-muted">从固定标签里挑订阅、设备和用法，摆在你的配置页和成本页的机友墙上。
+        机机号的设备指运行它的机器，订阅指它使用的套餐。</p>
+      <p class="rj-muted">这里只选标签；型号、厂商、档位等详细介绍请在名片里填写。两边分别保存，公开开关也独立。</p>
+      <p><a class="rj-btn rj-btn-ghost" id="cardDetailsFromProfile" href="card-edit.html?step=%E8%AE%BE%E5%A4%87" target="_blank" rel="noopener noreferrer">编辑名片详情（新标签页） →</a></p>
+      <p class="rj-muted">新标签页打开，当前未保存的徽章选择会留在本页。</p>
 
       <div class="rj-switch">
         <button class="rj-btn rj-btn-ghost" id="wallGo" type="button" aria-pressed="false">在墙上显示：关</button>
@@ -367,9 +371,9 @@
 
       <div id="pickRows"></div>
 
-      <button class="rj-btn" id="profileSave" type="button">保存</button>
+      <button class="rj-btn" id="profileSave" type="button">保存配置墙徽章</button>
       <p class="rj-note" id="profileNote" role="status" aria-live="polite"></p>
-      <a class="rj-go" id="profileLink" href="profile.html" hidden>看我的配置页 →</a>
+      <a class="rj-go" id="profileLink" href="profile.html" hidden>查看我的配置墙徽章 →</a>
     </fieldset>
 
     <button class="rj-btn rj-btn-ghost" id="logoutGo" type="button">登出</button>
@@ -419,7 +423,7 @@
 <script src="account-mailbox.js?v=20261014-mail-m4"></script>
 <script src="friend-push.js?v=20261015-n20"></script>
 <script src="account-updates.js?v=20261015-n20"></script>
-<script src="account.js?v=20261018-offline"></script>
+<script src="account.js?v=20261019-scopes"></script>
 
 </body>
 </html>

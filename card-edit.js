@@ -10,6 +10,7 @@
   "use strict";
 
   var API = window.RJ_API;
+  var CFG = window.RJ_CONFIG || {};
   var C = window.RJ_CARD;
   var esc = C.esc;
   var $ = function (id) { return document.getElementById(id); };
@@ -296,6 +297,10 @@
   function render() {
     var h = tabs(), L;
     var k = K();
+    if (["设备", "订阅", "路线"].indexOf(k) >= 0) {
+      var wallHref = (CFG.link ? CFG.link("account.html") : "account.html") + "#profileBox";
+      h += '<aside class="form" aria-label="名片详情与配置墙"><strong>名片里的详细介绍</strong><p class="qsub">这里填写的设备、订阅和路线展示在名片正文里，与账号页的配置墙徽章分别保存。名片正文是否公开，在最后一步「挂上」里管理；配置墙的公开开关在账号页。</p><div class="acts"><a class="go ghost" id="wallConfigFromCard" href="' + esc(wallHref) + '" target="_blank" rel="noopener noreferrer">编辑配置墙徽章（新标签页） →</a></div><p class="qsub">新标签页打开，当前未保存的填写会留在本页。</p></aside>';
+    }
     if (k === "设备") {
       L = LIM.devices - M.devices.length;
       h += '<h2 class="q">' + (AS ? "你跑在什么设备上？" : "你用什么设备？") + '</h2><p class="qsub">一台一台加：品牌能搜，品类挑一个，型号可以不填。</p><div class="added">';
