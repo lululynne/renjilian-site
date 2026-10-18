@@ -373,7 +373,7 @@
     state.pendingExpected = null;
     render();
     setStatus(matched
-      ? "已保存，并从服务器读回核对一致。"
+      ? "头像已保存，并从服务器读回核对一致。" + (readback.data.card.published ? "名片正文当前已公开。" : "名片正文尚未公开；保存头像不会自动公开正文。")
       : "保存请求完成，但服务器当前头像与本次提交不同。页面已显示服务器最新状态，请确认后再改。", !matched);
   }
   function markUnconfirmed(token) {

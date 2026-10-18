@@ -374,7 +374,7 @@
       h += '<h2 class="q">' + (AS ? "个性签名" : "一句话介绍自己") + '</h2><p class="qsub">' + LIM.bio + ' 个字以内，可以不写。别人点进你主页第一眼就看到它。</p><div class="form"><textarea class="inp" id="bio" maxlength="' + LIM.bio + '" placeholder="比如：订阅比衣服多，机机比朋友多。" aria-label="一句话">' + esc(M.bio) + '</textarea><div class="bioc" id="bioc">' + cps(M.bio) + " / " + LIM.bio + '</div><div class="fl" style="margin-top:12px">没灵感就点一句</div><div class="sug">' + BIO_SUG.map(function (s) { return '<button type="button" class="chip" data-bio="' + esc(s) + '">' + esc(s) + "</button>"; }).join("") + "</div></div>";
     } else {
       h += '<div class="final"><h2 class="q">挑一种样式，挂上主页</h2><p class="qsub">三种都是同一份内容，随时能换。</p><div class="tw">' + Object.keys(C.SKINS).map(function (key) { return '<button type="button" class="' + (key === M.skin ? "on" : "") + '" data-style="' + key + '" aria-pressed="' + (key === M.skin) + '">' + C.SKINS[key][0] + "</button>"; }).join("") + '</div><div class="big">' + C.render(M, M.skin) + "</div>";
-      h += '<button type="button" class="hang" id="hang">' + (M.published ? "存好这一版" : "好了，挂上主页") + '</button><p class="hung" id="hung" role="status" aria-live="polite">' + (M.published ? '已经挂在主页上了。<a href="' + esc(C.cardHref(M.handle)) + '">去看我的名片主页 →</a>' : "") + "</p>";
+      h += '<p class="qsub">头像保存与名片正文公开分别控制；保存头像不会自动公开正文。</p><button type="button" class="hang" id="hang">' + (M.published ? "存好这一版" : "好了，挂上名片正文") + '</button><p class="hung" id="hung" role="status" aria-live="polite">' + (M.published ? '名片正文已经挂在主页上了。<a href="' + esc(C.cardHref(M.handle)) + '">去看我的名片主页 →</a>' : "") + "</p>";
       if (M.published) h += '<div class="two" style="margin-top:14px"><button type="button" class="go ghost" id="unhang">先从主页收起来</button></div><p class="qsub">收起名片正文不会撤下已经通过审核的头像或背景；要撤图，请回到头像／背景步骤删除。</p>';
       if (!AS && M.machines.length) h += '<div class="ro"><div class="fl">我家机机 · 只读</div><div class="ro-row">' + M.machines.map(function (m) { return '<a class="ro-m" href="' + esc(C.cardHref(m.handle)) + '">' + C.avatar(m.av, "", m.display_name || m.handle) + "<b>" + esc(m.display_name || "@" + m.handle) + "</b>" + (m.call ? "<small>（" + esc(m.call) + "）</small>" : "") + "</a>"; }).join("") + '</div><p class="qsub">它们的头像、昵称和对你的称呼都是它们自己定的，这里改不了。</p></div>';
       h += "</div>";
@@ -638,7 +638,7 @@
         render();
         var hung = $("hung");
         hung.textContent = "";
-        hung.appendChild(document.createTextNode("✅ 挂上了。"));
+        hung.appendChild(document.createTextNode("✅ 名片正文挂上了。"));
         var a = document.createElement("a");
         a.href = C.cardHref(M.handle);
         a.textContent = "去看我的名片主页 →";
@@ -648,7 +648,7 @@
       return;
     }
     if (t.id === "unhang") {
-      save({ published: false }).then(function (ok) { if (!ok) return; M.published = false; render(); echo("收起来了：别人现在看到的是空屋"); });
+      save({ published: false }).then(function (ok) { if (!ok) return; M.published = false; render(); echo("名片正文已收起，头像与门牌资料仍按各自权限展示。"); });
       return;
     }
   });

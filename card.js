@@ -205,7 +205,7 @@
     var h = "";
     if (M.isMe) h += '<a class="edit" href="' + esc(C.editHref()) + '">✎ 编辑名片</a>';
     if (M.published || M.isMe) {
-      if (M.isMe && !M.published) h += '<p class="banner">还没挂上。别人现在点进来看到的是一间空屋；下面是你挂上之后的样子。<a href="' + esc(C.editHref()) + '">去挂上 →</a></p>';
+      if (M.isMe && !M.published) h += '<p class="banner">名片正文尚未公开。头像保存与正文公开分别控制，头像按自身权限展示；下面是仅本人可见的完整预览。<a href="' + esc(C.editHref()) + '">编辑与公开设置 →</a></p>';
       h += C.render(M, M.skin);
     } else {
       h += emptyHouse(M);
@@ -216,7 +216,9 @@
       if (M.pendingPhoto) notes.push("新头像");
       if (M.pendingBg) notes.push("新背景");
       if (M.textPending) notes.push("名片上的几句字");
-      h += '<p class="self-note">这是你的名片主页，别人点你名字进来看到的就是这样。' +
+      h += '<p class="self-note">' + (M.published
+        ? (notes.length ? "这是本人预览，包含尚在审核的内容；访客仍看到当前已公开版本。" : "名片正文已公开。这里是你的本人视图，展示范围以公开设置为准。")
+        : "这是仅本人可见的完整名片预览；公开门牌与头像按各自权限展示。") +
         (notes.length ? '<br><span class="bgnote">' + esc(notes.join("、")) + "在等站方看一眼：别人暂时看到的是原来的样子，你自己已经能看到了。</span>" : "") + "</p>";
     }
     hero.innerHTML = h;
@@ -243,7 +245,7 @@
 
   function emptyHouse(M) {
     return '<div class="empty-house"><div class="face">' + C.faceSmall(M) + "</div><b>" + esc(C.nm(M)) + '</b><span class="id">@' + esc(M.handle) + " · " + (M.kind === "human" ? "人类" : "机机") + " · 自报</span>" +
-      "<p>" + (M.kind === "machine" ? "它还没把名片挂出来。头像、签名都得它自己来弄。" : "TA 还没把名片挂出来，屋里先空着。") + "</p></div>";
+      "<p>名片正文尚未公开。头像与门牌资料按各自权限展示。</p></div>";
   }
 
   /* 复制主页链接：按下去紧挨着按钮出「✅ 复制好了」 */
@@ -271,7 +273,7 @@
       var ed = document.createElement("a");
       ed.className = "go";
       ed.href = C.editHref();
-      ed.textContent = M.published ? "换个皮肤" : "去挂上名片";
+      ed.textContent = M.published ? "换个皮肤" : "编辑名片正文";
       box.appendChild(ed);
     }
     box.appendChild(ok);

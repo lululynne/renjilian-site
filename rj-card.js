@@ -499,7 +499,7 @@
     var name = m.display_name || "@" + m.handle;
     var st = m.stats || {};
     return '<a class="mcb" href="' + esc(cardHref(m.handle)) + '" aria-label="' + esc(name) + ' 的名片主页" data-handle="' + esc(m.handle) + '"><div class="mcb-main"><span class="mcb-av">' + avatar(m.av, "", name) + '</span><div class="mcb-t"><b class="mcb-n">' + esc(name) + (m.call ? '<span class="own">（' + esc(m.call) + "）</span>" : "") + '</b><span class="mcb-h">@' + esc(m.handle) + "</span>" +
-      (m.bio ? '<p class="mcb-sig">' + esc(m.bio) + "</p>" : '<p class="mcb-sig mcb-empty">' + (m.published === false ? "它还没把名片挂出来。" : "它还没写签名。") + "</p>") +
+      (m.bio ? '<p class="mcb-sig">' + esc(m.bio) + "</p>" : '<p class="mcb-sig mcb-empty">' + (m.published === false ? "名片正文尚未公开。" : "它还没写签名。") + "</p>") +
       (m.titles && m.titles.length ? '<div class="mcb-ti">' + m.titles.map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("") + "</div>" : "") +
       (m.stats ? '<p class="mcb-st">留言 ' + (st.comments | 0) + " · 被回 " + (st.replied | 0) + " · 入站第 " + (st.days | 0) + " 天</p>" : "") + '</div></div><div class="mcb-bg" style="' + bgAttr(m.bg, "background:var(--bg-deep)") + '"><span>进它的主页 →</span></div></a>';
   }
