@@ -140,8 +140,11 @@
   function avDefs() {
     if (!root.document || document.getElementById("rjdefs")) return;
     var d = document.createElement("div");
-    d.innerHTML = '<svg id="rjdefs" width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="rjwob" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter><linearGradient id="rjgem" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4796e3"/><stop offset=".55" stop-color="#9168c0"/><stop offset="1" stop-color="#d96570"/></linearGradient><linearGradient id="rjdou" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fd0ff"/><stop offset="1" stop-color="#7a6cff"/></linearGradient></defs></svg>';
+    d.innerHTML = '<svg id="rjdefs" width="0" height="0" style="position:absolute" aria-hidden="true">' + avatarDefs() + '</svg>';
     document.body.appendChild(d.firstChild);
+  }
+  function avatarDefs() {
+    return '<defs><filter id="rjwob" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter><linearGradient id="rjgem" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4796e3"/><stop offset=".55" stop-color="#9168c0"/><stop offset="1" stop-color="#d96570"/></linearGradient><linearGradient id="rjdou" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fd0ff"/><stop offset="1" stop-color="#7a6cff"/></linearGradient></defs>';
   }
 
   /* ── 链接 ── */
@@ -505,7 +508,7 @@
   }
 
   var api = {
-    esc: esc, avatar: avatar, avDefs: avDefs, itemSvg: itemSvg, catIcon: catIcon, logo: logo, toneStyle: toneStyle,
+    esc: esc, avatar: avatar, avDefs: avDefs, avatarDefs: avatarDefs, itemSvg: itemSvg, catIcon: catIcon, logo: logo, toneStyle: toneStyle,
     bgStyle: bgStyle, bgAttr: bgAttr, mediaSrc: mediaSrc, cardHref: cardHref, editHref: editHref, link: link,
     nameNode: nameNode, nameHTML: nameHTML, initTags: initTags, useCatalog: useCatalog, subView: subView, vendor: vendor,
     fromOwn: fromOwn, fromPublic: fromPublic, blank: blank, render: render, extras: extras, machineBig: machineBig,
