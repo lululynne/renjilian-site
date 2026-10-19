@@ -24,6 +24,10 @@ TAGS_V0 = {
     "国产", "国内可用",
     "OpenAI", "Anthropic", "Google",
 }
+TAGS_V3 = TAGS_V0 | {
+    "智能体", "基准", "数据集", "图像生成", "芯片", "算力", "购物", "生命科学", "具身智能", "研发",
+    "开放权重", "机器人", "可穿戴设备", "亚马逊", "微软", "AMD", "Black Forest Labs", "SemiAnalysis", "上海人工智能实验室",
+}
 
 
 def read(name: str) -> str:
@@ -80,14 +84,15 @@ class AinotesPageStaticTests(unittest.TestCase):
         self.assertRegex(self.js, r"127\\.0\\.0\\.1\|localhost")
         self.assertIn("preview", self.js)
 
-    def test_tag_table_is_rule_v0_and_covers_data(self) -> None:
+    def test_tag_table_preserves_v0_and_covers_complete_v3_data(self) -> None:
         m = re.search(r"TAG_GROUPS = \[(.*?)\n  \];", self.js, re.S)
         self.assertIsNotNone(m, "ainotes.js 里找不到 TAG_GROUPS")
         tags = set(re.findall(r'"([^"]+)"', m.group(1)))
         tags -= {"类型", "话题", "形态", "地区", "厂商"}   # 组名不是标签
-        self.assertEqual(tags, TAGS_V0, "标签表必须逐字等于录入规范 v0")
-        used = {t for e in load("data/ainotes.json")["items"] for t in e.get("tags", [])}
-        self.assertLessEqual(used, TAGS_V0, f"数据里出现表外标签：{used - TAGS_V0}")
+        self.assertEqual(tags, TAGS_V3, "保留 v0 全表，并为完整 v3 稿明确分组")
+        for entry in load("data/ainotes.json")["items"]:
+            allowed = TAGS_V3 if "use_tags" in entry and "what" in entry else TAGS_V0
+            self.assertLessEqual(set(entry.get("tags", [])), allowed, f"{entry['id']} 出现表外标签")
 
     def test_starters_exist(self) -> None:
         m = re.search(r"STARTERS = \[([^\]]*)\]", self.js)

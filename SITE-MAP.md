@@ -63,9 +63,9 @@ function norm(s) { return String(s == null ? "" : s).normalize("NFKC").toLowerCa
 function compact(s) { return norm(s).replace(PUNCT, ""); }
 ```
 
-- 参与匹配的字段：`zh`、`en`、`aliases`、`brief`、`line`（`more`、`for_us`、`tags` 不参与文字搜索）。
+- 旧词条参与匹配的字段：`zh`、`en`、`aliases`、`brief`、`line`。完整 v3 词条还匹配七问、入口、使用条件、时间线、评价、公司资料、产品状态与用途；`more`、`for_us`、`tags` 不参与文字搜索。
 - 查询按空格拆成若干 term，term 之间是「且」。命中：norm 后包含，或 compact（去标点空格）后包含（compact 查询词至少 2 字符）。
 - 排序档（只在有查询词时）：第 0 档名字（zh/en/aliases）整句等于查询；第 1 档名字以查询开头；第 2 档每个 term 都在名字里命中；第 3 档只靠 brief/line 命中。同档按基础序（拼音首字母 → Collator → id）。
 - 「也叫」：不是每个 term 都能在 zh/en 命中时，显示第一个被命中的别名。
-- 标签组：同组「或」、跨组「且」；标签表写死在 `ainotes.js`（录入规范 v0 的 27 个），表外的进「其他」。
+- 标签组：同组「或」、跨组「且」；`ainotes.js` 保留录入规范 v0 的 27 个标签，并为完整 v3 稿补齐厂商、芯片、机器人等 19 个标签，共 46 个，尚未归类的进入「其他」。v3 的用途和上手难度可独立筛选，与既有分类同时生效。难度按入门方式归为「普通人能上手／需要配置／专业使用／待核」，混合入口可属于两组；完整解释留在词条，不把长句和引用号塞进筛选项。
 - related 和 seen_in 取不到就不显示（悬空 id 跳过）。

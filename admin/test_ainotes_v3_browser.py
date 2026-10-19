@@ -68,6 +68,28 @@ class V3BrowserTests(unittest.TestCase):
     def reading(self, entries, **kw):
         return reading_harness.AinotesBrowserTests.open(self, routes={"**/data/ainotes.json": {"schema_version": 2, "updated_at": "2026-10-19", "items": entries}}, **kw)
 
+    def test_new_vendor_topic_and_form_tags_keep_cross_group_filtering(self):
+        chip = v3("bk-chip-example", tags=["模型", "AMD", "芯片", "开放权重"])
+        bee = v3("bk-wearable-example", tags=["产品", "亚马逊", "购物", "可穿戴设备"])
+        ctx, page, errors = self.channel(entries=[chip, bee], width=390)
+        try:
+            page.locator(".bk-card").first.wait_for()
+            page.locator(".bk-tags-wrap summary").click()
+            for tag, group in (("AMD", "厂商"), ("芯片", "话题"), ("购物", "话题"), ("开放权重", "形态"), ("亚马逊", "厂商")):
+                label = page.locator(f".bk-tag[data-tag='{tag}']").evaluate('(el)=>el.closest(".bk-tag-group").querySelector(".bk-tag-legend").textContent')
+                self.assertEqual(label, group)
+            page.locator(".bk-tag[data-tag='AMD']").click()
+            page.locator(".bk-tag[data-tag='购物']").click()
+            page.wait_for_function("document.querySelectorAll('.bk-card:not([hidden])').length === 0")
+            page.locator("#bkTagsClear").click()
+            page.locator(".bk-tag[data-tag='亚马逊']").click()
+            page.locator(".bk-tag[data-tag='购物']").click()
+            page.wait_for_function("document.querySelectorAll('.bk-card:not([hidden])').length === 1")
+            self.assertEqual(page.locator(".bk-card:not([hidden])").get_attribute("id"), bee["id"])
+            self.assertEqual(errors, [])
+        finally:
+            ctx.close()
+
     def test_full_fields_channel_and_reading_popup(self):
         item = v3(flat_marks()[0]["id"])
         ctx, page, errors = self.channel(entries=[item], hash_=item["id"])
@@ -102,7 +124,7 @@ class V3BrowserTests(unittest.TestCase):
             page.locator('.bk-use[data-use="公司"]').click(timeout=4000)
             self.assertEqual(page.locator(".bk-card:visible").count(), 1)
             self.assertEqual(page.locator(".bk-card:visible").get_attribute("id"), easy["id"])
-            page.locator("#bkDifficulty").select_option(easy["difficulty"])
+            page.locator("#bkDifficulty").select_option("普通人能上手")
             page.wait_for_function("new URLSearchParams(location.search).get('difficulty')")
             self.assertIn("use=", page.url)
             page.reload(wait_until="networkidle")
@@ -112,6 +134,31 @@ class V3BrowserTests(unittest.TestCase):
             page.locator("#bkEmptyReset").click()
             self.assertEqual(page.locator(".bk-card:visible").count(), 3)
             self.assertEqual(page.locator("#bkDifficulty").input_value(), "")
+            self.assertEqual(errors, [])
+        finally:
+            ctx.close()
+
+    def test_real_difficulty_prose_filters_by_comparable_entry_paths(self):
+        rows = [e for e in json.loads((ROOT / 'data/ainotes.json').read_text())['items'] if 'difficulty' in e]
+        ctx, page, errors = self.channel(entries=rows, width=1280)
+        try:
+            page.locator('#bkDifficulty:not([hidden])').wait_for()
+            options = page.locator('#bkDifficulty option').evaluate_all('(els)=>els.map(el=>el.value).filter(Boolean)')
+            self.assertEqual(set(options), {'普通人能上手', '需要配置', '专业使用', '待核'})
+            expected = {
+                '普通人能上手': {'bk-universal-cart', 'bk-amazon-bee', 'bk-gpt-live-11', 'bk-flux-3-klein'},
+                '需要配置': {'bk-flux-3-klein', 'bk-atria-dawn'},
+                '专业使用': {'bk-natura-1', 'bk-agentx', 'bk-mi355x', 'bk-gpt-rosalind'},
+                '待核': {'bk-mai-base-2'},
+            }
+            for level, ids in expected.items():
+                page.locator('#bkDifficulty').select_option(level)
+                page.wait_for_function('(n)=>document.querySelectorAll(".bk-card:not([hidden])").length === n', arg=len(ids))
+                self.assertEqual(set(page.locator('.bk-card:visible').evaluate_all('(els)=>els.map(el=>el.id)')), ids)
+            page.wait_for_timeout(550)
+            page.reload(wait_until='networkidle')
+            self.assertEqual(page.locator('#bkDifficulty').input_value(), '待核')
+            self.assertEqual(page.locator('.bk-card:visible').get_attribute('id'), 'bk-mai-base-2')
             self.assertEqual(errors, [])
         finally:
             ctx.close()

@@ -16,6 +16,7 @@ import json
 import threading
 import unittest
 from pathlib import Path
+from urllib.parse import parse_qs
 
 from playwright.sync_api import sync_playwright
 
@@ -89,7 +90,12 @@ class AinotesBrowserTests(unittest.TestCase):
         errors: list[str] = []
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
         page.on("pageerror", lambda e: errors.append(str(e)))
-        for pattern, payload in (routes or {}).items():
+        fixture_routes = {}
+        if parse_qs(query.lstrip('?')).get('preview', [''])[0] == '1':
+            fixture_routes = {'**/data/kanread.drafts.json': envelope([]),
+                              '**/data/ainotes.drafts.json': envelope([])}
+        fixture_routes.update(routes or {})
+        for pattern, payload in fixture_routes.items():
             page.route(pattern, lambda route, _request, p=payload: fulfill(route, p))
         # 刀 3 起单篇在 #id 下：小纸条只在单篇里，测试一律带 hash 打开
         page.goto(f"{self.base}/{PAGE}{query}#{CARD}", wait_until="networkidle")

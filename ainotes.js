@@ -84,13 +84,12 @@
     return c || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
   }
 
-  // 标签表 v0（录入规范第五节），27 个；表外的防御性进「其他」——静态测试守着它现在为空
   var TAG_GROUPS = [
-    ["类型", ["概念", "公司", "产品", "模型", "人物", "事件"]],
-    ["话题", ["计费", "编程", "设计", "写作与办公", "建站", "生图", "语音", "记忆", "陪伴", "人机恋相关"]],
-    ["形态", ["终端", "桌面", "网页", "插件", "云端", "开源"]],
+    ["类型", ["概念", "公司", "产品", "模型", "人物", "事件", "智能体", "基准", "数据集"]],
+    ["话题", ["计费", "编程", "设计", "写作与办公", "建站", "生图", "语音", "记忆", "陪伴", "人机恋相关", "图像生成", "芯片", "算力", "购物", "生命科学", "具身智能", "研发"]],
+    ["形态", ["终端", "桌面", "网页", "插件", "云端", "开源", "开放权重", "机器人", "可穿戴设备"]],
     ["地区", ["国产", "国内可用"]],
-    ["厂商", ["OpenAI", "Anthropic", "Google"]]
+    ["厂商", ["OpenAI", "Anthropic", "Google", "亚马逊", "微软", "AMD", "Black Forest Labs", "SemiAnalysis", "上海人工智能实验室"]]
   ];
   var TAG_TO_GROUP = Object.create(null);
   TAG_GROUPS.forEach(function (g) { g[1].forEach(function (t) { TAG_TO_GROUP[t] = g[0]; }); });
@@ -215,11 +214,21 @@
   }
   function hasPicks() { return pickedList().length > 0 || Object.keys(USES).length > 0 || !!DIFFICULTY; }
   function resetFilters() { PICKED = Object.create(null); USES = Object.create(null); DIFFICULTY = ""; difficultyEl.value = ""; }
+  function difficultyGroups(e) {
+    var prose = typeof e.difficulty === "string" ? e.difficulty.trim() : "";
+    if (!prose) return [];
+    if (/普通(?:人|用户|消费者)(?:能上手|可(?:上手|用|从))|网页试用较易/.test(prose)) {
+      return /本地.*配置/.test(prose) ? ["普通人能上手", "需要配置"] : ["普通人能上手"];
+    }
+    if (/^(?:机器人研发)?专业/.test(prose)) return ["专业使用"];
+    if (/配置|开发者工具/.test(prose)) return ["需要配置"];
+    return ["待核"];
+  }
 
   function tagPass(e) {
     var uses = Object.keys(USES);
     if (uses.length && !uses.some(function (t) { return (e.use_tags || []).indexOf(t) !== -1; })) return false;
-    if (DIFFICULTY && e.difficulty !== DIFFICULTY) return false;
+    if (DIFFICULTY && difficultyGroups(e).indexOf(DIFFICULTY) === -1) return false;
     var groups = Object.keys(PICKED);
     for (var i = 0; i < groups.length; i++) {
       var picks = Object.keys(PICKED[groups[i]]);
@@ -492,15 +501,18 @@
     var html = "";
     ITEMS.forEach(function (e) {
       (e.use_tags || []).forEach(function (t) { USE_OPTIONS[t] = true; });
-      if (typeof e.difficulty === "string" && e.difficulty.trim() && DIFFICULTY_OPTIONS.indexOf(e.difficulty) === -1)
-        DIFFICULTY_OPTIONS.push(e.difficulty);
+      difficultyGroups(e).forEach(function (d) {
+        if (DIFFICULTY_OPTIONS.indexOf(d) === -1) DIFFICULTY_OPTIONS.push(d);
+      });
     });
     var purposes = Object.keys(USE_OPTIONS).sort();
     if (purposes.length) {
       html += '<div class="bk-tag-group" role="group" aria-labelledby="bkt-use"><span class="bk-tag-legend" id="bkt-use">用途</span>' +
         purposes.map(function (t) { return '<button type="button" class="chip bk-tag bk-use" data-use="' + esc(t) + '" aria-pressed="false">' + esc(t) + '</button>'; }).join("") + '</div>';
     }
-    DIFFICULTY_OPTIONS.sort();
+    DIFFICULTY_OPTIONS = ["普通人能上手", "需要配置", "专业使用", "待核"].filter(function (d) {
+      return DIFFICULTY_OPTIONS.indexOf(d) !== -1;
+    });
     difficultyWrap.hidden = !DIFFICULTY_OPTIONS.length;
     difficultyEl.innerHTML = '<option value="">不限难度</option>' + DIFFICULTY_OPTIONS.map(function (d) {
       return '<option value="' + esc(d) + '">' + esc(d) + '</option>';

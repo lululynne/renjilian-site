@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "updated_at": "2026-10-16",
+  "schema_version": 2,
+  "updated_at": "2026-10-19",
   "items": [
     {
       "id": "bk-openai",
@@ -2565,6 +2565,697 @@
       "added_at": "2026-10-16",
       "last_verified": "2026-10-16",
       "status": "verified"
+    },
+    {
+      "id": "bk-natura-1",
+      "zh": "Natura-1",
+      "en": "Natura-1",
+      "aliases": [],
+      "tags": [
+        "模型",
+        "具身智能",
+        "机器人"
+      ],
+      "brief": "①干嘛的：Nature Will 给机器人灵巧手做的控制模型[1]。②对你有啥用：可先了解研究，直接使用入口待核。③要什么设备：机器人及配套系统[1]。④上手难度：专业研发（本站判断）。⑤面向谁、哪能用：面向机器人研发；公开接入地区及大陆条件待核。⑥强在哪：语言、视觉与动作联动，效果属厂商自测[1]。⑦谁家的、现在：Nature Will；研究已公开，公众入口待核[1][2]。",
+      "line": "让机器人听懂指令、用灵巧手操作物体的模型[1]",
+      "more": "Natura-1 是面向机器人灵巧操作的模型。厂商展示了柔软物品操作、毛笔书写等任务，部分长流程演示另有调校[1]。其披露规格为500亿参数的MoE，预训练使用逾100万小时第一人称人类数据，控制循环为100毫秒[1][2]。",
+      "for_us": "先了解技术进展；不能据演示认定已有家用机器人可买（本站提示）。",
+      "related": [
+        "bk-moe",
+        "bk-parameters",
+        "bk-multimodal"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "机器人研究人员、灵巧手和自动化开发团队[1]",
+      "helps_with": "可先了解机器人研究；直接上手入口待核。研究方向是让机器完成精细操作[1]。",
+      "device": "机器人、灵巧手和配套计算系统；消费设备要求待核[1]",
+      "difficulty": "机器人研发专业工具（本站按研究形态判断）[1]",
+      "region": "面向机器人研发；公开开放地区及中国大陆接入条件待核",
+      "edge": "把语言、视觉和动作连起来；陌生任务表现属厂商自测[1]",
+      "use_tags": [
+        "AI 助手与模型",
+        "硬件与芯片"
+      ],
+      "owner": "Nature Will[1]",
+      "what": "让机器人听懂指令、用灵巧手操作物体的模型[1]",
+      "where_used": "实体机器人控制系统[1]",
+      "access": "官网可看研究与演示；公开权重、接口、申请方式和价格均待核[1]",
+      "timeline": "2026-10-13：公司供稿宣布Natura-1[2]；截至2026-10-19，本次核对未确认公众直接使用入口。",
+      "reception": "官网演示属于厂商材料[1]；本次未核实独立用户评测。",
+      "company": {},
+      "lifecycle": {
+        "state": "不适用",
+        "date": "2026-10-19",
+        "note": "按已公开研究记录；本次核对未确认公众直接使用入口[1]。",
+        "source": {
+          "name": "Nature Will：The Will to Act / Natura-1（研究原文，页面未标发布日期）",
+          "url": "https://www.naturewill.com/blog/natura-1"
+        }
+      },
+      "sources": [
+        {
+          "name": "Nature Will：The Will to Act / Natura-1（研究原文，页面未标发布日期）",
+          "url": "https://www.naturewill.com/blog/natura-1"
+        },
+        {
+          "name": "Nature Will 公司供稿／PR Newswire（2026-10-13 09:00 ET）",
+          "url": "https://www.prnewswire.com/news-releases/physical-ai-lab-nature-will-unveils-natura-1-as-first-general-foundational-model-for-the-physical-world-302906608.html"
+        }
+      ],
+      "added_at": "2026-10-17",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-universal-cart",
+      "zh": "Universal Cart",
+      "en": "Universal Cart",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "Google",
+        "购物"
+      ],
+      "brief": "①干嘛的：Google 在 Search/Gemini 里的跨店购物车[1]。②对你有啥用：存商品、看降价补货提醒[1]。③要什么设备：电脑或手机使用相关入口[1]。④上手难度：普通消费者可上手（本站判断）。⑤面向谁、哪能用：美国逐步上线；大陆条件待核[1]。⑥强在哪：同一清单跨商店、跨两个入口保留[1]。⑦谁家的、现在：Google；按公告在美国逐步上线[1]。",
+      "line": "Search 和 Gemini 里能保存多家商店商品的共用购物车[1]",
+      "more": "把多家店的待购商品收在一起，回到 Search 或 Gemini 时能接着买[1]。它属于用户控制的购物工具；订单确认、售后及卖方责任仍在商家[1]。产品早先已有预告[2]；本次更新是在美国逐步上线[1]。",
+      "for_us": "大陆读者可了解购物入口变化；不要把美国上线当成全球可用（本站提示）。",
+      "related": [
+        "bk-gemini"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "经常跨商店比较、收藏商品的美国消费者[1]",
+      "helps_with": "整理想买的东西、看降价和补货提醒[1]",
+      "device": "可使用 Search 或 Gemini 的电脑、手机；无需本地显卡（本站按云服务形态判断）[1]",
+      "difficulty": "普通消费者可上手（本站判断）[1]",
+      "region": "官方公告说明在美国逐步上线[1]；中国大陆可用条件本次未核实。",
+      "edge": "跨商店、跨 Search/Gemini 保留购物清单[1]",
+      "use_tags": [
+        "电商与营销",
+        "AI 助手与模型"
+      ],
+      "owner": "Google[1]",
+      "what": "Search 和 Gemini 里能保存多家商店商品的共用购物车[1]",
+      "where_used": "Google Search 与 Gemini 应用内[1]",
+      "access": "美国用户在 Search/Gemini 中使用；结账经 Google Pay 或转商家网站，具体账号和商店覆盖以界面为准[1]。",
+      "timeline": "2026-05-19：较早产品预告[2]；2026-10-15：公告在美国逐步上线[1]。中国大陆开放时间本次未核实。",
+      "reception": "暂无本次核实到的独立使用评价。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用",
+        "date": "2026-10-19",
+        "note": "按10月15日官方公告复核：美国逐步上线，具体账号和商店覆盖以实际界面为准[1]。",
+        "source": {
+          "name": "Google：An intelligent new shopping cart（2026-10-15）",
+          "url": "https://blog.google/products-and-platforms/products/shopping/universal-cart-launch/"
+        }
+      },
+      "sources": [
+        {
+          "name": "Google：An intelligent new shopping cart（2026-10-15）",
+          "url": "https://blog.google/products-and-platforms/products/shopping/universal-cart-launch/"
+        },
+        {
+          "name": "Google：Google Shopping introduces Universal Cart（较早产品预告）",
+          "url": "https://blog.google/products-and-platforms/products/shopping/google-shopping-cart/"
+        }
+      ],
+      "added_at": "2026-10-17",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-amazon-bee",
+      "zh": "Amazon Bee",
+      "en": "Amazon Bee",
+      "aliases": [
+        "Bee"
+      ],
+      "tags": [
+        "产品",
+        "亚马逊",
+        "可穿戴设备"
+      ],
+      "brief": "①干嘛的：亚马逊用随身设备帮人记谈话要点的 AI[1]。②对你有啥用：查摘要、回忆事情[1]。③要什么设备：Bee 加手机应用[1]。④上手难度：普通消费者可上手（本站判断）。⑤面向谁、哪能用：公告列Amazon.com渠道；大陆条件待核[1]。⑥强在哪：音频实时处理后删除，文字结果加密（厂商说明）[2]。⑦谁家的、现在：Amazon；公告区分Frontier在售、Eclipse即将上市及Pro订阅[1]。",
+      "line": "用随身设备收集谈话要点、在应用里生成摘要的个人 AI[1]",
+      "more": "Bee 在应用中提供谈话摘要等文字结果；厂商称音频实时处理后删除[2]。Frontier可佩戴或夹衣，Eclipse磁吸手机，两款发售状态不同[1]。官方还说明，Eclipse开始记录通话时会提示征得通话参与者许可[1]。",
+      "for_us": "购买前先确认当地服务支持、订阅费用及谈话隐私要求（本站提示）。",
+      "related": [
+        "bk-active-memory"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "想把会议、日常交流整理成摘要的人[1]",
+      "helps_with": "记住讨论内容、查回摘要；待办等进阶功能需 Pro[1]",
+      "device": "Bee 设备及手机应用；桌面应用属 Pro 功能[1]",
+      "difficulty": "普通人可用，需设置设备和权限（本站判断）[1]",
+      "region": "官方公告列Amazon.com购买渠道[1]；中国大陆销售、账号及服务支持本次未核实。",
+      "edge": "音频处理后删除，保留加密文字等结果（厂商说明）[2]",
+      "use_tags": [
+        "办公与文档",
+        "硬件与芯片"
+      ],
+      "owner": "Amazon（亚马逊）[1]",
+      "what": "用随身设备收集谈话要点、在应用里生成摘要的个人 AI[1]",
+      "where_used": "腕带／衣夹或手机背部附件，搭配 Bee 应用[1]",
+      "access": "10月15日公告列：Frontier 74.99美元；Eclipse即将上市、99.99美元起；Bee Pro 11.99美元/月[1]。购机含基本摘要等功能，进阶功能另按Pro订阅；实际价格与库存看购买界面[1]。",
+      "timeline": "2026-10-15：公告Frontier与Eclipse[1]。截至2026-10-19本次复核，公告仍分别标Frontier在售、Eclipse即将上市；不把公告当实时库存。",
+      "reception": "官网展示 App Store 评分与精选用户引语，属于厂商选编，不能当独立评测[3]。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用",
+        "date": "2026-10-19",
+        "note": "按官方公告复核Frontier在售、Eclipse即将上市的区别；具体库存另看购买界面[1]。",
+        "source": {
+          "name": "Amazon：Bee Frontier and Bee Eclipse（2026-10-15；正文含发售与订阅说明）",
+          "url": "https://www.aboutamazon.com/news/devices/amazon-personal-ai-bee-frontier-bee-eclipse"
+        }
+      },
+      "sources": [
+        {
+          "name": "Amazon：Bee Frontier and Bee Eclipse（HTML datePublished=2026-10-15T11:55:24.955Z）",
+          "url": "https://www.aboutamazon.com/news/devices/amazon-personal-ai-bee-frontier-bee-eclipse"
+        },
+        {
+          "name": "Amazon：Bee Private Compute（隐私架构说明）",
+          "url": "https://www.aboutamazon.com/news/devices/bee-private-compute-data-protection"
+        },
+        {
+          "name": "Bee 官网：产品、应用及精选评价",
+          "url": "https://bee.computer/"
+        }
+      ],
+      "added_at": "2026-10-17",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-gpt-live-11",
+      "zh": "GPT-Live-1.1",
+      "en": "GPT-Live-1.1",
+      "aliases": [],
+      "tags": [
+        "模型",
+        "OpenAI",
+        "语音"
+      ],
+      "brief": "①干嘛的：OpenAI在ChatGPT里的实时语音模型[1][2]。②对你有啥用：开口问答、讨论想法[3]。③要什么设备：有麦克风和声音输出的电脑或手机[3]。④上手难度：普通读者可从Voice入口开始（本站判断）。⑤面向谁、哪能用：按ChatGPT支持地区；本次名单未列中国大陆[4]。⑥强在哪：可边听边说、处理中断和停顿，口音改善属厂商说明[1][2]。⑦谁家的、现在：OpenAI；系统卡说明Plus及以上默认1.1，其余默认Quip[2]。",
+      "line": "ChatGPT Voice 里负责边听边说的语音模型[2]",
+      "more": "这次新增法语、德语、印地语、日语、韩语、墨西哥西班牙语声音及英语 Bubbie，指可选音色与口音更新，不是首次学会这些语言[1]。完整 1.1 与 Quip 是两个档位；不能写所有用户都默认拿到完整版[2]。语音回答仍需核对重要信息[3]。",
+      "for_us": "核对自己实际套餐、音色和限额；不要把 Quip 当成完整 1.1（本站提示）。",
+      "related": [
+        "bk-openai",
+        "bk-whisper"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "ChatGPT 支持地区内，习惯语音沟通的用户[3][4]",
+      "helps_with": "语音问答、讨论想法，减少一直打字[3]",
+      "device": "有麦克风和声音输出的电脑或手机，通过 ChatGPT 使用[3]",
+      "difficulty": "普通用户可从 Voice 入口开始（本站判断）[3]",
+      "region": "按ChatGPT网页/移动端支持地区；本次官方名单未列中国大陆[4]。",
+      "edge": "更自然的多语言口音（厂商自称）；可处理中断和停顿[1][2]",
+      "use_tags": [
+        "音乐与语音",
+        "AI 助手与模型"
+      ],
+      "owner": "OpenAI[1]",
+      "what": "ChatGPT Voice 里负责边听边说的语音模型[2]",
+      "where_used": "ChatGPT Voice；具体型号随订阅档位[2]",
+      "access": "系统卡说明Plus及以上默认GPT-Live-1.1，其余默认较小的1.1 Quip[2]；实际Voice限额及可见声音依账号与地区[1][3]。1.1型号API开放情况本次未核实，10月16日声音接口更新与模型1.1推送分开记录。",
+      "timeline": "2026-10-15：ChatGPT开始逐步推送1.1和Quip[1]；2026-10-16：另列GPT-Live声音API更新[1]，不据此认定1.1型号API已开放。",
+      "reception": "暂无本次核实到的独立用户评测；系统卡的评估为厂商报告[2]。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用",
+        "date": "2026-10-19",
+        "note": "按发布说明和系统卡核对ChatGPT分档提供；具体账号可见状态及限额以实际界面为准[1][2][3]。",
+        "source": {
+          "name": "OpenAI：Release notes（2026-10-15、10-16 两项分开核对）",
+          "url": "https://openai.com/products/release-notes/"
+        }
+      },
+      "sources": [
+        {
+          "name": "OpenAI：Release notes（2026-10-15、10-16 两项分开核对）",
+          "url": "https://openai.com/products/release-notes/"
+        },
+        {
+          "name": "OpenAI：GPT-Live-1.1 system card（2026-10-15）",
+          "url": "https://deploymentsafety.openai.com/gpt-live-1-1/avoiding-deceptive-interactions-with-users"
+        },
+        {
+          "name": "OpenAI 帮助中心：ChatGPT Voice（动态文档）",
+          "url": "https://help.openai.com/en/articles/20001274-chatgpt-voice"
+        },
+        {
+          "name": "OpenAI 帮助中心：ChatGPT Supported Countries（动态名单）",
+          "url": "https://help.openai.com/en/articles/7947663-chatgpt-supported-countries"
+        }
+      ],
+      "added_at": "2026-10-17",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-agentx",
+      "zh": "AgentX",
+      "en": "AgentX",
+      "aliases": [
+        "AgentX 1.0"
+      ],
+      "tags": [
+        "基准",
+        "数据集",
+        "SemiAnalysis"
+      ],
+      "brief": "①干嘛的：SemiAnalysis 回放多轮编程智能体负载、测试推理系统的基准[1]。②对你有啥用：可浏览比较结果；工程师可复测[2][3]。③要什么设备：浏览器看结果，复测需模型服务和客户端[3]。④上手难度：专业工具（本站判断）。⑤面向谁、哪能用：代码公开；大陆运行环境可达性待核[2]。⑥强在哪：长上下文和缓存复用等持续负载（发布方说明）[1]。⑦谁家的、现在：SemiAnalysis；项目持续维护[2]。",
+      "line": "回放多轮编程智能体工作过程、测试推理服务的基准[1]",
+      "more": "AgentX 测试整套推理系统在持续工作负载中的表现[1]。“100万+”指上下文长度，不是任务条数；数据集投入逾300万美元属发布方披露[1]。比较成绩时应对齐模型、软件版本、上下文配置、延迟目标和硬件条件（本站提示）[2][3]。",
+      "for_us": "可借它看懂“真实工作负载”的测试条件；普通用户无需安装（本站提示）。",
+      "related": [
+        "bk-mi355x",
+        "bk-context-window",
+        "bk-prompt-caching"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "做模型推理、云算力选型和性能优化的工程师[2][3]",
+      "helps_with": "普通读者可浏览结果；工程师据条件比较速度、延迟和成本[1][2]。",
+      "device": "浏览器看结果；复测按文档准备已运行的模型服务和客户端环境[2][3]。",
+      "difficulty": "专业工具，需部署和性能测试经验（本站判断）[3]",
+      "region": "代码和结果公开；中国大陆下载、运行环境及云服务可达性待核[2]",
+      "edge": "保留长对话、工具调用、分支和缓存复用，更接近持续干活负载（发布方自称）[1]",
+      "use_tags": [
+        "底层技术（给开发者）",
+        "硬件与芯片"
+      ],
+      "owner": "SemiAnalysis[1]",
+      "what": "回放多轮编程智能体工作过程、测试推理服务的基准[1]",
+      "where_used": "InferenceX 推理测试平台及开源运行工具[2][3]",
+      "access": "可看公开看板或按 GitHub 文档回放；代码依 Apache 2.0 使用，实际算力另行准备[2][3]。",
+      "timeline": "2026-08-24：发布文章介绍AgentX 1.0[1]，仓库也记为2026年8月[2]。正文和结果持续更新，不能把后续新增性能数据都回填成首发日事实。",
+      "reception": "项目仓库列有 AMD、NVIDIA 和推理框架团队贡献；这些支持关系不等于独立评测结论[2]。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用",
+        "date": "2026-10-19",
+        "note": "官方开源仓库与运行文档公开，结果持续更新；本条未复现性能实验[2][3]。",
+        "source": {
+          "name": "SemiAnalysis：AgentX - InferenceXv3（页首 2026-08-24；正文持续更新）",
+          "url": "https://newsletter.semianalysis.com/p/agentx-inferencexv3-does-cuda-moat"
+        }
+      },
+      "sources": [
+        {
+          "name": "SemiAnalysis：AgentX - InferenceXv3（页首 2026-08-24；正文持续更新）",
+          "url": "https://newsletter.semianalysis.com/p/agentx-inferencexv3-does-cuda-moat"
+        },
+        {
+          "name": "SemiAnalysis 官方 InferenceX 仓库",
+          "url": "https://github.com/SemiAnalysisAI/InferenceX"
+        },
+        {
+          "name": "SemiAnalysis：Run AgentX-Harness Standalone",
+          "url": "https://github.com/SemiAnalysisAI/InferenceX/blob/main/inferencex-e2e/docs/agentx-standalone.md"
+        }
+      ],
+      "added_at": "2026-10-17",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-mi355x",
+      "zh": "MI355X",
+      "en": "AMD Instinct MI355X",
+      "aliases": [
+        "AMD Instinct MI355X",
+        "AMD MI355X"
+      ],
+      "tags": [
+        "芯片",
+        "AMD",
+        "算力",
+        "产品"
+      ],
+      "brief": "①干嘛的：AMD 在机房跑 AI 的服务器加速器[1]。②对你有啥用：普通人通过云服务间接接触（本站判断）[2]。③要什么设备：专用服务器及散热供电[1]。④上手难度：专业部署（本站判断）[1]。⑤面向谁、哪能用：数据中心；大陆采购与云端支持待核。⑥强在哪：288GB 显存、8TB/s 带宽[1]。⑦谁家的、现在：AMD；已上市[1]。",
+      "line": "装在数据中心服务器里运行 AI 的 Instinct 加速器[1]",
+      "more": "MI355X 是CDNA 4架构的服务器加速器，采用OAM模组，官方典型板卡功耗TBP为1400W[1]。SemiAnalysis当前AgentX文章列有该型号的测试[4]；速度和成本需结合具体模型、软件、上下文和延迟条件比较（本站提示）。",
+      "for_us": "看云服务报价时可留意该型号；别按家用显卡的安装方式理解（本站提示）。",
+      "related": [
+        "bk-agentx",
+        "bk-moe",
+        "bk-prompt-caching"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "模型服务商、数据中心和大型模型部署团队[1]",
+      "helps_with": "普通人不直接装用；企业用来训练、运行大型模型[1]",
+      "device": "自建部署需兼容服务器、供电散热及ROCm等软件环境[1]；云端使用按相应服务商的环境与接口[2]。",
+      "difficulty": "专业部署（本站按服务器规格判断）[1]",
+      "region": "面向数据中心；中国大陆采购、交付及云端可用条件待核",
+      "edge": "单颗288GB HBM3E显存、8TB/s内存带宽[1]；大容量可为模型和缓存提供空间（本站按规格解释）。",
+      "use_tags": [
+        "硬件与芯片",
+        "云服务与开发平台"
+      ],
+      "owner": "AMD[1]",
+      "what": "装在数据中心服务器里运行 AI 的 Instinct 加速器[1]",
+      "where_used": "兼容服务器；若选择云端，须先核该渠道是否提供本型号[1][2]。",
+      "access": "产品页链接到通用AI/HPC云端入口[1][2]；具体渠道是否提供MI355X及其价格、地区、库存，本次未核实。",
+      "timeline": "2025-06-12：AMD产品页所列上市日[1]。当前InferenceX仓库列有MI355X支持[3]，AgentX文章也列其测试[4]；具体首次纳入测试日期本次未核定。",
+      "reception": "SemiAnalysis公布了包含MI355X的测试[4]；应连同配置条件阅读，不外推到所有模型。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用",
+        "date": "2026-10-19",
+        "note": "已上市，官方产品页仍列此型号；具体供货、地区与云端条件按渠道确认[1][2]。",
+        "source": {
+          "name": "AMD：Instinct MI355X 产品规格（上市日 2025-06-12）",
+          "url": "https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html"
+        }
+      },
+      "sources": [
+        {
+          "name": "AMD：Instinct MI355X 产品规格（上市日 2025-06-12）",
+          "url": "https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html"
+        },
+        {
+          "name": "AMD：AI & HPC Cloud Access（产品页所链入口；具体型号和地区须核对）",
+          "url": "https://www.amd.com/en/developer/resources/cloud-access.html"
+        },
+        {
+          "name": "SemiAnalysis：AgentX / InferenceX 官方仓库",
+          "url": "https://github.com/SemiAnalysisAI/InferenceX"
+        },
+        {
+          "name": "SemiAnalysis：AgentX / InferenceXv3（页首2026-08-24，正文持续更新）",
+          "url": "https://newsletter.semianalysis.com/p/agentx-inferencexv3-does-cuda-moat"
+        }
+      ],
+      "added_at": "2026-10-17",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-gpt-rosalind",
+      "zh": "GPT-Rosalind",
+      "en": "GPT-Rosalind",
+      "aliases": [],
+      "tags": [
+        "模型",
+        "OpenAI",
+        "生命科学"
+      ],
+      "brief": "①干嘛的：OpenAI面向生命科学的科研模型[2]。②对你有啥用：辅助研究者读文献、分析数据[2]。③要什么设备：获准账号在ChatGPT/Codex使用，机构API另审批[2]。④上手难度：专业科研且需资格审核（本站判断）。⑤面向谁、哪能用：模型须机构准入；学术赠送面向美国大学实验室[2][3]。⑥强在哪：生物推理结合科学工具（厂商说明）[2]。⑦谁家的、现在：OpenAI；受信访问提供，学术计划另行申请[1][2]。",
+      "line": "帮助研究团队读文献、分析生物数据和安排科研流程的模型[2]",
+      "more": "GPT-Rosalind是研究模型，Rosalind Academic Plan是面向合资格实验室的使用资助方案[1][2]。模型可辅助证据梳理、数据分析和研究代码工作，研究结果仍须由研究者验证[1][2]。学术优惠开通需付款卡；接受前核对免费期结束日及可能费用，不能把最长12个月写成无条件永久免费[3]。",
+      "for_us": "相关实验室先核对资格与数据规定，再决定申请；不把模型当医疗诊断服务（本站提示）。",
+      "related": [
+        "bk-openai",
+        "bk-hallucination"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "获受信访问批准并经机构启用的生命科学研究人员；合资格美国大学实验室可申请学术计划[2][3]。",
+      "helps_with": "服务生命科学研究；普通个人订阅不自动解锁[2]",
+      "device": "获准账号在 ChatGPT/Codex 使用；机构 API 另审批[2]",
+      "difficulty": "专业科研工具且需资格审核（本站按准入条件判断）[2]",
+      "region": "学术赠送计划目前面向美国大学实验室[3]；模型其他机构访问依受信审批及适用地区条件[2][4]。",
+      "edge": "将生物学推理与科学工具使用结合（厂商自称）[2]",
+      "use_tags": [
+        "AI 助手与模型",
+        "学习与搜索",
+        "企业与政府"
+      ],
+      "owner": "OpenAI[1]",
+      "what": "帮助研究团队读文献、分析生物数据和安排科研流程的模型[2]",
+      "where_used": "获准的机构工作区、Codex；另获准机构可用 API[2]",
+      "access": "美国大学实验室负责人可按资格申请最多30个Business Standard席位、最长12个月；需审核、设置与成员启用，设置需付款卡，学术计划不含API或API额度[1][3]。有Enterprise协议的大学按校内机构流程申请[3]。",
+      "timeline": "2026-04-16：官方发布GPT-Rosalind介绍[4]；09-11：官方更新为向符合条件的机构提供受信访问[4]；10-15：宣布学术计划开放申请[1]。模型与学术计划日期分开。",
+      "reception": "官方发布稿列出研究团队案例，属于厂商收集材料；未据此推定普遍效果[1]。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用",
+        "date": "2026-10-19",
+        "note": "按机构受信访问和学术申请说明记录；购买订阅或入工作区不等于已获模型权限[2][3]。",
+        "source": {
+          "name": "OpenAI：Bringing GPT-Rosalind to academic research labs（2026-10-15）",
+          "url": "https://openai.com/index/introducing-the-rosalind-academic-plan/"
+        }
+      },
+      "sources": [
+        {
+          "name": "OpenAI：Bringing GPT-Rosalind to academic research labs（2026-10-15）",
+          "url": "https://openai.com/index/introducing-the-rosalind-academic-plan/"
+        },
+        {
+          "name": "OpenAI：GPT-Rosalind for life sciences research（动态使用说明）",
+          "url": "https://help.openai.com/en/articles/20001193-gpt-rosalind-for-life-sciences-research"
+        },
+        {
+          "name": "OpenAI：Rosalind Academic Plan（动态资格及优惠条款说明）",
+          "url": "https://help.openai.com/en/articles/20001602-rosalind-academic-plan"
+        },
+        {
+          "name": "OpenAI：Introducing GPT-Rosalind（2026-04-16；含2026-09-11更新）",
+          "url": "https://openai.com/index/introducing-gpt-rosalind/"
+        }
+      ],
+      "added_at": "2026-10-17",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-flux-3-klein",
+      "zh": "FLUX 3 Image Klein",
+      "en": "FLUX 3 Image Klein",
+      "aliases": [
+        "FLUX.3 Image Klein"
+      ],
+      "tags": [
+        "模型",
+        "图像生成",
+        "开放权重",
+        "Black Forest Labs"
+      ],
+      "brief": "①干嘛的：Black Forest Labs 的生图、改图模型[1]。②对你有啥用：做素材、改局部、组合参考图[2]。③要什么设备：在线浏览器；本地需合适显卡[1][2]。④上手难度：网页较易，本地需配置（本站判断）[2]。⑤面向谁、哪能用：创作者和开发者；大陆在线支持待核。⑥强在哪：最高 4K、10 张参考图和框选布局[2]。⑦谁家的、现在：Black Forest Labs；权重已放出，商用受许可条件约束[1][3]。",
+      "line": "能按文字生图、改图和组合参考图片的模型[1]",
+      "more": "官方标称图像生成器规模为56亿参数[1]；完整流程还涉及文字编码器等组件[4]。官方INT8最低8GB运行说明、最高4K能力和1MP速度测试对应不同配置，不拼成同一性能保证[1]。许可证对符合条件、含关联方年化总营收低于500万美元的使用者，允许有条件地商用生成结果；模型用途及限制仍须核对完整许可[5]。",
+      "for_us": "先分清在线费用、显存配置及商用许可，再选使用方式（本站提示）。",
+      "related": [
+        "bk-comfyui",
+        "bk-huggingface",
+        "bk-local-deployment",
+        "bk-quantization"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "设计人员、视觉内容创作者及本地图像模型开发者[1]",
+      "helps_with": "做视觉素材、局部修改和参考图合成[1]",
+      "device": "在线使用浏览器；本地需合适GPU。厂商说明INT8可在最低8GB显存配置运行，4K与1MP测速属不同条件；完整流程的文本处理等组件也要计入配置[1][2][4]。",
+      "difficulty": "网页试用较易，本地需安装配置（本站判断）[2]",
+      "region": "有公开权重与在线接口；中国大陆在线服务支持、付款及下载可达性待核",
+      "edge": "56 亿参数生成器，支持最高 4K、最多 10 张参考图和框选布局（厂商说明）[1][2]",
+      "use_tags": [
+        "设计与绘图",
+        "底层技术（给开发者）"
+      ],
+      "owner": "Black Forest Labs[1]",
+      "what": "能按文字生图、改图和组合参考图片的模型[1]",
+      "where_used": "BFL Playground/API、Hugging Face 演示，或本地 ComfyUI/Diffusers[1][2]",
+      "access": "官方提供基础版与蒸馏版权重、Playground/API及本地集成入口[1][2]。权重按FLUX Kommunity License使用，商用有条件；在线服务按其定价，具体费用和账号条件本次未逐项核定[1][5]。",
+      "timeline": "2026-10-15：权重和 BFL API 同日发布[1]；10-16 社媒转载不作首发日期。",
+      "reception": "Hugging Face 发布 Diffusers 适配教程；官方排名属于内部评估，不当独立跑分[1][4]。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用",
+        "date": "2026-10-19",
+        "note": "按官方发布和模型资料核对权重及接口入口；具体账号/设备未实测[1][2]。",
+        "source": {
+          "name": "Black Forest Labs：FLUX 3 Image Klein（2026-10-15）",
+          "url": "https://bfl.ai/blog/flux-3-image-klein"
+        }
+      },
+      "sources": [
+        {
+          "name": "Black Forest Labs：FLUX 3 Image Klein（2026-10-15）",
+          "url": "https://bfl.ai/blog/flux-3-image-klein"
+        },
+        {
+          "name": "Black Forest Labs：FLUX 3 Image Klein 官方参考代码",
+          "url": "https://github.com/black-forest-labs/flux-3-image-klein"
+        },
+        {
+          "name": "Black Forest Labs：官方基础模型卡及 FLUX Kommunity License 说明",
+          "url": "https://huggingface.co/black-forest-labs/flux-3-image-klein-base"
+        },
+        {
+          "name": "Hugging Face：Welcome FLUX.3 Image Klein in Diffusers（2026-10-15）",
+          "url": "https://huggingface.co/blog/flux-3"
+        },
+        {
+          "name": "BFL：FLUX Kommunity License完整模型权重许可（Qualifying User及商业输出条件）",
+          "url": "https://huggingface.co/black-forest-labs/flux-3-image-klein/blob/main/LICENSE.md"
+        }
+      ],
+      "added_at": "2026-10-17",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-mai-base-2",
+      "zh": "MAI-Base-2",
+      "en": "MAI-Base-2",
+      "aliases": [],
+      "tags": [
+        "模型",
+        "微软",
+        "研发"
+      ],
+      "brief": "①干嘛的：微软研发中的基础模型[1]。②对你有啥用：可先了解研发，公众入口待核。③要什么设备：公众部署配置待核。④上手难度：公众使用难度待核。⑤面向谁、哪能用：计划向可信伙伴授权，地区条件待核[1]。⑥强在哪：预训练效率优势属微软自测[1]。⑦谁家的、现在：Microsoft AI；10月15日公告称预训练完成、后训练进行中[1]。",
+      "line": "微软研发中的MoE基础模型，公告披露预训练完成、后训练进行中[1]。",
+      "more": "微软披露总参数2.8万亿、激活参数约800亿[1]。10月15日公告称预训练完成、后训练进行中，并提出经Foundry向可信伙伴提供权重许可的计划；这份研发公告不是公众产品上线凭据[1]。",
+      "for_us": "可先了解模型研发与伙伴授权方向（本站建议）。",
+      "related": [
+        "bk-ms-foundry",
+        "bk-moe",
+        "bk-parameters"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "研究团队及计划中的可信授权伙伴[1]。",
+      "helps_with": "可先了解基础模型研发方向；普通读者直接使用入口本次未确认。",
+      "device": "按研发公告为服务器训练；公众部署配置本次未确认[1]。",
+      "difficulty": "研发阶段；公众使用难度待核（本站按公告形态说明）。",
+      "region": "计划面向可信伙伴授权[1]；中国大陆可用条件本次未确认。",
+      "edge": "预训练效率优势属微软自测[1]",
+      "use_tags": [
+        "AI 助手与模型",
+        "云服务与开发平台"
+      ],
+      "owner": "Microsoft AI（微软）[1]",
+      "what": "微软研发中的MoE基础模型，公告披露预训练完成、后训练进行中[1]。",
+      "where_used": "微软研发；公告提出经Foundry向可信伙伴提供权重许可的计划[1]。",
+      "access": "公开材料为研发公告及伙伴授权计划；公众下载、API、价格和开放日期本次未核实[1]。",
+      "timeline": "2026-10-15：公布预训练完成[1]。",
+      "reception": "本条依据微软披露的测试；本次未核实独立使用评测[1]。",
+      "company": {},
+      "lifecycle": {
+        "state": "不适用",
+        "date": "2026-10-19",
+        "note": "按10月15日研发公告记录，不据此标为公众产品已开放[1]。",
+        "source": {
+          "name": "Microsoft AI：Frontier Pre-training at Microsoft AI（2026-10-15）",
+          "url": "https://microsoft.ai/news/frontier-pre-training-at-microsoft-ai/"
+        }
+      },
+      "sources": [
+        {
+          "name": "Microsoft AI：Frontier Pre-training at Microsoft AI（2026-10-15）",
+          "url": "https://microsoft.ai/news/frontier-pre-training-at-microsoft-ai/"
+        }
+      ],
+      "added_at": "2026-10-17",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-atria-dawn",
+      "zh": "Atria Dawn",
+      "en": "Atria Dawn",
+      "aliases": [
+        "Atria-Dawn"
+      ],
+      "tags": [
+        "模型",
+        "上海人工智能实验室",
+        "智能体"
+      ],
+      "brief": "①干嘛的：上海人工智能实验室的科研、工程智能体模型[1]。②对你有啥用：辅助编程、研究和文档交付[1]。③要什么设备：电脑接接口；本地需专业服务器[1]。④上手难度：开发者工具（本站判断）[1]。⑤面向谁、哪能用：有中国和国际入口，具体准入待核[1]。⑥强在哪：重视连续执行与结果验证（厂商自称）[1]。⑦谁家的、现在：上海人工智能实验室；正式版有接入说明，正式权重尚待开放[1]。",
+      "line": "围绕研究、编程与办公目标连续调用工具、交付结果的智能体模型[1]",
+      "more": "固定官方README将正式版及FP8上下文列为512K，基于744B参数的GLM-5.2；Preview仍列256K[4]。正式版与FP8下载表仍为Coming soon，Preview已有权重下载[2][4]。表格中的模型规格、客户端示例配置和实际账号接入条件须区分。",
+      "for_us": "接入前核对模型名；下载 Preview 不能当作已拿到正式版权重（本站提示）。",
+      "related": [
+        "bk-zhipu",
+        "bk-moe",
+        "bk-context-window",
+        "bk-local-deployment"
+      ],
+      "seen_in": [
+        "每日AI整合-2026-10-17"
+      ],
+      "for_whom": "科研、工程与自动化办公开发者[1]",
+      "helps_with": "辅助研究、写程序、整理报告和演示文稿[1]",
+      "device": "托管接口使用需电脑和应用；本地推理须专业硬件并先有对应版本权重。当前下载表仅Preview已有公开入口[2][4]。",
+      "difficulty": "开发者工具，需配置接口或推理环境（本站判断）[1]",
+      "region": "官方分别列中国与国际Console入口[4]；具体账号准入、地区条件及价格本次未实测。",
+      "edge": "重视从任务分析到执行、验证和失败恢复的完整过程（厂商自称）[1]",
+      "use_tags": [
+        "AI 助手与模型",
+        "编程与做应用",
+        "办公与文档"
+      ],
+      "owner": "上海人工智能实验室[1]",
+      "what": "围绕研究、编程与办公目标连续调用工具、交付结果的智能体模型[1]",
+      "where_used": "官方托管接口；本地下载须区分正式版和 Preview[1][2]",
+      "access": "官方模型接口名为Atria-Dawn，并列中国、国际Console说明[4]。10月19日固定README仍将正式版及FP8下载列为Coming soon，可下载的Preview需单独区分[2][4]。具体账号开通与价格未实测。",
+      "timeline": "相关技术报告于2026-09-14首次提交、09-17修订[3]；10-19固定README将正式版及FP8上下文改为512K，Preview仍为256K，正式权重仍Coming soon[4]。不以论文或旧年轮引用日期认定正式版首发日。",
+      "reception": "官方提供正式版与 Preview 对照评测；暂无本次核实到的独立正式版用户评测[1]。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用",
+        "date": "2026-10-19",
+        "note": "按官方托管接入说明记录；正式版权重仍待开放，Preview已有下载。实际账号和模型接口未实测[2][4]。",
+        "source": {
+          "name": "Atria官方固定README（2026-10-19提交bd72e85；正式版512K、Preview256K及下载状态）",
+          "url": "https://github.com/atria-asi/Atria-Dawn/blob/bd72e85a77a77b4ad9f9d56e2b6e0eca727dc460/README.md"
+        }
+      },
+      "sources": [
+        {
+          "name": "Atria 官方 GitHub：Atria Dawn 正式 README、模型下载表及接口说明（2026-10-17 核对）",
+          "url": "https://github.com/atria-asi/Atria-Dawn"
+        },
+        {
+          "name": "上海人工智能实验室：Atria-Dawn-Preview 官方模型卡",
+          "url": "https://huggingface.co/internlm/Atria-Dawn-Preview"
+        },
+        {
+          "name": "Atria Dawn 技术报告（arXiv:2609.15818）",
+          "url": "https://arxiv.org/abs/2609.15818"
+        },
+        {
+          "name": "Atria官方固定README（2026-10-19提交bd72e85；正式版512K、Preview256K及下载状态）",
+          "url": "https://github.com/atria-asi/Atria-Dawn/blob/bd72e85a77a77b4ad9f9d56e2b6e0eca727dc460/README.md"
+        }
+      ],
+      "added_at": "2026-10-10",
+      "last_verified": "2026-10-19",
+      "status": "verified",
+      "nianlun_seen": [
+        "大模型动态资料（2026-10-01）"
+      ]
     }
   ]
 }

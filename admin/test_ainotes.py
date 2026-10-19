@@ -137,6 +137,12 @@ class AinotesDataTests(unittest.TestCase):
         ids = [e["id"] for e in self.data["items"]]
         self.assertEqual(len(ids), len(set(ids)))
 
+    def test_complete_entries_have_a_type_facet(self) -> None:
+        types = {"概念", "公司", "产品", "模型", "人物", "事件", "智能体", "基准", "数据集"}
+        for entry in self.data["items"]:
+            if "what" in entry and "use_tags" in entry:
+                self.assertTrue(types.intersection(entry["tags"]), entry["id"] + " 缺少类型筛选入口")
+
     def test_schema_is_2020_12_and_closed(self) -> None:
         self.assertEqual(self.schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
         self.assertFalse(self.schema["additionalProperties"])
