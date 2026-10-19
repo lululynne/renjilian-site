@@ -36,10 +36,21 @@ def load(name: str):
     return json.loads(read(name))
 
 
-def check(instance, schema, path: str) -> list[str]:
+def check(instance, schema, path: str, root=None) -> list[str]:
     """只认本仓库 schema 用到的关键字：type/const/enum/required/properties/
-    additionalProperties/pattern/minLength/maxLength/minItems/items。"""
+    additionalProperties/pattern/minLength/maxLength/minItems/maxItems/uniqueItems/items，
+    以及版本合同的本地$ref/oneOf。"""
+    root = schema if root is None else root
+    if "$ref" in schema:
+        ref = schema["$ref"]
+        if not ref.startswith("#/$defs/"):
+            return [f"{path}: 不支持非本地合同引用"]
+        return check(instance, root["$defs"][ref[len("#/$defs/"):]], path, root)
     errs: list[str] = []
+    if "oneOf" in schema:
+        variants = [check(instance, candidate, path, root) for candidate in schema["oneOf"]]
+        if sum(not e for e in variants) != 1:
+            errs.append(f"{path}: 必须且只能匹配一个版本合同")
     t = schema.get("type")
     ok_type = (
         (t == "object" and isinstance(instance, dict))
@@ -72,13 +83,17 @@ def check(instance, schema, path: str) -> list[str]:
                     errs.append(f"{path}: 多出字段 {k}")
         for k, sub in props.items():
             if k in instance:
-                errs += check(instance[k], sub, f"{path}.{k}")
+                errs += check(instance[k], sub, f"{path}.{k}", root)
     if isinstance(instance, list):
         if "minItems" in schema and len(instance) < schema["minItems"]:
             errs.append(f"{path}: 元素不足 {schema['minItems']} 个")
+        if "maxItems" in schema and len(instance) > schema["maxItems"]:
+            errs.append(f"{path}: 元素超过 {schema['maxItems']} 个")
+        if schema.get("uniqueItems") and len({json.dumps(x, sort_keys=True) for x in instance}) != len(instance):
+            errs.append(f"{path}: 元素必须唯一")
         if "items" in schema:
             for i, el in enumerate(instance):
-                errs += check(el, schema["items"], f"{path}[{i}]")
+                errs += check(el, schema["items"], f"{path}[{i}]", root)
     return errs
 
 
@@ -100,13 +115,17 @@ class AinotesDataTests(unittest.TestCase):
                 self.assertRegex(e["id"], ID)
                 self.assertTrue(e["zh"].strip())
                 self.assertTrue(e["line"].strip())
-                self.assertLessEqual(len(e["line"]), LINE_MAX, "开头段超过 200 字，多出来的挪进展开")
-                self.assertGreaterEqual(len(e["line"]), LINE_MIN, "开头段太短：要写成新手读得懂的完整句子")
-                self.assertTrue(e["line"].endswith("。"), "开头段要以句号收住，不许是半截话")
                 self.assertTrue(e["brief"].strip(), "简洁版不能空")
-                self.assertLessEqual(len(e["brief"]), 60, "简洁版超过 60 字，就不叫简洁了")
-                first = e["line"].split("。")[0]
-                self.assertRegex(first, "是|指", "第一句必须是「X 是……」这样的完整判断句，先说清它是什么")
+                if "use_tags" in e and "what" in e:
+                    for field in ("what", "helps_with", "device", "difficulty", "for_whom", "region", "edge", "owner", "for_us"):
+                        self.assertTrue(e[field].strip(), f"v3 {field} 查不到应写待核，不留空")
+                else:
+                    self.assertLessEqual(len(e["line"]), LINE_MAX, "开头段超过 200 字，多出来的挪进展开")
+                    self.assertGreaterEqual(len(e["line"]), LINE_MIN, "开头段太短：要写成新手读得懂的完整句子")
+                    self.assertTrue(e["line"].endswith("。"), "开头段要以句号收住，不许是半截话")
+                    self.assertLessEqual(len(e["brief"]), 60, "简洁版超过 60 字，就不叫简洁了")
+                    first = e["line"].split("。")[0]
+                    self.assertRegex(first, "是|指", "第一句必须是「X 是……」这样的完整判断句，先说清它是什么")
                 self.assertGreaterEqual(len(e["sources"]), 1, "至少一条来源")
                 for s in e["sources"]:
                     self.assertTrue(s["name"].strip())
@@ -121,7 +140,8 @@ class AinotesDataTests(unittest.TestCase):
     def test_schema_is_2020_12_and_closed(self) -> None:
         self.assertEqual(self.schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
         self.assertFalse(self.schema["additionalProperties"])
-        self.assertFalse(self.schema["properties"]["items"]["items"]["additionalProperties"])
+        for entry in self.schema["$defs"].values():
+            self.assertFalse(entry["additionalProperties"])
 
     def test_data_validates_against_schema(self) -> None:
         errs = check(self.data, self.schema, "$")

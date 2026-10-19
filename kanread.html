@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>刊读 · 第二人称</title>
 <link rel="stylesheet" href="style.css?v=20261015-r0">
+<link rel="stylesheet" href="ainotes-fields.css?v=20261019-v3">
 <noscript><style>.kanread-list .log-state{display:none}</style></noscript>
 </head>
 <body class="reading-page">
@@ -75,17 +76,19 @@
     <button type="button" class="an-x" id="anX" aria-label="关闭小纸条">×</button>
     <h4 id="anZh"></h4>
     <p class="an-en" id="anEn"></p>
-    <p class="an-line" id="anLine"></p>
+    <p class="an-line" id="anLine" tabindex="-1"></p>
+    <div id="anQuestions" hidden></div>
     <p id="anDetailWrap" hidden><button type="button" class="an-detail-btn" id="anDetailBtn">看不太懂？说详细点</button></p>
     <p class="an-us" id="anUs" hidden></p>
     <p id="anMoreWrap" hidden><button type="button" class="an-more-btn" id="anMoreBtn">展开来龙去脉</button></p>
-    <p class="an-more" id="anMore" hidden></p>
+    <div class="an-more" id="anMore" tabindex="-1" hidden></div>
     <p class="an-srcs" id="anSrcs"></p>
     <p class="an-verified" id="anVerified"></p>
     <p class="an-go-row" id="anGoWrap"><a class="an-go" id="anGo" href="ainotes.html">在小纸条里看这个词 →</a></p>
   </div>
 </section>
 
+<script src="ainotes-fields.js?v=20261019-v3"></script>
 <script src="rj-related.js"></script>
 <script>
 (function () {
@@ -219,18 +222,20 @@
       }).join("") + "</div>";
   }
 
-  /* 底部弹层：文字全部走 textContent（不经过 HTML），来源只给 https:// 做链接 */
   var anBack = document.getElementById("anBack");
   var anSheet = document.getElementById("anSheet");
   var anX = document.getElementById("anX");
   var anOpener = null;
   var anEntry = null;   // 当前弹层打开的词条（「说详细点」要用它的 line）
+  var anInert = [];
 
   function closeSheet() {
     if (anSheet.hidden) return;
     anSheet.hidden = true;
     anBack.hidden = true;
     anEntry = null;
+    anInert.forEach(function (el) { el.inert = false; });
+    anInert = [];
     if (anOpener && document.contains(anOpener)) anOpener.focus();
     anOpener = null;
   }
@@ -238,6 +243,12 @@
   function openSheet(id, from) {
     var e = NOTES && NOTES.entries[id];
     if (!e) return;
+    if (anSheet.hidden) {
+      Array.prototype.forEach.call(document.body.children, function (el) {
+        if (el === anSheet || el === anBack || el.contains(anSheet) || el.inert) return;
+        el.inert = true; anInert.push(el);
+      });
+    }
     anOpener = from || null;
     anEntry = e;
     document.getElementById("anZh").textContent = (e.__draft ? "【草稿】" : "") + (e.zh || "");
@@ -248,16 +259,23 @@
     enEl.textContent = e.en || "";
     // 简洁档先给 brief，看不懂一键换 line（只换本次打开）；详细档直接 line；没有 brief 两档都 line
     var brief = typeof e.brief === "string" && e.brief && e.brief !== e.line ? e.brief : "";
-    document.getElementById("anLine").textContent = (MODE === "full" || !brief) ? (e.line || "") : brief;
-    document.getElementById("anDetailWrap").hidden = !(MODE === "brief" && brief);
+    var fields = window.RJ_AINOTES_FIELDS, v3 = fields.isV3(e);
+    document.getElementById("anLine").textContent = (v3 || MODE === "full" || !brief) ? (e.line || "") : brief;
+    document.getElementById("anLine").hidden = v3 && MODE === "brief";
+    var questions = document.getElementById("anQuestions");
+    questions.innerHTML = fields.questionsHtml(e);
+    questions.hidden = !v3;
+    document.getElementById("anDetailWrap").hidden = v3 || !(MODE === "brief" && brief);
     var us = document.getElementById("anUs");
     us.hidden = !e.for_us;
     us.textContent = e.for_us ? "对我们：" + e.for_us : "";
     var moreWrap = document.getElementById("anMoreWrap");
     var more = document.getElementById("anMore");
-    moreWrap.hidden = !e.more;
+    var extra = fields.detailsHtml(e);
+    moreWrap.hidden = !e.more && !extra;
     more.hidden = true;
-    more.textContent = e.more || "";
+    if (v3) more.innerHTML = (e.more ? "<p>" + esc(e.more) + "</p>" : "") + extra;
+    else more.textContent = e.more || "";
     var srcs = document.getElementById("anSrcs");
     srcs.textContent = "";
     (e.sources || []).forEach(function (s) {
@@ -289,15 +307,26 @@
     if (!anEntry) return;
     document.getElementById("anLine").textContent = anEntry.line || "";
     document.getElementById("anDetailWrap").hidden = true;
+    document.getElementById("anLine").focus({ preventScroll: true });
   });
   document.getElementById("anMoreBtn").addEventListener("click", function () {
     document.getElementById("anMore").hidden = false;
     document.getElementById("anMoreWrap").hidden = true;
+    document.getElementById("anMore").focus({ preventScroll: true });
   });
   anX.addEventListener("click", closeSheet);
   anBack.addEventListener("click", closeSheet);
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") closeSheet();
+    if (e.key !== "Tab" || anSheet.hidden) return;
+    var stops = Array.prototype.filter.call(anSheet.querySelectorAll('button, a[href], [tabindex="0"]'), function (el) {
+      return !el.disabled && el.getClientRects().length;
+    });
+    if (!stops.length) return;
+    var first = stops[0], last = stops[stops.length - 1], active = document.activeElement;
+    if (!anSheet.contains(active) || (e.shiftKey ? active === first : active === last)) {
+      e.preventDefault(); (e.shiftKey ? last : first).focus();
+    }
   });
 
   function syncNotesUI() {
@@ -673,7 +702,7 @@
   }
 
   // 草稿只在本机预览：localhost + ?preview=1 时并入 data/kanread.drafts.json（该文件不进仓库）
-  var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname) && /[?&]preview=1/.test(location.search);
+  var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname) && new URLSearchParams(location.search).get("preview") === "1";
 
   function getJson(url) {
     return fetch(url, { cache: "no-store" }).then(function (r) {
@@ -688,7 +717,7 @@
     return Promise.all([getJson("data/ainotes.json"), getJson("data/ainotes.marks.json")])
       .then(function (rs) {
         var entries = {};
-        ((rs[0] && rs[0].items) || []).forEach(function (e) { if (e && e.id) entries[e.id] = e; });
+        ((rs[0] && rs[0].items) || []).forEach(function (e) { if (window.RJ_AINOTES_FIELDS.isPublished(e) && e.id) entries[e.id] = e; });
         var notes = { entries: entries, marks: (rs[1] && rs[1].readings) || {} };
         if (!local) return notes;
         return getJson("data/ainotes.drafts.json").then(function (dr) {

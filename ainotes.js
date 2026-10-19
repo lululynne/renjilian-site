@@ -1,7 +1,29 @@
 /* 小纸条频道页（刀 4，2026-09-30）：人机百科查词页。
    搜索与筛选只在本机比对文字，不联网、不记录；简洁/详细两档与刊读共用 rj.ainotes.mode。 */
-(function () {
+(function start() {
   "use strict";
+
+  // 已发布的旧HTML可能仍在缓存中，入口脚本也必须能补齐同源字段组件。
+  if (!window.RJ_AINOTES_FIELDS) {
+    var dependency = document.createElement("script");
+    function failed() { document.getElementById("bkList").textContent = "小纸条暂时读不出来，稍后再来。"; }
+    dependency.src = "ainotes-fields.js?v=20261019-v3";
+    dependency.onload = function () { if (window.RJ_AINOTES_FIELDS) start(); else failed(); };
+    dependency.onerror = failed;
+    if (!document.querySelector('link[href^="ainotes-fields.css"]')) {
+      var css = document.createElement("link");
+      css.rel = "stylesheet"; css.href = "ainotes-fields.css?v=20261019-v3";
+      document.head.appendChild(css);
+    }
+    document.head.appendChild(dependency);
+    return;
+  }
+  if (!document.getElementById("bkDifficulty")) {
+    var difficultyControl = document.createElement("label");
+    difficultyControl.id = "bkDifficultyWrap"; difficultyControl.className = "bk-difficulty"; difficultyControl.hidden = true;
+    difficultyControl.innerHTML = '上手难度 <select id="bkDifficulty" aria-controls="bkList"><option value="">不限难度</option></select>';
+    document.querySelector(".bk-tagbar").after(difficultyControl);
+  }
 
   var listEl = document.getElementById("bkList");
   var emptyEl = document.getElementById("bkEmpty");
@@ -16,6 +38,9 @@
   var tagsWrap = document.getElementById("bkTagsWrap");
   var tagsPicked = document.getElementById("bkTagsPicked");
   var tagsClear = document.getElementById("bkTagsClear");
+  var difficultyEl = document.getElementById("bkDifficulty");
+  var difficultyWrap = document.getElementById("bkDifficultyWrap");
+  var FIELDS = window.RJ_AINOTES_FIELDS;
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -67,7 +92,7 @@
     ["地区", ["国产", "国内可用"]],
     ["厂商", ["OpenAI", "Anthropic", "Google"]]
   ];
-  var TAG_TO_GROUP = {};
+  var TAG_TO_GROUP = Object.create(null);
   TAG_GROUPS.forEach(function (g) { g[1].forEach(function (t) { TAG_TO_GROUP[t] = g[0]; }); });
 
   var STARTERS = ["bk-usage", "bk-sub", "bk-api", "bk-agent", "bk-credits", "bk-openai"];
@@ -87,7 +112,8 @@
   /* ── 状态 ── */
   var READY = false, ITEMS = [], BY_ID = {}, LETTER_NODES = {};
   var TITLES = {}, UPDATED = "";
-  var Q = "", PICKED = {};   // {组名: {tag: true}}
+  var Q = "", PICKED = Object.create(null);   // {组名: {tag: true}}
+  var USES = Object.create(null), USE_OPTIONS = Object.create(null), DIFFICULTY = "", DIFFICULTY_OPTIONS = [];
   var FULL = false, COMPOSING = false, LAST_SIG = null;
 
   var LOCAL = /^(127\.0\.0\.1|localhost)$/.test(location.hostname) &&
@@ -159,7 +185,7 @@
   function prepEntry(e) {
     e._nm = [{ n: norm(e.zh), c: compact(e.zh) }, { n: norm(e.en || ""), c: compact(e.en || "") }];
     e._al = (e.aliases || []).map(function (a) { return { raw: a, n: norm(a), c: compact(a) }; });
-    e._tx = [e.brief || "", e.line || ""].map(function (t) { return { n: norm(t), c: compact(t) }; });
+    e._tx = [e.brief || "", e.line || ""].concat(FIELDS.searchText(e)).map(function (t) { return { n: norm(t), c: compact(t) }; });
     e._names = e._nm.concat(e._al);
     e._letter = letterOf(e.zh);
   }
@@ -187,9 +213,13 @@
     Object.keys(PICKED["其他"] || {}).forEach(function (t) { out.push(t); });
     return out;
   }
-  function hasPicks() { return pickedList().length > 0; }
+  function hasPicks() { return pickedList().length > 0 || Object.keys(USES).length > 0 || !!DIFFICULTY; }
+  function resetFilters() { PICKED = Object.create(null); USES = Object.create(null); DIFFICULTY = ""; difficultyEl.value = ""; }
 
   function tagPass(e) {
+    var uses = Object.keys(USES);
+    if (uses.length && !uses.some(function (t) { return (e.use_tags || []).indexOf(t) !== -1; })) return false;
+    if (DIFFICULTY && e.difficulty !== DIFFICULTY) return false;
     var groups = Object.keys(PICKED);
     for (var i = 0; i < groups.length; i++) {
       var picks = Object.keys(PICKED[groups[i]]);
@@ -213,7 +243,12 @@
       out += '<p class="chips bk-card-tags">' +
         e.tags.map(function (t) { return '<span class="chip">' + esc(t) + "</span>"; }).join("") + "</p>";
     var brief = typeof e.brief === "string" && e.brief && e.brief !== e.line ? e.brief : "";
-    if (brief) {
+    if (FIELDS.isV3(e)) {
+      var questions = FIELDS.questionsHtml(e);
+      out += '<div class="bk-text an-v3-summary" tabindex="-1"><p class="bk-f an-v3-line">' + esc(e.line) +
+        '</p>' + questions + '</div>';
+      out += '<p class="bk-detail-row"><button type="button" class="bk-detail-btn">看不太懂？说详细点</button></p>';
+    } else if (brief) {
       out += '<p class="bk-text" tabindex="-1"><span class="bk-b">' + esc(brief) + '</span><span class="bk-f">' +
         esc(e.line) + "</span></p>";
       out += '<p class="bk-detail-row"><button type="button" class="bk-detail-btn">看不太懂？说详细点</button></p>';
@@ -233,6 +268,7 @@
     var html = "";
     if (e.more) html += '<p class="bk-sec"><b class="bk-sec-label">来龙去脉</b>' + esc(e.more) + "</p>";
     if (e.for_us) html += '<p class="bk-sec"><b class="bk-sec-label">对我们</b>' + esc(e.for_us) + "</p>";
+    html += FIELDS.detailsHtml(e);
     var srcs = [];
     (e.sources || []).forEach(function (s) {
       if (s && typeof s.url === "string" && s.url.indexOf("https://") === 0) {
@@ -376,13 +412,20 @@
       if (Q) p.set("q", Q); else p.delete("q");
       p.delete("tag");
       pickedList().forEach(function (t) { p.append("tag", t); });
+      p.delete("use");
+      Object.keys(USES).forEach(function (t) { p.append("use", t); });
+      if (DIFFICULTY) p.set("difficulty", DIFFICULTY); else p.delete("difficulty");
       var s = p.toString();
       history.replaceState(history.state, "",
         location.pathname + (s ? "?" + s : "") + (keepHash ? location.hash : ""));
     } catch (_) {}
   }
   var wbTimer = null;
-  function writebackSoon() { clearTimeout(wbTimer); wbTimer = setTimeout(function () { writeback(false); }, 400); }
+  function writebackSoon() {
+    clearTimeout(wbTimer);
+    var scheduledHash = location.hash;
+    wbTimer = setTimeout(function () { writeback(location.hash !== scheduledHash); }, 400);
+  }
 
   /* ── 锚点 ── */
   function route() {
@@ -397,16 +440,21 @@
       try { history.replaceState(history.state, "", location.pathname + location.search); } catch (_) {}
       return;
     }
+    if (rafPending) {
+      cancelAnimationFrame(queryFrame); queryFrame = null; rafPending = false;
+      applyQuery();
+    }
+    clearTimeout(wbTimer); wbTimer = null;
     if (card.hidden) {
       Q = ""; qEl.value = ""; clearEl.hidden = true;
-      PICKED = {}; syncTagsUI();
+      resetFilters(); syncTagsUI();
       apply();
       noticeEl.textContent = "已清空搜索和标签，显示「" + e.zh + "」这一条。";
       noticeEl.hidden = false;
-      writeback(true);   // 清掉 q/tag，留住这个 hash
     } else {
       noticeEl.hidden = true;
     }
+    writeback(true);   // 同步当前筛选，保留这次导航的锚点
     var old = listEl.querySelector(".is-target");
     if (old) { old.classList.remove("is-target"); old.querySelector(".bk-here").hidden = true; }
     card.classList.add("is-target");
@@ -424,19 +472,39 @@
     var n = 0;
     for (i = 0; i < tags.length; i++) {
       var t = tags[i].getAttribute("data-tag");
-      var on = !!(PICKED[TAG_TO_GROUP[t] || "其他"] && PICKED[TAG_TO_GROUP[t] || "其他"][t]);
+      var use = tags[i].getAttribute("data-use");
+      var on = use !== null ? !!USES[use] : !!(PICKED[TAG_TO_GROUP[t] || "其他"] && PICKED[TAG_TO_GROUP[t] || "其他"][t]);
       tags[i].setAttribute("aria-pressed", on ? "true" : "false");
       tags[i].classList.toggle("on", on);
       if (on) n++;
     }
+    if (DIFFICULTY) n++;
     tagsPicked.textContent = n ? " · 已选 " + n + " 个" : "";
     tagsClear.hidden = !n;
   }
 
   function buildTags() {
-    var inData = {};
-    ITEMS.forEach(function (e) { (e.tags || []).forEach(function (t) { inData[t] = true; }); });
+    var inData = Object.create(null);
+    ITEMS.forEach(function (e) { (e.tags || []).forEach(function (t) {
+      inData[t] = true;
+      if (!TAG_TO_GROUP[t]) TAG_TO_GROUP[t] = "其他";
+    }); });
     var html = "";
+    ITEMS.forEach(function (e) {
+      (e.use_tags || []).forEach(function (t) { USE_OPTIONS[t] = true; });
+      if (typeof e.difficulty === "string" && e.difficulty.trim() && DIFFICULTY_OPTIONS.indexOf(e.difficulty) === -1)
+        DIFFICULTY_OPTIONS.push(e.difficulty);
+    });
+    var purposes = Object.keys(USE_OPTIONS).sort();
+    if (purposes.length) {
+      html += '<div class="bk-tag-group" role="group" aria-labelledby="bkt-use"><span class="bk-tag-legend" id="bkt-use">用途</span>' +
+        purposes.map(function (t) { return '<button type="button" class="chip bk-tag bk-use" data-use="' + esc(t) + '" aria-pressed="false">' + esc(t) + '</button>'; }).join("") + '</div>';
+    }
+    DIFFICULTY_OPTIONS.sort();
+    difficultyWrap.hidden = !DIFFICULTY_OPTIONS.length;
+    difficultyEl.innerHTML = '<option value="">不限难度</option>' + DIFFICULTY_OPTIONS.map(function (d) {
+      return '<option value="' + esc(d) + '">' + esc(d) + '</option>';
+    }).join("");
     TAG_GROUPS.forEach(function (g, gi) {
       var tags = g[1].filter(function (t) { return inData[t]; });
       if (!tags.length) return;   // 整组都没有的，这一组不渲染
@@ -447,7 +515,7 @@
             esc(t) + "</button>";
         }).join("") + "</div>";
     });
-    var others = Object.keys(inData).filter(function (t) { return !(t in TAG_TO_GROUP); }).sort();
+    var others = Object.keys(inData).filter(function (t) { return TAG_TO_GROUP[t] === "其他"; }).sort();
     if (others.length) {
       html += '<div class="bk-tag-group" role="group" aria-labelledby="bkt-other">' +
         '<span class="bk-tag-legend" id="bkt-other">其他</span>' +
@@ -464,9 +532,14 @@
   tagsEl.addEventListener("click", function (e) {
     var b = e.target && e.target.closest ? e.target.closest(".bk-tag") : null;
     if (!b) return;
+    var use = b.getAttribute("data-use");
+    if (use !== null) {
+      if (USES[use]) delete USES[use]; else USES[use] = true;
+      syncTagsUI(); apply(); writebackSoon(); return;
+    }
     var t = b.getAttribute("data-tag");
     var g = TAG_TO_GROUP[t] || "其他";
-    PICKED[g] = PICKED[g] || {};
+    PICKED[g] = PICKED[g] || Object.create(null);
     if (PICKED[g][t]) delete PICKED[g][t]; else PICKED[g][t] = true;
     if (!Object.keys(PICKED[g]).length) delete PICKED[g];
     syncTagsUI();
@@ -474,15 +547,20 @@
     writebackSoon();
   });
   tagsClear.addEventListener("click", function () {
-    PICKED = {};
+    resetFilters();
     syncTagsUI();
     apply();
     writebackSoon();
     tagsWrap.querySelector("summary").focus();
   });
+  difficultyEl.addEventListener("change", function () {
+    DIFFICULTY = difficultyEl.value;
+    syncTagsUI(); apply(); writebackSoon();
+  });
 
   /* ── 搜索框 ── */
   var rafPending = false;
+  var queryFrame = null;
   function applyQuery() {
     Q = qEl.value.slice(0, 64);
     clearEl.hidden = !Q;
@@ -493,7 +571,7 @@
     if (COMPOSING || e.isComposing) return;   // 输入法拼到一半不筛
     if (rafPending) return;
     rafPending = true;
-    requestAnimationFrame(function () { rafPending = false; applyQuery(); });
+    queryFrame = requestAnimationFrame(function () { queryFrame = null; rafPending = false; applyQuery(); });
   });
   qEl.addEventListener("compositionstart", function () { COMPOSING = true; });
   qEl.addEventListener("compositionend", function () { COMPOSING = false; applyQuery(); });
@@ -508,14 +586,14 @@
   });
   emptyReset.addEventListener("click", function () {
     qEl.value = ""; Q = ""; clearEl.hidden = true;
-    PICKED = {}; syncTagsUI();
+    resetFilters(); syncTagsUI();
     apply();
     writebackSoon();
     qEl.focus();
   });
 
   // 卡片里的事件：说详细点 / 同 hash 的锚点链接
-  listEl.addEventListener("click", function (e) {
+  function onCardClick(e) {
     var b = e.target && e.target.closest ? e.target.closest(".bk-detail-btn") : null;
     if (b) {
       var card = b.closest(".bk-card");
@@ -525,7 +603,9 @@
     }
     var a = e.target && e.target.closest ? e.target.closest('a[href^="#bk-"]') : null;
     if (a && a.hash === location.hash) { e.preventDefault(); route(); }
-  });
+  }
+  listEl.addEventListener("click", onCardClick);
+  startersEl.addEventListener("click", onCardClick);
 
   /* ── 加载 ── */
   function getJson(url) {
@@ -554,7 +634,7 @@
     });
     var entries = [];
     ((data && data.items) || []).forEach(function (e) {
-      if (e.status === "draft") return;
+      if (!FIELDS.isPublished(e)) return;
       e = sanitize(e);
       if (e) entries.push(e);
     });
@@ -598,9 +678,12 @@
       p.getAll("tag").forEach(function (t) {
         var g = TAG_TO_GROUP[t];
         if (!g) return;   // 不认识的忽略
-        PICKED[g] = PICKED[g] || {};
+        PICKED[g] = PICKED[g] || Object.create(null);
         PICKED[g][t] = true;
       });
+      p.getAll("use").forEach(function (t) { if (USE_OPTIONS[t]) USES[t] = true; });
+      var difficulty = p.get("difficulty");
+      if (DIFFICULTY_OPTIONS.indexOf(difficulty) !== -1) { DIFFICULTY = difficulty; difficultyEl.value = difficulty; }
     } catch (_) {}
     syncTagsUI();
     FULL = storedMode() === "full";
