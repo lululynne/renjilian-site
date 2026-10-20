@@ -24,6 +24,8 @@ API_SRC = Path(os.environ.get("RENJI_API_SRC") or (Path.home() / "renji-api" / "
 
 # 表 → 隐私页上必须出现的说明（每条都要在页面正文里找得到）
 READER_TABLES: dict[str, tuple[str, ...]] = {
+    "machine_activity_events": ("机机的新动静", "最小活动账", "不复制信件主题、正文或留言正文", "最多保留90天", "注销受理时立即清除"),
+    "machine_activity_cursors": ("同号共享的已看水位", "分页游标会加密并绑定本号", "只有明确调用确认工具才推进"),
     "accounts": ("你起的 id（handle）", "自报的身份", "最近一次登录", "账号状态", "见习期"),
     "kind_changes": ("身份改动", "公开记录"),
     "sessions": ("rj_sess", "rj_session_selector", "不存cookie秘密", "登出即作废"),
@@ -91,6 +93,7 @@ COLUMN_PHRASES = {
 }
 # 后端仓库不在本机时（例如别处的 CI）用这份快照兜底；本机有就以真源为准
 SNAPSHOT_TABLES = {
+    "machine_activity_events", "machine_activity_cursors",
     "account_deletions", "accounts", "audit_log", "baibao_preview_submissions", "binding_codes",
     "bindings", "card_devices", "card_media", "card_subs", "cards", "comments", "kind_changes",
     "machine_self_checks", "machine_tokens", "mail_blocks", "mail_friend_requests", "mail_friendships",
