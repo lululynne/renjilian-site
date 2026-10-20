@@ -38,10 +38,11 @@
 
   <details class="nl-legend">
     <summary>电池怎么看</summary>
+    <p>格数按本站编辑判断标记重要度，不是产品评分或原来源的风险等级。</p>
     <ul>
       <li><img src="img/nianlun/battery-5.svg" width="48" height="24" alt="5 格"><span>新一代旗舰，或改变全行业价格</span></li>
       <li><img src="img/nianlun/battery-4.svg" width="48" height="24" alt="4 格"><span>旗舰迭代、重要新产品，或订阅和额度规则大改</span></li>
-      <li><img src="img/nianlun/battery-3.svg" width="48" height="24" alt="3 格"><span>新功能上线</span></li>
+      <li><img src="img/nianlun/battery-3.svg" width="48" height="24" alt="3 格"><span>新功能上线，或值得记录的公共事件</span></li>
       <li><img src="img/nianlun/battery-2.svg" width="48" height="24" alt="2 格"><span>小版本，或价格小调</span></li>
       <li><img src="img/nianlun/battery-1.svg" width="48" height="24" alt="1 格"><span>修复、文档变更</span></li>
     </ul>
@@ -106,9 +107,9 @@
   function readFilterFromUrl() {
     var m = "";
     try { m = new URLSearchParams(location.search).get("m") || ""; } catch (_) {}
-    if (m && !MEMBER_NAME[m]) {
+    if (m && (m === "other" || !MEMBER_NAME[m])) {
       m = "";
-      try { history.replaceState(history.state, "", location.pathname); } catch (_) {}
+      try { history.replaceState(history.state, "", location.pathname + location.hash); } catch (_) {}
     }
     return m;
   }
@@ -129,7 +130,7 @@
   }
 
   function visibleItems() {
-    // 新的在上：at 是同偏移的 ISO 串，字典序即时间序；同一时刻保持数据原序（稳定）
+    // 日期和 +08:00 时刻均按来源字符串排序，不推算未知时刻；同值保持原序。
     var items = (DATA.items || []).map(function (it, i) { return [it, i]; });
     items.sort(function (a, b) {
       var cmp = String(b[0].at).localeCompare(String(a[0].at));
@@ -141,11 +142,13 @@
 
   function itemHtml(it) {
     var out = '<article class="nl-item" id="' + esc(it.id) + '">';
-    // 时间直接从 at 字符串取时分（at 一律是 +08:00 东八区的 ISO 串），不做时区换算
-    out += '<p class="nl-time"><time datetime="' + esc(it.at) + '">' + esc(String(it.at).slice(11, 16)) + "</time></p>";
+    // 精确时间保持 +08:00；只有日期时不补零点，也不做未知时区换算。
+    var clock = String(it.at).length === 10 ? "未注明时刻" : String(it.at).slice(11, 16);
+    out += '<p class="nl-time"><time datetime="' + esc(it.at) + '">' + esc(clock) + "</time></p>";
     out += '<img class="nl-battery" src="img/nianlun/battery-' + esc(it.level) + '.svg" width="64" height="32"' +
       ' alt="重要度 ' + esc(it.level) + '／5" loading="lazy">';
-    var chips = ['<span class="chip">' + esc(MEMBER_NAME[it.member] || it.member) + "</span>"];
+    var name = it.member === "other" ? it.maker : MEMBER_NAME[it.member] || it.member;
+    var chips = ['<span class="chip">' + esc(name) + "</span>"];
     (it.tags || []).forEach(function (t) { chips.push('<span class="chip">' + esc(t) + "</span>"); });
     out += '<p class="chips nl-tags">' + chips.join("") + "</p>";
     out += '<p class="nl-line">' + esc(it.line) + "</p>";
@@ -174,7 +177,7 @@
     var html = "";
     var groups = [], byDay = {};
     items.forEach(function (it) {
-      var day = String(it.at).slice(0, 10);   // 东八区日期，直接取字符串前 10 位
+      var day = String(it.at).slice(0, 10);   // 只知日期时沿用来源日历日。
       if (!byDay[day]) { byDay[day] = []; groups.push(day); }
       byDay[day].push(it);
     });
@@ -203,6 +206,7 @@
     var html = '<button type="button" class="nl-chip" role="radio" data-m="" aria-checked="true">全部' +
       ' <span class="nl-n">' + (DATA.items || []).length + "</span></button>";
     DATA.members.forEach(function (m) {
+      if (m.id === "other") return;
       var n = COUNTS[m.id] || 0;
       html += '<button type="button" class="nl-chip" role="radio" data-m="' + esc(m.id) + '"' +
         (n ? "" : ' disabled aria-label="' + esc(m.name) + "，还没有记到" + '"') + ">" +

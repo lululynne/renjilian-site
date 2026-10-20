@@ -97,7 +97,8 @@ class NianlunBrowserTests(unittest.TestCase):
         cls.thread.join(timeout=2)
 
     def open(self, query: str = "", hash_: str = "", use_fixture: bool = True,
-             width: int = 390, height: int = 844, js: bool = True, timezone: str | None = None):
+             width: int = 390, height: int = 844, js: bool = True, timezone: str | None = None,
+             data: dict | None = None):
         kw = {"viewport": {"width": width, "height": height}, "java_script_enabled": js}
         if timezone:
             kw["timezone_id"] = timezone
@@ -107,13 +108,52 @@ class NianlunBrowserTests(unittest.TestCase):
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
         page.on("pageerror", lambda e: errors.append(str(e)))
         if use_fixture:
-            body = json.dumps(fixture(), ensure_ascii=False)
+            body = json.dumps(data if data is not None else fixture(), ensure_ascii=False)
             page.route("**/data/nianlun.json",
                        lambda route, _r: route.fulfill(status=200, content_type="application/json", body=body))
         page.goto(f"{self.base}/{PAGE}{query}{('#' + hash_) if hash_ else ''}", wait_until="networkidle")
         return ctx, page, errors
 
     # ── 1. 分组、组头、新的在上、时间文字；换浏览器时区显示不变 ──
+    def test_day_precision_and_institution_labels(self) -> None:
+        data = fixture()
+        data["members"] = MEMBERS + [{"id": "other", "name": "其他机构"}]
+        data["items"] = FIXTURE_ITEMS + [mk("nl-day-only", "2026-10-01", "other", 3, maker="公开机构")]
+        for tz in ("Asia/Shanghai", "America/Los_Angeles"):
+            with self.subTest(tz=tz):
+                ctx, page, errors = self.open(query="?m=other", hash_="nl-day-only", timezone=tz, data=data)
+                try:
+                    item = page.locator("#nl-day-only")
+                    item.wait_for()
+                    self.assertEqual(item.locator("time").inner_text(), "未注明时刻")
+                    self.assertEqual(item.locator("time").get_attribute("datetime"), "2026-10-01")
+                    self.assertIn("10 月 1 日", page.locator(".nl-day-head").first.inner_text())
+                    self.assertEqual(item.locator(".chip").first.inner_text(), "公开机构")
+                    self.assertEqual(page.locator(".nl-chip[data-m=other]").count(), 0)
+                    self.assertEqual(page.locator(".nl-item").count(), len(data["items"]))
+                    self.assertEqual(page.locator(".nl-chip[data-m='']").get_attribute("aria-checked"), "true")
+                    self.assertNotIn("m=other", page.url)
+                    self.assertIn("未注明时刻", page.locator("#nlStatus").inner_text())
+                    self.assertEqual(errors, [])
+                finally:
+                    ctx.close()
+
+    def test_institution_name_renders_as_text(self) -> None:
+        maker = '<img src=x onerror="window.__pwn=1">公开机构'
+        data = fixture()
+        data["members"] = MEMBERS + [{"id": "other", "name": "其他机构"}]
+        data["items"] = [mk("nl-maker", "2026-10-01", "other", 3, maker=maker)]
+        ctx, page, errors = self.open(data=data)
+        try:
+            item = page.locator("#nl-maker")
+            item.wait_for()
+            self.assertEqual(item.locator(".chip").first.inner_text(), maker)
+            self.assertEqual(item.locator(".chip img").count(), 0)
+            self.assertFalse(page.evaluate("!!window.__pwn"))
+            self.assertEqual(errors, [])
+        finally:
+            ctx.close()
+
     def test_grouping_and_time_text_survive_timezones(self) -> None:
         for tz in (None, "America/Los_Angeles"):
             with self.subTest(tz=tz or "本机"):

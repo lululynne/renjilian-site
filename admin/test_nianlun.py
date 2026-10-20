@@ -1,7 +1,7 @@
 #!/opt/homebrew/opt/python@3.14/bin/python3.14
 """年轮时间线契约测试（2026-09-30，年轮刀 1）。
 
-守：数据信封与 schema 一致（不引第三方校验库）、成员名单恰好 15 家、read 指向真实精读、
+守：数据信封与 schema 一致（不引第三方校验库）、15家正式厂商及其他主体映射、read 指向真实精读、
 notes 指向真实小纸条词条、页面壳层与取时间的办法（不许用浏览器本地时区）、图片在且小、
 样式块零裸色值。
 """
@@ -17,7 +17,7 @@ DATA = "data/nianlun.json"
 SCHEMA = "data/nianlun.schema.json"
 PAGE = "nianlun.html"
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-AT = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+08:00$")
+AT = re.compile(r"^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}\+08:00)?$")
 
 
 def read(name: str) -> str:
@@ -30,8 +30,12 @@ def load(name: str):
 
 def check(instance, schema, path: str) -> list[str]:
     """只认本仓库 schema 用到的关键字：type/const/enum/required/properties/
-    additionalProperties/pattern/minLength/maxLength/minItems/items/minimum/maximum。"""
+    additionalProperties/pattern/minLength/maxLength/minItems/items/minimum/maximum/if/then/else。"""
     errs: list[str] = []
+    if "if" in schema:
+        branch = "then" if not check(instance, schema["if"], path) else "else"
+        if branch in schema:
+            errs += check(instance, schema[branch], path)
     t = schema.get("type")
     ok_type = (
         (t == "object" and isinstance(instance, dict))
@@ -106,7 +110,7 @@ class NianlunDataTests(unittest.TestCase):
 
     def test_members_are_exactly_the_fifteen(self) -> None:
         members = self.data["members"]
-        self.assertEqual(len(members), 15, "成员名单恰好 15 家")
+        self.assertEqual(len([m for m in members if m["id"] != "other"]), 15, "正式厂商仍为15家")
         ids = [m["id"] for m in members]
         self.assertEqual(len(ids), len(set(ids)), "成员 id 不许重复")
         for m in members:
@@ -121,6 +125,8 @@ class NianlunDataTests(unittest.TestCase):
                 ids.append(it["id"])
                 self.assertRegex(it["at"], AT)
                 self.assertIn(it["member"], member_ids, "member 必须在 members 里")
+                if it["member"] == "other":
+                    self.assertTrue(it.get("maker", "").strip(), "其他机构必须标出实际主体")
                 self.assertIn(it["level"], (1, 2, 3, 4, 5))
                 self.assertTrue(20 <= len(it["line"]) <= 140, "line 长度 20–140")
                 self.assertGreaterEqual(len(it["sources"]), 1)
@@ -128,6 +134,26 @@ class NianlunDataTests(unittest.TestCase):
                     self.assertTrue(s["name"].strip())
                     self.assertTrue(s["url"].startswith("https://"), "来源必须 https")
         self.assertEqual(len(ids), len(set(ids)), "格 id 不许重复")
+
+    def test_date_precision_contract(self) -> None:
+        schema = self.schema["properties"]["items"]["items"]["properties"]["at"]
+        for value in ("2026-10-15", "2026-10-15T09:30:00+08:00"):
+            self.assertEqual(check(value, schema, "$"), [])
+        for value in ("2026-10-15T", "2026-10-15T09:30:00Z", "2026-10-15T09:30:00+05:30"):
+            self.assertTrue(check(value, schema, "$"))
+
+    def test_other_requires_an_actual_institution(self) -> None:
+        schema = self.schema["properties"]["items"]["items"]
+        self.assertEqual(check(dict(self.data["items"][-1], maker=""), schema, "$"), [])
+        item = dict(self.data["items"][0], member="other", maker="公开机构")
+        self.assertEqual(check(item, schema, "$"), [])
+        for value in (None, "", "   "):
+            candidate = dict(item)
+            if value is None:
+                candidate.pop("maker")
+            else:
+                candidate["maker"] = value
+            self.assertTrue(check(candidate, schema, "$"))
 
     def test_read_points_to_a_real_reading(self) -> None:
         readings = {it["id"]: it for it in load("data/kanread.json")["items"]}

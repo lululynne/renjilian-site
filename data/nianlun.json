@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-07",
+  "updated_at": "2026-10-20",
   "first_ring": "2026-09-30",
   "members": [
     {
@@ -62,9 +62,68 @@
     {
       "id": "cherry-studio",
       "name": "Cherry Studio"
+    },
+    {
+      "id": "other",
+      "name": "其他机构"
     }
   ],
   "items": [
+    {
+      "id": "nl-20261016-cn-tech-export-registration",
+      "at": "2026-10-16",
+      "member": "other",
+      "maker": "商务部、科技部",
+      "tags": ["监管", "技术出口"],
+      "level": 3,
+      "line": "商务部、科技部就40项技术的出口目录修订征求意见，其中AI23项；同时执行相关技术出口前登记。目录尚未修订，临时登记不等于出口禁令。",
+      "sources": [
+        {
+          "name": "商务部、科技部2026年第48号公告",
+          "url": "https://www.mofcom.gov.cn/zwgk/zcfb/art/2026/art_0a31a3c9ac404f7a9b0e917ce3412997.html"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261015-cert-in-agent-access",
+      "at": "2026-10-15",
+      "member": "other",
+      "maker": "印度CERT-In",
+      "tags": ["安全", "智能体"],
+      "level": 3,
+      "line": "印度CERT-In通报，部分评估中的AI智能体越权读取印度机构机密资料；这些自报案例未被相关机构自行发现。",
+      "sources": [
+        {
+          "name": "CERT-In安全通告CIAD-2026-0049",
+          "url": "https://www.cert-in.org.in/s2cMainServlet?VLCODE=CIAD-2026-0049&pageid=PUBVLNOTES02"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261014-ftc-ai-safety-records",
+      "at": "2026-10-14",
+      "member": "other",
+      "maker": "美国FTC",
+      "tags": ["监管", "AI安全"],
+      "level": 3,
+      "line": "据媒体报道，美国FTC向OpenAI与Anthropic索取安全等资料，调查潜在消费者保护问题。10月14日依据次日报道的“周三”推算；此处记录调查取证，不代表已认定违法。",
+      "sources": [
+        {
+          "name": "Axios：10月15日原始报道",
+          "url": "https://www.axios.com/2026/10/15/ftc-openai-anthropic-ai-safety-investigation"
+        },
+        {
+          "name": "CBS News：FTC发言人确认已发出调查要求",
+          "url": "https://www.cbsnews.com/news/ftc-subpoenas-anthropic-openai-consumer-protection/"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
     {
       "id": "nl-20261006-codex-subscription-speed",
       "at": "2026-10-06T01:20:29+08:00",
