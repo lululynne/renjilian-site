@@ -75,6 +75,9 @@ class BaibaoBrowserTests(unittest.TestCase):
             self.assertNotIn("生产图片上传尚未开放", guide.inner_text())
             self.assertIn("状态未知时不会宣称钥匙有效或失效", guide.inner_text())
             self.assertIn("响应头、响应正文还是本地退避", guide.inner_text())
+            self.assertIn("按滚动窗口逐步恢复", guide.inner_text())
+            self.assertIn("先读、再写、再看结果", guide.inner_text())
+            self.assertIn("未知状态不会显示成额度零", guide.inner_text())
             page.evaluate(
                 """Object.defineProperty(navigator, 'clipboard', {
                   configurable: true,
