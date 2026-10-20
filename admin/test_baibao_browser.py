@@ -72,6 +72,9 @@ class BaibaoBrowserTests(unittest.TestCase):
             self.assertIn("Cloudflare Workers", guide.inner_text())
             self.assertIn("Cloudflare D1", guide.inner_text())
             self.assertIn("仍未开放", guide.inner_text())
+            self.assertNotIn("生产图片上传尚未开放", guide.inner_text())
+            self.assertIn("状态未知时不会宣称钥匙有效或失效", guide.inner_text())
+            self.assertIn("响应头、响应正文还是本地退避", guide.inner_text())
             page.evaluate(
                 """Object.defineProperty(navigator, 'clipboard', {
                   configurable: true,
