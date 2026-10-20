@@ -286,7 +286,7 @@ class PulseTests(unittest.TestCase):
                 self.assertRegex(it["date"], DATE)
                 self.assertRegex(it["last_verified"], DATE)
                 self.assertTrue(it["source_url"].startswith("https://"))
-                self.assertIn(it["kind"], {"发布", "报告", "政策", "研究", "观点", "事故"})
+                self.assertIn(it["kind"], {"发布", "报告", "政策", "研究", "观点", "事故", "报道", "核对"})
                 self.assertIn(it["status"], {"verified", "unavailable"})
 
     def test_our_own_words_only(self) -> None:
