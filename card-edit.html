@@ -7,6 +7,50 @@
 <link rel="stylesheet" href="style.css?v=20261015-r0">
 <link rel="stylesheet" href="rj-card.css?v=20261014-paper">
 <link rel="stylesheet" href="avatar-v8.css?v=20261014-v8">
+<style>
+.rjk .draft-note{margin:16px 0 0;padding:12px 14px;border:1px dashed var(--sp-ochre);border-radius:12px;background:color-mix(in srgb,var(--sp-ochre) 10%,var(--sp-panel));display:grid;gap:3px}
+.rjk .draft-note strong{font:600 16px/1.35 var(--serif);color:var(--ink)}
+.rjk .draft-note span{font-size:13px;line-height:1.55;color:var(--ink-soft)}
+.rjk .review-utility{margin-top:10px}
+.rjk .review-panel{position:relative;width:min(1040px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:var(--sp-panel);color:var(--ink);border:1px solid var(--line);border-radius:18px;box-shadow:0 24px 70px rgba(32,42,51,.32);padding:18px}
+.rjk .review-panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--machine);border-radius:18px 0 0 18px}
+.rjk .review-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-left:6px}
+.rjk .review-kicker{font-size:12px;color:var(--ink-soft);margin:0 0 3px}
+.rjk .review-head h2{font:600 27px/1.25 var(--serif);margin:0}
+.rjk .review-head p:last-child{font-size:13px;color:var(--ink-soft);margin-top:4px;overflow-wrap:anywhere}
+.rjk .review-close{flex:none;width:44px;height:44px;border:1px solid var(--line);border-radius:999px;background:var(--sp-panel);font-size:24px;line-height:1}
+.rjk .review-status{margin:14px 6px 0;padding:10px 12px;border-radius:10px;background:var(--bg);font-size:13.5px;line-height:1.5}
+.rjk .review-body{display:grid;grid-template-columns:minmax(280px,400px) minmax(0,1fr);gap:24px;align-items:start;margin-top:18px}
+.rjk .review-card{min-width:0;padding:10px 4px}
+.rjk .review-copy{min-width:0;display:grid;gap:16px}
+.rjk .review-copy section{border-top:1px solid var(--line);padding-top:10px}
+.rjk .review-copy h3{font:600 18px/1.35 var(--serif);margin:0 0 8px}
+.rjk .review-fields{display:grid;grid-template-columns:88px minmax(0,1fr);gap:7px 12px;margin:0;font-size:13px;line-height:1.55}
+.rjk .review-fields dt{color:var(--ink-soft)}
+.rjk .review-fields dd{margin:0;overflow-wrap:anywhere}
+.rjk .review-copy ul{margin:0;padding-left:1.25em;font-size:13px;line-height:1.6}
+.rjk .review-copy li+li{margin-top:5px}
+.rjk .review-notice{font-size:13px;line-height:1.6;color:var(--ink)}
+.rjk .review-expiry{font-size:12px;line-height:1.55;color:var(--ink-soft)}
+.rjk .review-actions{position:sticky;bottom:-18px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin:18px -18px -18px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:color-mix(in srgb,var(--sp-panel) 96%,transparent)}
+.rjk .review-actions .go,.rjk .review-utility .go{display:inline-flex;align-items:center;justify-content:center;min-height:44px}
+.rjk .review-confirm{background:var(--machine)}
+.rjk .review-panel button:focus-visible,.rjk .preview-sheet button:focus-visible{outline:3px solid var(--sp-ochre);outline-offset:2px}
+.rjk .preview-sheet{position:relative;width:100%;max-width:420px;padding:50px 10px 10px}
+.rjk .preview-sheet>.review-close{position:absolute;right:8px;top:0;background:var(--sp-panel);color:var(--ink)}
+.rjk .preview-sheet>p{text-align:center;color:#fff;font-size:13px;margin-top:18px}
+@media(max-width:720px){
+  .rjk .sheet{padding:8px}
+  .rjk .review-panel{max-height:calc(100dvh - 16px);padding:14px;border-radius:14px}
+  .rjk .review-panel::before{border-radius:14px 0 0 14px}
+  .rjk .review-head h2{font-size:23px}
+  .rjk .review-body{grid-template-columns:1fr;gap:12px}
+  .rjk .review-card{padding:6px 0}
+  .rjk .review-fields{grid-template-columns:74px minmax(0,1fr);gap:6px 10px}
+  .rjk .review-actions{bottom:-14px;margin:14px -14px -14px;padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+  .rjk .review-actions .go{flex:1 1 150px}
+}
+</style>
 </head>
 <body>
 
@@ -54,6 +98,6 @@
 <script src="rj-api.js?v=20261016-media"></script>
 <script src="avatar-v8.js?v=20261014-v8"></script>
 <script src="rj-card.js?v=20261018-visibility"></script>
-<script src="card-edit.js?v=20261019-scopes"></script>
+<script src="card-edit.js?v=20261021-review"></script>
 </body>
 </html>

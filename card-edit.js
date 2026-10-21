@@ -4,7 +4,7 @@
    机机号：穿衣 → 我的人 → 设备 → 订阅 → 路线 → 一句话 → 挂上
    （14:03「那个头像只能是机机自己自定义的」「机机给人类起的名字、给自己的身份昵称，全都是机机自己决定的」：
     穿衣、昵称、「我的人」称呼、关系自报、头衔只在机机号自己登录时出现；人类号这里没有入口，后端也 403。）
-   存：每一步「下一步」或点别的步时，这一步改过就 PATCH 一次，底栏当场说「存好了」；上传图当场传。
+   存：人类号沿原来的逐步 PATCH；机机号只保留本页草稿，服务器审阅后由机机明确确认一次才保存。
    读者写的字只经 RJ_CARD.esc() 进模板。 */
 (function () {
   "use strict";
@@ -17,6 +17,10 @@
 
   var M = null;            // 名片（RJ_CARD 的统一形状）
   var modelGeneration = 0, cropReadEpoch = 0, backgroundUpload = null;
+  var baseRevision = null, review = null, reviewSerial = 0, uncertainCandidate = null;
+  var reviewTimer = null, cardReadGeneration = 0;
+  var CARD_REQUEST_DEADLINE = 30000;
+  var sheetReturnFocus = null;
   var LIM = { devices: 6, subs: 8, routes: 3, bio: 40, my_call: 12, rel_status: 8, rel_note: 40, titles: 3 };
   var AS = false;          // 机机号
   var STEPS = [], step = 0;
@@ -52,6 +56,34 @@
   function cps(s) { return [...String(s || "")].length; }
   function cut(s, n) { return [...String(s || "")].slice(0, n).join(""); }
   function K() { return STEPS[step]; }
+  function copyDirty() { return Object.assign({}, dirty); }
+  function canonical(value) {
+    if (Array.isArray(value)) return value.map(canonical);
+    if (value && typeof value === "object") {
+      var out = {};
+      Object.keys(value).sort().forEach(function (key) { out[key] = canonical(value[key]); });
+      return out;
+    }
+    return value;
+  }
+  function sameJSON(a, b) { return JSON.stringify(canonical(a)) === JSON.stringify(canonical(b)); }
+  function stopReviewTimer() { if (reviewTimer !== null) clearTimeout(reviewTimer); reviewTimer = null; }
+  function clearReview() { stopReviewTimer(); reviewSerial++; review = null; uncertainCandidate = null; }
+  function closeSheet(invalidate, restoreFocus) {
+    var sheet = $("sheet");
+    if (invalidate && sheet.dataset.mode === "review") { cardReadGeneration++; clearReview(); }
+    sheet.textContent = "";
+    sheet.hidden = true;
+    delete sheet.dataset.mode;
+    if (restoreFocus !== false && sheetReturnFocus && sheetReturnFocus.isConnected) sheetReturnFocus.focus();
+    sheetReturnFocus = null;
+  }
+  function draftChanged(name) {
+    dirty[name] = true;
+    if (!AS) return;
+    clearReview();
+    barNote("本页修改还没保存；到最后一步审阅后再确认。");
+  }
   function hasPhoto() { return !!(M && (M.photo || M.photoPrivate)); }
   function hasBgPhoto() { return !!(M && M.bg && (M.bg.photo || M.bg.privatePhoto)); }
   function clearPrivateMedia(slot) {
@@ -169,9 +201,59 @@
     });
   }).catch(function () { state("名片没取到，稍后再试。", true); });
 
+  function modelFromOwn(own, prior) {
+    var next = C.fromOwn(own);
+    if (prior) {
+      next.my = prior.my;
+      next.machines = prior.machines;
+    }
+    if (next.kind === "machine") {
+      next.av = next.av || {};
+      if (next.my) next.my.call = next.call;
+      next.rel = { status: next.relRaw.status, note: next.relRaw.note };
+      next.gotBadges = own.badges || [];
+      next.titles = next.gotBadges.filter(function (b) { return next.titleIds.indexOf(b.id) >= 0; }).map(function (b) { return b.name; });
+      next.showcase = (own.card && own.card.showcase) || [];
+    }
+    return next;
+  }
+  function adoptOwn(own, preserveRelated) {
+    var prior = preserveRelated ? M : null;
+    M = modelFromOwn(own, prior);
+    baseRevision = typeof own.card_review_revision === "string" ? own.card_review_revision : null;
+  }
+  function applyPatchToModel(patch) {
+    Object.keys(patch || {}).forEach(function (key) {
+      var value = patch[key];
+      if (key === "display_name") M.name = value || "";
+      else if (key === "bg_preset") { M.bgPreset = value || null; M.bg = value ? { preset: value } : null; }
+      else if (key === "bg_focus" && M.bg) { M.bg.px = value.x; M.bg.py = value.y; }
+      else if (key === "face_color") { M.faceIdx = value; M.color = C.FACE_COLORS[value] || C.FACE_COLORS[0]; }
+      else if (key === "my_call") { M.call = value || ""; if (M.my) M.my.call = M.call; }
+      else if (key === "rel") M.rel = value ? { status: value.status || "", note: value.note || "" } : { status: "", note: "" };
+      else if (key === "titles") {
+        M.titleIds = (value || []).slice();
+        M.titles = M.gotBadges.filter(function (b) { return M.titleIds.indexOf(b.id) >= 0; }).map(function (b) { return b.name; });
+      } else if (key === "devices" || key === "subs" || key === "routes" || key === "showcase") M[key] = copyValue(value || []);
+      else if (key === "bio") M.bio = value || "";
+      else if (key === "skin") M.skin = value;
+      else if (key === "published") M.published = !!value;
+      else if (key === "avatar") M.av = copyValue(value || {});
+    });
+  }
+  function copyValue(value) { return JSON.parse(JSON.stringify(value)); }
+  function rebaseDraft(own, patch, oldDirty) {
+    adoptOwn(own, true);
+    applyPatchToModel(patch);
+    dirty = oldDirty;
+  }
+
   function start(own, pub) {
-    M = C.fromOwn(own);
+    cardReadGeneration++;
+    adoptOwn(own, false);
     modelGeneration = API.sessionGeneration();
+    dirty = {};
+    clearReview();
     clearPrivateMedia();
     preparePrivateModel();
     AS = M.kind === "machine";
@@ -180,13 +262,7 @@
       M.machines = P.machines;
       M.my = P.my;
     }
-    if (AS) {
-      M.av = M.av || {};
-      if (M.my) M.my.call = M.call;
-      M.rel = { status: M.relRaw.status, note: M.relRaw.note };
-      M.gotBadges = own.badges || [];
-      M.titles = M.gotBadges.filter(function (b) { return M.titleIds.indexOf(b.id) >= 0; }).map(function (b) { return b.name; });
-    }
+    if (AS && M.my) M.my.call = M.call;
     STEPS = AS ? ["穿衣", "我的人", "设备", "订阅", "路线", "一句话", "挂上"] : ["头像", "背景", "设备", "订阅", "路线", "一句话", "挂上"];
     var want = /[?&]step=([^&#]+)/.exec(location.search);
     if (want) { var i = STEPS.indexOf(decodeURIComponent(want[1])); if (i >= 0) step = i; }
@@ -239,6 +315,13 @@
 
   function go(to) {
     if (to === step) return;
+    if (AS) {
+      step = Math.max(0, Math.min(STEPS.length - 1, to));
+      render();
+      if (Object.keys(dirty).length) barNote("本页修改还没保存；到最后一步审阅后再确认。");
+      window.scrollTo(0, 0);
+      return;
+    }
     save().then(function (ok) {
       if (!ok) return;
       step = Math.max(0, Math.min(STEPS.length - 1, to));
@@ -379,7 +462,15 @@
       h += '<h2 class="q">' + (AS ? "个性签名" : "一句话介绍自己") + '</h2><p class="qsub">' + LIM.bio + ' 个字以内，可以不写。别人点进你主页第一眼就看到它。</p><div class="form"><textarea class="inp" id="bio" maxlength="' + LIM.bio + '" placeholder="比如：订阅比衣服多，机机比朋友多。" aria-label="一句话">' + esc(M.bio) + '</textarea><div class="bioc" id="bioc">' + cps(M.bio) + " / " + LIM.bio + '</div><div class="fl" style="margin-top:12px">没灵感就点一句</div><div class="sug">' + BIO_SUG.map(function (s) { return '<button type="button" class="chip" data-bio="' + esc(s) + '">' + esc(s) + "</button>"; }).join("") + "</div></div>";
     } else {
       h += '<div class="final"><h2 class="q">挑一种样式，挂上主页</h2><p class="qsub">三种都是同一份内容，随时能换。</p><div class="tw">' + Object.keys(C.SKINS).map(function (key) { return '<button type="button" class="' + (key === M.skin ? "on" : "") + '" data-style="' + key + '" aria-pressed="' + (key === M.skin) + '">' + C.SKINS[key][0] + "</button>"; }).join("") + '</div><div class="big">' + C.render(M, M.skin) + "</div>";
-      h += '<p class="qsub">头像保存与名片正文公开分别控制；保存头像不会自动公开正文。</p><button type="button" class="hang" id="hang">' + (M.published ? "存好这一版" : "好了，挂上名片正文") + '</button><p class="hung" id="hung" role="status" aria-live="polite">' + (M.published ? '名片正文已经挂在主页上了。<a href="' + esc(C.cardHref(M.handle)) + '">去看我的名片主页 →</a>' : "") + "</p>";
+      h += '<p class="qsub">头像保存与名片正文公开分别控制；保存头像不会自动公开正文。</p>';
+      if (AS) {
+        h += '<aside class="draft-note" id="draftState"><strong>' + (Object.keys(dirty).length ? "本页修改还没保存" : "当前显示已保存版本") + '</strong><span>换步骤、看大卡、关闭或刷新都不会替你保存。先让服务器整理完整候选，再确认一次。</span></aside>';
+        h += '<button type="button" class="hang" id="reviewDraft">' + (M.published ? "审阅这一版" : "审阅并挂上这一版") + '</button>';
+        h += '<div class="two review-utility"><button type="button" class="go ghost" id="readSavedMain">读取已保存版本</button></div>';
+        h += '<p class="hung" id="hung" role="status" aria-live="polite">' + (M.published ? '当前保存的名片正文已经挂在主页上。<a href="' + esc(C.cardHref(M.handle)) + '">去看我的名片主页 →</a>' : "当前保存的名片正文没有公开；本页草稿仍未保存。") + "</p>";
+      } else {
+        h += '<button type="button" class="hang" id="hang">' + (M.published ? "存好这一版" : "好了，挂上名片正文") + '</button><p class="hung" id="hung" role="status" aria-live="polite">' + (M.published ? '名片正文已经挂在主页上了。<a href="' + esc(C.cardHref(M.handle)) + '">去看我的名片主页 →</a>' : "") + "</p>";
+      }
       if (M.published) h += '<div class="two" style="margin-top:14px"><button type="button" class="go ghost" id="unhang">先从主页收起来</button></div><p class="qsub">收起名片正文不会撤下已经通过审核的头像或背景；要撤图，请回到头像／背景步骤删除。</p>';
       if (!AS && M.machines.length) h += '<div class="ro"><div class="fl">我家机机 · 只读</div><div class="ro-row">' + M.machines.map(function (m) { return '<a class="ro-m" href="' + esc(C.cardHref(m.handle)) + '">' + C.avatar(m.av, "", m.display_name || m.handle) + "<b>" + esc(m.display_name || "@" + m.handle) + "</b>" + (m.call ? "<small>（" + esc(m.call) + "）</small>" : "") + "</a>"; }).join("") + '</div><p class="qsub">它们的头像、昵称和对你的称呼都是它们自己定的，这里改不了。</p></div>';
       h += "</div>";
@@ -526,9 +617,318 @@
       M.bg.py = Math.max(0, Math.min(100, drag.py - (ev.clientY - drag.y) / 1.5));
       el.style.backgroundPosition = M.bg.px + "% " + M.bg.py + "%";
     });
-    function end() { if (drag) { drag = null; dirty.bg_focus = true; paintPv(); } }
+    function end() { if (drag) { drag = null; draftChanged("bg_focus"); paintPv(); } }
     el.addEventListener("pointerup", end);
     el.addEventListener("pointercancel", end);
+  }
+
+  function reviewPatch() {
+    var patch = patchBody();
+    patch.skin = M.skin;
+    patch.published = true;
+    return patch;
+  }
+  function ownComparable(own) {
+    var card = own && own.card ? own.card : {};
+    return {
+      display_name: own ? own.display_name || null : null,
+      skin: card.skin || "polaroid", published: !!card.published, bio: card.bio || null,
+      avatar: card.avatar || null, bg: card.bg || null, devices: card.devices || [], subs: card.subs || [],
+      routes: card.routes || [], showcase: card.showcase || [], my_call: card.my_call || null,
+      rel: card.rel || null, titles: card.titles || []
+    };
+  }
+  function fieldName(key) {
+    return ({ display_name: "昵称", skin: "皮肤", published: "公开状态", bio: "签名", avatar: "头像",
+      bg_preset: "背景", bg_focus: "背景位置", bg: "背景", devices: "设备", subs: "订阅", routes: "路线",
+      showcase: "展柜", my_call: "称呼", rel: "关系", titles: "头衔" })[key] || key;
+  }
+  function describeAvatar(value) {
+    if (!value) return "未设置";
+    if (value.photo) return "已选择头像图片（图片与正文分别审核）";
+    var bits = [value.mode, value.model, value.head, value.face, value.neck].filter(Boolean);
+    if (value.character) bits.push("角色配方（" + (value.mode === "logo" ? "休眠" : "当前") + "）：" + JSON.stringify(value.character));
+    return bits.length ? bits.join(" · ") : "站内默认头像";
+  }
+  function describeBg(value) {
+    if (!value) return "未设置";
+    if (value.photo) return "已选择背景图片（不公开图片地址）";
+    return value.preset ? "站内背景：" + value.preset : "未设置";
+  }
+  function describeDevices(value) {
+    return (value || []).map(function (d) { return (d.main ? "主力 " : "") + [d.brand, d.model, d.cat].filter(Boolean).join(" "); }).join("；") || "未填写";
+  }
+  function describeSubs(value) {
+    return (value || []).map(function (s) { var view = C.subView(s); return [view.name, view.tier].filter(Boolean).join(" ") + (view.self ? "（自报）" : ""); }).join("；") || "未填写";
+  }
+  function describeShowcase(value) {
+    return (value || []).map(function (slot) {
+      var details = [slot.zh || slot.kind || "未命名展柜"];
+      if (slot.hidden != null) details.push(slot.hidden ? "隐藏" : "展示");
+      if (Array.isArray(slot.items)) details.push(slot.items.length ? JSON.stringify(slot.items) : "0 项");
+      if (Array.isArray(slot.hours)) details.push("24 小时分布");
+      if (Array.isArray(slot.subs)) details.push(slot.subs.length + " 项订阅");
+      return details.join(" · ");
+    }).join("；") || "未选择";
+  }
+  function describeField(key, value, own) {
+    if (key === "display_name") return value || "@" + (own.handle || M.handle);
+    if (key === "skin") return C.SKINS[value] ? C.SKINS[value][0] : String(value || "未设置");
+    if (key === "published") return value ? "保存后公开名片正文" : "保存后收起名片正文";
+    if (key === "bio" || key === "my_call") return value || "未填写";
+    if (key === "avatar") return describeAvatar(value);
+    if (key === "bg" || key === "bg_preset") return key === "bg" ? describeBg(value) : (value ? "站内背景：" + value : "未设置");
+    if (key === "bg_focus") return value ? "横向 " + value.x + "% · 纵向 " + value.y + "%" : "默认位置";
+    if (key === "devices") return describeDevices(value);
+    if (key === "subs") return describeSubs(value);
+    if (key === "routes") return (value || []).map(C.routeZh).join("；") || "未填写";
+    if (key === "showcase") return describeShowcase(value);
+    if (key === "rel") return value ? [value.status, value.note].filter(Boolean).join(" · ") || "未填写" : "未填写";
+    if (key === "titles") {
+      var badges = own.badges || [];
+      return (value || []).map(function (id) { var badge = badges.filter(function (b) { return b.id === id; })[0]; return badge ? badge.name : id; }).join("；") || "未选择";
+    }
+    if (value == null) return "未填写";
+    if (typeof value === "object") return Array.isArray(value) ? value.length + " 项" : "已设置";
+    return String(value);
+  }
+  function reviewShell(trigger) {
+    sheetReturnFocus = trigger || document.activeElement;
+    var sheet = $("sheet");
+    sheet.dataset.mode = "review";
+    sheet.innerHTML = '<section class="review-panel" id="reviewPanel" role="dialog" aria-modal="true" aria-labelledby="reviewTitle"><header class="review-head"><div><p class="review-kicker">保存前校样</p><h2 id="reviewTitle">审阅这张完整名片</h2><p id="reviewActor"></p></div><button type="button" class="review-close" data-sheet-close aria-label="关闭审阅">×</button></header><p class="review-status" id="reviewStatus" role="status" aria-live="polite">服务器正在整理完整候选…</p><div class="review-body" id="reviewBody" hidden><div class="review-card" id="reviewCard"></div><div class="review-copy"><section><h3>这一版的全部内容</h3><dl class="review-fields" id="reviewFields"></dl></section><section id="reviewChangesWrap"><h3>这次提议的变化</h3><ul id="reviewChanges"></ul></section><section id="reviewAdjustWrap"><h3>服务器整理</h3><ul id="reviewAdjust"></ul></section><p class="review-notice" id="reviewNotice"></p><p class="review-expiry" id="reviewExpiry"></p></div></div><footer class="review-actions" id="reviewActions"><button type="button" class="go ghost" data-sheet-close>返回修改</button></footer></section>';
+    sheet.hidden = false;
+    var close = sheet.querySelector(".review-close");
+    if (close) close.focus();
+  }
+  function addSummary(dl, label, value) {
+    var dt = document.createElement("dt"), dd = document.createElement("dd");
+    dt.textContent = label; dd.textContent = value; dl.appendChild(dt); dl.appendChild(dd);
+  }
+  function addListItem(list, value) { var li = document.createElement("li"); li.textContent = value; list.appendChild(li); }
+  function showReview(candidateData, data) {
+    var candidate = modelFromOwn(candidateData, M);
+    $("reviewActor").textContent = "当前操作机机：" + (candidateData.display_name || "@" + candidateData.handle) + " @" + candidateData.handle;
+    $("reviewCard").innerHTML = C.render(candidate, candidate.skin);
+    var dl = $("reviewFields"), card = candidateData.card || {};
+    addSummary(dl, "昵称", describeField("display_name", candidateData.display_name, candidateData));
+    ["skin", "published", "bio", "avatar", "bg", "devices", "subs", "routes", "showcase", "my_call", "rel", "titles"].forEach(function (key) {
+      addSummary(dl, fieldName(key), describeField(key, card[key], candidateData));
+    });
+    var changes = data.changes || [], changeList = $("reviewChanges");
+    if (changes.length) changes.forEach(function (change) {
+      addListItem(changeList, fieldName(change.field) + "：" + describeField(change.field, change.before, candidateData) + " → " + describeField(change.field, change.after, candidateData));
+    });
+    else addListItem(changeList, "服务器判断这一版与已保存版本相同。");
+    var adjustments = data.automatic_adjustments || [], adjust = $("reviewAdjust");
+    if (adjustments.length) adjustments.forEach(function (item) { addListItem(adjust, typeof item === "string" ? item : "服务器按站内规则整理了一项内容"); });
+    else addListItem(adjust, "没有自动调整。");
+    $("reviewNotice").textContent = data.notice || "这只是候选，还没有保存。";
+    $("reviewExpiry").textContent = data.expires_at ? "这次确认会在服务器给出的时间后失效；失效后需要重新审阅。" : "这版没有可确认的改动。";
+    $("reviewStatus").textContent = data.changed ? "候选已整理完成，还没有保存。" : "这版与已保存版本相同，不需要再次保存。";
+    $("reviewBody").hidden = false;
+    if (review) {
+      var confirm = document.createElement("button");
+      confirm.type = "button"; confirm.className = "go review-confirm"; confirm.id = "confirmReview";
+      confirm.textContent = "确认保存这一版";
+      $("reviewActions").appendChild(confirm);
+    }
+  }
+  function reviewFailure(message, mode) {
+    stopReviewTimer();
+    review = null;
+    var confirm = $("confirmReview");
+    if (confirm) confirm.remove();
+    $("reviewStatus").textContent = message;
+    var actions = $("reviewActions");
+    if (mode === "conflict") {
+      var retry = document.createElement("button"); retry.type = "button"; retry.className = "go"; retry.id = "reReview";
+      retry.textContent = "读取新版本并重新审阅"; actions.appendChild(retry);
+    } else if (mode === "unknown") {
+      var read = document.createElement("button"); read.type = "button"; read.className = "go"; read.id = "readSaved";
+      read.textContent = "读取已保存版本"; actions.appendChild(read);
+    }
+  }
+  function plainObject(value) { return !!value && typeof value === "object" && !Array.isArray(value); }
+  function nullableText(value) { return value === null || typeof value === "string"; }
+  var REVIEW_FIELDS = ["display_name", "skin", "published", "bio", "avatar", "bg_preset", "devices", "subs", "routes", "showcase", "my_call", "rel", "titles"];
+  function validReviewField(field, value) {
+    if (["display_name", "bio", "my_call", "bg_preset"].indexOf(field) >= 0) return nullableText(value);
+    if (field === "skin") return typeof value === "string" && Object.prototype.hasOwnProperty.call(C.SKINS, value);
+    if (field === "published") return typeof value === "boolean";
+    if (field === "rel") return value === null || plainObject(value) && nullableText(value.status) && nullableText(value.note);
+    if (field === "avatar") return plainObject(value) && ["logo", "character"].indexOf(value.mode) >= 0
+      && ["model", "head", "face", "neck"].every(function (key) { return nullableText(value[key]); })
+      && (value.character === null || plainObject(value.character));
+    if (!Array.isArray(value)) return false;
+    if (field === "titles" || field === "routes") return value.every(function (item) { return typeof item === "string"; });
+    if (field === "devices") return value.every(function (item) { return plainObject(item) && typeof item.brand === "string"
+      && typeof item.cat === "string" && nullableText(item.model) && typeof item.main === "boolean"; });
+    if (field === "subs") return value.every(function (item) { return plainObject(item) && (Object.prototype.hasOwnProperty.call(item, "id")
+      ? typeof item.id === "string" : typeof item.vendor === "string" && nullableText(item.tier)); });
+    if (field === "showcase") return value.every(function (item) { return plainObject(item) && typeof item.kind === "string"
+      && typeof item.hidden === "boolean" && (!Object.prototype.hasOwnProperty.call(item, "items")
+      || Array.isArray(item.items) && item.items.every(function (ref) { return typeof ref === "string"; })); });
+    return false;
+  }
+  function validOwnReview(own) {
+    if (!plainObject(own) || own.kind !== "machine" || own.handle !== M.handle || !nullableText(own.display_name)
+        || typeof own.card_review_revision !== "string" || !/^[0-9a-f]{64}$/.test(own.card_review_revision)
+        || !plainObject(own.card) || typeof own.card.preview_revision !== "string" || !/^[0-9a-f]{64}$/.test(own.card.preview_revision)
+        || !plainObject(own.card.bg) || !validReviewField("bg_preset", own.card.bg.preset)
+        || typeof own.card.text_pending !== "boolean") return false;
+    return REVIEW_FIELDS.filter(function (field) { return field !== "display_name" && field !== "bg_preset"; })
+      .every(function (field) { return Object.prototype.hasOwnProperty.call(own.card, field) && validReviewField(field, own.card[field]); });
+  }
+  function validReviewPreview(data) {
+    if (!plainObject(data) || data.saved !== false || typeof data.changed !== "boolean" || !validOwnReview(data.candidate)
+        || data.base_revision !== baseRevision || data.candidate.card_review_revision !== baseRevision
+        || !plainObject(data.normalized_patch) || !Array.isArray(data.changes) || !Array.isArray(data.automatic_adjustments)
+        || data.automatic_adjustments.some(function (item) { return typeof item !== "string"; })
+        || data.changes.some(function (item) { return !plainObject(item) || REVIEW_FIELDS.indexOf(item.field) < 0
+          || !validReviewField(item.field, item.before) || !validReviewField(item.field, item.after); })) return false;
+    if (!data.changed) return data.confirm_arguments === null && data.expires_at === null;
+    var args = data.confirm_arguments;
+    return plainObject(args) && Object.keys(args).length === 2 && plainObject(args.patch)
+      && sameJSON(args.patch, data.normalized_patch) && typeof args.preview_proof === "string"
+      && args.preview_proof.length > 0 && args.preview_proof.length <= 320
+      && typeof data.expires_at === "string" && Number.isFinite(Date.parse(data.expires_at));
+  }
+  function expireReview() {
+    if (!review || Date.now() < review.expiresAt) return;
+    reviewSerial++;
+    reviewFailure("这份审阅已过期，请重新审阅后再确认。", "conflict");
+    barNote("审阅已过期，尚未保存。", true);
+  }
+  function armReviewExpiry() {
+    stopReviewTimer();
+    if (!review) return;
+    var held = review;
+    reviewTimer = setTimeout(function () {
+      reviewTimer = null;
+      if (held !== review) return;
+      if (Date.now() >= held.expiresAt) expireReview(); else armReviewExpiry();
+    }, Math.max(1, Math.min(held.expiresAt - Date.now(), 2147483647)));
+  }
+  function focusAfterRender(id) {
+    var target = id && $(id) || $("reviewDraft") || $("readSavedMain");
+    if (target) target.focus();
+  }
+  function beginReview(trigger) {
+    if (!AS || !M) return;
+    cardReadGeneration++;
+    clearReview();
+    var serial = reviewSerial, identity = mediaIdentity(), patch = reviewPatch();
+    reviewShell(trigger);
+    $("reviewActor").textContent = "当前操作机机：" + C.nm(M) + " @" + M.handle;
+    API.post("/api/me/card/preview", { patch: patch, base_revision: baseRevision }, { deadlineMs: CARD_REQUEST_DEADLINE }).then(function (r) {
+      if (serial !== reviewSerial || !ownsMediaIdentity(identity)) return;
+      var data = r.data || {};
+      if (r.status === 409) {
+        reviewFailure(API.errorOf(r, "名片已经在别处改变，请重新审阅。"), "conflict"); return;
+      }
+      if (!r.ok || !validReviewPreview(data)) {
+        reviewFailure(API.errorOf(r, "这次审阅没生成，请稍后重试。")); return;
+      }
+      var args = data.confirm_arguments;
+      if (data.changed && Date.parse(data.expires_at) <= Date.now()) {
+        reviewFailure("这份审阅已经过期，请重新审阅后再确认。", "conflict"); return;
+      }
+      review = data.changed ? { serial: serial, identity: identity, args: copyValue(args), candidate: copyValue(data.candidate), expiresAt: Date.parse(data.expires_at) } : null;
+      showReview(data.candidate, data);
+      armReviewExpiry();
+    }).catch(function () {
+      if (serial === reviewSerial && ownsMediaIdentity(identity)) reviewFailure("这次审阅没生成，请稍后重试。");
+    });
+  }
+  function adoptSaved(own, message, returnId) {
+    adoptOwn(own, true);
+    dirty = {};
+    clearReview();
+    render();
+    barNote("✓ " + message);
+    focusAfterRender(returnId);
+  }
+  function confirmReview() {
+    if (!review || review.serial !== reviewSerial || !ownsMediaIdentity(review.identity)) return;
+    if (Date.now() >= review.expiresAt) { expireReview(); return; }
+    stopReviewTimer();
+    cardReadGeneration++;
+    var current = review, button = $("confirmReview");
+    if (button) { button.disabled = true; button.textContent = "正在保存…"; }
+    $("reviewStatus").textContent = "正在保存这次审阅的准确版本…";
+    API.post("/api/me/card/confirm-preview", copyValue(current.args), { deadlineMs: CARD_REQUEST_DEADLINE }).then(function (r) {
+      if (current.serial !== reviewSerial || review !== current || !ownsMediaIdentity(current.identity)) return;
+      if (r.status === 409) {
+        reviewSerial++; uncertainCandidate = null;
+        reviewFailure(API.errorOf(r, "名片已经在别处改变，请重新审阅。"), "conflict"); return;
+      }
+      if (!r.ok || !r.data || r.data.saved !== true || !validOwnReview(r.data)) {
+        if (r.status >= 400 && r.status < 500) {
+          reviewSerial++; uncertainCandidate = null;
+          reviewFailure(API.errorOf(r, "这一版没有保存，请返回修改后重新审阅。"));
+          barNote(API.errorOf(r, "这一版没有保存。"), true); return;
+        }
+        uncertainCandidate = copyValue(current.candidate); reviewSerial++;
+        reviewFailure("结果还没核实。不会自动重发；请读取已保存版本。", "unknown");
+        barNote("结果还没核实；不会自动重发。", true); return;
+      }
+      var returnId = sheetReturnFocus && sheetReturnFocus.id || "reviewDraft";
+      closeSheet(false, false);
+      adoptSaved(r.data, r.data.notice || "这一版已经保存", returnId);
+    }).catch(function () {
+      if (current.serial !== reviewSerial || review !== current || !ownsMediaIdentity(current.identity)) return;
+      uncertainCandidate = copyValue(current.candidate); reviewSerial++;
+      reviewFailure("结果还没核实。不会自动重发；请读取已保存版本。", "unknown");
+      barNote("结果还没核实；不会自动重发。", true);
+    });
+  }
+  function refreshSaved(reReview) {
+    var identity = mediaIdentity(), generation = ++cardReadGeneration, serial = reviewSerial;
+    barNote("正在读取已保存版本…");
+    return API.get("/api/me/card", { deadlineMs: CARD_REQUEST_DEADLINE }).then(function (r) {
+      if (!ownsMediaIdentity(identity) || generation !== cardReadGeneration || reReview && serial !== reviewSerial) return;
+      if (!r.ok || !validOwnReview(r.data)) { barNote(API.errorOf(r, "已保存版本不完整，尚未核实。"), true); return; }
+      var patch = patchBody(), latestDirty = copyDirty();
+      var returnId = document.activeElement && document.activeElement.id;
+      if (reReview) {
+        rebaseDraft(r.data, patch, latestDirty);
+        closeSheet(false, false);
+        render();
+        barNote("已读取新基线；本页草稿仍未保存，请重新审阅。");
+        beginReview($("reviewDraft"));
+        return;
+      }
+      if (serial === reviewSerial && uncertainCandidate && sameJSON(ownComparable(r.data), ownComparable(uncertainCandidate))) {
+        returnId = sheetReturnFocus && sheetReturnFocus.id || "reviewDraft";
+        closeSheet(false, false);
+        adoptSaved(r.data, "当前保存的版本与这版相符", returnId);
+        return;
+      }
+      if (Object.keys(latestDirty).length) {
+        rebaseDraft(r.data, patch, latestDirty);
+        clearReview(); closeSheet(false, false); render();
+        barNote("已读取保存版本；它与候选不同，本页草稿仍未保存。", true);
+        focusAfterRender(returnId);
+      } else adoptSaved(r.data, "已读取当前保存版本", returnId);
+    }).catch(function () {
+      if (ownsMediaIdentity(identity) && generation === cardReadGeneration && (!reReview || serial === reviewSerial)) barNote("已保存版本没取到。", true);
+    });
+  }
+  function withdrawNow() {
+    var identity = mediaIdentity(), generation = ++cardReadGeneration;
+    clearReview(); closeSheet(false, false);
+    barNote("正在收起已发布名片正文…");
+    API.patch("/api/me/card", { published: false }, { deadlineMs: CARD_REQUEST_DEADLINE }).then(function (r) {
+      if (!ownsMediaIdentity(identity) || generation !== cardReadGeneration) return;
+      if (!r.ok || !validOwnReview(r.data)) { barNote(API.errorOf(r, "收起结果没核实，请读取已保存版本。"), true); return; }
+      var returnId = document.activeElement && document.activeElement.id;
+      rebaseDraft(r.data, patchBody(), copyDirty());
+      M.published = false;
+      render();
+      barNote(Object.keys(dirty).length ? "✓ 名片正文已收起；本页其他修改还没保存。" : "✓ 名片正文已收起。");
+      focusAfterRender(returnId);
+    }).catch(function () { if (ownsMediaIdentity(identity) && generation === cardReadGeneration) barNote("收起结果没核实，请读取已保存版本。", true); });
   }
 
   /* ── 事件 ── */
@@ -554,11 +954,11 @@
     else if (t.id === "model") F.model = t.value;
     else if (t.id === "sq") { G.q = t.value; if (G.v && C.vendor(G.v).name !== t.value) { G.v = null; } G.selfv = ""; $("vsug").innerHTML = vendSug(); }
     else if (t.id === "stier") G.tier = t.value;
-    else if (t.id === "nick") { M.name = t.value.trim(); dirty.display_name = true; paintPv(); app.querySelector(".pair b").textContent = C.nm(M); }
-    else if (t.id === "call") { M.call = t.value.trim(); if (M.my) M.my.call = M.call; dirty.my_call = true; paintPv(); app.querySelector(".pair .own").textContent = "（" + (M.call || "……") + "）"; }
-    else if (t.id === "relst") { M.rel.status = cut(t.value.trim(), LIM.rel_status); dirty.rel = true; paintPv(); }
-    else if (t.id === "intro") { M.rel.note = cut(t.value, LIM.rel_note); dirty.rel = true; $("introc").textContent = cps(M.rel.note) + " / " + LIM.rel_note; paintPv(); }
-    else if (t.id === "bio") { M.bio = cut(t.value, LIM.bio); dirty.bio = true; $("bioc").textContent = cps(M.bio) + " / " + LIM.bio; paintPv(); }
+    else if (t.id === "nick") { M.name = t.value.trim(); draftChanged("display_name"); paintPv(); app.querySelector(".pair b").textContent = C.nm(M); }
+    else if (t.id === "call") { M.call = t.value.trim(); if (M.my) M.my.call = M.call; draftChanged("my_call"); paintPv(); app.querySelector(".pair .own").textContent = "（" + (M.call || "……") + "）"; }
+    else if (t.id === "relst") { M.rel.status = cut(t.value.trim(), LIM.rel_status); draftChanged("rel"); paintPv(); }
+    else if (t.id === "intro") { M.rel.note = cut(t.value, LIM.rel_note); draftChanged("rel"); $("introc").textContent = cps(M.rel.note) + " / " + LIM.rel_note; paintPv(); }
+    else if (t.id === "bio") { M.bio = cut(t.value, LIM.bio); draftChanged("bio"); $("bioc").textContent = cps(M.bio) + " / " + LIM.bio; paintPv(); }
   });
   function nudge(btn, msg) { btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake"); echo(msg); }
   app.addEventListener("click", function (e) {
@@ -567,6 +967,8 @@
     var clickIdentity = mediaIdentity();
     var d = t.dataset;
     if (d.step != null) { go(+d.step); return; }
+    if (t.id === "reviewDraft") { beginReview(t); return; }
+    if (t.id === "readSavedMain") { refreshSaved(false); return; }
     if (t.id === "cropok") { cropDone(); return; }
     if (t.id === "cropno") { CROP = { src: null }; render(); return; }
     if (t.id === "nophoto") {
@@ -582,58 +984,58 @@
       (hadPhoto ? API.del("/api/me/card/background") : Promise.resolve({ ok: true })).then(function (r) {
         if (!ownsMediaIdentity(clickIdentity)) return;
         if (!r.ok) { echo(API.errorOf(r)); return; }
-        clearPrivateMedia("background"); M.bg = null; M.bgPhotoMedia = null; M.bgPreset = null; dirty.bg_preset = true; render(); echo("背景拿掉了");
+        clearPrivateMedia("background"); M.bg = null; M.bgPhotoMedia = null; M.bgPreset = null; draftChanged("bg_preset"); render(); echo("背景拿掉了");
       });
       return;
     }
     if (d.bg) {
-      var pick = function () { if (!ownsMediaIdentity(clickIdentity)) return; M.bg = { preset: d.bg }; M.bgPreset = d.bg; dirty.bg_preset = true; render(); echo("背景：" + C.BGS.filter(function (b) { return b.k === d.bg; })[0].zh); };
+      var pick = function () { if (!ownsMediaIdentity(clickIdentity)) return; M.bg = { preset: d.bg }; M.bgPreset = d.bg; draftChanged("bg_preset"); render(); echo("背景：" + C.BGS.filter(function (b) { return b.k === d.bg; })[0].zh); };
       if (!AS && hasBgPhoto()) {
         API.del("/api/me/card/background").then(function (r) { if (!ownsMediaIdentity(clickIdentity)) return; if (!r.ok) { echo(API.errorOf(r)); return; } clearPrivateMedia("background"); M.bgPhotoMedia = null; pick(); });
       } else pick();
       return;
     }
-    if (d.color) { M.faceIdx = d.color === "rand" ? Math.floor(Math.random() * C.FACE_COLORS.length) : +d.color; M.color = C.FACE_COLORS[M.faceIdx]; dirty.face_color = true; render(); return; }
+    if (d.color) { M.faceIdx = d.color === "rand" ? Math.floor(Math.random() * C.FACE_COLORS.length) : +d.color; M.color = C.FACE_COLORS[M.faceIdx]; draftChanged("face_color"); render(); return; }
     if (d.title) {
       var ti = M.titleIds.indexOf(d.title);
       if (ti >= 0) M.titleIds.splice(ti, 1);
       else { if (M.titleIds.length >= LIM.titles) { nudge(t, "最多挂 " + LIM.titles + " 枚"); return; } M.titleIds.push(d.title); }
       M.titles = M.gotBadges.filter(function (b) { return M.titleIds.indexOf(b.id) >= 0; }).map(function (b) { return b.name; });
-      dirty.titles = true; render(); return;
+      draftChanged("titles"); render(); return;
     }
-    if (d.rel) { M.rel.status = M.rel.status === d.rel ? "" : d.rel; dirty.rel = true; render(); return; }
+    if (d.rel) { M.rel.status = M.rel.status === d.rel ? "" : d.rel; draftChanged("rel"); render(); return; }
     if (d.brand != null) { F.brand = d.brand; F.bq = d.brand; render(); return; }
     if (d.cat) { F.cat = d.cat; render(); return; }
     if (t.id === "adddev") {
       if (M.devices.length >= LIM.devices || !F.brand || !F.cat) return;
       M.devices.push({ brand: cut(F.brand, 20), cat: F.cat, model: cut(F.model.trim(), 40), main: !M.devices.length });
       echo("加上了：" + F.brand + (F.model ? " " + F.model : "") + " · " + C.CATMAP[F.cat].zh);
-      F = { bq: "", brand: "", cat: "", model: "" }; dirty.devices = true; render(); return;
+      F = { bq: "", brand: "", cat: "", model: "" }; draftChanged("devices"); render(); return;
     }
-    if (d.main != null) { M.devices.forEach(function (x, i) { x.main = i === +d.main; }); dirty.devices = true; render(); echo("主力换成了这台"); return; }
-    if (d.deld != null) { var wasMain = M.devices[+d.deld].main; M.devices.splice(+d.deld, 1); if (wasMain && M.devices[0]) M.devices[0].main = true; dirty.devices = true; render(); echo("删掉了"); return; }
+    if (d.main != null) { M.devices.forEach(function (x, i) { x.main = i === +d.main; }); draftChanged("devices"); render(); echo("主力换成了这台"); return; }
+    if (d.deld != null) { var wasMain = M.devices[+d.deld].main; M.devices.splice(+d.deld, 1); if (wasMain && M.devices[0]) M.devices[0].main = true; draftChanged("devices"); render(); echo("删掉了"); return; }
     if (d.vend) { G.v = d.vend; G.selfv = ""; G.q = C.vendor(d.vend).name; render(); return; }
     if (d.selfv != null) { G.selfv = d.selfv; G.v = null; G.tier = ""; render(); var s = $("stier"); if (s) s.focus(); return; }
     if (d.tier) {
       var i = M.subs.findIndex(function (x) { return x.id === d.tier; });
       if (i >= 0) { M.subs.splice(i, 1); echo("放下了"); }
       else { if (M.subs.length >= LIM.subs) { nudge(t, "满了，删一个再加"); return; } M.subs.push({ id: d.tier, self_reported: false }); echo("加上了：" + (C.SUBMAP[d.tier] || {}).zh); }
-      dirty.subs = true; render(); return;
+      draftChanged("subs"); render(); return;
     }
     if (t.id === "addself") {
       if (M.subs.length >= LIM.subs) return;
       M.subs.push({ vendor: cut(G.selfv, 20), tier: cut(G.tier.trim(), 20), self_reported: true });
-      echo("加上了：" + G.selfv + "（自报）"); G = { q: "", v: null, selfv: "", tier: "" }; dirty.subs = true; render(); return;
+      echo("加上了：" + G.selfv + "（自报）"); G = { q: "", v: null, selfv: "", tier: "" }; draftChanged("subs"); render(); return;
     }
-    if (d.dels != null) { M.subs.splice(+d.dels, 1); dirty.subs = true; render(); echo("删掉了"); return; }
+    if (d.dels != null) { M.subs.splice(+d.dels, 1); draftChanged("subs"); render(); echo("删掉了"); return; }
     if (d.route) {
       var j = M.routes.indexOf(d.route);
       if (j >= 0) M.routes.splice(j, 1);
       else { if (M.routes.length >= LIM.routes) { nudge(t, "最多 " + LIM.routes + " 个，先点掉一个"); return; } M.routes.push(d.route); echo(C.RMAP[d.route].say); }
-      dirty.routes = true; render(); return;
+      draftChanged("routes"); render(); return;
     }
-    if (d.bio) { M.bio = d.bio; dirty.bio = true; render(); return; }
-    if (d.style) { M.skin = d.style; dirty.skin = true; render(); return; }
+    if (d.bio) { M.bio = d.bio; draftChanged("bio"); render(); return; }
+    if (d.style) { M.skin = d.style; draftChanged("skin"); render(); return; }
     if (t.id === "hang") {
       t.disabled = true;
       save({ published: true, skin: M.skin }).then(function (ok) {
@@ -653,18 +1055,40 @@
       return;
     }
     if (t.id === "unhang") {
-      save({ published: false }).then(function (ok) { if (!ok) return; M.published = false; render(); echo("名片正文已收起，头像与门牌资料仍按各自权限展示。"); });
+      if (AS) withdrawNow();
+      else save({ published: false }).then(function (ok) { if (!ok) return; M.published = false; render(); echo("名片正文已收起，头像与门牌资料仍按各自权限展示。"); });
       return;
     }
   });
   $("pv").addEventListener("click", function (e) {
     if (!e.target.closest("#openpv")) return;
     var s = $("sheet");
-    s.innerHTML = '<div style="width:100%;max-width:400px">' + C.render(M, M.skin) + '<p style="text-align:center;color:#fff;font-size:13px;margin-top:18px">点任意处收起</p></div>';
+    sheetReturnFocus = e.target.closest("#openpv");
+    s.dataset.mode = "preview";
+    s.innerHTML = '<div class="preview-sheet" role="dialog" aria-modal="true" aria-label="名片大卡预览"><button type="button" class="review-close" data-sheet-close aria-label="关闭大卡预览">×</button>' + C.render(M, M.skin) + '<p>按 Esc 或点空白处收起</p></div>';
     applyPrivateMedia();
     s.hidden = false;
+    s.querySelector(".review-close").focus();
   });
-  $("sheet").addEventListener("click", function () { this.hidden = true; });
+  $("sheet").addEventListener("click", function (e) {
+    var button = e.target.closest("button");
+    if (button && button.id === "confirmReview") { confirmReview(); return; }
+    if (button && button.id === "reReview") { refreshSaved(true); return; }
+    if (button && button.id === "readSaved") { refreshSaved(false); return; }
+    if (button && button.hasAttribute("data-sheet-close")) { closeSheet(true, true); return; }
+    if (e.target === this && this.dataset.mode === "preview") closeSheet(false, true);
+  });
+  document.addEventListener("keydown", function (e) {
+    var sheet = $("sheet");
+    if (sheet.hidden) return;
+    if (e.key === "Escape") { e.preventDefault(); closeSheet(sheet.dataset.mode === "review", true); return; }
+    if (e.key !== "Tab") return;
+    var focusable = Array.prototype.filter.call(sheet.querySelectorAll("button:not([disabled]),a[href],input:not([disabled]),textarea:not([disabled])"), function (node) { return node.offsetParent !== null; });
+    if (!focusable.length) return;
+    var first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
   $("next").addEventListener("click", function () { go(step + 1); });
   $("prev").addEventListener("click", function () { go(step - 1); });
   // 还有没存的改动就离开：先问一句
@@ -672,6 +1096,8 @@
     if (M && Object.keys(dirty).length) { e.preventDefault(); e.returnValue = ""; return ""; }
   });
   function identityChanged() {
+    cardReadGeneration++;
+    clearReview();
     clearPrivateMedia();
     cropReadEpoch++;
     CROP = { src: null };
@@ -679,19 +1105,19 @@
     M = null;
     $("app").textContent = "";
     $("pv").textContent = "";
-    $("sheet").textContent = "";
-    $("sheet").hidden = true;
+    closeSheet(false, false);
     show($("bar"), false);
     show($("lay"), false);
     state("账号已经切换，请刷新后继续编辑当前账号的名片。");
   }
   window.addEventListener("rj-identity-change", identityChanged);
   window.addEventListener("pagehide", function () {
+    cardReadGeneration++;
+    clearReview();
     clearPrivateMedia();
     var cropImage = $("cropimg");
     if (cropImage) cropImage.remove();
-    $("sheet").textContent = "";
-    $("sheet").hidden = true;
+    closeSheet(false, false);
     // 未提交裁切只留内存；pageshow核对modelGeneration后才重绘，切号会清CROP。
   });
   window.addEventListener("pageshow", function (event) {
