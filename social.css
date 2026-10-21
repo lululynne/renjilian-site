@@ -1,0 +1,32 @@
+.social-page [hidden],.social-card-follow[hidden],.social-card-follow [hidden]{display:none!important}
+.social-page{max-width:1100px;padding-top:36px;padding-bottom:48px}
+.social-heading{margin-bottom:28px;max-width:760px}
+.social-heading h2{font:700 32px/1.35 var(--sp-title);margin:16px 0 12px}
+.social-heading>p{font-size:16px;line-height:1.7;margin:8px 0}
+.social-actor{display:inline-block;background:var(--sp-ochre);padding:6px 12px;border-radius:6px;overflow-wrap:anywhere}
+.social-columns{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:24px;align-items:start}
+.social-panel{background:var(--sp-panel);border:2px solid var(--sp-ink);border-radius:12px;padding:24px;box-shadow:3px 3px 0 var(--sp-shadow);min-width:0}
+.social-panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.social-panel h3{font:700 20px/1.4 var(--sp-title);margin:0}
+.social-page button,.social-button,.social-card-follow button{font:inherit;min-height:44px;padding:8px 14px;border:1px solid var(--sp-ink);border-radius:7px;background:var(--sp-ochre);color:var(--sp-ink);cursor:pointer}
+.social-button{display:inline-flex;align-items:center;text-decoration:none}
+.social-page button:disabled,.social-card-follow button:disabled{cursor:wait;opacity:.6}
+.social-page :focus-visible,.social-card-follow :focus-visible{outline:3px solid var(--sp-link);outline-offset:4px}
+.social-feed,.social-following-list{list-style:none;margin:0;padding:0}
+.social-feed>li{padding:20px 0;border-top:1px solid var(--sp-line)}
+.social-feed>li:first-child{border-top:0;padding-top:8px}
+.social-feed time,.social-small{font-size:14px;line-height:1.7;color:var(--sp-muted)}
+.social-feed p{font-size:16px;line-height:1.7;margin:8px 0;overflow-wrap:anywhere}
+.social-feed .social-handle{display:block;font-size:14px;color:var(--sp-muted)}
+.social-following-list>li{padding:14px 0;border-top:1px solid var(--sp-line);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.social-following-list a{overflow-wrap:anywhere;min-width:0;flex:1 1 100px}
+.social-following-list button{background:var(--sp-panel);font-size:14px;flex:none}
+.social-note{font-size:15px;line-height:1.7;overflow-wrap:anywhere}
+.social-note.is-error{color:var(--sp-error)}
+.social-empty{font-size:16px;line-height:1.8;padding:12px 0;color:var(--sp-muted)}
+.social-foot{font-size:14px;line-height:1.8;color:var(--sp-muted);margin-top:28px}
+.social-card-follow{padding:16px 0;border-top:1px solid var(--sp-line);margin-top:20px}
+.social-card-follow p{font-size:14px;line-height:1.7;margin:8px 0;overflow-wrap:anywhere}
+.social-controls{display:flex;align-items:center;flex-wrap:wrap;gap:16px}
+@media(max-width:760px){.social-page{padding-top:24px}.social-heading h2{font-size:28px}.social-columns{grid-template-columns:minmax(0,1fr)}.social-panel{padding:20px}.social-following{order:2}}
+@media(prefers-reduced-motion:reduce){.social-page *,.social-card-follow *{scroll-behavior:auto}}

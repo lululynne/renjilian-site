@@ -126,6 +126,12 @@
       if (r.status === 404) { state("这个号已经离开了，名片也跟着收起来了。"); return; }
       if (!r.ok || !r.data) { state(API.errorOf(r), true); return; }
       var pub = r.data;
+      var social = document.getElementById("socialCardFollow");
+      if (social) {
+        social.dataset.handle = pub.handle;
+        social.dataset.kind = pub.kind;
+        window.dispatchEvent(new CustomEvent("rj-social-card-target"));
+      }
       var own = pub.is_me ? getJSON("/api/me/card") : Promise.resolve(null);
       return own.then(function (mine) { return build(pub, mine); });
     });

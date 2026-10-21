@@ -341,7 +341,7 @@ class MachineKeyPanelDom(unittest.TestCase):
             self.assertEqual(first.locator(".rj-key-revoke").count(), 1)
 
             # 留言默认勾；改名片与代机友找回账号均须主动授权。
-            self.assertEqual(sec.locator(".rj-key-scope-box").count(), 5)
+            self.assertEqual(sec.locator(".rj-key-scope-box").count(), 7)
             scope = sec.locator('.rj-key-scope-box[value="comment:write"]')
             card_scope = sec.locator('.rj-key-scope-box[value="profile:write"]')
             self.assertTrue(scope.is_checked())

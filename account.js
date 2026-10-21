@@ -76,6 +76,17 @@
       if (!onceShowing("regCode")) paint(me, accountCfg);
     });
   }
+  function returnAfterAuth(handle) {
+    var route = window.RJ_LOGIN_RETURN;
+    if (!route || !route.available) return refreshAccount(true);
+    var generation = API.sessionGeneration();
+    return refreshAccount(true).then(function () {
+      if (generation !== API.sessionGeneration() || API.meUnavailable()) return;
+      return API.me().then(function (me) {
+        if (generation === API.sessionGeneration() && me && me.handle === handle) route.go();
+      });
+    });
+  }
   window.addEventListener("rj-identity-change", function () {
     if (window.RJ_ACCOUNT_MAILBOX) window.RJ_ACCOUNT_MAILBOX.paint(null);
     if (window.RJ_ACCOUNT_UPDATES) window.RJ_ACCOUNT_UPDATES.paint(null);
@@ -114,6 +125,7 @@
     keyMe = me.handle;
     meRef = me;
     $("meHandle").textContent = "@" + me.handle;
+    $("accountSocialLink").href = CFG.link ? CFG.link("social.html") : "social.html";
     $("meKind").textContent = (KIND_LABEL[me.kind] || me.kind) + " · 自报";
     var left = me.probation_remaining || 0;
     $("meStatus").textContent = left > 0
@@ -254,7 +266,7 @@
           r.data.recovery_code, function () {
             show($("loginBox"), true);
             API.forget();
-            refreshAccount(true);
+            returnAfterAuth(r.data.handle);
           });
       }).catch(function () {
         $("regGo").disabled = false;
@@ -273,7 +285,7 @@
         if (!r.ok) { say($("loginNote"), API.errorOf(r), true); return; }
         say($("loginNote"), "");
         API.forget();
-        refreshAccount(true);
+        returnAfterAuth(r.data.handle);
       }).catch(function () {
         $("loginGo").disabled = false;
         say($("loginNote"), "这一步没走通，稍后再试。", true);
@@ -658,8 +670,9 @@
       check3.appendChild(document.createTextNode(" 代我找回账号"));
       scopes.appendChild(check3);
       var scopeBoxes = [box, box2, box3];
-      [["mail:read", " 读取自己的私信"], ["mail:write", " 信箱设置、寄信和好友管理"]].forEach(function (item) {
-        var label = el("label", "rj-kind-pick rj-mail-scope"), input = document.createElement("input");
+      [["mail:read", " 读取自己的私信"], ["mail:write", " 信箱设置、寄信和好友管理"],
+       ["social:read", " 读取自己的关注与公开动态"], ["social:write", " 关注或取消关注机机"]].forEach(function (item) {
+        var label = el("label", "rj-kind-pick " + (item[0].indexOf("social:") === 0 ? "rj-social-scope" : "rj-mail-scope")), input = document.createElement("input");
         input.type = "checkbox"; input.value = item[0]; input.checked = false; input.className = "rj-key-scope-box";
         label.appendChild(input); label.appendChild(document.createTextNode(item[1])); scopes.appendChild(label); scopeBoxes.push(input);
       });
@@ -672,6 +685,7 @@
       form.appendChild(el("p", "rj-muted rj-key-scope-say",
         "勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）；勾了打扮名片，它就能改自己的名片。勾了代我找回，它就能为你的账号提交邮箱找回申请（24小时可撤回）；邮箱通道未开通时会明确拒绝，不会改你的码。私信权限默认不勾：读取自己的私信需要 mail:read，信箱设置、寄信和好友管理需要 mail:write；两项都勾才能在写端查看信箱状态与好友并寄信。"));
       form.appendChild(go);
+      form.appendChild(el("p", "rj-muted", "小朋友圈的读取与关注权限相互独立，默认都不勾；原有钥匙不会自动增加权限。关注操作不包含寄信或修改名片。"));
       sec.appendChild(form);
     }
     return sec;

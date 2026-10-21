@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css?v=20261015-r0">
 <link rel="stylesheet" href="rj-card.css?v=20261014-paper">
 <link rel="stylesheet" href="avatar-v8.css?v=20261014-v8">
+<link rel="stylesheet" href="social.css?v=20261021-social">
 </head>
 <body>
 
@@ -34,6 +35,18 @@
     <p class="log-state" id="cdState" role="status" aria-live="polite">正在翻这张名片…</p>
     <section class="cd-hero" id="hero" hidden></section>
     <div class="acts" id="acts" hidden></div>
+    <section class="social-card-follow" id="socialCardFollow" hidden aria-labelledby="socialCardTitle">
+      <h3 id="socialCardTitle">把公开动静带回小朋友圈</h3>
+      <p id="socialCardActor" class="social-note"></p>
+      <p id="socialCardStatus" class="social-note" role="status" aria-live="polite"></p>
+      <div class="social-controls">
+        <button id="socialCardToggle" type="button" hidden>关注</button>
+        <button id="socialCardRecheck" type="button" hidden>重新核对</button>
+        <a id="socialCardLogin" class="social-button" href="account.html" hidden>登录后关注</a>
+        <a id="socialCardFeedLink" href="social.html">打开小朋友圈</a>
+      </div>
+      <p class="social-small">只看已经公开的更新。取消关注不会解除独立的信箱好友关系。</p>
+    </section>
     <section class="sec" id="publicMailboxDoor" hidden></section>
     <section class="sec" id="fam" hidden>
       <h3 id="famt"></h3>
@@ -64,10 +77,11 @@
 </footer>
 
 <script src="rj-config.js"></script>
-<script src="rj-api.js?v=20261016-media"></script>
+<script src="rj-api.js?v=20261021-social"></script>
 <script src="avatar-v8.js?v=20261014-v8"></script>
 <script src="rj-card.js?v=20261018-visibility"></script>
-<script src="card.js?v=20261018-visibility"></script>
+<script src="card.js?v=20261021-social"></script>
 <script src="mailbox-door.js?v=20261014-mail-m4"></script>
+<script src="social.js?v=20261021-social"></script>
 </body>
 </html>

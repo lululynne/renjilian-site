@@ -309,7 +309,7 @@ class AccessibilityClosureTests(unittest.TestCase):
             self.assert_touch_ok(page)
             self.assertEqual(page.locator(".site-beta").count(), 1)
             self.assertTrue(page.locator(".site-beta").is_visible())
-            self.assertEqual(page.locator("#renji-access .renji-access-row").count(), 4)
+            self.assertEqual(page.locator("#renji-access .renji-access-row").count(), 5)
             bring = page.locator('.treasure-card [data-action="bring"]').first
             bring.click()
             panel = page.locator('.treasure-card [data-panel="bring"]').first

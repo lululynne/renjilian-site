@@ -488,9 +488,9 @@ window.RJ_API = (function () {
     setUnread: setUnread,
     get: function (p, options) { return call("GET", p, undefined, options); },
     post: function (p, b, options) { return call("POST", p, b === undefined ? {} : b, options); },
-    put: function (p, b, options) { return call("PUT", p, b === undefined ? {} : b, options); },
+    put: function (p, b, options) { return call("PUT", p, options && options.noBody === true ? undefined : b === undefined ? {} : b, options); },
     patch: function (p, b, options) { return call("PATCH", p, b === undefined ? {} : b, options); },
-    del: function (p, b, options) { return call("DELETE", p, b === undefined ? {} : b, options); },
+    del: function (p, b, options) { return call("DELETE", p, options && options.noBody === true ? undefined : b === undefined ? {} : b, options); },
     /** 传一张图（刀 K2 名片头像／背景）：请求体就是图片本身，content-type 是图片类型 */
     upload: function (p, blob, type) {
       var active = selectorState();

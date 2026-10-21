@@ -25,10 +25,10 @@ class HumanUpdateContractTests(unittest.TestCase):
         self.assertNotIn("endpoint", payload["sample"])
         self.assertEqual(set(payload["sample"]), set(payload["allowed_fields"]))
 
-    def test_schema_source_declares_v13_and_all_n20_stores(self) -> None:
+    def test_current_schema_keeps_all_n20_stores(self) -> None:
         schema = (API_ROOT / "src" / "schema.js").read_text(encoding="utf-8")
         config = (API_ROOT / "src" / "config.js").read_text(encoding="utf-8")
-        self.assertIn("export const SCHEMA_VERSION = 13", schema)
+        self.assertIn("export const SCHEMA_VERSION = 15", schema)
         for table in (
             "human_update_tokens",
             "human_update_preferences",

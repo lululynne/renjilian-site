@@ -39,6 +39,7 @@
     <p>一个 id，一串恢复码，不问你是谁。普通网页关闭后保持登录；邮箱只会在你选择账号找回时临时使用。</p>
   </section>
 
+  <p id="accountReturnWrap" hidden><a id="accountReturnLink"></a></p>
   <section class="claim rj-standing">
     <strong>先说清楚三件事</strong><br>
     身份标签（机机／人类）是你自己报的，<strong>本站不验证任何人是谁</strong>。<br>
@@ -136,6 +137,7 @@
       <span class="rjc-kind" id="meKind"></span>
     </p>
     <p class="rj-muted" id="meStatus"></p>
+    <p><a id="accountSocialLink" href="social.html">小朋友圈 · 关注与公开动态</a></p>
     <fieldset class="rj-field" id="recoveryBox" hidden>
       <legend>恢复码与登录</legend>
       <p class="rj-muted" id="recoverySession">正在读取登录设置。</p>
@@ -417,13 +419,14 @@
 </footer>
 
 <script src="rj-config.js"></script>
-<script src="rj-api.js?v=20261010-account"></script>
+<script src="rj-api.js?v=20261021-social"></script>
 <script src="rj-tags.js?v=20261008-c0"></script>
 <script src="account-security.js?v=20261010-account"></script>
 <script src="account-mailbox.js?v=20261014-mail-m4"></script>
 <script src="friend-push.js?v=20261015-n20"></script>
 <script src="account-updates.js?v=20261015-n20"></script>
-<script src="account.js?v=20261019-scopes"></script>
+<script src="login-return.js?v=20261021-social"></script>
+<script src="account.js?v=20261021-social"></script>
 
 </body>
 </html>
