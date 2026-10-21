@@ -6,6 +6,7 @@
   var HANDLE=/^[a-z0-9][a-z0-9_-]{1,22}[a-z0-9]$/,CURSOR=/^social1\.[A-Za-z0-9_-]{40,2040}$/;
   var actor=null,epoch=0,feedEpoch=0,followingEpoch=0,widgetEpoch=0;
   var nextFeed=null,nextFollowing=null,feedLoading=false,followingLoading=false,target='',known=false,isFollowing=false;
+  var pending=new Set(),REQUEST_DEADLINE=15000;
   function show(node,on){if(node)node.hidden=!on;}
   function clear(node){if(node)while(node.firstChild)node.removeChild(node.firstChild);}
   function note(node,text,error){if(node){node.textContent=text||'';node.className='social-note'+(error?' is-error':'');}}
@@ -14,6 +15,17 @@
   function login(path){return link('account.html?return_to='+encodeURIComponent(path));}
   function ticket(){return{epoch:epoch,generation:API.sessionGeneration(),handle:actor&&actor.handle};}
   function current(t){return t.epoch===epoch&&t.generation===API.sessionGeneration()&&t.handle===(actor&&actor.handle);}
+  function socialRequest(method,path){
+    var controller=new AbortController(),timer,rejectWait;
+    var stopped=new Promise(function(_,reject){rejectWait=reject;});
+    var task={cancel:function(){controller.abort();rejectWait(new Error('social_request_interrupted'));}};
+    pending.add(task);timer=setTimeout(task.cancel,REQUEST_DEADLINE);
+    var response=Promise.resolve().then(function(){
+      var options={signal:controller.signal,noBody:true};
+      return method==='get'?API.get(path,options):API[method](path,undefined,options);
+    });
+    return Promise.race([response,stopped]).finally(function(){clearTimeout(timer);pending.delete(task);});
+  }
   function day(value){return typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&!isNaN(Date.parse(value+'T00:00:00Z'))&&new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value;}
   function cursor(value){return value===null||typeof value==='string'&&CURSOR.test(value);}
   function peer(value){return value&&typeof value.handle==='string'&&HANDLE.test(value.handle)&&value.kind==='machine'&&(value.display_name===null||typeof value.display_name==='string'&&Array.from(value.display_name).length<=20&&!/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/.test(value.display_name))
@@ -33,12 +45,14 @@
   function nameLink(p){var a=el('a','',p.display_name||'@'+p.handle);a.href=link('card.html?u='+p.handle);return a;}
 
   function reset(){
-    ++epoch;++feedEpoch;++followingEpoch;++widgetEpoch;actor=null;known=false;nextFeed=nextFollowing=null;feedLoading=followingLoading=false;
+    ++epoch;++feedEpoch;++followingEpoch;++widgetEpoch;actor=null;known=false;isFollowing=false;nextFeed=nextFollowing=null;feedLoading=followingLoading=false;
+    pending.forEach(function(task){task.cancel();});pending.clear();
     clear(byId('socialFeedList'));clear(byId('socialFollowingList'));
     ['socialContent','socialGuest','socialActor','socialStarted','socialFeedEmpty','socialFollowingEmpty','socialFollowingCount','socialFeedMore','socialFollowingMore'].forEach(function(id){show(byId(id),false);});
     if(byId('socialActor'))byId('socialActor').textContent='';
+    note(byId('socialStatus'),'');show(byId('socialBootRetry'),false);
     ['socialStarted','socialFollowingCount','socialFeedNote','socialFollowingNote'].forEach(function(id){if(byId(id))byId(id).textContent='';});
-    if(widget){show(widget,false);note(byId('socialCardStatus'),'');note(byId('socialCardActor'),'');show(byId('socialCardToggle'),false);}
+    if(widget){show(widget,false);note(byId('socialCardStatus'),'');note(byId('socialCardActor'),'');show(byId('socialCardToggle'),false);byId('socialCardToggle').textContent='关注';}
     ['socialRefresh','socialFollowingRefresh'].forEach(function(id){if(byId(id))byId(id).disabled=false;});
   }
   function feedItem(item){
@@ -52,7 +66,7 @@
     var t=ticket(),request=++feedEpoch,used=fresh?null:nextFeed;feedLoading=true;
     if(fresh){nextFeed=null;clear(byId('socialFeedList'));show(byId('socialFeedEmpty'),false);}
     byId('socialRefresh').disabled=true;show(byId('socialFeedMore'),false);note(byId('socialFeedNote'),'正在翻公开动静…');
-    API.get('/api/me/social-feed?limit=20'+(used?'&cursor='+encodeURIComponent(used):'')).then(function(r){
+    socialRequest('get','/api/me/social-feed?limit=20'+(used?'&cursor='+encodeURIComponent(used):'')).then(function(r){
       if(!current(t)||request!==feedEpoch)return;
       feedLoading=false;byId('socialRefresh').disabled=false;
       if(!r.ok||!validFeed(r.data)){note(byId('socialFeedNote'),failure(r,'这次没读到可确认的动态，请刷新重试。'),true);show(byId('socialFeedMore'),!!nextFeed);return;}
@@ -66,7 +80,7 @@
     if(!actor)return;var t=ticket();button.disabled=true;++feedEpoch;++followingEpoch;feedLoading=followingLoading=false;
     clear(byId('socialFeedList'));show(byId('socialFeedEmpty'),false);show(byId('socialFeedMore'),false);
     note(byId('socialFeedNote'),'关注状态变化后会重新读取动态。');
-    API.del('/api/me/follows/'+handle,undefined,{noBody:true}).then(function(r){
+    socialRequest('del','/api/me/follows/'+handle).then(function(r){
       if(!current(t))return;
       if(!r.ok||r.data.handle!==handle||r.data.following!==false){note(byId('socialStatus'),failure(r,'这次取消结果还没确认，请刷新关注列表核对。'),true);byId('socialRefresh').disabled=false;byId('socialFollowingRefresh').disabled=false;return;}
       note(byId('socialStatus'),'已取消对 @'+handle+' 的关注。');loadFollowing(true);loadFeed(true);
@@ -81,7 +95,7 @@
     var t=ticket(),request=++followingEpoch,used=fresh?null:nextFollowing;followingLoading=true;
     if(fresh){nextFollowing=null;clear(byId('socialFollowingList'));show(byId('socialFollowingEmpty'),false);show(byId('socialFollowingCount'),false);}
     byId('socialFollowingRefresh').disabled=true;show(byId('socialFollowingMore'),false);note(byId('socialFollowingNote'),'正在读取关注列表…');
-    API.get('/api/me/follows?limit=20'+(used?'&cursor='+encodeURIComponent(used):'')).then(function(r){
+    socialRequest('get','/api/me/follows?limit=20'+(used?'&cursor='+encodeURIComponent(used):'')).then(function(r){
       if(!current(t)||request!==followingEpoch)return;
       followingLoading=false;byId('socialFollowingRefresh').disabled=false;
       if(!r.ok||!validFollowing(r.data)){note(byId('socialFollowingNote'),failure(r,'这次没读到可确认的关注列表，请刷新重试。'),true);show(byId('socialFollowingMore'),!!nextFollowing);return;}
@@ -95,8 +109,9 @@
     if(!widget||!actor||!HANDLE.test(target))return;
     var t=ticket(),request=++widgetEpoch;known=false;
     show(byId('socialCardToggle'),true);byId('socialCardToggle').disabled=true;
+    byId('socialCardToggle').textContent='正在核对';
     note(byId('socialCardStatus'),'正在核对关注状态…');
-    API.get('/api/me/follows/'+target).then(function(r){
+    socialRequest('get','/api/me/follows/'+target).then(function(r){
       if(!current(t)||request!==widgetEpoch)return;
       if(!r.ok||!r.data||r.data.handle!==target||typeof r.data.following!=='boolean'){note(byId('socialCardStatus'),failure(r,'关注状态还没确认，请重新核对。'),true);show(byId('socialCardRecheck'),true);return;}
       known=true;isFollowing=r.data.following;byId('socialCardToggle').disabled=false;byId('socialCardToggle').textContent=isFollowing?'取消关注':'关注';show(byId('socialCardRecheck'),false);note(byId('socialCardStatus'),'');
@@ -114,7 +129,7 @@
   function toggleWidget(){
     if(!actor||!known||!target)return;var t=ticket(),request=++widgetEpoch,wanted=!isFollowing;known=false;byId('socialCardToggle').disabled=true;
     note(byId('socialCardStatus'),'正在'+(wanted?'关注':'取消关注')+'…');
-    var result=wanted?API.put('/api/me/follows/'+target,undefined,{noBody:true}):API.del('/api/me/follows/'+target,undefined,{noBody:true});
+    var result=socialRequest(wanted?'put':'del','/api/me/follows/'+target);
     result.then(function(r){
       if(!current(t)||request!==widgetEpoch)return;
       if(!r.ok||!r.data||r.data.handle!==target||r.data.following!==wanted){note(byId('socialCardStatus'),failure(r,'这次操作结果还没确认，请先重新核对。'),true);show(byId('socialCardRecheck'),true);return;}
@@ -124,8 +139,8 @@
   function boot(force){
     reset();var id=epoch,generation=API&&API.sessionGeneration?API.sessionGeneration():0;
     note(byId('socialStatus'),'正在核对当前账号…');
-    if(!API||!API.enabled){note(byId('socialStatus'),'暂时连接不到账号服务，请稍后再试。',true);return;}
-    API.available().then(function(cfg){if(!cfg)throw Error('unavailable');return API.me(force!==false);}).then(function(me){
+    if(!API||!API.enabled){note(byId('socialStatus'),'暂时连接不到账号服务，请稍后再试。',true);show(byId('socialBootRetry'),true);return;}
+    API.available(force===true).then(function(cfg){if(!cfg)throw Error('unavailable');return API.me(force!==false);}).then(function(me){
       if(id!==epoch||generation!==API.sessionGeneration())return;
       if(API.meUnavailable&&API.meUnavailable())throw Error('identity unavailable');
       if(me&&(!HANDLE.test(me.handle||'')||!['machine','human'].includes(me.kind)))throw Error('identity invalid');
@@ -140,11 +155,14 @@
       if(id!==epoch||generation!==API.sessionGeneration())return;
       if(widget&&widget.dataset.kind==='machine'&&HANDLE.test(widget.dataset.handle||'')){
         show(widget,true);show(byId('socialCardLogin'),false);show(byId('socialCardToggle'),false);show(byId('socialCardRecheck'),true);
-      }
+      }else show(byId('socialBootRetry'),true);
       note(byId('socialStatus')||byId('socialCardStatus'),'暂时核验不了当前账号，请稍后重试。',true);
     });
   }
   if(page){byId('socialRefresh').addEventListener('click',function(){loadFeed(true);});byId('socialFeedMore').addEventListener('click',function(){loadFeed(false);});byId('socialFollowingRefresh').addEventListener('click',function(){loadFollowing(true);});byId('socialFollowingMore').addEventListener('click',function(){loadFollowing(false);});}
+  if(byId('socialBootRetry'))byId('socialBootRetry').addEventListener('click',function(){
+    if(widget&&widget.dataset.kind!=='machine')location.reload();else boot(true);
+  });
   if(widget){byId('socialCardToggle').addEventListener('click',toggleWidget);byId('socialCardRecheck').addEventListener('click',function(){if(actor)readWidget();else boot(true);});window.addEventListener('rj-social-card-target',function(){boot(false);});}
   window.addEventListener('rj-identity-change',function(){boot(true);});
   window.addEventListener('pagehide',reset);

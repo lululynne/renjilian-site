@@ -4,6 +4,7 @@ import http.server
 import json
 import threading
 import unittest
+import time
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs, quote
 from playwright.sync_api import sync_playwright
@@ -32,11 +33,19 @@ class SocialBackend(FakeBackend):
         self.signed_in=signed_in;self.following=False;self.error=None;self.unknown=False
         self.items=[event()];self.next_items=[];self.hold=None;self.held=None;self.wire=[]
         self.more=False;self.me_error=False;self.malformed=False
+        self.config_failures=0;self.stall_requests=set();self.held_routes=[];self.commit_held_mutation=False;self.body_stall=False
 
     def handle_route(self,route):
         req=route.request;u=urlparse(req.url);path=u.path;method=req.method
         self.wire.append({'method':method,'path':path,'body':req.post_data,'headers':req.headers})
+        if (method,path) in self.stall_requests:
+            if self.commit_held_mutation and path=='/api/me/follows/peer-bot':
+                if method=='PUT':self.following=True
+                if method=='DELETE':self.following=False
+            self.held_routes.append(route);return
         if path=='/api/config':
+            if self.config_failures:
+                self.config_failures-=1;return self.reply(route,503,{'ok':False})
             return self.reply(route,200,{'ok':True,'registration_open':True})
         if path=='/api/me':
             if self.me_error:return self.reply(route,503,{'ok':False})
@@ -49,6 +58,7 @@ class SocialBackend(FakeBackend):
             body=json.loads(req.post_data);self.signed_in=True;self.handle=body['handle'];self.kind=body['kind']
             return self.reply(route,200,{'ok':True,'handle':self.handle,'session_id':SESSION,'recovery_code':'rjr-synthetic-only'})
         if path=='/api/me/social-feed':
+            if self.body_stall:return route.continue_()
             if self.hold==self.handle and not self.held:self.held=route;return
             if self.error:return self.reply(route,503,{'ok':False,'code':'social_public_source_unavailable'})
             data=feed(self.next_items if 'cursor' in parse_qs(u.query) else self.items,self.more and not u.query.count('cursor'))
@@ -69,6 +79,12 @@ class SocialBackend(FakeBackend):
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
     def log_message(self,*args):pass
+    def do_GET(self):
+        if urlparse(self.path).path==getattr(self.server,'stall_body_path',None):
+            self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers()
+            self.wfile.write(b'{"ok":true,"items":[');self.wfile.flush()
+            self.server.stall_body_started.set();self.server.stall_body_release.wait(60);return
+        return super().do_GET()
 
 class SocialBrowserTests(unittest.TestCase):
     @classmethod
@@ -94,10 +110,11 @@ class SocialBrowserTests(unittest.TestCase):
             self.assertTrue(page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
         finally:page.close()
 
-    def open(self,backend,path='social.html',width=390):
+    def open(self,backend,path='social.html',width=390,clock=False,seed=False):
         page=self.browser.new_page(viewport={'width':width,'height':900})
         self.addCleanup(page.close)
-        if backend.hold:
+        if clock:page.clock.install()
+        if backend.hold or seed:
             page.add_init_script("localStorage.setItem('rj_session_selector',JSON.stringify({session_id:'s_'+ 'h'.repeat(32),generation:1}))")
         page.route('**/api/**',backend.handle_route)
         page.goto(self.base+'/'+path+('&' if '?' in path else '?')+'api='+quote(self.base,safe=''),wait_until='domcontentloaded')
@@ -223,5 +240,123 @@ class SocialBrowserTests(unittest.TestCase):
         mutation=next(r for r in b.wire if r['path']=='/api/legacy-default-probe')
         self.assertEqual(mutation['body'],'{}')
         self.assertEqual(mutation['headers']['content-type'],'application/json')
+
+    def test_startup_config_failure_can_retry_without_losing_the_selected_account(self):
+        b=SocialBackend();b.config_failures=1;p=self.open(b,seed=True)
+        p.locator('#socialStatus.is-error').wait_for()
+        p.locator('#socialBootRetry').wait_for(state='visible',timeout=1500)
+        p.locator('#socialBootRetry').click();p.locator('#socialActor').wait_for(state='visible')
+        self.assertIn('@fake-human',p.locator('#socialActor').inner_text())
+        self.assertEqual(sum(r['path']=='/api/config' for r in b.wire),2)
+        p.evaluate('Promise.all([RJ_API.available(true),RJ_API.available(true)])')
+        self.assertEqual(sum(r['path']=='/api/config' for r in b.wire),2)
+
+    def test_card_startup_config_failure_has_a_working_retry_before_target_is_known(self):
+        b=SocialBackend();b.config_failures=1;p=self.open(b,'card.html?u=peer-bot',seed=True)
+        p.locator('#socialBootRetry').wait_for(state='visible',timeout=1500)
+        p.locator('#socialBootRetry').click();p.locator('#socialCardToggle').wait_for(state='visible')
+        self.assertEqual(sum(r['path']=='/api/config' for r in b.wire),2)
+        self.assertFalse(any(r['method']=='PUT' for r in b.wire))
+
+    def test_explicit_retry_preserves_a_shared_pending_availability_probe(self):
+        b=SocialBackend();b.stall_requests={('GET','/api/config')};p=self.open(b,seed=True)
+        p.wait_for_timeout(50)
+        p.evaluate("window.sharedConfigChecks=[RJ_API.available(true),RJ_API.available(true)];true")
+        p.wait_for_timeout(50);self.assertEqual(sum(r['path']=='/api/config' for r in b.wire),1)
+        b.stall_requests.clear();b.reply(b.held_routes[0],200,{'ok':True})
+        p.locator('#socialActor').wait_for(state='visible')
+        p.evaluate('Promise.all(window.sharedConfigChecks)')
+        self.assertEqual(sum(r['path']=='/api/config' for r in b.wire),1)
+
+    def test_stalled_card_state_read_exposes_recheck_without_attempting_a_mutation(self):
+        b=SocialBackend();b.stall_requests={('GET','/api/me/follows/peer-bot')}
+        p=self.open(b,'card.html?u=peer-bot',clock=True,seed=True)
+        p.locator('#socialCardToggle').wait_for(state='visible');p.clock.fast_forward(16000)
+        p.locator('#socialCardRecheck').wait_for(state='visible',timeout=1500)
+        self.assertTrue(p.locator('#socialCardToggle').is_disabled());b.stall_requests.clear()
+        p.locator('#socialCardRecheck').click();p.wait_for_function("!document.querySelector('#socialCardToggle').disabled")
+        self.assertFalse(any(r['method'] in ['PUT','DELETE'] for r in b.wire))
+
+    def test_pagehide_also_clears_the_previous_action_message(self):
+        b=SocialBackend();b.following=True;p=self.open(b,seed=True)
+        p.get_by_role('button',name='取消关注 @peer-bot').click()
+        p.locator('#socialFollowingEmpty').wait_for(state='visible')
+        self.assertIn('@peer-bot',p.locator('#socialStatus').inner_text())
+        p.evaluate("dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}))")
+        self.assertEqual(p.locator('#socialStatus').inner_text(),'')
+
+    def test_stalled_feed_and_following_headers_unlock_read_recovery(self):
+        b=SocialBackend();b.stall_requests={('GET','/api/me/social-feed'),('GET','/api/me/follows')}
+        p=self.open(b,clock=True,seed=True);p.locator('#socialActor').wait_for(state='visible')
+        p.wait_for_timeout(50);p.clock.fast_forward(16000)
+        p.locator('#socialFeedNote.is-error').wait_for(timeout=1500)
+        p.locator('#socialFollowingNote.is-error').wait_for(timeout=1500)
+        self.assertTrue(p.locator('#socialRefresh').is_enabled());self.assertTrue(p.locator('#socialFollowingRefresh').is_enabled())
+        self.assertEqual(sum(r['path']=='/api/me/social-feed' for r in b.wire),1)
+        b.stall_requests.clear();p.locator('#socialRefresh').click();p.locator('#socialFeedList>li').wait_for()
+
+    def test_stalled_response_body_is_bounded_before_the_server_releases_it(self):
+        b=SocialBackend();b.body_stall=True
+        self.server.stall_body_path='/api/me/social-feed'
+        self.server.stall_body_started=threading.Event();self.server.stall_body_release=threading.Event()
+        try:
+            p=self.open(b,clock=True,seed=True);p.locator('#socialActor').wait_for(state='visible')
+            deadline=time.monotonic()+5
+            while not self.server.stall_body_started.is_set() and time.monotonic()<deadline:p.wait_for_timeout(20)
+            self.assertTrue(self.server.stall_body_started.is_set());p.wait_for_timeout(50)
+            p.clock.fast_forward(16000);p.locator('#socialFeedNote.is-error').wait_for(timeout=1500)
+            self.assertFalse(self.server.stall_body_release.is_set());self.assertTrue(p.locator('#socialRefresh').is_enabled())
+        finally:
+            self.server.stall_body_release.set();self.server.stall_body_path=None
+
+    def test_stalled_mutations_remain_unknown_until_rechecked_and_are_never_replayed(self):
+        for method,initial in [('PUT',False),('DELETE',True)]:
+            with self.subTest(method=method):
+                b=SocialBackend();b.following=initial;b.commit_held_mutation=True
+                b.stall_requests={(method,'/api/me/follows/peer-bot')}
+                p=self.open(b,'card.html?u=peer-bot',clock=True,seed=True)
+                p.wait_for_function("!document.querySelector('#socialCardToggle').hidden&&!document.querySelector('#socialCardToggle').disabled")
+                p.locator('#socialCardToggle').click();p.clock.fast_forward(16000)
+                p.locator('#socialCardRecheck').wait_for(state='visible',timeout=1500)
+                self.assertTrue(p.locator('#socialCardToggle').is_disabled())
+                self.assertEqual(sum(r['method']==method for r in b.wire),1)
+                b.stall_requests.clear();p.locator('#socialCardRecheck').click()
+                p.wait_for_function("!document.querySelector('#socialCardToggle').disabled")
+                self.assertEqual(p.locator('#socialCardToggle').inner_text(),'取消关注' if method=='PUT' else '关注')
+                self.assertEqual(sum(r['method']==method for r in b.wire),1)
+
+    def test_stalled_identity_reads_show_startup_recovery(self):
+        for path in ['/api/config','/api/me']:
+            with self.subTest(path=path):
+                b=SocialBackend();b.stall_requests={('GET',path)}
+                p=self.open(b,clock=True,seed=True);p.wait_for_timeout(50);p.clock.fast_forward(16000)
+                p.locator('#socialStatus.is-error').wait_for(timeout=1500)
+                p.locator('#socialBootRetry').wait_for(state='visible',timeout=1500)
+                b.stall_requests.clear();p.locator('#socialBootRetry').click();p.locator('#socialActor').wait_for(state='visible')
+
+    def test_pagehide_clears_private_state_and_persisted_restore_rechecks_identity(self):
+        for signed_in in [True,False]:
+            with self.subTest(signed_in=signed_in):
+                b=SocialBackend();b.following=True;b.items=[event(name='OLD_LIFECYCLE')];b.more=True
+                p=self.open(b,seed=True);p.locator('#socialFeedMore').wait_for(state='visible')
+                p.locator('#socialFollowingCount').wait_for(state='visible')
+                me_calls=sum(r['path']=='/api/me' for r in b.wire)
+                p.evaluate("dispatchEvent(new PageTransitionEvent('pageshow',{persisted:false}))")
+                p.wait_for_timeout(50);self.assertEqual(sum(r['path']=='/api/me' for r in b.wire),me_calls)
+                b.stall_requests={('GET','/api/me/social-feed'),('GET','/api/me/follows')}
+                p.locator('#socialRefresh').click();p.locator('#socialFollowingRefresh').click();p.wait_for_timeout(50)
+                p.evaluate("dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}))")
+                self.assertEqual(p.locator('#socialFeedList>li').count(),0);self.assertEqual(p.locator('#socialFollowingList>li').count(),0)
+                self.assertEqual(p.locator('#socialActor').inner_text(),'');self.assertEqual(p.locator('#socialFollowingCount').inner_text(),'')
+                self.assertFalse(p.locator('#socialFeedMore').is_visible());self.assertNotIn('OLD_LIFECYCLE',p.content())
+                b.signed_in=signed_in;b.handle='second-human';b.items=[];b.following=False;b.more=False;b.stall_requests.clear()
+                p.evaluate("localStorage.setItem('rj_session_selector',JSON.stringify({session_id:'s_'+ 'j'.repeat(32),generation:2}));dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}))")
+                p.locator('#socialFeedEmpty' if signed_in else '#socialGuest').wait_for(state='visible')
+                for route in b.held_routes:
+                    try:b.reply(route,200,feed([event(name='OLD_LIFECYCLE')]))
+                    except Exception as error:
+                        if 'closed' not in str(error).lower() and 'cancel' not in str(error).lower():raise
+                p.wait_for_timeout(80);self.assertNotIn('OLD_LIFECYCLE',p.content())
+                self.assertGreater(sum(r['path']=='/api/me' for r in b.wire),me_calls)
 
 if __name__=='__main__':unittest.main()

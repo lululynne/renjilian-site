@@ -7,7 +7,7 @@ window.RJ_API = (function () {
   "use strict";
   var CFG = window.RJ_CONFIG || { apiBase: "" };
   var base = CFG.apiBase || "";
-  var probe = null;   // Promise<config|null>，只探一次
+  var probe = null, probeFailed = false;   // 共享探测；失败后才允许明确重试
   var meCache = null; // Promise<me|null>
   var meKnown = null, meProblem = false, meEpoch = 0;
   var unread = 0;     // 右上角小红点上的数（刀 R）
@@ -19,7 +19,7 @@ window.RJ_API = (function () {
   var fallbackQueue = Promise.resolve();
   var memorySelector = { session_id: null, generation: 0 }, memoryOnly = false;
   var coordinationDB = null;
-  var MUTATION_DEADLINE = 30000, OWNERSHIP_TTL = 120000;
+  var MUTATION_DEADLINE = 30000, IDENTITY_READ_DEADLINE = 15000, OWNERSHIP_TTL = 120000;
   function hint(v) {
     try {
       if (v === undefined) return localStorage.getItem(HINT) === "1";
@@ -172,16 +172,20 @@ window.RJ_API = (function () {
     var boundedMutation = isSessionMutation(method, path) || (method === "POST" && (
       path === "/api/me/recovery/replace-prepare" || path === "/api/me/recovery/replace"
       || path === "/api/account-recovery/complete"));
-    var controller = boundedMutation ? new AbortController() : null;
+    var deadline = boundedMutation ? MUTATION_DEADLINE
+      : Number.isFinite(options.deadlineMs) && options.deadlineMs > 0 && options.deadlineMs <= MUTATION_DEADLINE ? options.deadlineMs : null;
+    var controller = deadline !== null ? new AbortController() : null;
     var timer = null, cancelled = false, abortListener = null;
     var interrupted = controller ? new Promise(function (resolve) {
       function interrupt(timeout) {
         cancelled = true; controller.abort();
-        resolve({ status: 0, ok: false, unknown: true, data: { error: timeout
-          ? "请求等待超时，结果尚未确认。请核对当前账号后再操作；系统不会自动重试。"
-          : "请求已中止，结果尚未确认。请核对当前账号后再操作。" } });
+        var unknown = method !== "GET";
+        resolve({ status: 0, ok: false, unknown: unknown, data: { error: unknown
+          ? timeout ? "请求等待超时，结果尚未确认。请核对当前账号后再操作；系统不会自动重试。"
+            : "请求已中止，结果尚未确认。请核对当前账号后再操作。"
+          : "暂时读取不到账号服务，请稍后重试。" } });
       }
-      timer = setTimeout(function () { interrupt(true); }, MUTATION_DEADLINE);
+      timer = setTimeout(function () { interrupt(true); }, deadline);
       if (options.signal) {
         abortListener = function () { interrupt(false); };
         if (options.signal.aborted) abortListener();
@@ -291,13 +295,16 @@ window.RJ_API = (function () {
     }).catch(function () { return { ok: false, status: 0, data: null }; });
   }
 
-  /** 后端在不在。探一次就记住；探不到不抛异常、不打 console.error */
-  function available() {
+  /** 成功和在途探测共享；失败后可明确重试，不主动循环。 */
+  function available(force) {
     if (!base) return Promise.resolve(null);
-    if (probe) return probe;
-    probe = call("GET", "/api/config").then(function (r) {
-      return r.ok && r.data && r.data.ok ? r.data : null;
-    }).catch(function () { return null; });
+    if (probe && !(force === true && probeFailed)) return probe;
+    probeFailed = false;
+    probe = call("GET", "/api/config", undefined, { deadlineMs: IDENTITY_READ_DEADLINE }).then(function (r) {
+      var cfg = r.ok && r.data && r.data.ok ? r.data : null;
+      probeFailed = !cfg;
+      return cfg;
+    }).catch(function () { probeFailed = true; return null; });
     return probe;
   }
 
@@ -308,7 +315,7 @@ window.RJ_API = (function () {
     var current = meEpoch;
     // /api/me 对没登录的人回 200 + signed_in:false（不是 401——那会在每个
     // 匿名读者的控制台留一条红色的 401，页面没坏却看着像坏了）
-    meCache = call("GET", "/api/me").then(function (r) {
+    meCache = call("GET", "/api/me", undefined, { deadlineMs: IDENTITY_READ_DEADLINE }).then(function (r) {
       if (current !== meEpoch) return meKnown;
       if (!r.ok || !r.data || !r.data.ok) { meProblem = true; meCache = null; return meKnown; }
       meProblem = false;
