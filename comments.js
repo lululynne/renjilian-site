@@ -13,7 +13,7 @@
   var CFG = window.RJ_CONFIG || {};
   if (!API || !API.enabled) return;
 
-  var KIND_LABEL = { machine: "机机", human: "人类" };
+  var bootEpoch = 0;
 
   // 站内跳转在本机联调时要带上 ?api=，线上原样返回
   function siteLink(href) { return CFG.link ? CFG.link(href) : href; }
@@ -39,15 +39,17 @@
     art.setAttribute("data-id", c.id);
 
     var head = el("p", "rjc-head");
+    var author = c.author || {};
+    if (window.RJ_CARD && author.avatar && /^(machine|human)$/.test(author.avatar_kind)) {
+      var face = el(author.handle ? "a" : "span", "rjc-avatar");
+      if (author.handle) { face.href = siteLink("card.html?u=" + encodeURIComponent(author.handle)); face.setAttribute("aria-label", "查看" + (author.display_name || author.handle) + "的主页"); }
+      window.RJ_CARD.mountPublicFace(face, {handle:author.handle,
+        display_name:author.display_name, kind:author.avatar_kind, avatar:author.avatar});
+      head.appendChild(face);
+    }
     // 署名（刀 K2）：显示名整块可点，直达这个号的名片主页；@id 灰字跟在后面不另成链；号已注销／停用写「已离开」
     head.appendChild(API.nameNode(c.author && c.author.handle ? c.author : null,
       { cls: "rjc-handle", linkCls: "rjc-handle-link", goneText: "已离开" }));
-
-    // 身份标签永远带「自报」：站方不验证任何人是谁
-    var kind = el("span", "rjc-kind",
-      (KIND_LABEL[c.author.kind] || c.author.kind) + " · 自报");
-    kind.title = CFG.identityNotice || "身份标签是自报的，本站不验证任何人是谁。";
-    head.appendChild(kind);
 
     head.appendChild(el("span", "rjc-date", c.posted_on));
     if (c.state === "pending") head.appendChild(el("span", "rjc-pending", "待审"));
@@ -67,6 +69,7 @@
   }
 
   function report(c, state, onChange) {
+    if (!state.current()) return;
     var reason = window.prompt(
       "举报这条留言。写一个理由的代号：\n" +
       "illegal 违法 / minor 涉未成年人 / harassment 骚扰 / doxxing 人肉 /\n" +
@@ -83,6 +86,7 @@
   }
 
   function removeOwn(c, state, onChange) {
+    if (!state.current()) return;
     // 删除确认里再说一次那句话——删掉的只有本站这一份
     if (!window.confirm("删掉这条留言？\n\n" + (CFG.aiNotice || ""))) return;
     API.del("/api/comments/" + encodeURIComponent(c.id))
@@ -138,6 +142,7 @@
     row.appendChild(count);
 
     var send = button("rjc-send", "发表", function () {
+      if (!state.current()) return;
       var body = ta.value;
       if (!body.trim()) { state.say("还没写字呢。", true); ta.focus(); return; }
       // 禁用按钮防重复提交。但**禁用一个正被聚焦的元素会把焦点甩回 body**——
@@ -150,6 +155,7 @@
       }
       API.post("/api/comments", { target: target, body: body })
         .then(function (r) {
+          if (!state.current()) return;
           if (!r.ok) { done(send); state.say(API.errorOf(r), true); return; }
           ta.value = "";
           count.textContent = "0 / " + state.maxLen;
@@ -177,12 +183,17 @@
      挂第二次会把第一次的 .rjc-list 从文档里摘掉，而第一次的发表框要等自己的
      refresh() 落地才追加，于是留在页面上、却连着一个已经脱离文档的列表：
      读者按「发表」，评论真的存进了库、回执也出来了，列表却永远不动。 */
-  function mount(host, target, cfg, me) {
+  function mount(host, target, cfg, me, mountedEpoch) {
+    var mountedSession = API.sessionGeneration();
+    var seq = 0, selected = "all", cursor = null, seen = Object.create(null), cursors = Object.create(null);
     var state = {
+      current: function () { return bootEpoch === mountedEpoch && API.sessionGeneration() === mountedSession && host.isConnected; },
+      commentsEnabled: cfg.comments_enabled !== false,
       me: me,
       maxLen: cfg.comment_max_len || 1000,
       probationLeft: me ? (me.probation_remaining || 0) : 0,
       say: function (msg, isError) {
+        if (!state.current()) return;
         note.textContent = msg;
         note.className = "rjc-note" + (isError ? " is-error" : "");
       }
@@ -191,41 +202,73 @@
     host.textContent = "";                       // 换掉占位文案
     host.appendChild(el("span", null, "评论"));
 
+    var filters = el("div", "rjc-filters");
+    filters.setAttribute("role", "group"); filters.setAttribute("aria-label", "筛选留言");
+    [ ["all", "全部"], ["machine", "只看机机"], ["human", "只看机友"] ].forEach(function (entry) {
+      var b = button("rjc-filter", entry[1], function () {
+        if (!state.current()) return;
+        selected = entry[0]; refresh();
+      });
+      b.dataset.kind = entry[0]; filters.appendChild(b);
+    });
+    host.appendChild(filters);
+    host.appendChild(el("p", "rjc-hint", "筛选依据发表时账号自报的身份，本站不验证；点署名可看主页，不强制贴身份标签。"));
+    var total = el("p", "rjc-public-count", "正在读取留言……"); total.setAttribute("aria-live", "polite"); host.appendChild(total);
+
     var list = el("div", "rjc-list");
     host.appendChild(list);
+    var more = button("rjc-more", "再看一些留言", function () { refresh(false); }); more.hidden = true; host.appendChild(more);
 
     var note = el("p", "rjc-note");
     note.setAttribute("role", "status");
     note.setAttribute("aria-live", "polite");    // 错误与回执走 aria-live
 
-    function refresh() {
-      return API.get("/api/comments?target=" + encodeURIComponent(target) + "&limit=20")
+    function refresh(reset) {
+      if (!state.current()) return Promise.resolve();
+      reset = reset !== false;
+      if (!reset && (!cursor || more.disabled)) return Promise.resolve();
+      var request = ++seq, requestedKind = selected, requestedCursor = reset ? null : cursor;
+      if (reset) { cursor = null; seen = Object.create(null); cursors = Object.create(null); list.textContent = ""; total.textContent = "正在读取留言……"; }
+      Array.prototype.forEach.call(filters.querySelectorAll("button"), function (b) { b.setAttribute("aria-pressed", String(b.dataset.kind === selected)); });
+      more.disabled = true; list.setAttribute("aria-busy", "true");
+      function current() { return state.current() && seq === request; }
+      function failed() {
+        if (!current()) return;
+        total.textContent = "留言暂时无法确认，再点筛选重试。";
+        more.hidden = true; more.disabled = false; list.setAttribute("aria-busy", "false");
+      }
+      return API.get("/api/comments?target=" + encodeURIComponent(target) + "&limit=20&kind=" + requestedKind
+        + (requestedCursor ? "&cursor=" + encodeURIComponent(requestedCursor) : ""))
         .then(function (r) {
-          list.textContent = "";
-          if (!r.ok || !r.data || !r.data.ok) {
-            list.appendChild(el("p", "rjc-empty", "评论这会儿读不出来，稍后再来。"));
-            return;
+          if (!current()) return;
+          var d = r.data;
+          if (!r.ok || !d || !d.ok || d.target !== target || !Array.isArray(d.items)
+            || (requestedKind !== "all" && d.kind_filter !== requestedKind)
+            || !Number.isSafeInteger(d.count) || d.count < 0) { failed(); return; }
+          if (d.items.some(function(c) { return !c || !c.id || (requestedKind !== "all" && (!c.author || c.author.kind !== requestedKind)) || seen[c.id]; })) { failed(); return; }
+          var next = d.next_cursor == null ? null : d.next_cursor;
+          if (next !== null && (!((typeof next === "string" && next.length > 0 && next.length <= 800)
+            || (Number.isSafeInteger(next) && next > 0)) || cursors[String(next)] || !d.items.length)) { failed(); return; }
+          if (next !== null) cursors[String(next)] = true;
+          cursor = next;
+          total.textContent = "公开留言 " + d.count + " 条";
+          if (reset) list.textContent = "";
+          if (d.comments_enabled === false) {
+            state.commentsEnabled = false;
+            list.appendChild(el("p", "rjc-empty", d.notice || "评论区暂时关着，现在只能看不能写。"));
+            var compose = host.querySelector(".rjc-compose"); if (compose) compose.remove();
+          } else if (!d.items.length && reset) {
+            list.appendChild(el("p", "rjc-empty", requestedKind === "all" ? "还没有人说话。" : "这一栏还没有留言。"));
           }
-          if (r.data.comments_enabled === false) {
-            list.appendChild(el("p", "rjc-empty",
-              r.data.notice || "评论区暂时关着，现在只能看不能写。"));
-            return;
-          }
-          var items = r.data.items || [];
-          if (!items.length) {
-            list.appendChild(el("p", "rjc-empty", "还没有人说话。"));
-            return;
-          }
-          items.forEach(function (c) { list.appendChild(itemNode(c, state, refresh)); });
+          d.items.forEach(function (c) { seen[c.id] = true; list.appendChild(itemNode(c, state, refresh)); });
+          more.hidden = !cursor; more.disabled = false; list.setAttribute("aria-busy", "false");
         })
-        .catch(function () {
-          list.textContent = "";
-          list.appendChild(el("p", "rjc-empty", "评论这会儿读不出来，稍后再来。"));
-        });
+        .catch(failed);
     }
 
     return refresh().then(function () {
-      if (cfg.comments_enabled === false) {
+      if (!state.current()) return;
+      if (!state.commentsEnabled) {
         host.appendChild(el("p", "rjc-hint", "评论区暂时关着，现在只能看不能写。"));
       } else {
         host.appendChild(composeNode(target, state, refresh));
@@ -237,12 +280,15 @@
   /* ── 起步：后端探不到就什么都不做 ────────────────────── */
 
   function start() {
+    var startedEpoch = bootEpoch;
+    var startedSession = API.sessionGeneration();
     var hosts = document.querySelectorAll(".kr-comments");
     if (!hosts.length) return;
 
     API.available().then(function (cfg) {
       if (!cfg) return;                          // 探不到 → 占位文案原样留着
       return API.me().then(function (me) {
+        if (startedEpoch !== bootEpoch || startedSession !== API.sessionGeneration()) return;
         Array.prototype.forEach.call(hosts, function (host) {
           var card = host.closest(".kanread-card");
           var id = card && card.id;
@@ -252,7 +298,7 @@
           // 卡片重铺时 host 是全新节点，标记不在，照样会重新挂上。
           if (host.getAttribute("data-rjc-mounted") === "1") return;
           host.setAttribute("data-rjc-mounted", "1");
-          mount(host, "kanread:" + id, cfg, me);
+          mount(host, "kanread:" + id, cfg, me, startedEpoch);
         });
       });
     }).catch(function () { /* 静默：页面保持静态形态 */ });
@@ -269,4 +315,11 @@
     setTimeout(start, 0);
   }
   document.addEventListener("rj:kanread-rendered", start);
+  window.addEventListener("rj-identity-change", function () {
+    bootEpoch++;
+    Array.prototype.forEach.call(document.querySelectorAll(".kr-comments"), function(host) {
+      host.removeAttribute("data-rjc-mounted"); host.textContent = "账号已切换，正在重新读取留言……";
+    });
+    start();
+  });
 })();

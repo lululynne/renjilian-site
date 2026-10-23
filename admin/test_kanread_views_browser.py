@@ -124,9 +124,14 @@ class FakeAPI:
         if u.path == "/api/me":
             return self.reply(route, 200, {"ok": True, "signed_in": False})
         if u.path == "/api/comments" and req.method == "GET":
-            return self.reply(route, 200, {"ok": True, "comments_enabled": True, "items": [
+            query = parse_qs(u.query)
+            kind = query.get("kind", ["all"])[0]
+            items = [
                 {"id": "c_1", "author": {"handle": "duzhe", "kind": "human", "display_name": "读者"},
-                 "posted_on": "2031-01-02", "body": "一条夹具留言。", "state": "visible", "mine": False}]})
+                 "posted_on": "2031-01-02", "body": "一条夹具留言。", "state": "visible", "mine": False}]
+            items = [item for item in items if kind == "all" or item["author"]["kind"] == kind]
+            return self.reply(route, 200, {"ok": True, "target": query.get("target", [""])[0], "kind_filter": kind,
+                                          "count": len(items), "next_cursor": None, "comments_enabled": True, "items": items})
         return self.reply(route, 404, {"ok": False, "error": "没有这个接口。"})
 
     def comment_gets(self) -> list[str]:

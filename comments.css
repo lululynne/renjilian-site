@@ -1,0 +1,13 @@
+.rjc-filters{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.rjc-filter,.rjc-more{min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.rjc-filter[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.rjc-filter:focus-visible,.rjc-more:focus-visible,.rjc-avatar:focus-visible{outline:2px solid var(--sp-ochre);outline-offset:3px}
+.rjc-more[hidden]{display:none}
+.rjc-more:disabled{opacity:.6;cursor:wait}
+.rjc-public-count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+.rjc-avatar{width:48px;height:48px;flex:0 0 48px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.rjc-avatar .fs{display:flex;position:relative;align-items:center;justify-content:center;width:44px;height:44px;overflow:hidden;border-radius:10px;font-size:18px}
+.rjc-avatar .ph-img{display:block;width:100%;height:100%;object-fit:cover}
+.rjc-avatar .av{width:44px;height:44px}
+.rjc-head{min-width:0}
+.rjc-head .rjc-handle{min-width:0;overflow-wrap:anywhere}

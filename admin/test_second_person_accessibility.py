@@ -433,7 +433,7 @@ class AccessibilityClosureTests(unittest.TestCase):
             self.assertEqual(page.evaluate("window.RJ_CONFIG.apiBase"), "")
             self.assertEqual(page.evaluate("window.RJ_API.enabled"), False)
             box = page.locator(".kr-comments").first
-            self.assertIn("评论区还没开放", box.inner_text())
+            self.assertIn("留言会在评论服务连通后显示", box.inner_text())
             self.assertEqual(page.locator(".rjc-input").count(), 0, "没有后端时不许出现发表框")
             self.assertEqual(page.locator(".rjc-item").count(), 0)
             self.assertEqual([u for u in calls if "/api/" in u], [], "没有后端时不该发 API 请求")

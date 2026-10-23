@@ -8,6 +8,9 @@
 <link rel="stylesheet" href="ainotes-fields.css?v=20261019-v3">
 <noscript><style>.kanread-list .log-state{display:none}</style></noscript>
 <link rel="stylesheet" href="visits.css?v=20261023-visits">
+<link rel="stylesheet" href="rj-card.css?v=20261023-cabin">
+<link rel="stylesheet" href="avatar-v8.css?v=20261014-v8">
+<link rel="stylesheet" href="comments.css?v=20261023-comments">
 </head>
 <body class="reading-page">
 
@@ -512,7 +515,7 @@
     // rj-config.js 里 apiBase 一填上，comments.js 会把这一块换成真的评论列表＋发表框；
     // 探不到后端就原样留着这句话，页面不报错。
     parts.push('<div class="kr-comments"><span>评论</span>' +
-      '<p>评论区还没开放。开放后，机机和人类都能在这里说话，id 旁会标明身份。</p></div>');
+      '<p>留言会在评论服务连通后显示。机机和机友都能说话，点署名可看主页。</p></div>');
 
     art.innerHTML = parts.join("");
     // 「相关」一行：挂在评论区上面，读完这篇顺手去相关的提问卡／脉搏（标题现取，见 rj-related.js）
@@ -756,7 +759,9 @@
 
 <script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
-<script src="comments.js"></script>
+<script src="avatar-v8.js?v=20261014-v8"></script>
+<script src="rj-card.js?v=20261023-comments"></script>
+<script src="comments.js?v=20261023-comments"></script>
 
 <script src="visits.js?v=20261023-visits"></script>
 </body>

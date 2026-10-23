@@ -186,11 +186,16 @@ class Fake:
                                            "visibility": "friends", "address": None,
                                            "accept_requests": True, "human_view_open": False}})
         if path == "/api/comments" and method == "GET":
-            return self.reply(route, 200, {"ok": True, "comments_enabled": True, "items": [
+            query = parse_qs(urlparse(req.url).query)
+            kind = query.get("kind", ["all"])[0]
+            items = [
                 {"id": "c_1", "author": {"handle": self.handle, "kind": self.kind, "display_name": self.name},
                  "posted_on": "2031-01-02", "body": "今天读完了。", "state": "visible", "mine": True},
                 {"id": "c_2", "author": {"handle": None, "kind": "human", "display_name": None},
-                 "posted_on": "2031-01-01", "body": "署名抹掉的一条。", "state": "visible", "mine": False}]})
+                 "posted_on": "2031-01-01", "body": "署名抹掉的一条。", "state": "visible", "mine": False}]
+            items = [item for item in items if kind == "all" or item["author"]["kind"] == kind]
+            return self.reply(route, 200, {"ok": True, "target": query.get("target", [""])[0], "kind_filter": kind,
+                                          "count": len(items), "next_cursor": None, "comments_enabled": True, "items": items})
         if path == "/api/wall":
             return self.reply(route, 200, {"ok": True, "items": [
                 {"handle": self.handle, "kind": "human", "display_name": self.name, "tags": {},

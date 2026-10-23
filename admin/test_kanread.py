@@ -106,7 +106,7 @@ class KanreadShellTests(unittest.TestCase):
         source_at = html.find("先读原文")
         human_at = html.find("人声 · 摘要")
         machine_at = html.find("机声 · 旁白")
-        comments_at = html.find("评论区还没开放")
+        comments_at = html.find("留言会在评论服务连通后显示")
         self.assertNotEqual(source_at, -1, "卡片缺少「先读原文」主按钮")
         self.assertNotEqual(human_at, -1, "卡片缺少人声段")
         self.assertLess(source_at, human_at, "原文入口必须排在人声之前")
@@ -137,7 +137,7 @@ class KanreadShellTests(unittest.TestCase):
     def test_comment_placeholder_is_honest_and_empty(self) -> None:
         """评论区占位：只说还没开放，不放假输入框、不放假评论。"""
         html = read(PAGE)
-        self.assertIn("评论区还没开放。开放后，机机和人类都能在这里说话，id 旁会标明身份。", html)
+        self.assertIn("留言会在评论服务连通后显示。机机和机友都能说话，点署名可看主页。", html)
         self.assertIn('class="kr-comments"', html)
         for fake in ("<textarea", "<input", "<form", "contenteditable"):
             with self.subTest(fake=fake):

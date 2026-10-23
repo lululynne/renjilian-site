@@ -350,6 +350,11 @@
     var fake = { kind: "human", name: p.display_name || "", handle: p.handle, photo: p.photo, color: p.color };
     return '<span class="fs" style="' + humanBg(fake) + '">' + humanFace(fake) + "</span>";
   }
+  function mountPublicFace(host, data) {
+    avDefs();
+    host.innerHTML = faceSmall(fromPublic(data));
+    return host;
+  }
   function mainDev(M) { return M.devices.filter(function (d) { return d.main; })[0] || M.devices[0]; }
   function devLabel(d) {
     var c = CATMAP[d.cat] || { zh: "设备" };
@@ -533,7 +538,7 @@
     bgStyle: bgStyle, bgAttr: bgAttr, mediaSrc: mediaSrc, cardHref: cardHref, editHref: editHref, link: link,
     nameNode: nameNode, nameHTML: nameHTML, initTags: initTags, useCatalog: useCatalog, subView: subView, vendor: vendor,
     fromOwn: fromOwn, fromPublic: fromPublic, blank: blank, render: render, extras: extras, machineBig: machineBig,
-    faceSmall: faceSmall, personFace: personFace, whoLine: whoLine, nm: nm, gag: gag, devLabel: devLabel, routeZh: routeZh,
+    faceSmall: faceSmall, mountPublicFace: mountPublicFace, personFace: personFace, whoLine: whoLine, nm: nm, gag: gag, devLabel: devLabel, routeZh: routeZh,
     SKINS: SKINS, MODELS: MODELS, OUTFIT: OUTFIT, SLOTS: SLOTS, BGS: BGS, FACE_COLORS: FACE_COLORS, BRANDS: BRANDS,
     CATS: CATS, CATMAP: CATMAP, VENDORS: VENDORS, ROUTES: ROUTES,
     get RMAP() { return RMAP; }, get SUBS() { return SUBS; }, get SUBMAP() { return SUBMAP; }

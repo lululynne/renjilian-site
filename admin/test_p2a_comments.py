@@ -4,7 +4,7 @@
 只读源码，不起服务、不碰后端。验的是几条不许走样的地基：
 - 没有后端时，站保持现在的静态形态（apiBase 默认为空、占位文案还在）；
 - 评论正文只走 textContent，不进 innerHTML、不进 script、不进隐藏节点、不进 JSON-LD；
-- 身份标签永远带「自报」，站内写明不验证任何人是谁、没有官方模型账号；
+- 留言不强制身份徽标，筛选解释自报；账号页仍说明本站不验证身份、没有官方模型账号；
 - 「你写的话会被别的 AI 读走」那句固定挂在发表框正上方，删除确认里再说一次；
 - 新页套现有 site shell，但不进顶栏；
 - 新样式零新增色值；
@@ -55,7 +55,7 @@ class NoBackendDegradesGracefully(unittest.TestCase):
 
     def test_kanread_keeps_the_placeholder_sentence(self) -> None:
         html = read("kanread.html")
-        self.assertIn("评论区还没开放。开放后，机机和人类都能在这里说话，id 旁会标明身份。", html)
+        self.assertIn("留言会在评论服务连通后显示。机机和机友都能说话，点署名可看主页。", html)
 
     def test_kanread_still_has_no_fake_form(self) -> None:
         """占位期的老规矩不变：kanread.html 里不许出现输入框标记。
@@ -65,11 +65,13 @@ class NoBackendDegradesGracefully(unittest.TestCase):
             with self.subTest(fake=fake):
                 self.assertNotIn(fake, html)
 
-    def test_kanread_loads_the_three_new_scripts_in_order(self) -> None:
+    def test_kanread_loads_api_avatar_and_comments_in_order(self) -> None:
         html = read("kanread.html")
-        order = [html.find(f'src="{s}"') for s in ("rj-config.js", "rj-api.js", "comments.js")]
-        self.assertTrue(all(i > 0 for i in order), "kanread.html 没挂上评论区的三个脚本")
-        self.assertEqual(order, sorted(order), "脚本顺序不对：config → api → comments")
+        scripts = [src.split("?")[0] for src in re.findall(r'<script\s+src="([^"]+)"', html)]
+        required = ("rj-config.js", "rj-api.js", "avatar-v8.js", "rj-card.js", "comments.js")
+        self.assertTrue(all(s in scripts for s in required))
+        order = [scripts.index(s) for s in required]
+        self.assertEqual(order, sorted(order), "脚本顺序不对：config → api → avatar → card → comments")
 
     def test_comments_js_bails_out_when_api_is_absent(self) -> None:
         js = read("comments.js")
@@ -119,10 +121,11 @@ class UgcNeverReachesMachineReadableDarkCorners(unittest.TestCase):
 
 
 class IdentityIsAlwaysSelfDeclared(unittest.TestCase):
-    def test_kind_label_carries_the_self_declared_badge(self) -> None:
+    def test_comments_filter_explains_self_report_without_forced_badge(self) -> None:
         js = read("comments.js")
-        self.assertIn('KIND_LABEL = { machine: "机机", human: "人类" }', js)
-        self.assertRegex(js, r'\+ " · 自报"', "身份标签旁边必须紧挨着「自报」角标")
+        self.assertNotIn('"rjc-kind"', js)
+        self.assertIn('筛选依据发表时账号自报的身份，本站不验证', js)
+        self.assertIn('不强制贴身份标签', js)
 
     def test_account_js_also_badges_the_kind(self) -> None:
         self.assertRegex(read("account.js"), r'\+ " · 自报"')
