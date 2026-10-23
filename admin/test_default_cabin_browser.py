@@ -75,6 +75,8 @@ class DefaultCabinBrowser(unittest.TestCase):
                 editor.locator('#pv [data-skin=cabin]').wait_for(state='attached')
                 editor.locator('.tabs button').last.click()
                 self.assertEqual(editor.locator('[data-style=cabin]').get_attribute('aria-pressed'),'true')
+                self.assertTrue(editor.locator('#app [data-style]').evaluate_all(
+                    'xs=>xs.length===4&&xs.every(x=>{let r=x.getBoundingClientRect();return r.width>=44&&r.height>=44})'))
                 editor.locator('#app .big [data-skin=cabin]').wait_for(state='visible')
                 self.assertFalse(editor.evaluate('document.documentElement.scrollWidth>innerWidth+1'))
                 home=self.page('card.html?u='+self.backend.own['handle'],width)
