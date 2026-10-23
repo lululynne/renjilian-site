@@ -135,6 +135,7 @@ class Fake:
         return {"handle": self.handle, "kind": self.kind, "display_name": self.name}
 
     def handle_route(self, route) -> None:
+        from visit_fixture import visit_response
         req = route.request
         u = urlparse(req.url)
         path, method = u.path, req.method
@@ -142,6 +143,8 @@ class Fake:
             return route.fulfill(status=204, headers=self.cors(route))
         body = json.loads(req.post_data) if req.post_data else None
         self.calls.append((method, path, body))
+        visit=visit_response(method,req.url,body)
+        if visit is not None:return self.reply(route,200,visit)
         if path == "/api/config":
             return self.reply(route, 200, {"ok": True, "comments_enabled": True})
         if path == "/api/deletions/status":

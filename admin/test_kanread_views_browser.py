@@ -111,11 +111,14 @@ class FakeAPI:
         route.fulfill(status=status, body=json.dumps(body, ensure_ascii=False), headers=self.cors(route))
 
     def __call__(self, route) -> None:
+        from visit_fixture import visit_response
         req = route.request
         u = urlparse(req.url)
         if req.method == "OPTIONS":
             return route.fulfill(status=204, headers=self.cors(route))
         self.calls.append((req.method, u.path, u.query))
+        visit=visit_response(req.method,req.url,req.post_data_json if req.post_data else None)
+        if visit is not None:return self.reply(route,200,visit)
         if u.path == "/api/config":
             return self.reply(route, 200, {"ok": True, "comments_enabled": True})
         if u.path == "/api/me":
@@ -234,7 +237,9 @@ class KanreadViewsTests(unittest.TestCase):
             page.on("request", lambda r: json_hits.append(r.url))
             page.wait_for_timeout(400)
             self.assertEqual(fake.comment_gets(), [], "目录视图不许发 /api/comments")
-            self.assertEqual([c for c in fake.calls], [], "目录视图不许发任何 /api/ 请求")
+            footprint_calls={('GET','/api/config'),('GET','/api/me'),('GET','/api/visits'),('POST','/api/visits')}
+            self.assertEqual([c for c in fake.calls if c[:2] not in footprint_calls], [],
+                             "目录只可识别足迹身份与登记/读取来访，不能拉取文章留言或私有资料")
             for bad in ("pulse.json", "questions.json", "llm-cost", "mcps.json"):
                 self.assertEqual([u for u in json_hits if bad in u], [], f"目录视图不该拉 {bad}")
             # 点进一篇：恰好一次 /api/comments，target 对

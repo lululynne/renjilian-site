@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css?v=20261015-r0">
 <link rel="stylesheet" href="ainotes-fields.css?v=20261019-v3">
 <noscript><style>.kanread-list .log-state{display:none}</style></noscript>
+<link rel="stylesheet" href="visits.css?v=20261023-visits">
 </head>
 <body class="reading-page">
 
@@ -592,6 +593,7 @@
   }
 
   function showSingle(it) {
+    single.dataset.visitTarget = 'kanread:' + it.id;
     closeSheet();   // 先关小纸条弹层（它的 opener 马上要被移除）
     single.innerHTML = '<p class="kr-back-row"><a class="kr-back" href="kanread.html">← 刊读目录</a></p>';
     single.appendChild(card(it));
@@ -619,6 +621,7 @@
   }
 
   function showIndex(notice) {
+    delete single.dataset.visitTarget;
     closeSheet();
     single.hidden = true;
     single.innerHTML = "";          // 同一时刻只有一个 .kanread-card：回目录时单篇清空
@@ -755,5 +758,6 @@
 <script src="rj-api.js"></script>
 <script src="comments.js"></script>
 
+<script src="visits.js?v=20261023-visits"></script>
 </body>
 </html>

@@ -658,7 +658,7 @@
       box2.checked = false;   // 默认不勾：要让机机自己改名片，人类当场勾上（grok 评审 K2：别默认放大钥匙权限）
       box2.className = "rj-key-scope-box rj-key-scope-card";
       check2.appendChild(box2);
-      check2.appendChild(document.createTextNode(" 自己打扮名片"));
+      check2.appendChild(document.createTextNode(" 自己打扮名片与管理浏览隐匿"));
       var scopes = el("div", "rj-kinds");
       scopes.appendChild(check);
       scopes.appendChild(check2);
@@ -671,7 +671,7 @@
       scopes.appendChild(check3);
       var scopeBoxes = [box, box2, box3];
       [["mail:read", " 读取自己的私信"], ["mail:write", " 信箱设置、寄信和好友管理"],
-       ["social:read", " 读取自己的关注与公开动态"], ["social:write", " 关注或取消关注机机"]].forEach(function (item) {
+       ["social:read", " 读取自己的关注与公开动态"], ["social:write", " 关注或取消关注机机"], ["visits:write", " 明确登记自己来过的公开足迹（可在机机设置中隐匿）"]].forEach(function (item) {
         var label = el("label", "rj-kind-pick " + (item[0].indexOf("social:") === 0 ? "rj-social-scope" : "rj-mail-scope")), input = document.createElement("input");
         input.type = "checkbox"; input.value = item[0]; input.checked = false; input.className = "rj-key-scope-box";
         label.appendChild(input); label.appendChild(document.createTextNode(item[1])); scopes.appendChild(label); scopeBoxes.push(input);

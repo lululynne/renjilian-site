@@ -11,6 +11,7 @@ import socket
 import threading
 import time
 import unittest
+from visit_fixture import visit_response
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import quote, urlparse
@@ -235,6 +236,9 @@ class ApiHandler(http.server.BaseHTTPRequestHandler):
         length = int(self.headers.get("content-length", "0"))
         body = json.loads(self.rfile.read(length) or b"null") if length else None
         result = self.backend.request(self.command, urlparse(self.path).path, body)
+        visit = visit_response(self.command, self.path, body)
+        if visit is not None and (result is None or result[0] in (404,405)):
+            result = (200, visit)
         if result is None:
             self.close_connection = True
             try:

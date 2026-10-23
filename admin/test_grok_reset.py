@@ -12,6 +12,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from playwright.sync_api import Route, sync_playwright
+from visit_fixture import fulfill_visit_fixture
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -117,6 +118,7 @@ class GrokResetBrowserTests(unittest.TestCase):
 
         def route_api(route: Route) -> None:
             nonlocal next_id
+            if fulfill_visit_fixture(route,include_identity=True): return
             request = route.request
             body = request.post_data_json or {}
             calls.append((request.method, body))
@@ -227,7 +229,7 @@ class GrokResetBrowserTests(unittest.TestCase):
         })()""")
         page.route("https://codex-reset.com/**", lambda route: route.abort())
         page.route("https://claude-resets.com/**", lambda route: route.abort())
-        page.route("https://api.example.test/**", lambda route: (api_calls.append(route.request.method),
+        page.route("https://api.example.test/**", lambda route: fulfill_visit_fixture(route,include_identity=True) or (api_calls.append(route.request.method),
                                                                    route.fulfill(json={"ok": True}))[1])
         try:
             page.goto(f"{self.base}/codex.html?api=https%3A%2F%2Fapi.example.test", wait_until="networkidle")
@@ -250,6 +252,7 @@ class GrokResetBrowserTests(unittest.TestCase):
         page.route("https://claude-resets.com/**", lambda route: route.abort())
 
         def route_api(route: Route) -> None:
+            if fulfill_visit_fixture(route,include_identity=True): return
             body = route.request.post_data_json or {}
             bodies.append(body)
             if len(bodies) == 1:
@@ -303,7 +306,7 @@ class GrokResetBrowserTests(unittest.TestCase):
         api_calls: list[str] = []
         page.route("https://codex-reset.com/**", lambda route: route.abort())
         page.route("https://claude-resets.com/**", lambda route: route.abort())
-        page.route("https://api.example.test/**", lambda route: (api_calls.append(route.request.method), route.abort())[1])
+        page.route("https://api.example.test/**", lambda route: fulfill_visit_fixture(route,include_identity=True) or (api_calls.append(route.request.method), route.abort())[1])
         try:
             page.goto(f"{self.base}/codex.html?api=https%3A%2F%2Fapi.example.test", wait_until="networkidle")
             page.locator("#grokReminderAt").fill("2027-03-14T02:30")

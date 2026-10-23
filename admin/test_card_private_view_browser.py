@@ -109,7 +109,9 @@ class PrivateCardBrowser(unittest.TestCase):
                     self.assertGreater(hero.locator("svg").count(), 0)
                     self.assertFalse(page.evaluate("document.documentElement.scrollWidth > innerWidth + 1"))
                     self.assertEqual(errors, [])
-                    self.assertTrue(all(method == "GET" for method, _ in backend.calls))
+                    self.assertTrue(all(method == "GET" or (method == "POST" and path == "/api/visits")
+                                        for method, path in backend.calls),
+                                    "New footprint declarations are allowed; private card writes remain forbidden")
                     if os.environ.get("X03_SHOTS"):
                         dest = Path(os.environ["X03_SHOTS"])
                         dest.mkdir(mode=0o700, parents=True, exist_ok=True)

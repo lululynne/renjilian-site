@@ -47,8 +47,9 @@ class PreviewApiHandler(http.server.BaseHTTPRequestHandler):
     def _cors(self) -> dict[str, str]:
         return {
             "Access-Control-Allow-Origin": self.headers.get("Origin", "null"),
-            "Access-Control-Allow-Methods": "POST,OPTIONS",
-            "Access-Control-Allow-Headers": "content-type,x-renji-preflight",
+            "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+            "Access-Control-Allow-Headers": "content-type,x-renji-preflight,x-rj-session",
+            "Access-Control-Allow-Credentials": "true",
             "Cache-Control": "no-store",
         }
 
@@ -68,10 +69,33 @@ class PreviewApiHandler(http.server.BaseHTTPRequestHandler):
             self.send_header(key, value)
         self.end_headers()
 
+    def _visit_reply(self, payload) -> None:
+        encoded = json.dumps(payload).encode('utf-8')
+        self.send_response(200)
+        for key,value in self._cors().items(): self.send_header(key,value)
+        self.send_header('Content-Type','application/json')
+        self.send_header('Content-Length',str(len(encoded)))
+        self.end_headers();self.wfile.write(encoded)
+
+    def do_GET(self) -> None:
+        from urllib.parse import urlsplit
+        from visit_fixture import visit_response
+        self._record()
+        path=urlsplit(self.path).path
+        payload=({'ok':True} if path=='/api/config' else {'ok':True,'signed_in':False} if path=='/api/me' else visit_response('GET',self.path))
+        if payload is not None:return self._visit_reply(payload)
+        self.send_response(404)
+        for key,value in self._cors().items():self.send_header(key,value)
+        self.end_headers()
+
     def do_POST(self) -> None:
         length = int(self.headers.get("Content-Length", "0"))
         body = self.rfile.read(length).decode("utf-8")
         self._record(body)
+        from visit_fixture import visit_response
+        visit = visit_response('POST', self.path, json.loads(body or '{}'))
+        if visit is not None:
+            return self._visit_reply(visit)
         response = self.server.responses.get(timeout=10)
         if response["abort"]:
             self.connection.shutdown(socket.SHUT_RDWR)
@@ -161,7 +185,7 @@ class BaibaoPreviewBrowserTests(unittest.TestCase):
 
     def api_requests(self) -> list[dict]:
         with self.api_server.requests_lock:
-            return list(self.api_server.requests)
+            return [r for r in self.api_server.requests if '/api/baibao/' in r['url']]
 
     def clear_api_requests(self) -> None:
         with self.api_server.requests_lock:
