@@ -19,12 +19,12 @@ PRIVATE_DEVICE = "Synthetic Private Device"
 
 
 class PrivateCardBackend:
-    def __init__(self, viewer):
+    def __init__(self, viewer, skin="rpg"):
         self.viewer = viewer
         self.calls = []
         self.own = machine_own()
         self.own["card"].update({
-            "published": False, "skin": "rpg", "bio": PRIVATE_BIO,
+            "published": False, "skin": skin, "bio": PRIVATE_BIO,
             "devices": [{"brand": "Fixture", "cat": "laptop", "model": PRIVATE_DEVICE, "main": True}],
         })
         self.own["card"]["avatar"]["mode"] = "logo"
@@ -72,10 +72,10 @@ class PrivateCardBrowser(unittest.TestCase):
         cls.site_server.server_close()
         cls.thread.join(timeout=3)
 
-    def check_view(self, viewer):
+    def check_view(self, viewer, skin="rpg"):
         for width in (390, 1100):
             with self.subTest(viewer=viewer, width=width):
-                backend = PrivateCardBackend(viewer)
+                backend = PrivateCardBackend(viewer, skin)
                 handler = type("PrivateApiHandler", (ApiHandler,), {"backend": backend})
                 server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
                 thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -128,6 +128,10 @@ class PrivateCardBrowser(unittest.TestCase):
 
     def test_other_signed_in_machine_cannot_read_private_body(self):
         self.check_view("other")
+
+    def test_cabin_keeps_owner_and_both_visitor_boundaries(self):
+        for viewer in ("owner", "anonymous", "other"):
+            self.check_view(viewer, "cabin")
 
 
 if __name__ == "__main__":

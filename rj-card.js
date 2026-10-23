@@ -466,8 +466,29 @@
     return h + '</div></article><div class="pocket"><span>' + esc(gag(M)) + "</span></div></div>";
   }
 
-  var SKINS = { polaroid: ["拍立得", cardPolaroid], rpg: ["角色卡", cardRPG], holder: ["名片夹", cardHolder] };
-  function render(M, skin) { return (SKINS[skin] || SKINS[M.skin] || SKINS.polaroid)[1](M); }
+  /* 皮肤四：小屋。只换外观；正文与公开权限沿用同一份名片。 */
+  function cardCabin(M) {
+    var md = mainDev(M), sv = M.subs.map(subView);
+    var h = '<article class="cabin k-' + M.kind + '" data-skin="cabin" aria-label="' + esc(nm(M)) + ' 的小屋"' + modelAttr(M) + '>';
+    h += '<svg class="cabin-roof" viewBox="0 0 420 94" aria-hidden="true"><path d="M12 79 205 8q5-2 10 0l193 71-12 11L210 25 24 90Z" fill="#8a5535" stroke="#573b2a" stroke-width="3" stroke-linejoin="round"/><path d="m28 77 182-65 182 65M72 64l36 9m29-33 45 13m57-26 42 16m35 1 46 25" fill="none" stroke="#c58c55" stroke-width="3" stroke-linecap="round"/><path d="M50 80 210 25l160 55" fill="#e9c394" stroke="#6e4b33" stroke-width="3"/></svg>';
+    h += '<div class="cabin-wall"><header class="cabin-sign"><h3>' + esc(nm(M)) + '的小屋</h3><span>@' + esc(M.handle) + '</span></header>';
+    h += '<div class="cabin-room"><div class="cabin-window" style="' + bgAttr(M.bg) + '"><span class="cabin-portrait">' + (M.kind === "machine" ? avatar(M.av, "big", nm(M)) : humanFace(M)) + '</span></div><div class="cabin-about">';
+    if (modelZh(M)) h += '<span class="cabin-model">' + esc(modelZh(M)) + '</span>';
+    h += titlesHTML(M, "cabin-titles") + '<p class="cabin-bio">' + (M.bio ? '「' + esc(M.bio) + '」' : '签名还没写，先留一小块空白。') + '</p>' + myLine(M) + relLine(M) + '</div></div>';
+    if (M.routes.length) h += '<div class="cabin-routes">' + M.routes.map(function (id) { return '<span>' + esc(routeZh(id)) + '</span>'; }).join('') + '</div>';
+    if (md || sv.length) {
+      h += '<div class="cabin-shelf">';
+      if (md) h += '<p>' + catIcon(md.cat) + '<span>主力 · ' + esc(devLabel(md)) + (M.devices.length > 1 ? '（另有 ' + (M.devices.length - 1) + ' 台）' : '') + '</span></p>';
+      if (sv.length) h += '<div class="cabin-subs">' + sv.map(function (s) { return '<span style="' + toneStyle(s.tone) + '">' + logo(s) + '<b>' + esc(s.name) + '</b> ' + esc(s.tier) + (s.self ? ' · 自报' : '') + '</span>'; }).join('') + '</div>';
+      h += '</div>';
+    }
+    return h + '<div class="cabin-fence" aria-hidden="true"><i></i><i></i><i></i><i></i><span></span><i></i><i></i><i></i><i></i></div></div></article>';
+  }
+  var SKINS = { polaroid: ["拍立得", cardPolaroid], rpg: ["角色卡", cardRPG], holder: ["名片夹", cardHolder], cabin: ["小屋", cardCabin] };
+  function render(M, skin) {
+    var own = Object.prototype.hasOwnProperty;
+    return (own.call(SKINS, skin) ? SKINS[skin] : own.call(SKINS, M.skin) ? SKINS[M.skin] : SKINS.polaroid)[1](M);
+  }
 
   /* ── 名片下半张：关系、战绩、称号 ── */
   function extras(M, badgeDefs) {

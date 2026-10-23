@@ -30,6 +30,38 @@
 .rjk .psub em{font-style:normal;font-size:10px;border:1px dashed currentColor;border-radius:4px;padding:0 3px;margin-left:2px}
 .rjk .pol-dev{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;color:var(--ink-soft)}
 .rjk .pol-dev small{margin-left:auto;font-size:12px}
+.rjk .cabin{width:100%;max-width:420px;margin:0 auto;color:#493627;isolation:isolate}
+.rjk .cabin-roof{display:block;width:100%;height:auto;position:relative;z-index:1;margin-bottom:-10px}
+.rjk .cabin-wall{position:relative;margin:0 14px;padding:0 16px 12px;border:2px solid #805b3c;border-top:0;border-radius:0 0 14px 14px;background:repeating-linear-gradient(0deg,transparent 0 53px,#ac875d18 54px 55px),#f5e5c9;box-shadow:0 13px 20px -16px #533b24}
+.rjk .cabin-sign{position:relative;max-width:100%;width:fit-content;margin:0 auto 20px;padding:12px 18px 9px;border:2px solid #805b3c;border-radius:5px 7px 7px 5px;background:linear-gradient(0deg,#e4c398,#efd5ae);box-shadow:0 3px 0 #805b3c33;text-align:center;overflow-wrap:anywhere}
+.rjk .cabin-sign:before,.rjk .cabin-sign:after{content:"";position:absolute;top:5px;width:4px;height:4px;border-radius:50%;background:#805b3c}
+.rjk .cabin-sign:before{left:6px}.rjk .cabin-sign:after{right:6px}
+.rjk .cabin-sign h3{margin:0;font:700 23px/1.4 var(--serif);letter-spacing:.04em;color:#493627}
+.rjk .cabin-sign>span{display:block;font:11px/1.6 var(--mono);color:#68513b;margin-top:2px}
+.rjk .cabin-room{display:flex;align-items:center;gap:14px;min-width:0}
+.rjk .cabin-window{display:flex;align-items:center;justify-content:center;flex:none;width:136px;height:156px;border:5px solid #a6774d;border-radius:70px 70px 12px 12px;outline:1px solid #805b3c;background:#ead6b4;box-shadow:inset 0 2px 7px #6f4b3220;overflow:hidden}
+.rjk .cabin-portrait{display:flex;align-items:center;justify-content:center;width:126px;height:134px;font:700 72px/1 var(--serif)}
+.rjk .cabin-portrait>svg{width:100%;height:100%;max-width:126px;max-height:134px}
+.rjk .cabin-portrait img{display:block;width:100%;height:100%;object-fit:cover}
+.rjk .cabin-about{flex:1;min-width:0;overflow-wrap:anywhere}
+.rjk .cabin-model{display:inline-block;font:700 11px/1.4 var(--sans);padding:3px 8px;border:1px solid #a3815d;border-radius:4px}
+.rjk .cabin-bio{font:500 15px/1.8 var(--serif);margin:10px 0}
+.rjk .cabin-titles{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.rjk .cabin-titles span{font:12px/1.4 var(--sans);border-bottom:1px solid #a3815d}
+.rjk .cabin-about .my,.rjk .cabin-about .rel{display:block;font-size:12px;line-height:1.6;margin-top:6px}
+.rjk .cabin-routes{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
+.rjk .cabin-routes>span{padding:3px 9px;background:#ead4ad;border:1px solid #bc9a6a;border-radius:3px;font-size:12px}
+.rjk .cabin-shelf{margin-top:14px;padding:12px 0 4px;border-top:1px dashed #b6956c;overflow-wrap:anywhere}
+.rjk .cabin-shelf p{display:flex;align-items:center;gap:6px;font-size:12px;line-height:1.5;margin:0 0 7px}
+.rjk .cabin-shelf .ci{flex:none;width:16px;height:16px}
+.rjk .cabin-subs{display:flex;flex-wrap:wrap;gap:5px}
+.rjk .cabin-subs>span{display:inline-flex;align-items:center;gap:5px;font-size:11px;border:1px solid #b6956c60;border-radius:4px;padding:3px 5px;background:var(--tb);color:var(--tf)}
+.rjk .cabin-subs .lg{width:18px;height:18px;font-size:8px;border-radius:4px}
+.rjk .cabin-fence{position:relative;display:flex;justify-content:space-between;gap:5px;height:28px;margin:20px -7px -8px}
+.rjk .cabin-fence i{flex:0 1 20px;height:28px;border:1px solid #805b3c;border-radius:8px 8px 1px 1px;background:#d7b180;z-index:1}
+.rjk .cabin-fence span{flex:1;min-width:20px}
+.rjk .cabin-fence:after{content:"";position:absolute;left:0;right:0;bottom:6px;height:5px;border:1px solid #805b3c;background:#b98958;z-index:2}
+@media(max-width:400px){.rjk .cabin-wall{margin:0 9px;padding-left:12px;padding-right:12px}.rjk .cabin-room{gap:11px}.rjk .cabin-window{width:112px;height:136px}.rjk .cabin-portrait{width:102px;height:120px}.rjk .cabin-sign h3{font-size:21px}.rjk .cabin-bio{font-size:14px}}
 .rjk .rpg{max-width:380px;width:100%;margin:0 auto;padding:6px;border-radius:20px;background:linear-gradient(145deg,var(--human),#e9b77a 45%,var(--machine));box-shadow:0 20px 40px -22px rgba(32,42,51,.7)}
 .rjk .rpg-in{background:#1d252d;color:#eef2f5;border-radius:15px;padding:12px}
 .rjk .rpg-top{display:flex;align-items:baseline;justify-content:space-between}

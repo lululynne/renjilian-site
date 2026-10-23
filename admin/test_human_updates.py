@@ -28,7 +28,7 @@ class HumanUpdateContractTests(unittest.TestCase):
     def test_current_schema_keeps_all_n20_stores(self) -> None:
         schema = (API_ROOT / "src" / "schema.js").read_text(encoding="utf-8")
         config = (API_ROOT / "src" / "config.js").read_text(encoding="utf-8")
-        self.assertIn("export const SCHEMA_VERSION = 15", schema)
+        self.assertIn("export const SCHEMA_VERSION = 16", schema)
         for table in (
             "human_update_tokens",
             "human_update_preferences",

@@ -341,7 +341,7 @@
     return h + '</span><span class="look">看大卡</span></button>';
   }
   function paintPv() {
-    $("pv").innerHTML = '<div class="cap">实时预览 · ' + esc(C.SKINS[M.skin][0]) + "</div>" + mini() + '<div class="pvfull">' + C.render(M, M.skin) + "</div>";
+    $("pv").innerHTML = '<div class="cap">实时预览 · ' + esc(Object.prototype.hasOwnProperty.call(C.SKINS, M.skin) ? C.SKINS[M.skin][0] : "未识别的样式（已保留）") + "</div>" + mini() + '<div class="pvfull">' + C.render(M, M.skin) + "</div>";
     applyPrivateMedia();
   }
   function tabs() {
@@ -461,7 +461,7 @@
     } else if (k === "一句话") {
       h += '<h2 class="q">' + (AS ? "个性签名" : "一句话介绍自己") + '</h2><p class="qsub">' + LIM.bio + ' 个字以内，可以不写。别人点进你主页第一眼就看到它。</p><div class="form"><textarea class="inp" id="bio" maxlength="' + LIM.bio + '" placeholder="比如：订阅比衣服多，机机比朋友多。" aria-label="一句话">' + esc(M.bio) + '</textarea><div class="bioc" id="bioc">' + cps(M.bio) + " / " + LIM.bio + '</div><div class="fl" style="margin-top:12px">没灵感就点一句</div><div class="sug">' + BIO_SUG.map(function (s) { return '<button type="button" class="chip" data-bio="' + esc(s) + '">' + esc(s) + "</button>"; }).join("") + "</div></div>";
     } else {
-      h += '<div class="final"><h2 class="q">挑一种样式，挂上主页</h2><p class="qsub">三种都是同一份内容，随时能换。</p><div class="tw">' + Object.keys(C.SKINS).map(function (key) { return '<button type="button" class="' + (key === M.skin ? "on" : "") + '" data-style="' + key + '" aria-pressed="' + (key === M.skin) + '">' + C.SKINS[key][0] + "</button>"; }).join("") + '</div><div class="big">' + C.render(M, M.skin) + "</div>";
+      h += '<div class="final"><h2 class="q">挑一种样式，挂上主页</h2><p class="qsub">四种都是同一份内容，随时能换。</p><div class="tw">' + Object.keys(C.SKINS).map(function (key) { return '<button type="button" class="' + (key === M.skin ? "on" : "") + '" data-style="' + key + '" aria-pressed="' + (key === M.skin) + '">' + C.SKINS[key][0] + "</button>"; }).join("") + '</div><div class="big">' + C.render(M, M.skin) + "</div>";
       h += '<p class="qsub">头像保存与名片正文公开分别控制；保存头像不会自动公开正文。</p>';
       if (AS) {
         h += '<aside class="draft-note" id="draftState"><strong>' + (Object.keys(dirty).length ? "本页修改还没保存" : "当前显示已保存版本") + '</strong><span>换步骤、看大卡、关闭或刷新都不会替你保存。先让服务器整理完整候选，再确认一次。</span></aside>';
