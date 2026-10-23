@@ -85,9 +85,10 @@ class AinotesPageStaticTests(unittest.TestCase):
         self.assertIn("preview", self.js)
 
     def test_tag_table_preserves_v0_and_covers_complete_v3_data(self) -> None:
-        m = re.search(r"TAG_GROUPS = \[(.*?)\n  \];", self.js, re.S)
-        self.assertIsNotNone(m, "ainotes.js 里找不到 TAG_GROUPS")
-        tags = set(re.findall(r'"([^"]+)"', m.group(1)))
+        self.assertIn('TAG_GROUPS = SEARCH.TAG_GROUPS', self.js)
+        m = re.search(r"TAG_GROUPS = \[(.*?)\n  \];", read('ainotes-search.js'), re.S)
+        self.assertIsNotNone(m, "共享查词规则里找不到 TAG_GROUPS")
+        tags = set(re.findall(r"['\"]([^'\"]+)['\"]", m.group(1)))
         tags -= {"类型", "话题", "形态", "地区", "厂商"}   # 组名不是标签
         self.assertEqual(tags, TAGS_V3, "保留 v0 全表，并为完整 v3 稿明确分组")
         for entry in load("data/ainotes.json")["items"]:

@@ -45,7 +45,7 @@
 | `nianlun.html?m=<成员>` | 年轮筛选 | `replaceState` 同步，不产生历史条目；值不认识当「全部」并清掉 query |
 | `nianlun.html#nl-…` | 年轮格锚点 | 格 `id` = 条目 id；滚到那一格并加粗边框 + `#nlStatus` 播报；对不上提示并清 hash |
 | `ainotes.html#bk-…` | 精读弹层、related、将来的 MCP `explain_term` | 卡片 `id` = 词条 id；打开时展开这一条、标「就是这一条」、焦点落在卡上；被筛选藏住时先清空筛选；取不到就在 `#bkNotice` 提示并清掉 hash |
-| `ainotes.html?q=…&tag=…` | 分享、将来的 MCP `search_terms` | 加载时读入；之后用 `replaceState` 写回，不产生历史记录；hash 优先 |
+| `ainotes.html?q=…&tag=…` | 分享、MCP `search_terms` | 加载时读入；之后用 `replaceState` 写回，不产生历史记录；hash 优先 |
 | `pulse.html#pl-…` | related | 同上 |
 | `baibao.html#<id>` | related | 同上（18+ 条目仍是锁着的卡） |
 | `cost.html#<id>` | related | 订阅表的行 `id`；与 `#subs` `#api` `#setups` 三个区块锚点不重名 |
@@ -55,7 +55,11 @@
 
 ## 查词规则（页面与 MCP 共用）
 
-`ainotes.js` 的实现是唯一真源，MCP 将来的查词工具照抄这一节：
+现有匿名阅读MCP已提供 `list_tags()` → `search_terms({q,tags,use_tags,difficulty,limit,offset})` → `explain_term({id})` 或 `explain_term({q})`。三个工具分别给分类法、可分页摘要和完整公开资料；歧义需选稳定id，带英文原词、来源与核对日期核原文，不做语义推荐。词条只读固定公开JSON的verified，缓存最多60秒，不收钥匙、不记录个人阅读。标签条数不是阅读量，来源不可用不是零条。
+
+匹配/排序/分组/难度的纯函数真源现在为 `ainotes-search.js`，v3字段真源为 `ainotes-fields.js`；网页调用同一份，MCP同字节vendor及manifest哈希回归约束。原有页面筛选、URL、IME、键盘与显示档位保留。
+
+`ainotes-search.js` 是网页与MCP共用的机械规则真源：
 
 ```js
 var PUNCT = /[\s\-_.·•・\/\\|,，。、:：;；!！?？'"‘’“”`()（）\[\]【】{}「」『』<>《》+&]+/g;

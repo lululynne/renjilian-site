@@ -2,7 +2,15 @@
    搜索与筛选只在本机比对文字，不联网、不记录；简洁/详细两档与刊读共用 rj.ainotes.mode。 */
 (function start() {
   "use strict";
-
+  if (!window.RJ_AINOTES_SEARCH) {
+    var lookupDependency = document.createElement('script');
+    function lookupFailed() { document.getElementById('bkList').textContent = '小纸条查词组件暂时读不出来，稍后再来。'; }
+    lookupDependency.src = 'ainotes-search.js?v=20261024-mcp';
+    lookupDependency.onload = function () { if (window.RJ_AINOTES_SEARCH) start(); else lookupFailed(); };
+    lookupDependency.onerror = lookupFailed;
+    document.head.appendChild(lookupDependency);
+    return;
+  }
   // 已发布的旧HTML可能仍在缓存中，入口脚本也必须能补齐同源字段组件。
   if (!window.RJ_AINOTES_FIELDS) {
     var dependency = document.createElement("script");
@@ -51,46 +59,10 @@
   var PIN = '<svg class="bk-pin" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">' +
     '<path fill="currentColor" d="M16 3l5 5-3 1-3 3 1 5-2 2-4-4-5 5-1-1 5-5-4-4 2-2 5 1 3-3z"/></svg>';
 
-  /* ── 查词规则（页面与将来的 MCP 共用；SITE-MAP「查词规则」一节照这份写） ── */
-  var PUNCT = /[\s\-_.·•・\/\\|,，。、:：;；!！?？'"‘’“”`()（）\[\]【】{}「」『』<>《》+&]+/g;
-  function norm(s) { return String(s == null ? "" : s).normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim(); }
-  function compact(s) { return norm(s).replace(PUNCT, ""); }
-
-  // 拼音首字母分组；Intl.Collator 不可用时退回码点序（中文归「#」组）
-  var COLL = (function () {
-    try {
-      if (Intl.Collator.supportedLocalesOf(["zh-CN"]).length)
-        return new Intl.Collator("zh-CN", { sensitivity: "base", numeric: true });
-    } catch (_) {}
-    return null;
-  })();
-  var PY_L = "ABCDEFGHJKLMNOPQRSTWXYZ", PY_B = "阿八嚓哒妸发旮哈讥咔垃痳拏噢妑七呥扨它穵夕丫帀";
-  function letterOf(zh) {
-    var c = norm(zh).charAt(0);
-    if (/[a-z]/.test(c)) return c.toUpperCase();
-    if (COLL && /[一-鿿]/.test(c)) for (var i = PY_B.length - 1; i >= 0; i--)
-      if (COLL.compare(c, PY_B[i]) >= 0) return PY_L[i];
-    return "#";
-  }
-  // 基础序：先按字母（# 排最后），同字母内按 COLL（没有就按码点），再按 id 兜底
-  function baseCompare(a, b) {
-    if (a._letter !== b._letter) {
-      if (a._letter === "#") return 1;
-      if (b._letter === "#") return -1;
-      return a._letter < b._letter ? -1 : 1;
-    }
-    var c = COLL ? COLL.compare(a.zh, b.zh)
-      : (norm(a.zh) < norm(b.zh) ? -1 : norm(a.zh) > norm(b.zh) ? 1 : 0);
-    return c || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
-  }
-
-  var TAG_GROUPS = [
-    ["类型", ["概念", "公司", "产品", "模型", "人物", "事件", "智能体", "基准", "数据集"]],
-    ["话题", ["计费", "编程", "设计", "写作与办公", "建站", "生图", "语音", "记忆", "陪伴", "人机恋相关", "图像生成", "芯片", "算力", "购物", "生命科学", "具身智能", "研发"]],
-    ["形态", ["终端", "桌面", "网页", "插件", "云端", "开源", "开放权重", "机器人", "可穿戴设备"]],
-    ["地区", ["国产", "国内可用"]],
-    ["厂商", ["OpenAI", "Anthropic", "Google", "亚马逊", "微软", "AMD", "Black Forest Labs", "SemiAnalysis", "上海人工智能实验室"]]
-  ];
+  var SEARCH = window.RJ_AINOTES_SEARCH;
+  if (!SEARCH) { listEl.textContent = "小纸条查词组件暂时读不出来，稍后再来。"; return; }
+  var norm = SEARCH.norm, compact = SEARCH.compact;
+  var baseCompare = SEARCH.baseCompare, TAG_GROUPS = SEARCH.TAG_GROUPS;
   var TAG_TO_GROUP = Object.create(null);
   TAG_GROUPS.forEach(function (g) { g[1].forEach(function (t) { TAG_TO_GROUP[t] = g[0]; }); });
 
@@ -181,28 +153,8 @@
   });
 
   /* ── 匹配与筛选 ── */
-  function prepEntry(e) {
-    e._nm = [{ n: norm(e.zh), c: compact(e.zh) }, { n: norm(e.en || ""), c: compact(e.en || "") }];
-    e._al = (e.aliases || []).map(function (a) { return { raw: a, n: norm(a), c: compact(a) }; });
-    e._tx = [e.brief || "", e.line || ""].concat(FIELDS.searchText(e)).map(function (t) { return { n: norm(t), c: compact(t) }; });
-    e._names = e._nm.concat(e._al);
-    e._letter = letterOf(e.zh);
-  }
-
-  function hit(pair, t) { return pair.n.indexOf(t.n) !== -1 || (t.c.length >= 2 && pair.c.indexOf(t.c) !== -1); }
-  function termsOf(q) { return norm(q).split(" ").filter(Boolean).map(function (t) { return { n: t, c: compact(t) }; }); }
-  function everyTerm(pairs, terms) {
-    return terms.every(function (t) { return pairs.some(function (p) { return hit(p, t); }); });
-  }
-
-  function rankOf(e, terms, W) {
-    var names = e._names, i;
-    for (i = 0; i < names.length; i++)
-      if (names[i].n === W.n || (W.c && names[i].c === W.c)) return 0;
-    for (i = 0; i < names.length; i++)
-      if (names[i].n.indexOf(W.n) === 0 || (W.c && names[i].c.indexOf(W.c) === 0)) return 1;
-    return everyTerm(names, terms) ? 2 : 3;
-  }
+  function prepEntry(e) { SEARCH.prepEntry(e, FIELDS.searchText); }
+  var hit = SEARCH.hit, termsOf = SEARCH.termsOf, everyTerm = SEARCH.everyTerm, rankOf = SEARCH.rankOf;
 
   function pickedList() {
     var out = [];
@@ -214,16 +166,7 @@
   }
   function hasPicks() { return pickedList().length > 0 || Object.keys(USES).length > 0 || !!DIFFICULTY; }
   function resetFilters() { PICKED = Object.create(null); USES = Object.create(null); DIFFICULTY = ""; difficultyEl.value = ""; }
-  function difficultyGroups(e) {
-    var prose = typeof e.difficulty === "string" ? e.difficulty.trim() : "";
-    if (!prose) return [];
-    if (/普通(?:人|用户|消费者)(?:能上手|可(?:上手|用|从))|网页试用较易/.test(prose)) {
-      return /本地.*配置/.test(prose) ? ["普通人能上手", "需要配置"] : ["普通人能上手"];
-    }
-    if (/^(?:机器人研发)?专业/.test(prose)) return ["专业使用"];
-    if (/配置|开发者工具/.test(prose)) return ["需要配置"];
-    return ["待核"];
-  }
+  var difficultyGroups = SEARCH.difficultyGroups;
 
   function tagPass(e) {
     var uses = Object.keys(USES);

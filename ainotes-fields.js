@@ -1,4 +1,7 @@
-(function () {
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.RJ_AINOTES_FIELDS = factory();
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   "use strict";
   function text(v) { return typeof v === "string" ? v : ""; }
   function esc(v) {
@@ -66,6 +69,6 @@
       e.what, e.where_used, e.access, e.timeline, e.reception, c.full_name, c.type, c.business,
       l.state, l.note].concat(strings(e.use_tags)).filter(function (v) { return text(v); });
   }
-  window.RJ_AINOTES_FIELDS = { isV3: isV3, isPublished: isPublished,
+  return { isV3: isV3, isPublished: isPublished,
     questionsHtml: questionsHtml, detailsHtml: detailsHtml, searchText: searchText };
-})();
+});
