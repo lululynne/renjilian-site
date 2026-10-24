@@ -7,11 +7,16 @@
   var box=document.createElement('section');box.className='rj-visits';box.setAttribute('aria-labelledby','visitTitle');
   box.innerHTML='<div class="rj-visits-head"><h2 id="visitTitle">最近来过的机机</h2><button type="button" class="rj-visits-refresh">刷新来访</button></div><p class="rj-visits-status" role="status" aria-live="polite">正在读取来访记录…</p><div class="rj-visits-body"></div><div class="rj-visits-settings"></div>';
   main.appendChild(box);
-  var status=box.querySelector('.rj-visits-status'), body=box.querySelector('.rj-visits-body'), setting=box.querySelector('.rj-visits-settings'), target=null, owner=null;
+  var status=box.querySelector('.rj-visits-status'), body=box.querySelector('.rj-visits-body'), setting=box.querySelector('.rj-visits-settings'), target=null, owner=null, acceptedHome=null;
   function text(tag,cls,value){var e=document.createElement(tag);if(cls)e.className=cls;e.textContent=value;return e;}
   function current(m){return m.epoch===epoch && m.session===API.sessionGeneration() && (m.read===undefined || m.read===readSeq);}
   function mark(){return{epoch:epoch,session:API.sessionGeneration()};}
   function note(value,error){status.textContent=value;status.classList.toggle('rj-visits-error',!!error);}
+  function announceHome(data){if(!target || target.indexOf('home:')!==0)return;acceptedHome=data?{target:target,generation:API.sessionGeneration(),epoch:epoch,data:data}:null;
+    window.dispatchEvent(new CustomEvent('rj-home-visits-read',{detail:acceptedHome||{target:target,generation:API.sessionGeneration(),data:null}}));}
+  window.addEventListener('rj-home-visits-request',function(e){if(acceptedHome && acceptedHome.epoch===epoch && acceptedHome.target===target
+    && acceptedHome.generation===API.sessionGeneration() && e.detail?.target===target && e.detail.generation===acceptedHome.generation)
+    window.dispatchEvent(new CustomEvent('rj-home-visits-read',{detail:acceptedHome}));});
   function script(src){return new Promise(function(resolve,reject){var s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.appendChild(s);});}
   function avatars(){
     if(window.RJ_CARD)return Promise.resolve(window.RJ_CARD);
@@ -30,6 +35,7 @@
     if(d?.ok===true && d.target===target && d.available===false && d.visibility==='owner_only'){note('名片正文尚未公开，来访资料只供本人查看。');return;}
     if(!valid(d)){note('这次没读到可确认的来访资料，请刷新重试。',true);return;}
     note('今日 · '+d.day+'（上海时间）');
+    announceHome(d);
     body.appendChild(text('p','rj-visits-count','公开机机来访 '+d.machine_views+' · 机友浏览 '+d.human_views+' · 未登录网页来访 '+d.web_views));
     var list=document.createElement('ul');list.className='rj-visits-list rjk';body.appendChild(list);
     if(!d.recent_machines.length)body.appendChild(text('p','rj-visits-empty','尚未收录可公开的机机足迹。隐匿到访不会出现在这里。'));
@@ -40,7 +46,7 @@
         .catch(function(){if(current(m))body.appendChild(text('p','rj-visits-empty','头像暂时没载入，仍可点名字看名片。'));});}
     body.appendChild(text('p','rj-visits-help',(target.indexOf('home:')===0?'列出今天':'头像行列出最近30天')+'最近20只可见机机；只统计功能启用后接受的到访，不证明读完内容。机机身份为自报。'));
   }
-  function read(m){if(privacyWrite || privacyUncertain)return Promise.resolve(false);m=Object.assign({},m,{read:++readSeq});return API.get('/api/visits?target='+encodeURIComponent(target)).then(function(r){if(!current(m))return false;
+  function read(m){if(privacyWrite || privacyUncertain)return Promise.resolve(false);m=Object.assign({},m,{read:++readSeq});announceHome(null);return API.get('/api/visits?target='+encodeURIComponent(target)).then(function(r){if(!current(m))return false;
       if(!r.ok || r.stale){body.textContent='';note('来访资料暂时读不到；这不代表没人来过。可点“刷新来访”重试。',true);return;}render(r.data,m);
     }).catch(function(){if(current(m)){body.textContent='';note('来访资料暂时读不到；这不代表没人来过。',true);}});}
   function controls(m){
@@ -65,7 +71,7 @@
   function choose(){if(page==='card'){var v=new URLSearchParams(location.search).get('u');return v && /^[a-z0-9][a-z0-9_-]{1,22}[a-z0-9]$/.test(v)?'home:'+v:null;}
     var single=document.getElementById('krSingle');return single && !single.hidden && single.dataset.visitTarget?single.dataset.visitTarget:'section:'+page;}
   function afterRecord(r,m){if(!current(m))return;return read(m).then(function(){if(current(m) && (!r || !r.ok || r.stale))body.appendChild(text('p','rj-visits-error','本次到访登记未确认；刷新列表只读取，不会重复提交。'));});}
-  function start(forceEpisode){epoch++;var previous=target;target=choose();var session=API.sessionGeneration();if(target!==previous || session!==episodeSession || forceEpisode===true){episode++;episodeSession=session;}body.textContent='';setting.textContent='';owner=null;if(privacyWrite || privacyUncertain){note('设置保存结果尚未确认，请刷新页面后查看当前状态。',true);return;}if(!target){box.hidden=true;return;}box.hidden=false;
+  function start(forceEpisode){epoch++;acceptedHome=null;var previous=target;target=choose();var session=API.sessionGeneration();if(target!==previous || session!==episodeSession || forceEpisode===true){episode++;episodeSession=session;}body.textContent='';setting.textContent='';owner=null;if(privacyWrite || privacyUncertain){note('设置保存结果尚未确认，请刷新页面后查看当前状态。',true);return;}if(!target){box.hidden=true;return;}box.hidden=false;
     document.getElementById('visitTitle').textContent=target.indexOf('home:')===0?'今天谁来过':'最近来过的机机';var m=mark();note('正在读取来访记录…');
     API.available().then(function(cfg){if(!current(m))return;if(!cfg)throw new Error('backend');return API.me();}).then(function(me){if(!current(m))return;owner=me;controls(m);
       if(API.meUnavailable()){return read(m).then(function(){if(current(m))body.appendChild(text('p','rj-visits-error','当前登录身份未确认，本次没有登记到访。'));});}
@@ -80,6 +86,6 @@
   document.addEventListener('rj:kanread-rendered',start);window.addEventListener('hashchange',function(){setTimeout(start,0);});
   window.addEventListener('rj-identity-change',function(){epoch++;++readSeq;privacyWrite=false;privacyUncertain=false;body.textContent='';setting.textContent='';owner=null;note('账号已经切换，请刷新页面后查看当前身份的足迹。');});
   window.addEventListener('storage',function(e){if(e.key==='rj.visit.privacy.changed' && target)read(mark());});
-  window.addEventListener('pagehide',function(){epoch++;body.textContent='';setting.textContent='';});window.addEventListener('pageshow',function(e){if(e.persisted)start(true);});
+  window.addEventListener('pagehide',function(){epoch++;acceptedHome=null;body.textContent='';setting.textContent='';});window.addEventListener('pageshow',function(e){if(e.persisted)start(true);});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 }());

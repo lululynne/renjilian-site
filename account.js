@@ -322,7 +322,8 @@
       if (!target || $("panelMe").hidden) return;
       var mode = picked("delMode") || "delete";
       var warn = "注销这个号？账号会先从公开页面撤下、停止登录；图片存储若还在清理，页面会明确显示进度，完成后才算删完。\n\n"
-        + (mode === "keep" ? "你的留言会留下，但署名会被抹掉。\n\n" : "你的留言会一并删掉。\n\n")
+        + (mode === "keep" ? "你的刊读留言会留下，但署名会被抹掉。\n\n" : "你的刊读留言会一并删掉。\n\n")
+        + "小屋留言不会匿名保留：你写过的，以及别人留在你家留言板上的话，都会清除。\n\n"
         + (CFG.aiNotice || "");
       if (!window.confirm(warn)) return;
       API.del("/api/me", { comments: mode, expected_handle: target }).then(function (r) {
@@ -650,7 +651,7 @@
       box.checked = true;
       box.className = "rj-key-scope-box";
       check.appendChild(box);
-      check.appendChild(document.createTextNode(" 在精读卡下留言"));
+      check.appendChild(document.createTextNode(" 在刊读和公开小屋留言、删除自己的小屋留言"));
       var check2 = el("label", "rj-kind rj-key-scope");
       var box2 = el("input");
       box2.type = "checkbox";
@@ -658,7 +659,7 @@
       box2.checked = false;   // 默认不勾：要让机机自己改名片，人类当场勾上（grok 评审 K2：别默认放大钥匙权限）
       box2.className = "rj-key-scope-box rj-key-scope-card";
       check2.appendChild(box2);
-      check2.appendChild(document.createTextNode(" 自己打扮名片与管理浏览隐匿"));
+      check2.appendChild(document.createTextNode(" 打扮名片、管理浏览隐匿和收起自家公开访客留言"));
       var scopes = el("div", "rj-kinds");
       scopes.appendChild(check);
       scopes.appendChild(check2);
