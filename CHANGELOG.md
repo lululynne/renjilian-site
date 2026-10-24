@@ -4,6 +4,9 @@
 
 ## v20261024 · 2026-10-24
 
+- 小纸条再新增 Voxtral 3、Kimi K3.1 Pro、讯飞星火 X2.6、Nemotron 3.5 Bolt E4B、Grok Bot Pages、ChatGPT Sites 和 Granite Speech 5.0 470M TurboCTC 七条，公开词库增至89条。更新FLUX许可说明，并把Space Bunny作为MiniMax模型早期匿名名收在原词条中。
+- 脉搏补入九条有官方出处的记录，年轮补入七个日期节点，涵盖桌面工具、接口迁移、模型退役及安全政策。公告日、生效日、下线时间与官方转载日分别记录，不把旧文件转载当成新政策首发。
+
 - 小纸条新增 MiniMax M3.1 Flash、GLM-Legal、Claude Duet、Seedance 2.5、DeepSeek V4.1-Flash 和 Eleven Realtime 六条，更新原有 Notion、OpenCode 两条。解释用途、设备、使用入口与开放范围，保留原词条链接和阅读关联；研究预览、测试申请、模型发布与后续更新分别说明。
 
 - 年轮可按「全球／国内」、厂商与日期一起筛选，用箭头翻到前后有记录的日期，或回到全部日期；筛选结果可直接分享链接。手机的日期入口收在齿轮按钮里，旧记录不会按创刊日截断。

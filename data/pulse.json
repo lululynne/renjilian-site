@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-20",
+  "updated_at": "2026-10-24",
   "tracking_since": "2026-09-18",
   "items": [
     {
@@ -290,6 +290,123 @@
       "source_name": "Anthropic 官方公告",
       "source_url": "https://www.anthropic.com/news/claude-text-watermark",
       "last_verified": "2026-09-18",
+      "status": "verified"
+    },
+    {
+      "who": "MiniMax",
+      "kind": "发布",
+      "line": "MiniMax公布Code Mini App：应用可与Agent互调并保存数据，仅支持macOS/Windows桌面本地会话；插件以本机账号权限运行。",
+      "relation": "本地工具拥有多大权限，会直接影响机机能够做哪些事情。",
+      "evidence": "公告发布时间；安全文档明确不提供操作系统沙箱。",
+      "source_name": "MiniMax官方公告",
+      "id": "pl-20261022-minimax-code-mini-app",
+      "date": "2026-10-22",
+      "source_url": "https://www.minimax.io/blog/minimax-code-mini-app-1792650729?lang=en",
+      "last_verified": "2026-10-24",
+      "status": "verified"
+    },
+    {
+      "who": "月之暗面",
+      "kind": "发布",
+      "line": "Kimi Code CLI 2.3.0发布：远控传输上限升至100 MiB，插件技能须用完整前缀名；关闭危险命令保护也会关闭内置敏感文件等确认。",
+      "relation": "升级工具时，需要一起检查保护开关的语义。",
+      "evidence": "官方Release发布时间，不是K3.1模型首发日。",
+      "source_name": "MoonshotAI官方GitHub Release",
+      "id": "pl-20261021-kimi-code-cli-230",
+      "date": "2026-10-21",
+      "source_url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%402.3.0",
+      "last_verified": "2026-10-24",
+      "status": "verified"
+    },
+    {
+      "who": "小米MiMo",
+      "kind": "发布",
+      "line": "小米自营mimo-v2.5-pro、mimo-v2.5于21日10时下线，替代名分别为v2.6-pro、v2.6-flash；不含V2.5语音模型。",
+      "relation": "换模型名称时，费用和默认参数也需要核对。",
+      "evidence": "小米自营平台下线时间，与其他渠道截止日分开。",
+      "source_name": "MiMo官方弃用说明",
+      "id": "pl-20261021-mimo-v25-text-retirement",
+      "date": "2026-10-21",
+      "source_url": "https://mimo.mi.com/docs/zh-CN/updates/deprecate",
+      "last_verified": "2026-10-24",
+      "status": "verified"
+    },
+    {
+      "who": "OpenAI",
+      "kind": "报告",
+      "line": "OpenAI披露前沿训练隔离政策：不接入实时互联网，以索引和缓存内容训练浏览能力，并持续红队验证；更广联网取决于防护进展。",
+      "relation": "训练时能够接触哪些系统，是理解机机能力边界的一部分。",
+      "evidence": "按公告披露日记录，不当作政策首次执行日。",
+      "source_name": "OpenAI官方公告",
+      "id": "pl-20261023-openai-training-isolation-disclosure",
+      "date": "2026-10-23",
+      "source_url": "https://openai.com/index/securing-our-frontier-model-training-environment/",
+      "last_verified": "2026-10-24",
+      "status": "verified"
+    },
+    {
+      "who": "OpenAI／NASK",
+      "kind": "研究",
+      "line": "OpenAI与波兰NASK签署AI安全研究合作协议，探索系统评估、漏洞识别和防护研究；不是国家安全认证。",
+      "relation": "研究合作的范围和实际成果需要分别跟进。",
+      "evidence": "签署研究合作协议，不代表成果已经交付。",
+      "source_name": "OpenAI官方公告",
+      "id": "pl-20261023-openai-nask-safety-agreement",
+      "date": "2026-10-23",
+      "source_url": "https://openai.com/index/openai-nask-ai-safety-security-partnership/",
+      "last_verified": "2026-10-24",
+      "status": "verified"
+    },
+    {
+      "who": "OpenAI",
+      "kind": "政策",
+      "line": "OpenAI公布网关与模型路由审批新规，11月20日生效；直接提供其模型访问的相关服务需先获审核批准。",
+      "relation": "第三方接入的服务边界需要有可核对的官方依据。",
+      "evidence": "10月21日是公告日，11月20日才生效。",
+      "source_name": "OpenAI官方公告",
+      "id": "pl-20261021-openai-gateway-policy-announcement",
+      "date": "2026-10-21",
+      "source_url": "https://openai.com/index/broad-access-through-consistent-standards/",
+      "last_verified": "2026-10-24",
+      "status": "verified"
+    },
+    {
+      "who": "Anthropic",
+      "kind": "发布",
+      "line": "Claude API发布2026-10-21版：该版Messages请求不再接受温度等采样参数；旧版调用不据此推定，升级前先核迁移指南。",
+      "relation": "接口版本变化会直接影响现有工具能否继续工作。",
+      "evidence": "仅针对采用2026-10-21版的调用，不泛指旧版。",
+      "source_name": "Claude API官方发布与迁移指南",
+      "id": "pl-20261021-claude-api-20261021",
+      "date": "2026-10-21",
+      "source_url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "last_verified": "2026-10-24",
+      "status": "verified"
+    },
+    {
+      "who": "国务院办公厅",
+      "kind": "政策",
+      "line": "生态环境部转载国办AI就业意见（成文10月16日），提出紧缺、高危岗位优先应用AI，稳慎把握劳动密集行业节奏，鼓励企业探索失业缓冲期并提供转岗支持。",
+      "relation": "AI应用的岗位变化，也涉及人的转型和就业支持。",
+      "evidence": "成文10月16日；本条记录10月24日官方转载。",
+      "source_name": "生态环境部（转载国办文件）",
+      "id": "pl-20261024-gov-ai-employment-republication",
+      "date": "2026-10-24",
+      "source_url": "https://www.mee.gov.cn/zcwj/gwywj/202610/t20261024_1184583.shtml",
+      "last_verified": "2026-10-24",
+      "status": "verified"
+    },
+    {
+      "who": "Browserbase／1Password",
+      "kind": "发布",
+      "line": "Browserbase接入1Password：Agent可请求特定登录项，经本人批准才由1Password填入，也可拒绝。属渠道更新，授权频率依集成而异。",
+      "relation": "登录凭据的使用授权，需要落实到具体产品与集成。",
+      "evidence": "10月22日渠道更新，不称1Password功能首次发布。",
+      "source_name": "Browserbase官方更新日志",
+      "id": "pl-20261022-browserbase-1password-integration",
+      "date": "2026-10-22",
+      "source_url": "https://www.browserbase.com/changelog/1password-for-agents",
+      "last_verified": "2026-10-24",
       "status": "verified"
     }
   ]

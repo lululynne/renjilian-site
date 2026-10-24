@@ -3079,19 +3079,34 @@
       "id": "bk-flux-3-klein",
       "zh": "FLUX 3 Image Klein",
       "en": "FLUX 3 Image Klein",
-      "aliases": [
-        "FLUX.3 Image Klein"
-      ],
       "tags": [
         "模型",
         "图像生成",
-        "开放权重",
-        "Black Forest Labs"
+        "开放权重"
       ],
-      "brief": "①干嘛的：Black Forest Labs 的生图、改图模型[1]。②对你有啥用：做素材、改局部、组合参考图[2]。③要什么设备：在线浏览器；本地需合适显卡[1][2]。④上手难度：网页较易，本地需配置（本站判断）[2]。⑤面向谁、哪能用：创作者和开发者；大陆在线支持待核。⑥强在哪：最高 4K、10 张参考图和框选布局[2]。⑦谁家的、现在：Black Forest Labs；权重已放出，商用受许可条件约束[1][3]。",
-      "line": "能按文字生图、改图和组合参考图片的模型[1]",
-      "more": "官方标称图像生成器规模为56亿参数[1]；完整流程还涉及文字编码器等组件[4]。官方INT8最低8GB运行说明、最高4K能力和1MP速度测试对应不同配置，不拼成同一性能保证[1]。许可证对符合条件、含关联方年化总营收低于500万美元的使用者，允许有条件地商用生成结果；模型用途及限制仍须核对完整许可[5]。",
-      "for_us": "先分清在线费用、显存配置及商用许可，再选使用方式（本站提示）。",
+      "line": "可生成和编辑图片的开放权重模型；商用资格、用途与其他条件由完整许可决定。",
+      "for_whom": "图像创作者和图像应用开发者。",
+      "helps_with": "根据文字或参考图片生成新图、编辑已有画面。",
+      "device": "BFL API，或按官方配置准备本地推理环境。",
+      "difficulty": "接口和本地运行需要配置。",
+      "region": "权重采用FLUX Kommunity License，商用需核完整资格、用途及其他条件。",
+      "edge": "将生成、编辑和多参考图放进同一模型。",
+      "owner": "Black Forest Labs",
+      "what": "Black Forest Labs提供开放权重的图像生成与编辑模型。",
+      "where_used": "BFL API或受支持的本地工作流。",
+      "access": "选择接口或权重部署路径；许可条件不能简化成任何小企业都可无条件免费商用。",
+      "timeline": "2026年10月15日，官方发布并开放该模型权重。",
+      "use_tags": [
+        "设计与绘图"
+      ],
+      "aliases": [
+        "FLUX.3 Image Klein",
+        "FLUX 3 Klein",
+        "FLUX.3 Klein"
+      ],
+      "brief": "①干嘛的：Black Forest Labs提供开放权重的图像生成与编辑模型。 ②对你有啥用：根据文字或参考图片生成新图、编辑已有画面。 ③要什么设备：BFL API，或按官方配置准备本地推理环境。 ④上手难度：接口和本地运行需要配置。 ⑤面向谁、哪能用：图像创作者和图像应用开发者。 权重采用FLUX Kommunity License，商用需核完整资格、用途及其他条件。 ⑥强在哪：将生成、编辑和多参考图放进同一模型。 ⑦谁家的、现在：Black Forest Labs 2026年10月15日，官方发布并开放该模型权重。",
+      "more": "",
+      "for_us": "准备用于商品或服务之前，按实际主体和用途核对完整许可。",
       "related": [
         "bk-comfyui",
         "bk-huggingface",
@@ -3101,57 +3116,24 @@
       "seen_in": [
         "每日AI整合-2026-10-17"
       ],
-      "for_whom": "设计人员、视觉内容创作者及本地图像模型开发者[1]",
-      "helps_with": "做视觉素材、局部修改和参考图合成[1]",
-      "device": "在线使用浏览器；本地需合适GPU。厂商说明INT8可在最低8GB显存配置运行，4K与1MP测速属不同条件；完整流程的文本处理等组件也要计入配置[1][2][4]。",
-      "difficulty": "网页试用较易，本地需安装配置（本站判断）[2]",
-      "region": "有公开权重与在线接口；中国大陆在线服务支持、付款及下载可达性待核",
-      "edge": "56 亿参数生成器，支持最高 4K、最多 10 张参考图和框选布局（厂商说明）[1][2]",
-      "use_tags": [
-        "设计与绘图",
-        "底层技术（给开发者）"
-      ],
-      "owner": "Black Forest Labs[1]",
-      "what": "能按文字生图、改图和组合参考图片的模型[1]",
-      "where_used": "BFL Playground/API、Hugging Face 演示，或本地 ComfyUI/Diffusers[1][2]",
-      "access": "官方提供基础版与蒸馏版权重、Playground/API及本地集成入口[1][2]。权重按FLUX Kommunity License使用，商用有条件；在线服务按其定价，具体费用和账号条件本次未逐项核定[1][5]。",
-      "timeline": "2026-10-15：权重和 BFL API 同日发布[1]；10-16 社媒转载不作首发日期。",
-      "reception": "Hugging Face 发布 Diffusers 适配教程；官方排名属于内部评估，不当独立跑分[1][4]。",
-      "company": {},
-      "lifecycle": {
-        "state": "在用",
-        "date": "2026-10-19",
-        "note": "按官方发布和模型资料核对权重及接口入口；具体账号/设备未实测[1][2]。",
-        "source": {
-          "name": "Black Forest Labs：FLUX 3 Image Klein（2026-10-15）",
-          "url": "https://bfl.ai/blog/flux-3-image-klein"
-        }
-      },
       "sources": [
         {
-          "name": "Black Forest Labs：FLUX 3 Image Klein（2026-10-15）",
+          "name": "BFL：FLUX 3 Image Klein",
           "url": "https://bfl.ai/blog/flux-3-image-klein"
         },
         {
-          "name": "Black Forest Labs：FLUX 3 Image Klein 官方参考代码",
-          "url": "https://github.com/black-forest-labs/flux-3-image-klein"
-        },
-        {
-          "name": "Black Forest Labs：官方基础模型卡及 FLUX Kommunity License 说明",
-          "url": "https://huggingface.co/black-forest-labs/flux-3-image-klein-base"
-        },
-        {
-          "name": "Hugging Face：Welcome FLUX.3 Image Klein in Diffusers（2026-10-15）",
-          "url": "https://huggingface.co/blog/flux-3"
-        },
-        {
-          "name": "BFL：FLUX Kommunity License完整模型权重许可（Qualifying User及商业输出条件）",
+          "name": "官方权重许可",
           "url": "https://huggingface.co/black-forest-labs/flux-3-image-klein/blob/main/LICENSE.md"
         }
       ],
       "added_at": "2026-10-17",
-      "last_verified": "2026-10-19",
+      "last_verified": "2026-10-24",
       "status": "verified",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
       "nianlun_seen": []
     },
     {
@@ -3296,7 +3278,8 @@
       "en": "MiniMax M3.1 Flash",
       "aliases": [
         "M3.1 Flash",
-        "MiniMax-M3.1-Flash"
+        "MiniMax-M3.1-Flash",
+        "Space Bunny"
       ],
       "tags": [
         "模型",
@@ -3305,7 +3288,7 @@
       ],
       "brief": "①干嘛的: MiniMax 面向编程和智能体任务的模型，支持文字、图片和视频输入。 ②对你有啥用: 让编程工具读取项目、生成代码，或在多步骤流程里处理材料。 ③要什么设备: 使用云端接口，或在符合官方要求的算力设备上部署权重。 ④上手难度: 需要配置；本地部署属专业工具。 ⑤面向谁、哪能用: 写代码、搭建智能体的开发者和团队。 接口的账号和地区要求以所选服务平台为准；权重部署另需核对许可。 ⑥强在哪: 把编程、工具调用和多模态输入放在同一模型中。 ⑦谁家的、现在: MiniMax。 官方已发布模型与开放权重；不把仓库创建或后续更新日当成首发日。",
       "line": "MiniMax 面向写代码和多步骤智能体工作的模型，可通过接口使用，也提供开放权重。",
-      "more": "",
+      "more": "MiniMax官方介绍说明，Space Bunny是MiniMax M3.1 Flash的早期匿名版本；这个历史名称不代表另一个独立的正式产品。",
       "for_us": "先选云端接口还是自行部署；开放权重不表示没有许可条件，也不意味着普通电脑能直接跑。",
       "related": [],
       "seen_in": [],
@@ -3586,6 +3569,380 @@
         "AI 助手与模型"
       ],
       "where_used": "ElevenAgents平台，或独立Realtime WebSocket API。",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-voxtral-3",
+      "zh": "Voxtral 3",
+      "en": "Voxtral 3",
+      "tags": [
+        "模型",
+        "语音"
+      ],
+      "line": "Mistral的语音模型家族，配合语音智能体SDK使用；官方API已经可用。",
+      "for_whom": "开发语音应用和语音智能体的人。",
+      "helps_with": "把语音转成文字，生成语音，并让语音助手调用工具完成任务。",
+      "device": "连接Mistral API的应用；私有部署按官方方案配置。",
+      "difficulty": "需要配置；面向开发者。",
+      "region": "官方API提供欧洲、美国及全球端点，账号资格和数据要求另按服务说明确认。",
+      "edge": "转写、合成和智能体工具可以组合使用。",
+      "owner": "Mistral AI",
+      "what": "Mistral的语音模型与智能体工具，可做转写、语音合成和带工具的语音交互。",
+      "where_used": "Mistral API和官方语音智能体SDK。",
+      "access": "从官方API或SDK接入；选择欧洲端点本身不等于已满足某项合规要求。",
+      "timeline": "官方公告列出已经可用的API与语音智能体SDK入口。",
+      "use_tags": [
+        "音乐与语音",
+        "AI 助手与模型"
+      ],
+      "aliases": [],
+      "brief": "①干嘛的：Mistral的语音模型与智能体工具，可做转写、语音合成和带工具的语音交互。 ②对你有啥用：把语音转成文字，生成语音，并让语音助手调用工具完成任务。 ③要什么设备：连接Mistral API的应用；私有部署按官方方案配置。 ④上手难度：需要配置；面向开发者。 ⑤面向谁、哪能用：开发语音应用和语音智能体的人。 官方API提供欧洲、美国及全球端点，账号资格和数据要求另按服务说明确认。 ⑥强在哪：转写、合成和智能体工具可以组合使用。 ⑦谁家的、现在：Mistral AI 官方公告列出已经可用的API与语音智能体SDK入口。",
+      "more": "",
+      "for_us": "先确认需要的是转写、合成还是完整语音助手，再选对应接口。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Mistral：Voxtral 3",
+          "url": "https://mistral.ai/news/voxtral-3/"
+        },
+        {
+          "name": "Mistral模型说明",
+          "url": "https://legal.mistral.ai/ai-governance/models/voxtral-3/"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-kimi-k31-pro",
+      "zh": "Kimi K3.1 Pro",
+      "en": "Kimi K3.1 Pro",
+      "tags": [
+        "模型",
+        "编程",
+        "国产"
+      ],
+      "line": "Kimi的新一代模型，网页、Code和API已有入口；完整权重仍按官方计划等待开放。",
+      "for_whom": "Kimi使用者及编程、智能体开发者。",
+      "helps_with": "处理编程、3D创作、研究材料和较长的任务流程。",
+      "device": "Kimi网页、Kimi Work、Kimi Code或Kimi API。",
+      "difficulty": "网页普通人能上手；Code和API需要配置。",
+      "region": "按具体产品、套餐和账号权限开放；不能把一个入口的额度条件套到全部入口。",
+      "edge": "同一模型系列服务聊天、编程和长流程任务。",
+      "owner": "月之暗面（Moonshot AI）",
+      "what": "月之暗面的K3.1系列模型，面向编程、创作和多步骤任务。",
+      "where_used": "Kimi网页、Work、Code和API。",
+      "access": "先选官方已经开放的入口；1M上下文和高速模式有套餐条件。完整权重计划于2026年11月4日前开放，不能当作已经可下载。",
+      "timeline": "Kimi Code的10月23日记录说明已上线；研究列表10月24日列出模型介绍，两类日期分别记录。",
+      "use_tags": [
+        "AI 助手与模型",
+        "编程与做应用"
+      ],
+      "aliases": [],
+      "brief": "①干嘛的：月之暗面的K3.1系列模型，面向编程、创作和多步骤任务。 ②对你有啥用：处理编程、3D创作、研究材料和较长的任务流程。 ③要什么设备：Kimi网页、Kimi Work、Kimi Code或Kimi API。 ④上手难度：网页普通人能上手；Code和API需要配置。 ⑤面向谁、哪能用：Kimi使用者及编程、智能体开发者。 按具体产品、套餐和账号权限开放；不能把一个入口的额度条件套到全部入口。 ⑥强在哪：同一模型系列服务聊天、编程和长流程任务。 ⑦谁家的、现在：月之暗面（Moonshot AI） Kimi Code的10月23日记录说明已上线；研究列表10月24日列出模型介绍，两类日期分别记录。",
+      "more": "",
+      "for_us": "现在选云端入口可用；安排本地部署前，先等官方实际放出权重并核硬件与许可。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Kimi：K3.1 Pro",
+          "url": "https://www.kimi.com/en/blog/kimi-k3-1-pro"
+        },
+        {
+          "name": "Kimi Code更新日志",
+          "url": "https://www.kimi.com/code/docs/en/kimi-code/whats-new.html"
+        },
+        {
+          "name": "Kimi研究列表",
+          "url": "https://www.kimi.com/en/blog/"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-spark-x26",
+      "zh": "讯飞星火 X2.6",
+      "en": "iFlytek Spark X2.6",
+      "tags": [
+        "模型",
+        "国产",
+        "云端"
+      ],
+      "line": "科大讯飞公布的端云一体模型方案，关注代码和智能体任务；具体接入条件按官方入口确认。",
+      "for_whom": "关注讯飞模型的个人、开发者和设备厂商。",
+      "helps_with": "为设备与云服务协同的编程、智能体任务提供模型能力。",
+      "device": "需采用支持该方案的设备或云服务，不能凭发布新闻推定任意手机都能安装。",
+      "difficulty": "专业工具；具体部署和接口接入需要配置。",
+      "region": "官方企业新闻确认已发布，具体型号、下载、API和账号范围另按接入说明核对。",
+      "edge": "端侧与云端协同；官方强调全国产算力，属厂商介绍。",
+      "owner": "科大讯飞",
+      "what": "科大讯飞的端云一体模型方案，把设备端与云端的模型能力结合使用。",
+      "where_used": "讯飞官方支持的端云一体产品环境。",
+      "access": "先在官方接入页确认具体型号和开放方式，再决定设备或API方案。",
+      "timeline": "官方10月23日回顾记载：2026年10月22日在开发者节主会场发布。",
+      "use_tags": [
+        "AI 助手与模型"
+      ],
+      "aliases": [
+        "星火 X2.6"
+      ],
+      "brief": "①干嘛的：科大讯飞的端云一体模型方案，把设备端与云端的模型能力结合使用。 ②对你有啥用：为设备与云服务协同的编程、智能体任务提供模型能力。 ③要什么设备：需采用支持该方案的设备或云服务，不能凭发布新闻推定任意手机都能安装。 ④上手难度：专业工具；具体部署和接口接入需要配置。 ⑤面向谁、哪能用：关注讯飞模型的个人、开发者和设备厂商。 官方企业新闻确认已发布，具体型号、下载、API和账号范围另按接入说明核对。 ⑥强在哪：端侧与云端协同；官方强调全国产算力，属厂商介绍。 ⑦谁家的、现在：科大讯飞 官方10月23日回顾记载：2026年10月22日在开发者节主会场发布。",
+      "more": "",
+      "for_us": "新闻里的“已发布”与自己的设备、账号已能使用是两个检查点。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "科大讯飞：开发者节发布回顾",
+          "url": "https://edu.iflytek.com/about-us/news/company-news/2925.html"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "note": "已发布；具体接入资格按官方产品入口确认。"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-nemotron-35-bolt-e4b",
+      "zh": "Nemotron 3.5 Bolt E4B 4GB",
+      "en": "NVIDIA Nemotron 3.5 Bolt E4B 4GB",
+      "tags": [
+        "模型",
+        "芯片",
+        "智能体"
+      ],
+      "line": "NVIDIA的本地智能体模型，强调低内存目标负载；名称里的4GB不是任意设备的运行保证。",
+      "for_whom": "制作本地对话、嵌入式接口和工具调用助手的开发者。",
+      "helps_with": "在受控的本地环境里处理多轮对话和智能体任务。",
+      "device": "官方目标包括RTX、Jetson、DGX Spark；实际仍须匹配模型格式、上下文和运行环境。",
+      "difficulty": "专业工具；本地部署需要配置。",
+      "region": "可从NVIDIA官方模型仓库获取，按模型卡核对配置和许可。",
+      "edge": "面向较低内存的本地智能体负载，不与74B兄弟模型混写规格。",
+      "owner": "NVIDIA",
+      "what": "NVIDIA面向本地对话和工具调用智能体的小语言模型。",
+      "where_used": "匹配官方说明的本地推理环境。",
+      "access": "查看官方模型卡和文件列表，选择支持的运行方式；为完整应用预留额外内存。",
+      "timeline": "2026年10月23日，官方技术报告发布此模型。",
+      "use_tags": [
+        "AI 助手与模型",
+        "硬件与芯片"
+      ],
+      "aliases": [
+        "Nemotron 3.5 Bolt E4B"
+      ],
+      "brief": "①干嘛的：NVIDIA面向本地对话和工具调用智能体的小语言模型。 ②对你有啥用：在受控的本地环境里处理多轮对话和智能体任务。 ③要什么设备：官方目标包括RTX、Jetson、DGX Spark；实际仍须匹配模型格式、上下文和运行环境。 ④上手难度：专业工具；本地部署需要配置。 ⑤面向谁、哪能用：制作本地对话、嵌入式接口和工具调用助手的开发者。 可从NVIDIA官方模型仓库获取，按模型卡核对配置和许可。 ⑥强在哪：面向较低内存的本地智能体负载，不与74B兄弟模型混写规格。 ⑦谁家的、现在：NVIDIA 2026年10月23日，官方技术报告发布此模型。",
+      "more": "",
+      "for_us": "选硬件时按完整负载估算，不能只用型号里的4GB决定购买。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "NVIDIA E4B技术报告",
+          "url": "https://research.nvidia.com/labs/nemotron/Nemotron-3.5-Bolt-E4B-4GB/"
+        },
+        {
+          "name": "NVIDIA官方模型卡",
+          "url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-E4B-4GB"
+        },
+        {
+          "name": "NVIDIA官方文件列表",
+          "url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-E4B-4GB/tree/main"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-grok-bot-pages",
+      "zh": "Grok Bot Pages",
+      "en": "Grok Bot Pages",
+      "tags": [
+        "产品",
+        "智能体",
+        "写作与办公"
+      ],
+      "line": "Grok Bot的持续文档功能：可共同编辑报告或仪表盘，也可交给Bot继续更新。",
+      "for_whom": "使用Grok Bot持续维护文档的人。",
+      "helps_with": "把一次聊天的结果变成可编辑、可继续更新的报告或页面。",
+      "device": "提供Pages功能的Grok Bot产品入口。",
+      "difficulty": "普通人能上手；需要账号已获该功能。",
+      "region": "具体账号、套餐和开放范围按Grok Bot当前说明确认。",
+      "edge": "重点是页面的共同编辑与持续更新，不只是生成一次文本。",
+      "owner": "Grok／x.ai",
+      "what": "Grok Bot中的Pages功能，可生成报告、备忘录和仪表盘，并继续维护它们。",
+      "where_used": "Grok Bot的Pages入口。",
+      "access": "在支持的Grok Bot界面创建或编辑Page；Pages只是Bot的一项功能，不与整个Bot产品画等号。",
+      "timeline": "官方2026年10月22日v0.75.2版本记录列出Pages功能。",
+      "use_tags": [
+        "办公与文档",
+        "AI 助手与模型"
+      ],
+      "aliases": [
+        "Grok Pages",
+        "Pages（Grok Bot）"
+      ],
+      "brief": "①干嘛的：Grok Bot中的Pages功能，可生成报告、备忘录和仪表盘，并继续维护它们。 ②对你有啥用：把一次聊天的结果变成可编辑、可继续更新的报告或页面。 ③要什么设备：提供Pages功能的Grok Bot产品入口。 ④上手难度：普通人能上手；需要账号已获该功能。 ⑤面向谁、哪能用：使用Grok Bot持续维护文档的人。 具体账号、套餐和开放范围按Grok Bot当前说明确认。 ⑥强在哪：重点是页面的共同编辑与持续更新，不只是生成一次文本。 ⑦谁家的、现在：Grok／x.ai 官方2026年10月22日v0.75.2版本记录列出Pages功能。",
+      "more": "",
+      "for_us": "分享前确认页面的访问权限和后续更新范围。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Grok Bot版本记录",
+          "url": "https://x.ai/changelog/bot"
+        },
+        {
+          "name": "Grok Bot产品页",
+          "url": "https://x.ai/bot"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-chatgpt-sites",
+      "zh": "ChatGPT Sites",
+      "en": "ChatGPT Sites",
+      "tags": [
+        "产品",
+        "建站",
+        "网页"
+      ],
+      "line": "用自然语言制作并托管网站或轻量网页应用；可访问、可编辑和可公开发布是不同权限。",
+      "for_whom": "希望用ChatGPT制作网页或轻量应用的人与团队。",
+      "helps_with": "把资料、想法或兼容的现有项目做成可访问的网页体验。",
+      "device": "ChatGPT网页或受支持的桌面入口。",
+      "difficulty": "普通人能上手；复杂数据和接口连接需要配置。",
+      "region": "按账号、工作区权限与当前支持范围开放，用量和资源仍有限额。",
+      "edge": "制作、托管和分享可以在同一工作流程里完成。",
+      "owner": "OpenAI",
+      "what": "在ChatGPT中描述需求，创建、托管和分享网站、网页应用或小游戏的功能。",
+      "where_used": "ChatGPT的Sites入口。",
+      "access": "先制作并检查，再部署到所选访问范围。Enterprise默认关闭公开发布，需管理员开启；访客能打开页面不等于能编辑它。",
+      "timeline": "功能和限额按当前官方文档确认，不把某次套餐规则更新当成所有版本的首发。",
+      "use_tags": [
+        "编程与做应用",
+        "办公与文档"
+      ],
+      "aliases": [
+        "ChatGPT网站"
+      ],
+      "brief": "①干嘛的：在ChatGPT中描述需求，创建、托管和分享网站、网页应用或小游戏的功能。 ②对你有啥用：把资料、想法或兼容的现有项目做成可访问的网页体验。 ③要什么设备：ChatGPT网页或受支持的桌面入口。 ④上手难度：普通人能上手；复杂数据和接口连接需要配置。 ⑤面向谁、哪能用：希望用ChatGPT制作网页或轻量应用的人与团队。 按账号、工作区权限与当前支持范围开放，用量和资源仍有限额。 ⑥强在哪：制作、托管和分享可以在同一工作流程里完成。 ⑦谁家的、现在：OpenAI 功能和限额按当前官方文档确认，不把某次套餐规则更新当成所有版本的首发。",
+      "more": "",
+      "for_us": "发布前同时检查页面访问范围和应用内部数据权限。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "OpenAI：Sites",
+          "url": "https://learn.chatgpt.com/docs/sites"
+        },
+        {
+          "name": "OpenAI：发布与分享",
+          "url": "https://learn.chatgpt.com/docs/sites/publishing-and-sharing"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-granite-speech-50-470m-turboctc",
+      "zh": "Granite Speech 5.0 470M TurboCTC",
+      "en": "Granite Speech 5.0 470M TurboCTC",
+      "tags": [
+        "模型",
+        "语音",
+        "开放权重"
+      ],
+      "line": "可在本地或服务器运行的语音转写模型；10月多语更新支持七种语言，不包含中文。",
+      "for_whom": "需要可控语音转写环境的开发者。",
+      "helps_with": "将英语、法语、德语、西班牙语、葡萄牙语、意大利语和日语音频转成文字。",
+      "device": "符合官方Transformers或MLX示例要求的本地电脑或服务器。",
+      "difficulty": "专业工具；需要配置推理环境。",
+      "region": "本条非NC仓库标Apache 2.0；另有NC（非商业）版本，语言与许可条件另看对应模型卡。",
+      "edge": "提供多语转写、标点与大小写处理。",
+      "owner": "IBM",
+      "what": "IBM的470M参数语音转文字模型，本条特指非NC的TurboCTC仓库。",
+      "where_used": "按官方模型卡部署的本地或服务器推理环境。",
+      "access": "从准确的非NC模型仓库取模型，先核语言和许可，不能把兄弟版本的条件混用。",
+      "timeline": "原英语版发表于8月25日；同一非NC仓库在2026年10月21日更新为七语。",
+      "use_tags": [
+        "音乐与语音"
+      ],
+      "aliases": [
+        "Granite Speech 5.0 470M（非NC）",
+        "granite-speech-5.0-470m-turboctc"
+      ],
+      "brief": "①干嘛的：IBM的470M参数语音转文字模型，本条特指非NC的TurboCTC仓库。 ②对你有啥用：将英语、法语、德语、西班牙语、葡萄牙语、意大利语和日语音频转成文字。 ③要什么设备：符合官方Transformers或MLX示例要求的本地电脑或服务器。 ④上手难度：专业工具；需要配置推理环境。 ⑤面向谁、哪能用：需要可控语音转写环境的开发者。 本条非NC仓库标Apache 2.0；另有NC（非商业）版本，语言与许可条件另看对应模型卡。 ⑥强在哪：提供多语转写、标点与大小写处理。 ⑦谁家的、现在：IBM 原英语版发表于8月25日；同一非NC仓库在2026年10月21日更新为七语。",
+      "more": "",
+      "for_us": "需要中文转写时另选支持中文的模型，不因名称有Speech就默认适用。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "IBM非NC模型卡",
+          "url": "https://huggingface.co/ibm-granite/granite-speech-5.0-470m-turboctc"
+        },
+        {
+          "name": "IBM仓库更新记录",
+          "url": "https://huggingface.co/ibm-granite/granite-speech-5.0-470m-turboctc/commits/main"
+        },
+        {
+          "name": "IBM的NC版本模型卡",
+          "url": "https://huggingface.co/ibm-granite/granite-speech-5.0-470m-turboctc-nc"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
       "reception": "按官方资料解释用途，本站未作独立性能横评。",
       "company": {},
       "lifecycle": {

@@ -962,6 +962,160 @@
       ],
       "read": "",
       "notes": []
+    },
+    {
+      "id": "nl-20261022-minimax-code-mini-app",
+      "at": "2026-10-22T14:32:09+08:00",
+      "member": "minimax",
+      "tags": [
+        "工具",
+        "本地应用"
+      ],
+      "level": 3,
+      "line": "MiniMax公布Code Mini App，可让持续应用与Agent互调并保存数据。仅支持macOS/Windows桌面本地会话；插件以本机账号权限运行，不是操作系统沙箱。",
+      "sources": [
+        {
+          "name": "MiniMax官方公告 1",
+          "url": "https://www.minimax.io/blog/minimax-code-mini-app-1792650729?lang=en"
+        },
+        {
+          "name": "MiniMax官方公告 2",
+          "url": "https://agent.minimax.io/docs/miniapp/host/security"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "门路"
+    },
+    {
+      "id": "nl-20261021-kimi-code-cli-230",
+      "at": "2026-10-21T13:51:43+08:00",
+      "member": "moonshot",
+      "tags": [
+        "工具",
+        "版本更新"
+      ],
+      "level": 3,
+      "line": "Kimi Code CLI 2.3.0发布，远控传输上限由10 MiB升至100 MiB，插件技能须用带插件前缀的完整名称；关闭dangerous_command_guard也会关闭内置敏感文件等确认。",
+      "sources": [
+        {
+          "name": "MoonshotAI官方GitHub Release",
+          "url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%402.3.0"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "门路"
+    },
+    {
+      "id": "nl-20261021-mimo-v25-text-retirement",
+      "at": "2026-10-21T10:00:00+08:00",
+      "member": "mimo",
+      "tags": [
+        "停服",
+        "模型迁移"
+      ],
+      "level": 3,
+      "line": "小米自营平台下线mimo-v2.5-pro和mimo-v2.5，替代名分别为mimo-v2.6-pro、mimo-v2.6-flash。迁移需核对计费和默认参数，不等于V2.5语音模型一并退役。",
+      "sources": [
+        {
+          "name": "MiMo官方弃用说明",
+          "url": "https://mimo.mi.com/docs/zh-CN/updates/deprecate"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "停服"
+    },
+    {
+      "id": "nl-20261023-openai-training-isolation-disclosure",
+      "at": "2026-10-23",
+      "member": "openai",
+      "tags": [
+        "安全",
+        "政策披露"
+      ],
+      "level": 3,
+      "line": "OpenAI披露已实施的前沿训练隔离政策：不接入实时互联网，以索引和缓存内容训练浏览能力，并持续红队验证。更广联网取决于防护进展，不等于永久断网。",
+      "sources": [
+        {
+          "name": "OpenAI官方公告",
+          "url": "https://openai.com/index/securing-our-frontier-model-training-environment/"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261023-openai-nask-safety-agreement",
+      "at": "2026-10-23",
+      "member": "openai",
+      "tags": [
+        "安全",
+        "研究合作"
+      ],
+      "level": 2,
+      "line": "OpenAI与波兰NASK宣布签署AI安全研究合作协议，探索系统评估、潜在漏洞识别和防护研究。",
+      "sources": [
+        {
+          "name": "OpenAI官方公告",
+          "url": "https://openai.com/index/openai-nask-ai-safety-security-partnership/"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261021-openai-gateway-policy-announcement",
+      "at": "2026-10-21",
+      "member": "openai",
+      "tags": [
+        "政策",
+        "接入规则"
+      ],
+      "level": 3,
+      "line": "OpenAI公布使用政策更新，11月20日生效。直接提供其模型访问的模型路由、AI网关等服务需先获审核批准；不据此断言所有第三方产品已经违规。",
+      "sources": [
+        {
+          "name": "OpenAI官方公告 1",
+          "url": "https://openai.com/index/broad-access-through-consistent-standards/"
+        },
+        {
+          "name": "OpenAI官方公告 2",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "门路"
+    },
+    {
+      "id": "nl-20261021-claude-api-20261021",
+      "at": "2026-10-21",
+      "member": "anthropic",
+      "tags": [
+        "API",
+        "迁移"
+      ],
+      "level": 3,
+      "line": "Claude API发布2026-10-21版。该版Messages请求仍含temperature、top_p或top_k会返回400；升级前应移除这些参数并测试集成，不能套到所有旧版调用。",
+      "sources": [
+        {
+          "name": "Claude API官方发布与迁移指南 1",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        },
+        {
+          "name": "Claude API官方发布与迁移指南 2",
+          "url": "https://platform.claude.com/docs/en/api/migration-2026-10-21"
+        },
+        {
+          "name": "Claude API官方发布与迁移指南 3",
+          "url": "https://platform.claude.com/docs/en/about-claude/model-deprecations"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "门路"
     }
   ]
 }
