@@ -164,13 +164,16 @@ class CostBoardDataTests(unittest.TestCase):
                 self.assertTrue(any(side.get("amount") is not None and side.get("unit") == "month"
                                     for side in row["prices"].values()))
 
-    def test_new_official_prices_keep_promotion_and_region_limits(self) -> None:
+    def test_checked_monthly_prices_keep_billing_period_and_region_limits(self) -> None:
         by_id = {row["id"]: row for row in self.subs["items"]}
         glm = by_id["glm-coding-plan"]
         self.assertEqual(glm["status"], "verified")
-        self.assertEqual(glm["last_verified"], "2026-10-08")
-        self.assertEqual((glm["prices"]["cn"]["amount"], glm["prices"]["cn"]["promo_original"]), (94.4, 118))
-        self.assertEqual((glm["prices"]["us"]["amount"], glm["prices"]["us"]["promo_original"]), (12.6, 18))
+        self.assertEqual(glm["calculator_tag_id"], "sub-glm-coding-lite-monthly")
+        self.assertEqual(glm["prices"]["cn"]["amount"], 118)
+        self.assertEqual(glm["prices"]["us"]["amount"], 18)
+        for region in ("cn", "us"):
+            self.assertEqual(glm["prices"][region]["unit"], "month")
+            self.assertNotIn("promo_original", glm["prices"][region])
         self.assertTrue(glm["prices"]["cn"]["source_url"].startswith("https://bigmodel.cn/"))
         self.assertTrue(glm["prices"]["us"]["source_url"].startswith("https://z.ai/"))
         perplexity = by_id["perplexity-pro"]

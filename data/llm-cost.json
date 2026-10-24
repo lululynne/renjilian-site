@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-15",
+  "updated_at": "2026-10-25",
   "fx_updated_at": "2026-09-24",
   "fx": {
     "usd_cny": 6.7126,
@@ -411,25 +411,23 @@
       "id": "glm-coding-plan",
       "calculator_tag_id": "sub-glm-coding-lite-monthly",
       "vendor": "智谱 / Z.ai",
-      "product": "GLM Coding Plan（Lite）",
+      "product": "GLM Coding Plan（Lite 月付）",
       "prices": {
         "cn": {
-          "amount": 94.4,
+          "amount": 118,
           "currency": "CNY",
           "unit": "month",
           "source_url": "https://bigmodel.cn/glm-coding?plantype=personal",
-          "as_of": "2026-10-08",
-          "promo_original": 118,
-          "note": "未登录官方页个人套餐／连续包月当前展示 Lite ¥94.4/月，划线原价 ¥118/月；优惠截止日及续费价未核，结算页为准。Pro 与 Max 是别档，不借给 Lite。"
+          "as_of": "2026-10-25",
+          "note": "未登录官方页明确选择个人套餐／连续包月，Lite ¥118/月。连续包季显示的 ¥94.4/月、连续包年显示的 ¥82.6/月是长期套餐的月均价，不是月付价；长期折扣有效期及实际续费扣款仍待核，以结算页为准。"
         },
         "us": {
-          "amount": 12.6,
+          "amount": 18,
           "currency": "USD",
           "unit": "month",
           "source_url": "https://z.ai/subscribe",
-          "as_of": "2026-10-08",
-          "promo_original": 18,
-          "note": "未登录官方页当前展示 Lite $12.6/month，划线原价 $18/month；优惠截止日及续费价未核，结算页为准。Pro 与 Max 是别档，不借给 Lite。"
+          "as_of": "2026-10-25",
+          "note": "未登录官方页明确选择 Individual／Monthly，Lite $18/month。Quarterly 显示的 $14.4/month、Yearly 显示的 $12.6/month 是长期套餐的月均价，不是月付价；长期折扣有效期及实际续费扣款仍待核，以结算页为准。"
         }
       },
       "global_avg": {
@@ -441,13 +439,13 @@
         "channel": "web_console",
         "fx_date": "2026-09-24",
         "fx_usd_cny": 6.7126,
-        "checked": "2026-10-08",
+        "checked": "2026-10-25",
         "note": "CN 与国际站各一套统一标价，未公开多地区店面表，暂不作全球均价。"
       },
       "sparkline": [],
       "status": "verified",
-      "last_verified": "2026-10-08",
-      "notes": "代表档为 Lite 连续包月；与智谱清言分行。国内 BigModel、国际 Z.ai 各有官方显示价；两地当前均有划线优惠，期限及续费价未核，结算页为准。2026-10-08 渲染页截图和正文见 20261008-e0-price-audit。"
+      "last_verified": "2026-10-25",
+      "notes": "代表档只取 Lite 月付，与智谱清言分行。两官方页逐个选择月／季／年核对：国内月付 ¥118、国际月付 $18；季付和年付按月展示的折扣不借给月付。长期折扣期限及实际续费扣款仍待核，不从划线原价推算续费价。"
     },
     {
       "id": "perplexity-pro",
