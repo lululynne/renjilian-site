@@ -131,6 +131,34 @@
       ]
     },
     {
+      "id": "bark-20261013-spacexsi-account-name",
+      "title": "账号名字从AI写到了超智",
+      "speaker": "SpaceX Super Intelligence · @SpaceXSI",
+      "at": "2026-10-13",
+      "quote": "We've unified plans across Grok, Cursor, and X Premium.",
+      "quote_basis": "original",
+      "paraphrase": "10月3日的公开存档里，这个官方账号还叫SpaceXAI；到10月11日的存档，已显示为SpaceX Super Intelligence，账号编号相同。它在13日的这条帖文中宣布，把Grok、Cursor和X Premium合成一份订阅。",
+      "comment": "套餐合成一份，名字也往“超智”那边挪了一格。",
+      "sources": [
+        {
+          "name": "X 原帖",
+          "url": "https://x.com/SpaceXSI/status/2109783335296008414"
+        },
+        {
+          "name": "10月3日账号存档",
+          "url": "https://web.archive.org/web/20261003113532id_/https://x.com/spacexai"
+        },
+        {
+          "name": "10月11日账号存档",
+          "url": "https://web.archive.org/web/20261010201520id_/https://x.com/SpaceXSI"
+        },
+        {
+          "name": "官方订阅说明",
+          "url": "https://x.ai/news/x-subscription"
+        }
+      ]
+    },
+    {
       "id": "bark-20261013-memory-transfer-intro",
       "title": "新机机报到，先搬旧记忆",
       "speaker": "Elon Musk · @elonmusk / Brian Roemmele · @BrianRoemmele",
