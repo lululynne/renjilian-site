@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24",
+  "updated_at": "2026-10-25",
   "first_ring": "2026-09-30",
   "members": [
     {
@@ -84,6 +84,54 @@
     }
   ],
   "items": [
+    {
+      "id": "nl-20261014-qwen-image21-mac-app",
+      "at": "2026-10-14T18:08:18+08:00",
+      "member": "qwen",
+      "domain": "门路",
+      "tags": [
+        "门路",
+        "本地生图"
+      ],
+      "level": 2,
+      "line": "千问官方仓库加入ModelTC的LightX2V Mac App入口，可在苹果芯片Mac本地运行Qwen-Image-2.1-Turbo生图与改图。App要求macOS 14及以上；模型按Qwen研究许可发布。",
+      "sources": [
+        {
+          "name": "千问官方仓库：补充Apple Silicon入口的提交",
+          "url": "https://github.com/QwenLM/Qwen-Image-2.1/commit/ab96caa944157ca28a4f36b695c3047549f48f98"
+        },
+        {
+          "name": "ModelTC项目说明与下载",
+          "url": "https://github.com/ModelTC/LightX2V-Mac-App"
+        },
+        {
+          "name": "官方模型卡与许可",
+          "url": "https://huggingface.co/Qwen/Qwen-Image-2.1-Turbo"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261014-openai-gpt4-api-deprecation",
+      "at": "2026-10-14",
+      "member": "openai",
+      "domain": "停服",
+      "tags": [
+        "停服",
+        "API"
+      ],
+      "level": 3,
+      "line": "OpenAI发布接口停服预告：指定的GPT-4o、GPT-4o mini、GPT-4.1、GPT-4.1 mini快照及其微调版本计划于2027年1月14日停止服务，官方推荐迁移至gpt-6-luna。",
+      "sources": [
+        {
+          "name": "OpenAI官方弃用清单",
+          "url": "https://developers.openai.com/api/docs/deprecations#2026-10-14-gpt-4-series-model-deprecations"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
     {
       "id": "nl-20261016-cn-tech-export-registration",
       "at": "2026-10-16",
