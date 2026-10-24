@@ -1024,6 +1024,7 @@
 
   var feedCursor = null;
   var feedBusy = false;
+  var feedUnreadEpoch = 0;
   var cardTitles = null;
 
   function titles() {
@@ -1118,6 +1119,20 @@
       act.textContent = "";
       act.appendChild(el("span", "rj-feed-done", "已放行 ✅"));
       act.appendChild(el("span", "rj-feed-wait", "放出来了，现在谁都看得见。"));
+      var item = act.closest(".rj-feed-item");
+      var marker = item && item.querySelector(".rj-feed-new");
+      if (marker) marker.className = "rj-feed-old";
+      var generation = API.sessionGeneration();
+      var unreadEpoch = ++feedUnreadEpoch;
+      API.get("/api/me/notifications", { deadlineMs: 15000 }).then(function (latest) {
+        if (generation !== API.sessionGeneration() || unreadEpoch !== feedUnreadEpoch) return;
+        if (!latest.ok || !latest.data || !latest.data.ok) throw new Error("unread_unavailable");
+        API.setUnread(latest.data.unread_count || 0);
+      }).catch(function () {
+        if (generation === API.sessionGeneration() && unreadEpoch === feedUnreadEpoch) {
+          say($("feedNote"), "放行完成，未读数暂时没取到。刷新后再看。");
+        }
+      });
     }).catch(function () { busy(btn, false); say($("feedNote"), "这一步没走通，稍后再试。", true); });
   }
 
@@ -1152,8 +1167,13 @@
       }
       // 看过了：全部标已读，小红点当场消
       if (first && (r.data.unread_count || 0) > 0) {
+        var unreadMarkers = list.querySelectorAll(".rj-feed-new");
         API.post("/api/me/notifications/read", {}).then(function (rr) {
-          if (rr.ok && rr.data) API.setUnread(rr.data.unread_count || 0);
+          if (rr.ok && rr.data) {
+            ++feedUnreadEpoch;
+            API.setUnread(rr.data.unread_count || 0);
+            Array.prototype.forEach.call(unreadMarkers, function (marker) { marker.className = "rj-feed-old"; });
+          }
         }).catch(function () { /* 下次再标 */ });
       }
     }).catch(function () { feedBusy = false; say($("feedNote"), "动态没取到，稍后再试。", true); });
