@@ -1,67 +1,82 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-20",
+  "updated_at": "2026-10-24",
   "first_ring": "2026-09-30",
   "members": [
     {
       "id": "openai",
-      "name": "OpenAI"
+      "name": "OpenAI",
+      "region": "international"
     },
     {
       "id": "anthropic",
-      "name": "Anthropic"
+      "name": "Anthropic",
+      "region": "international"
     },
     {
       "id": "google",
-      "name": "Google"
+      "name": "Google",
+      "region": "international"
     },
     {
       "id": "xai",
-      "name": "xAI"
+      "name": "xAI",
+      "region": "international"
     },
     {
       "id": "deepseek",
-      "name": "DeepSeek"
+      "name": "DeepSeek",
+      "region": "china"
     },
     {
       "id": "moonshot",
-      "name": "月之暗面"
+      "name": "月之暗面",
+      "region": "china"
     },
     {
       "id": "qwen",
-      "name": "阿里通义"
+      "name": "阿里通义",
+      "region": "china"
     },
     {
       "id": "zhipu",
-      "name": "智谱"
+      "name": "智谱",
+      "region": "china"
     },
     {
       "id": "doubao",
-      "name": "字节豆包"
+      "name": "字节豆包",
+      "region": "china"
     },
     {
       "id": "mimo",
-      "name": "小米 MiMo"
+      "name": "小米 MiMo",
+      "region": "china"
     },
     {
       "id": "cursor",
-      "name": "Cursor"
+      "name": "Cursor",
+      "region": "international"
     },
     {
       "id": "minimax",
-      "name": "MiniMax"
+      "name": "MiniMax",
+      "region": "china"
     },
     {
       "id": "elevenlabs",
-      "name": "ElevenLabs"
+      "name": "ElevenLabs",
+      "region": "international"
     },
     {
       "id": "meta",
-      "name": "Meta"
+      "name": "Meta",
+      "region": "international"
     },
     {
       "id": "cherry-studio",
-      "name": "Cherry Studio"
+      "name": "Cherry Studio",
+      "region": "china"
     },
     {
       "id": "other",
@@ -74,7 +89,10 @@
       "at": "2026-10-16",
       "member": "other",
       "maker": "商务部、科技部",
-      "tags": ["监管", "技术出口"],
+      "tags": [
+        "监管",
+        "技术出口"
+      ],
       "level": 3,
       "line": "商务部、科技部就40项技术的出口目录修订征求意见，其中AI23项；同时执行相关技术出口前登记。目录尚未修订，临时登记不等于出口禁令。",
       "sources": [
@@ -91,7 +109,10 @@
       "at": "2026-10-15",
       "member": "other",
       "maker": "印度CERT-In",
-      "tags": ["安全", "智能体"],
+      "tags": [
+        "安全",
+        "智能体"
+      ],
       "level": 3,
       "line": "印度CERT-In通报，部分评估中的AI智能体越权读取印度机构机密资料；这些自报案例未被相关机构自行发现。",
       "sources": [
@@ -108,7 +129,10 @@
       "at": "2026-10-14",
       "member": "other",
       "maker": "美国FTC",
-      "tags": ["监管", "AI安全"],
+      "tags": [
+        "监管",
+        "AI安全"
+      ],
       "level": 3,
       "line": "据媒体报道，美国FTC向OpenAI与Anthropic索取安全等资料，调查潜在消费者保护问题。10月14日依据次日报道的“周三”推算；此处记录调查取证，不代表已认定违法。",
       "sources": [
@@ -519,6 +543,425 @@
         "bk-tibo"
       ],
       "domain": "模型"
+    },
+    {
+      "id": "nl-20261020-openai-locked-chats",
+      "at": "2026-10-20",
+      "member": "openai",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 3,
+      "line": "ChatGPT开始逐步推出锁定聊天：用账户PIN或受支持的设备认证打开，并从常规历史、置顶与搜索中隐藏。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261022-openai-decisions-api-ga",
+      "at": "2026-10-22",
+      "member": "openai",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 3,
+      "line": "OpenAI宣布搭配GPT-6 Luna的Decisions API正式可用，单请求问题上限由公测200提高到400。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://openai.com/products/release-notes/"
+        },
+        {
+          "name": "官方Decisions API文档",
+          "url": "https://developers.openai.com/api/docs/guides/decisions"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261021-claude-duet-preview",
+      "at": "2026-10-21",
+      "member": "anthropic",
+      "domain": "住处",
+      "tags": [
+        "住处"
+      ],
+      "level": 3,
+      "line": "Anthropic开放Claude Duet研究预览候补名单，首批面向美国Pro和Max订阅者，提供独立移动应用及网页入口。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://claude.com/resources/articles/claude-duet"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261022-claude-google-cloud-managed",
+      "at": "2026-10-22",
+      "member": "anthropic",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 3,
+      "line": "Claude API新增由Anthropic运营的Google Cloud接入，以IAM鉴权、Marketplace计费，支持Opus 5.5的Fast模式。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261022-spacexsi-partner-network",
+      "at": "2026-10-22",
+      "member": "xai",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 2,
+      "line": "SpaceXSI宣布官方Partner Network，纳入帮助企业部署Grok的转型伙伴及构建插件、集成的Marketplace伙伴。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://x.ai/news/partnernetworkannouncement"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261016-cursor-cloud-canvases",
+      "at": "2026-10-16",
+      "member": "cursor",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 3,
+      "line": "Cursor云端Agent开始支持交互式画布，Environments API进入测试，并改进大型云环境。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://cursor.com/changelog/cloud-agent-canvases-and-environments"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261015-gpt55-codex-chatgpt-retirement",
+      "at": "2026-10-15T03:00:00+08:00",
+      "member": "openai",
+      "domain": "停服",
+      "tags": [
+        "停服"
+      ],
+      "level": 2,
+      "line": "GPT-5.5停止向以ChatGPT登录的Codex用户提供；OpenAI API及使用API Key认证的Codex会话不受此次退役影响。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://learn.chatgpt.com/docs/models"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261014-grok-voice3",
+      "at": "2026-10-14",
+      "member": "xai",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 4,
+      "line": "SpaceXSI发布Grok Voice 3.0并开放Speech to Speech API；grok-voice-latest别名自动指向3.0。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://x.ai/news/grok-voice-3"
+        },
+        {
+          "name": "官方开发者发布记录",
+          "url": "https://docs.x.ai/developers/release-notes"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261007-claude-haiku55",
+      "at": "2026-10-07",
+      "member": "anthropic",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 3,
+      "line": "Anthropic发布Claude Haiku 5.5，定位于摘要、分类、数据库查询、子Agent和浏览器等高频、低延迟任务。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://www.anthropic.com/claude-haiku-5-5"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261008-anthropic-policy-announcement",
+      "at": "2026-10-08",
+      "member": "anthropic",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 2,
+      "line": "Anthropic公布新版使用政策，补充独立执行任务及高风险用途等规则说明，并宣布于11月12日生效。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://www.anthropic.com/news/2026-usage-policy-update"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261008-google-gemini-agent",
+      "at": "2026-10-08",
+      "member": "google",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 3,
+      "line": "Google Cloud宣布面向工作的Gemini agent，旨在跨知识工作、代码和Workspace应用协助执行任务。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261002-grok-transcribe1-eol",
+      "at": "2026-10-02",
+      "member": "xai",
+      "domain": "停服",
+      "tags": [
+        "停服"
+      ],
+      "level": 2,
+      "line": "grok-voice-transcribe-1.0于10月2日达生命周期终点；发往该标识的请求改由grok-voice-transcribe-2.0处理。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://docs.x.ai/developers/release-notes"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20260212-seedance20",
+      "at": "2026-02-12",
+      "member": "doubao",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 4,
+      "line": "字节Seed发布Seedance 2.0，支持文字、图片、音频和视频参考输入，生成最长15秒的多镜头音视频。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://seed.bytedance.com/zh/blog/official-launch-of-seedance-2-0"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20260922-mimo-v26",
+      "at": "2026-09-22",
+      "member": "mimo",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 3,
+      "line": "小米宣布发布并开源原生多模态MiMo-V2.6系列，包含Pro与Flash两种模型。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://mimo.xiaomi.com/mimo-v2-6/article"
+        },
+        {
+          "name": "官方HF组织与真实仓库入口",
+          "url": "https://huggingface.co/XiaomiMiMo"
+        },
+        {
+          "name": "MiMo-V2.6-Flash-RL 仓库",
+          "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-RL"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20260910-deepseek-v41-flash",
+      "at": "2026-09-10",
+      "member": "deepseek",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 3,
+      "line": "DeepSeek发布V4.1-Flash，提供原生视觉理解，并在官方API以deepseek-flash接入。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://api-docs.deepseek.com/updates/"
+        },
+        {
+          "name": "官方模型卡",
+          "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261002-qwen-image21-pro",
+      "at": "2026-10-02",
+      "member": "qwen",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 2,
+      "line": "千问AI平台发布记录新增Qwen-Image-2.1-Pro，统一图像生成与编辑并支持透明图像。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://platform.qianwenai.com/docs/changelog/models"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261009-qwen-image21-turbo",
+      "at": "2026-10-09",
+      "member": "qwen",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 2,
+      "line": "千问AI平台发布记录新增Qwen-Image-2.1-Turbo，支持透明图像生成及多参考图编辑。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://platform.qianwenai.com/docs/changelog/models"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20260928-deepseek-harness020rc1",
+      "at": "2026-09-28T20:36:21+08:00",
+      "member": "deepseek",
+      "domain": "住处",
+      "tags": [
+        "住处"
+      ],
+      "level": 2,
+      "line": "DeepSeek Harness发布v0.2.0-rc.1预发布版，使用DeepSeek账号模型的会话可直接网页搜索，无需另配API Key。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.0-rc.1"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261013-gemini-argon-app-rollout",
+      "at": "2026-10-13",
+      "member": "google",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 3,
+      "line": "Google在Gemini Apps更新记录中宣布，Gemini 4 Argon开始向全球Google AI Pro与Ultra订阅者逐步开放。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://gemini.google/release-notes/"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261019-qwen-mimo-ultraspeed-listing",
+      "at": "2026-10-19",
+      "member": "mimo",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 2,
+      "line": "千问AI平台模型发布记录新增xiaomi/mimo-v2.6-pro-ultraspeed接入。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://platform.qianwenai.com/docs/changelog/models"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261021-qwen-minimax-m31flash-listing",
+      "at": "2026-10-21",
+      "member": "minimax",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 2,
+      "line": "千问AI平台模型发布记录新增MiniMax-M3.1-Flash接入。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://platform.qianwenai.com/docs/changelog/models"
+        }
+      ],
+      "read": "",
+      "notes": []
     }
   ]
 }

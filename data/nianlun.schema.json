@@ -41,6 +41,14 @@
           "name": {
             "type": "string",
             "minLength": 1
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "china",
+              "international"
+            ],
+            "description": "编辑收录的厂商分组；全球包含全部，国内筛选china。可选字段兼容原成员数据。"
           }
         }
       }
@@ -60,12 +68,25 @@
         ],
         "additionalProperties": false,
         "if": {
-          "properties": {"member": {"const": "other"}},
-          "required": ["member"]
+          "properties": {
+            "member": {
+              "const": "other"
+            }
+          },
+          "required": [
+            "member"
+          ]
         },
         "then": {
-          "required": ["maker"],
-          "properties": {"maker": {"minLength": 1, "pattern": "\\S"}}
+          "required": [
+            "maker"
+          ],
+          "properties": {
+            "maker": {
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
         },
         "properties": {
           "id": {

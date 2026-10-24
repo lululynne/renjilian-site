@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-24",
+  "items": [
+    {
+      "id": "bark-20261009-delta-ai-safety",
+      "title": "把安全测试搬到达美航班",
+      "speaker": "Elon Musk · @elonmusk",
+      "at": "2026-10-09",
+      "quote": "Moving all testing to Delta Airlines flights, where accessing the Internet is utterly impossible!",
+      "quote_basis": "original",
+      "paraphrase": "马斯克拿达美航班的联网体验开玩笑，称可以把AI安全测试搬到机上；这是讽刺发言，并非真有机构达成测试安排。",
+      "comment": "这份安全方案，先从断网开始。",
+      "sources": [
+        {
+          "name": "X 原帖",
+          "url": "https://x.com/elonmusk/status/2108321181602353333"
+        },
+        {
+          "name": "Benzinga 报道",
+          "url": "https://www.tradingview.com/news/benzinga:b2aaaa359094b:0-ahead-of-dal-earnings-elon-musk-mocks-delta-s-starlink-snub-accessing-the-internet-is-utterly-impossible/"
+        }
+      ]
+    },
+    {
+      "id": "bark-20261012-terafab-gdp-hiring",
+      "title": "招聘启事先和国家GDP比",
+      "speaker": "Elon Musk · @elonmusk",
+      "at": "2026-10-12",
+      "quote": "The value of the output of this massive structure will rank in the top 20 of country GDPs!",
+      "quote_basis": "reported",
+      "paraphrase": "据Benzinga报道，马斯克转发Terafab招聘帖时，声称这座设施未来的产出价值能排进各国GDP前20。这里记录的是他的展望，不是已实现的经济产出。",
+      "comment": "招聘启事的参考线，从同业薪资跳到了国家GDP。",
+      "sources": [
+        {
+          "name": "X 原帖",
+          "url": "https://x.com/elonmusk/status/2109461555066671311"
+        },
+        {
+          "name": "Benzinga 原文转引",
+          "url": "https://www.benzinga.com/markets/tech/26/10/62292420/elon-musk-says-terafab-could-rank-among-top-20-of-country-gdps-as-tesla-and-spacex-build-massive-texas-chip-empire"
+        }
+      ]
+    },
+    {
+      "id": "bark-20261012-robotaxi-grok-drink",
+      "title": "车后座的第一份待办是饮料",
+      "speaker": "Robotaxi · @robotaxi",
+      "at": "2026-10-12",
+      "quote": "Talk directly to your Grok @bot in Robotaxi",
+      "quote_basis": "original",
+      "paraphrase": "Robotaxi官方号邀请乘客在车里直接与自己的Grok Bot对话。据Drive Tesla报道，该帖转引了乘客在Cybercab里让Bot点常喝饮料的视频。Tesla支持页也列明车内Grok Bot可代点咖啡。",
+      "comment": "车负责送你，Bot负责惦记那杯喝的。",
+      "sources": [
+        {
+          "name": "X 原帖",
+          "url": "https://x.com/robotaxi/status/2109420802202612019"
+        },
+        {
+          "name": "Drive Tesla 报道",
+          "url": "https://driveteslacanada.ca/news/tesla-robotaxi-grok-bots-cybercab/"
+        },
+        {
+          "name": "Tesla 官方说明",
+          "url": "https://www.tesla.com/support/grok"
+        }
+      ]
+    }
+  ]
+}

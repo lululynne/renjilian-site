@@ -85,6 +85,20 @@ def check(instance, schema, path: str) -> list[str]:
     return errs
 
 
+class BarkDataTests(unittest.TestCase):
+    def test_independent_contract_and_short_attributed_quotes(self) -> None:
+        data = load("data/bark.json")
+        self.assertEqual(check(data, load("data/bark.schema.json"), "$"), [])
+        self.assertGreaterEqual(len(data["items"]), 3)
+        self.assertEqual(len({x["id"] for x in data["items"]}), len(data["items"]))
+        self.assertFalse({x["id"] for x in data["items"]} & {x["id"] for x in load(DATA)["items"]})
+        for item in data["items"]:
+            self.assertLessEqual(len(item["quote"].split()), 25)
+            self.assertTrue(item["sources"])
+            self.assertTrue(item["comment"].strip())
+            self.assertNotEqual(item["comment"], item["paraphrase"])
+
+
 class NianlunDataTests(unittest.TestCase):
     def setUp(self) -> None:
         self.data = load(DATA)

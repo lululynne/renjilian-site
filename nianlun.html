@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>年轮 · 第二人称</title>
 <link rel="stylesheet" href="style.css?v=20261015-r0">
+<link rel="stylesheet" href="nianlun-controls.css?v=20261024-rings-bark">
 <noscript><style>.nl-list .log-state{display:none}</style></noscript>
 <link rel="stylesheet" href="visits.css?v=20261023-visits">
 </head>
@@ -32,11 +33,31 @@
   <section class="board-head kr-head nl-head">
     <p class="section-label">RINGS</p>
     <h2><img class="nl-ring" src="img/nianlun/ring.png" width="36" height="36" alt="">年轮</h2>
-    <p class="kr-intro">从 2026-09-30 起，一圈一圈往外记。</p>
+    <p class="kr-intro">一圈一圈往外记，也补上有据的早期节点。</p>
   </section>
 
+  <div class="nl-layout">
+    <details class="nl-calendar" id="nlCalendar">
+      <summary class="nl-calendar-label"><span class="nl-gear" aria-hidden="true">⚙</span> 日期与范围</summary>
+      <div id="nlRegion" class="nl-region" role="radiogroup" aria-label="记录范围">
+        <button type="button" data-region="" role="radio" aria-checked="true">全球</button>
+        <button type="button" data-region="china" role="radio" aria-checked="false" tabindex="-1">国内</button>
+      </div>
+      <p class="nl-calendar-note">全球包含全部；国内按厂商分组。</p>
+      <label for="nlDate">翻到某一天</label>
+      <input type="date" id="nlDate" aria-label="按日期查年轮，留空看全部">
+      <div class="nl-date-actions">
+        <button type="button" id="nlEarlier" aria-label="更早的有记录日">←</button>
+        <button type="button" id="nlLater" aria-label="更新的有记录日">→</button>
+      </div>
+      <button type="button" id="nlLatest">最近一圈</button>
+      <button type="button" id="nlAllDates" aria-pressed="true">全部日期</button>
+      <p class="nl-calendar-note" id="nlDateHint">已录的早期节点也在这里，不按创刊日截断。</p>
+    </details>
+    <div class="nl-results">
   <div class="nl-filter" id="nlFilter" role="radiogroup" aria-label="只看某一家"></div>
 
+  <div class="nl-extras">
   <details class="nl-legend">
     <summary>电池怎么看</summary>
     <p>格数按本站编辑判断标记重要度，不是产品评分或原来源的风险等级。</p>
@@ -49,12 +70,24 @@
     </ul>
   </details>
 
+  <section class="bark-panel" id="bark" aria-labelledby="barkTitle">
+    <div class="bark-head"><h2 id="barkTitle">树皮 <span>BARK</span></h2>
+      <button type="button" id="barkToggle" aria-expanded="false" aria-controls="barkItems">树皮：关</button></div>
+    <p class="bark-intro">公开发言旁的一句玩笑。原话、转述和我们的话分开，打开才读。</p>
+    <p id="barkStatus" role="status" aria-live="polite" hidden></p>
+    <button type="button" id="barkRetry" hidden>重新读树皮</button>
+    <div id="barkItems" hidden></div>
+  </section>
+  </div>
+
   <p class="kr-status" id="nlStatus" role="status" aria-live="polite" hidden></p>
 
   <section class="nl-list" id="nlList" aria-label="时间线">
     <p class="log-state">正在翻页…</p>
     <noscript><p class="kr-noscript">这一页要开启 JavaScript 才能显示时间线。</p></noscript>
   </section>
+    </div>
+  </div>
 </main>
 
 <footer class="site">
@@ -90,12 +123,35 @@
   var MEMBER_NAME = {};   // id → 显示名
   var COUNTS = {};        // id → 格数（不随筛选变）
   var CURRENT = "";       // 当前筛选的成员 id；"" = 全部
+  var REGION = "", DAY = "", DOMESTIC = {};
+  var regionEl = document.getElementById("nlRegion");
+  var dateEl = document.getElementById("nlDate");
+  var earlierEl = document.getElementById("nlEarlier"), laterEl = document.getElementById("nlLater");
+  var calendarControls = document.querySelectorAll(".nl-calendar button,.nl-calendar input");
+  document.getElementById("nlCalendar").open = window.matchMedia("(min-width:761px)").matches;
+  Array.prototype.forEach.call(calendarControls, function (el) { el.disabled = true; });
   var WEEKDAYS = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 
   // 星期从日期字符串本身算（UTC 日历算术），不碰浏览器本地时区
   function weekdayOf(dateStr) {
     var y = +dateStr.slice(0, 4), m = +dateStr.slice(5, 7), d = +dateStr.slice(8, 10);
     return WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+  }
+
+  function validDay(day) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return false;
+    var d = new Date(Date.UTC(+day.slice(0, 4), +day.slice(5, 7) - 1, +day.slice(8, 10)));
+    return isFinite(d.getTime()) && d.toISOString().slice(0, 10) === day;
+  }
+
+  function matchesScope(it) {
+    return (!CURRENT || it.member === CURRENT) && (!REGION || DOMESTIC[it.member] === true);
+  }
+
+  function knownDays() {
+    var days = {};
+    DATA.items.filter(matchesScope).forEach(function (it) { days[String(it.at).slice(0, 10)] = true; });
+    return Object.keys(days).sort().reverse();
   }
 
   function hashId() {
@@ -106,27 +162,35 @@
 
   // ?m=：只认 members 里的 id；不认识就当「全部」并把 query 清掉
   function readFilterFromUrl() {
-    var m = "";
-    try { m = new URLSearchParams(location.search).get("m") || ""; } catch (_) {}
-    if (m && (m === "other" || !MEMBER_NAME[m])) {
-      m = "";
-      try { history.replaceState(history.state, "", location.pathname + location.hash); } catch (_) {}
-    }
+    var m = "", params = new URLSearchParams(location.search), changed = false;
+    m = params.get("m") || "";
+    if (m && (m === "other" || !MEMBER_NAME[m])) { m = ""; params.delete("m"); changed = true; }
+    var r = params.get("r") || "", d = params.get("d") || "";
+    REGION = r === "china" ? r : "";
+    DAY = validDay(d) ? d : "";
+    if (r && !REGION) { params.delete("r"); changed = true; }
+    if (d && !DAY) { params.delete("d"); changed = true; }
+    if (changed) try { history.replaceState(history.state, "", location.pathname + (params.toString() ? "?" + params : "") + location.hash); } catch (_) {}
     return m;
   }
 
   function syncFilterUrl() {
     try {
-      history.replaceState(history.state, "",
-        location.pathname + (CURRENT ? "?m=" + encodeURIComponent(CURRENT) : ""));
+      var params = new URLSearchParams(location.search);
+      ["m", "r", "d"].forEach(function (key) { params.delete(key); });
+      if (CURRENT) params.set("m", CURRENT);
+      if (REGION) params.set("r", REGION);
+      if (DAY) params.set("d", DAY);
+      history.replaceState(history.state, "", location.pathname + (params.toString() ? "?" + params : ""));
     } catch (_) {}
   }
 
   function announce() {
     var n = visibleItems().length;
-    statusEl.textContent = CURRENT
-      ? "现在看的是 " + MEMBER_NAME[CURRENT] + "，共 " + n + " 格"
-      : "现在看的是全部成员，共 " + n + " 格";
+    var label = CURRENT ? " " + MEMBER_NAME[CURRENT] : "全部成员";
+    if (REGION) label = "国内 · " + label.trim();
+    if (DAY) label += " · " + DAY;
+    statusEl.textContent = "现在看的是" + label + "，共 " + n + " 格";
     statusEl.hidden = false;
   }
 
@@ -138,7 +202,7 @@
       return cmp || a[1] - b[1];
     });
     return items.map(function (x) { return x[0]; })
-      .filter(function (it) { return !CURRENT || it.member === CURRENT; });
+      .filter(function (it) { return matchesScope(it) && (!DAY || String(it.at).slice(0, 10) === DAY); });
   }
 
   function itemHtml(it) {
@@ -172,7 +236,7 @@
     var items = visibleItems();
     if (!items.length) {
       listEl.innerHTML = '<p class="log-state">' +
-        (CURRENT ? "这一家还没有记到。" : "第一圈还在记。") + "</p>";
+        (DAY || REGION ? "这组筛选暂未收录。可换一天，或查看全部日期。" : CURRENT ? "这一家还没有记到。" : "第一圈还在记。") + "</p>";
       return;
     }
     var html = "";
@@ -219,11 +283,54 @@
 
   function setFilter(m) {
     CURRENT = m;
+    updateBrowse();
+  }
+
+  function renderCalendar() {
+    dateEl.value = DAY;
+    var days = knownDays();
+    earlierEl.disabled = !days.some(function (d) { return !DAY || d < DAY; });
+    laterEl.disabled = !DAY || !days.some(function (d) { return d > DAY; });
+    document.getElementById("nlLatest").disabled = !days.length;
+    document.getElementById("nlAllDates").setAttribute("aria-pressed", DAY ? "false" : "true");
+    regionEl.querySelectorAll("[data-region]").forEach(function (button) {
+      var active = button.dataset.region === REGION;
+      button.setAttribute("aria-checked", active ? "true" : "false");
+      button.tabIndex = active ? 0 : -1;
+    });
+    document.getElementById("nlDateHint").textContent = days.length
+      ? "已录 " + days[days.length - 1] + " 至 " + days[0] + "；箭头只翻有记录的日期。"
+      : "当前厂商范围暂未收录，可换成全球或全部成员。";
+  }
+
+  function updateBrowse() {
     syncFilterUrl();
     syncChips();
     renderList();
+    renderCalendar();
     announce();
   }
+
+  regionEl.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-region]");
+    if (b && !b.disabled) { REGION = b.dataset.region; updateBrowse(); }
+  });
+  regionEl.addEventListener("keydown", function (e) {
+    if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].indexOf(e.key) < 0 || !DATA) return;
+    e.preventDefault(); REGION = REGION ? "" : "china"; updateBrowse();
+    regionEl.querySelector('[data-region="' + REGION + '"]').focus();
+  });
+  dateEl.addEventListener("change", function () { DAY = validDay(dateEl.value) ? dateEl.value : ""; updateBrowse(); });
+  document.getElementById("nlAllDates").addEventListener("click", function () { DAY = ""; updateBrowse(); });
+  document.getElementById("nlLatest").addEventListener("click", function () { DAY = knownDays()[0] || ""; updateBrowse(); });
+  earlierEl.addEventListener("click", function () {
+    var earlier = knownDays().filter(function (d) { return !DAY || d < DAY; });
+    if (earlier.length) { DAY = earlier[0]; updateBrowse(); }
+  });
+  laterEl.addEventListener("click", function () {
+    var later = knownDays().filter(function (d) { return d > DAY; });
+    if (later.length) { DAY = later[later.length - 1]; updateBrowse(); }
+  });
 
   filterEl.addEventListener("click", function (e) {
     var c = e.target && e.target.closest ? e.target.closest(".nl-chip") : null;
@@ -251,7 +358,7 @@
     if (!id || id.indexOf("nl-") !== 0) return;
     var el = document.getElementById(id);
     if (!el) {
-      statusEl.textContent = "没找到这一格，可能已撤下或链接写错了。上面是全部记录。";
+      statusEl.textContent = "没找到这一格，可能在当前筛选之外、已撤下或链接写错了。可切回全部成员和日期。";
       statusEl.hidden = false;
       try { history.replaceState(history.state, "", location.pathname + location.search); } catch (_) {}
       return;
@@ -270,13 +377,16 @@
   fetch("data/nianlun.json", { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (data) {
+      if (!data || !Array.isArray(data.members) || !Array.isArray(data.items)) throw new Error("timeline envelope");
       DATA = data;
-      (data.members || []).forEach(function (m) { MEMBER_NAME[m.id] = m.name; });
+      (data.members || []).forEach(function (m) { MEMBER_NAME[m.id] = m.name; DOMESTIC[m.id] = m.region === "china"; });
       (data.items || []).forEach(function (it) { COUNTS[it.member] = (COUNTS[it.member] || 0) + 1; });
       CURRENT = readFilterFromUrl();
+      Array.prototype.forEach.call(calendarControls, function (el) { el.disabled = false; });
       renderFilter();
       renderList();
-      if (CURRENT) announce();
+      renderCalendar();
+      if (CURRENT || REGION || DAY) announce();
       locateHash();
     })
     .catch(function () {
@@ -286,5 +396,6 @@
 </script>
 
 <script src="visits.js?v=20261023-visits"></script>
+<script src="bark.js?v=20261024-rings-bark"></script>
 </body>
 </html>
