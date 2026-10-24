@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-10-19",
+  "updated_at": "2026-10-24",
   "items": [
     {
       "id": "bk-openai",
@@ -623,10 +623,10 @@
         "终端",
         "开源"
       ],
-      "brief": "开源编程代理：程序员在终端或编辑器里让它写代码，能接 75 家以上模型。",
-      "line": "OpenCode 是一个开源的编程代理，也就是能自己连着写代码的 AI。程序员可以在终端（敲命令的那个窗口）、代码编辑器或它的桌面 App 里用它。它能接 75 家以上的模型服务；选择用 ChatGPT Plus 或 Pro 登录后，OpenAI 的模型就走你的订阅额度。",
-      "more": "Anomaly Innovations 公司做的（这家公司也做开源项目 SST），官网说每月有 1600 万开发者在用。在它里面用 /connect 选 OpenAI、再选「ChatGPT Plus/Pro」登录后，OpenAI 的模型可以走你的订阅。",
-      "for_us": "",
+      "brief": "①干嘛的: 开源的 AI 编程助手，可在终端、桌面应用或编辑器里使用，并接入不同模型服务。 ②对你有啥用: 阅读项目、编写和修改代码，并配合工具完成编程任务。 ③要什么设备: 电脑上的终端、桌面应用或支持的代码编辑器。 ④上手难度: 需要配置；面向开发者。 ⑤面向谁、哪能用: 想在开发工具里选择不同模型的开发者。 软件可从官网和仓库获取；模型服务的账号与地区要求另算。 ⑥强在哪: 模型和接入方式可换，不必固定使用一家模型厂商。 ⑦谁家的、现在: Anomaly。 官网提供终端、桌面及编辑器入口；实际支持方式按当前文档确认。",
+      "line": "可自选模型的开源编程助手；软件开源，所接模型的订阅或接口费用仍分别计算。",
+      "more": "",
+      "for_us": "装好编程助手之后，还要接好模型账号；开源软件本身不会送来所有模型的额度。",
       "related": [],
       "seen_in": [
         "kr-openai-devday-2026-plan-sharing"
@@ -637,17 +637,37 @@
           "url": "https://opencode.ai/"
         },
         {
-          "name": "OpenCode 文档：providers",
-          "url": "https://opencode.ai/docs/providers/"
+          "name": "OpenCode 官方仓库",
+          "url": "https://github.com/anomalyco/opencode"
         },
         {
-          "name": "Anomaly 信任中心",
-          "url": "https://trust.opencode.ai/"
+          "name": "OpenCode 接入文档",
+          "url": "https://opencode.ai/docs/providers/"
         }
       ],
       "added_at": "2026-09-30",
-      "last_verified": "2026-09-30",
-      "status": "verified"
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "for_whom": "想在开发工具里选择不同模型的开发者。",
+      "helps_with": "阅读项目、编写和修改代码，并配合工具完成编程任务。",
+      "device": "电脑上的终端、桌面应用或支持的代码编辑器。",
+      "difficulty": "需要配置；面向开发者。",
+      "region": "软件可从官网和仓库获取；模型服务的账号与地区要求另算。",
+      "edge": "模型和接入方式可换，不必固定使用一家模型厂商。",
+      "owner": "Anomaly",
+      "what": "开源的 AI 编程助手，可在终端、桌面应用或编辑器里使用，并接入不同模型服务。",
+      "access": "从官网下载或按官方文档安装，再连接自己的模型服务；软件许可和模型付费是两件事。",
+      "timeline": "官网提供终端、桌面及编辑器入口；实际支持方式按当前文档确认。",
+      "use_tags": [
+        "编程与做应用"
+      ],
+      "where_used": "终端、OpenCode桌面应用或支持的代码编辑器。",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
     },
     {
       "id": "bk-lovable",
@@ -702,35 +722,48 @@
         "网页",
         "桌面"
       ],
-      "brief": "学生、博主、上班族天天在用的笔记和文档软件，里面带 AI 助手。",
-      "line": "Notion 是一款笔记和文档软件，团队常用它写文档、建知识库、管项目，里面带 AI 助手。OpenAI 把它列进了能用 ChatGPT 订阅额度的名单，但具体哪些功能、哪档套餐会扣你的 ChatGPT 额度，Notion 自己还没写；它的高级模型目前花的是 Notion 自己的点数。",
-      "more": "Notion 的 AI 助手可以选 Claude、GPT、Gemini、Grok 几家模型，其中 Claude Fable 5.1 只在 Business 和 Enterprise 档；高级模型要花 Notion 自己的点数。OpenAI 把 Notion 列进「能用订阅额度」，但 Notion 自己没写哪些功能、哪档套餐会改扣你的 ChatGPT，未核。免费档有，付费档按成员人数收费。",
-      "for_us": "",
+      "brief": "①干嘛的: 写文档、记笔记和管理知识库的软件，里面也有能执行多步骤任务的 AI 助手。 ②对你有啥用: 查找材料、整理笔记、起草文档，并在获授权的范围内处理多步骤任务。 ③要什么设备: 通过 Notion 的网页或应用入口使用；具体功能按官方支持范围确认。 ④上手难度: 普通人能上手；复杂自动化需要配置。 ⑤面向谁、哪能用: 整理文档、知识库和项目的个人与团队。 套餐、模型和服务范围以 Notion 官方说明为准。 ⑥强在哪: AI 可以结合工作区材料办事；新版本的长任务上限是24小时，不代表每次都运行这么久。 ⑦谁家的、现在: Notion。 2026年10月19日公布智能体升级。24小时是最长任务时间，不是所有任务的固定时长。",
+      "line": "带 AI 助手的笔记与文档软件；2026年10月升级的智能体可处理最长24小时的任务。",
+      "more": "",
+      "for_us": "让 Agent 接触工作区之前，确认资料授权、任务范围和本次消耗的额度。",
       "related": [],
       "seen_in": [
         "kr-openai-devday-2026-plan-sharing"
       ],
       "sources": [
         {
-          "name": "Notion 帮助中心：Notion Agent",
+          "name": "Notion 官方更新日志",
+          "url": "https://www.notion.com/releases/2026-10-19"
+        },
+        {
+          "name": "Notion 帮助：Agent",
           "url": "https://www.notion.com/help/notion-agent"
-        },
-        {
-          "name": "Notion 定价页",
-          "url": "https://www.notion.com/pricing"
-        },
-        {
-          "name": "OpenAI 合作方目录",
-          "url": "https://learn.chatgpt.com/docs/sign-in-with-chatgpt#partners"
-        },
-        {
-          "name": "OpenAI DevDay 2026 回顾",
-          "url": "https://openai.com/index/devday-2026-recap/"
         }
       ],
       "added_at": "2026-09-30",
-      "last_verified": "2026-09-30",
-      "status": "verified"
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "for_whom": "整理文档、知识库和项目的个人与团队。",
+      "helps_with": "查找材料、整理笔记、起草文档，并在获授权的范围内处理多步骤任务。",
+      "device": "通过 Notion 的网页或应用入口使用；具体功能按官方支持范围确认。",
+      "difficulty": "普通人能上手；复杂自动化需要配置。",
+      "region": "套餐、模型和服务范围以 Notion 官方说明为准。",
+      "edge": "AI 可以结合工作区材料办事；新版本的长任务上限是24小时，不代表每次都运行这么久。",
+      "owner": "Notion",
+      "what": "写文档、记笔记和管理知识库的软件，里面也有能执行多步骤任务的 AI 助手。",
+      "access": "在 Notion 里打开 Agent；先确认本档套餐和接入方式消耗哪一类额度。",
+      "timeline": "2026年10月19日公布智能体升级。24小时是最长任务时间，不是所有任务的固定时长。",
+      "use_tags": [
+        "办公与文档",
+        "AI 助手与模型"
+      ],
+      "where_used": "Notion网页和应用中的Agent入口。",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
     },
     {
       "id": "bk-china-availability",
@@ -3256,6 +3289,309 @@
       "nianlun_seen": [
         "大模型动态资料（2026-10-01）"
       ]
+    },
+    {
+      "id": "bk-minimax-m31-flash",
+      "zh": "MiniMax M3.1 Flash",
+      "en": "MiniMax M3.1 Flash",
+      "aliases": [
+        "M3.1 Flash",
+        "MiniMax-M3.1-Flash"
+      ],
+      "tags": [
+        "模型",
+        "编程",
+        "智能体"
+      ],
+      "brief": "①干嘛的: MiniMax 面向编程和智能体任务的模型，支持文字、图片和视频输入。 ②对你有啥用: 让编程工具读取项目、生成代码，或在多步骤流程里处理材料。 ③要什么设备: 使用云端接口，或在符合官方要求的算力设备上部署权重。 ④上手难度: 需要配置；本地部署属专业工具。 ⑤面向谁、哪能用: 写代码、搭建智能体的开发者和团队。 接口的账号和地区要求以所选服务平台为准；权重部署另需核对许可。 ⑥强在哪: 把编程、工具调用和多模态输入放在同一模型中。 ⑦谁家的、现在: MiniMax。 官方已发布模型与开放权重；不把仓库创建或后续更新日当成首发日。",
+      "line": "MiniMax 面向写代码和多步骤智能体工作的模型，可通过接口使用，也提供开放权重。",
+      "more": "",
+      "for_us": "先选云端接口还是自行部署；开放权重不表示没有许可条件，也不意味着普通电脑能直接跑。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "MiniMax 官方介绍",
+          "url": "https://www.minimax.io/blog/minimax-m31f"
+        },
+        {
+          "name": "MiniMax 官方模型卡",
+          "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash"
+        },
+        {
+          "name": "MiniMax 社区许可",
+          "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash/blob/main/LICENSE"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "for_whom": "写代码、搭建智能体的开发者和团队。",
+      "helps_with": "让编程工具读取项目、生成代码，或在多步骤流程里处理材料。",
+      "device": "使用云端接口，或在符合官方要求的算力设备上部署权重。",
+      "difficulty": "需要配置；本地部署属专业工具。",
+      "region": "接口的账号和地区要求以所选服务平台为准；权重部署另需核对许可。",
+      "edge": "把编程、工具调用和多模态输入放在同一模型中。",
+      "owner": "MiniMax",
+      "what": "MiniMax 面向编程和智能体任务的模型，支持文字、图片和视频输入。",
+      "access": "从 MiniMax 平台接入接口，或按官方模型卡部署；模型权重不等于可直接双击使用的软件。",
+      "timeline": "官方已发布模型与开放权重；不把仓库创建或后续更新日当成首发日。",
+      "use_tags": [
+        "AI 助手与模型",
+        "编程与做应用"
+      ],
+      "where_used": "MiniMax平台的模型接口，或符合要求的权重部署环境。",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-glm-legal",
+      "zh": "GLM-Legal",
+      "en": "GLM-Legal",
+      "aliases": [
+        "智谱法律模型"
+      ],
+      "tags": [
+        "模型",
+        "写作与办公"
+      ],
+      "brief": "①干嘛的: 智谱面向法律工作流的模型，处理合同、证据材料和合规研究。 ②对你有啥用: 审阅合同、整理证据材料和辅助合规研究。 ③要什么设备: 按官方测试申请获准后，通过所提供的接口或工具使用。 ④上手难度: 专业工具；需要申请测试，法律结论需要专业复核。 ⑤面向谁、哪能用: 法律从业者，以及开发法律工具的团队。 测试资格和服务范围按智谱官方说明确认。 ⑥强在哪: 针对法律任务优化，而不是把通用聊天回答直接当法律结论。 ⑦谁家的、现在: 智谱（Z.ai）。 官方介绍页发表于2026年10月12日，提供测试申请入口。",
+      "line": "智谱为法律工作流做的模型，目前需申请测试；输出仍需法律专业人员复核。",
+      "more": "",
+      "for_us": "评估真实法律材料前，先确认测试资格、材料授权和保密要求。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "智谱官方：GLM-Legal",
+          "url": "https://z.ai/blog/glm-legal"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "for_whom": "法律从业者，以及开发法律工具的团队。",
+      "helps_with": "审阅合同、整理证据材料和辅助合规研究。",
+      "device": "按官方测试申请获准后，通过所提供的接口或工具使用。",
+      "difficulty": "专业工具；需要申请测试，法律结论需要专业复核。",
+      "region": "测试资格和服务范围按智谱官方说明确认。",
+      "edge": "针对法律任务优化，而不是把通用聊天回答直接当法律结论。",
+      "owner": "智谱（Z.ai）",
+      "what": "智谱面向法律工作流的模型，处理合同、证据材料和合规研究。",
+      "access": "从官方介绍页申请 Beta 或 API 访问；申请入口不等于已经获得使用权限。",
+      "timeline": "官方介绍页发表于2026年10月12日，提供测试申请入口。",
+      "use_tags": [
+        "AI 助手与模型",
+        "办公与文档"
+      ],
+      "where_used": "官方批准的Beta测试或API环境。",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "note": "已公布并接受测试申请，不代表一般账号已经获准调用。"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-claude-duet",
+      "zh": "Claude Duet",
+      "en": "Claude Duet",
+      "aliases": [],
+      "tags": [
+        "产品",
+        "智能体",
+        "写作与办公"
+      ],
+      "brief": "①干嘛的: Anthropic 让 Claude 主动准备简报、跟进事务的研究预览产品。 ②对你有啥用: 准备简报、跟进已交代的任务，减少每次重新发起问答。 ③要什么设备: 通过官方提供的 Claude 应用和网页入口使用。 ④上手难度: 普通人能上手；需要符合预览资格并获开放。 ⑤面向谁、哪能用: 希望 Claude 主动跟进事务的订阅者；先看自己是否在预览范围内。 首批研究预览面向美国 Pro 和 Max 订阅者，采用候补名单。 ⑥强在哪: 重点是持续跟进与主动协助；敏感的发送、支付和删除等动作仍需批准。 ⑦谁家的、现在: Anthropic。 2026年10月公布研究预览；候补开放不等于面向所有地区正式上线。",
+      "line": "Claude 的主动助理研究预览：能在后台跟进事务；首批仅限美国 Pro、Max 订阅者申请候补。",
+      "more": "",
+      "for_us": "先确认自己是否获准加入预览；别把订阅和候补资格当成已能使用。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Claude 官方：Introducing Claude Duet",
+          "url": "https://claude.com/resources/articles/claude-duet"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "for_whom": "希望 Claude 主动跟进事务的订阅者；先看自己是否在预览范围内。",
+      "helps_with": "准备简报、跟进已交代的任务，减少每次重新发起问答。",
+      "device": "通过官方提供的 Claude 应用和网页入口使用。",
+      "difficulty": "普通人能上手；需要符合预览资格并获开放。",
+      "region": "首批研究预览面向美国 Pro 和 Max 订阅者，采用候补名单。",
+      "edge": "重点是持续跟进与主动协助；敏感的发送、支付和删除等动作仍需批准。",
+      "owner": "Anthropic",
+      "what": "Anthropic 让 Claude 主动准备简报、跟进事务的研究预览产品。",
+      "access": "先在官方说明页确认资格并申请候补；订阅成功不等于已经获准使用。",
+      "timeline": "2026年10月公布研究预览；候补开放不等于面向所有地区正式上线。",
+      "use_tags": [
+        "AI 助手与模型",
+        "办公与文档"
+      ],
+      "where_used": "向获准预览账号开放的Claude应用和网页入口。",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用",
+        "note": "研究预览，首批美国Pro/Max候补；使用须先获开放。"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-seedance-25",
+      "zh": "Seedance 2.5",
+      "en": "Seedance 2.5",
+      "aliases": [
+        "Seedance 2.5（即梦/豆包）"
+      ],
+      "tags": [
+        "模型",
+        "云端"
+      ],
+      "brief": "①干嘛的: 字节跳动 Seed 团队的视频生成模型，结合文字、图片、视频和音频参考来制作视频。 ②对你有啥用: 用提示词和参考素材生成视频，并调整人物、画面和声音的关系。 ③要什么设备: 从官方开放的创作平台入口使用；接口接入需按平台说明配置。 ④上手难度: 普通人能上手；接口方式需要配置。 ⑤面向谁、哪能用: 制作短视频、广告和视觉内容的创作者。 即梦、豆包等入口的开放范围与接口状态，以对应平台的当前说明为准。 ⑥强在哪: 支持多模态参考与多轮延长，不是只凭一句文字随机出片。 ⑦谁家的、现在: 字节跳动 Seed 团队。 官方模型介绍发表于2026年7月31日；不同平台的开放日期另看各自公告。",
+      "line": "字节跳动的视频生成模型，可用多种参考材料控制视频；模型发布和平台接入日期分别计算。",
+      "more": "",
+      "for_us": "先确认创作平台是否已向自己的账号开放该模型，再准备有权使用的参考素材。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "Seed 官方：Seedance 2.5",
+          "url": "https://seed.bytedance.com/zh/blog/one-take-creation-flexible-referencing-introducing-seedance-2-5"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "for_whom": "制作短视频、广告和视觉内容的创作者。",
+      "helps_with": "用提示词和参考素材生成视频，并调整人物、画面和声音的关系。",
+      "device": "从官方开放的创作平台入口使用；接口接入需按平台说明配置。",
+      "difficulty": "普通人能上手；接口方式需要配置。",
+      "region": "即梦、豆包等入口的开放范围与接口状态，以对应平台的当前说明为准。",
+      "edge": "支持多模态参考与多轮延长，不是只凭一句文字随机出片。",
+      "owner": "字节跳动 Seed 团队",
+      "what": "字节跳动 Seed 团队的视频生成模型，结合文字、图片、视频和音频参考来制作视频。",
+      "access": "先在官方支持的创作入口确认是否可选该模型；接口尚未向自己开放时不能按已可用介绍。",
+      "timeline": "官方模型介绍发表于2026年7月31日；不同平台的开放日期另看各自公告。",
+      "use_tags": [
+        "视频"
+      ],
+      "where_used": "已向账号开放Seedance 2.5的官方创作平台。",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-deepseek-v41-flash",
+      "zh": "DeepSeek V4.1-Flash",
+      "en": "DeepSeek V4.1-Flash",
+      "aliases": [
+        "DeepSeek-V4.1-Flash"
+      ],
+      "tags": [
+        "模型",
+        "编程",
+        "智能体"
+      ],
+      "brief": "①干嘛的: 深度求索提供开放权重的混合专家模型，面向长材料处理和多步骤智能体任务。 ②对你有啥用: 处理长文档，并在带工具的多步骤任务中进行推理和生成。 ③要什么设备: 部署开放权重需要匹配模型体量的专业算力；云端使用按对应平台接口说明。 ④上手难度: 专业工具；部署和接口接入需要配置。 ⑤面向谁、哪能用: 需要处理长材料、搭建智能体的开发者和部署团队。 按官方模型卡确认权重许可和部署要求；云服务范围另查所选平台。 ⑥强在哪: 以混合专家结构处理长上下文；不把厂商评测结果当本站实测。 ⑦谁家的、现在: 深度求索（DeepSeek）。 2026年9月10日发布初版，10月17日发布Flash-1017小更新；官网、应用和API已上线。",
+      "line": "深度求索的开放权重模型；模型卡提供结构与部署说明，后续页面更新不等同重新发布模型。",
+      "more": "",
+      "for_us": "选择模型时分清权重部署与云端接口，按当前官方说明确认硬件、费用和许可。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "DeepSeek 官方：Flash-1017更新",
+          "url": "https://api-docs.deepseek.com/news/news261017/"
+        },
+        {
+          "name": "DeepSeek 官方模型卡",
+          "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "for_whom": "需要处理长材料、搭建智能体的开发者和部署团队。",
+      "helps_with": "处理长文档，并在带工具的多步骤任务中进行推理和生成。",
+      "device": "部署开放权重需要匹配模型体量的专业算力；云端使用按对应平台接口说明。",
+      "difficulty": "专业工具；部署和接口接入需要配置。",
+      "region": "按官方模型卡确认权重许可和部署要求；云服务范围另查所选平台。",
+      "edge": "以混合专家结构处理长上下文；不把厂商评测结果当本站实测。",
+      "owner": "深度求索（DeepSeek）",
+      "what": "深度求索提供开放权重的混合专家模型，面向长材料处理和多步骤智能体任务。",
+      "access": "从 deepseek-ai 官方模型卡查看权重、说明和许可；不凭社交平台截图判断接口已开放。",
+      "timeline": "2026年9月10日发布初版，10月17日发布Flash-1017小更新；官网、应用和API已上线。",
+      "use_tags": [
+        "AI 助手与模型",
+        "编程与做应用"
+      ],
+      "where_used": "DeepSeek官方应用、网页和API，或自行部署的权重环境。",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
+    },
+    {
+      "id": "bk-eleven-realtime",
+      "zh": "Eleven Realtime",
+      "en": "Eleven Realtime",
+      "aliases": [
+        "Eleven Realtime v1 Mini",
+        "Eleven Realtime v1 Max"
+      ],
+      "tags": [
+        "模型",
+        "语音"
+      ],
+      "brief": "①干嘛的: ElevenLabs 的语音到语音模型，把听取、理解和说话合在同一模型里。 ②对你有啥用: 让应用接住语音、理解请求并直接用语音回答。 ③要什么设备: 可联网的应用与麦克风；开发端通过 ElevenAgents 或 WebSocket 接口连接。 ④上手难度: 需要配置；独立接口面向开发者。 ⑤面向谁、哪能用: 制作语音助手、互动角色或语音客服的开发者。 按 ElevenLabs 的账号和服务范围使用。 ⑥强在哪: Mini偏自然对话，Max偏复杂任务；官方说明支持90种以上语言。 ⑦谁家的、现在: ElevenLabs。 2026年10月20日公布。独立 Realtime API 与 ElevenAgents 平台分别运行，前者不自动包含后者的全部渠道和知识库功能。",
+      "line": "用于实时语音助手的模型，有 Mini、Max 两档；可在 ElevenAgents 里选用，或单独接接口。",
+      "more": "",
+      "for_us": "先选完整的平台入口还是独立接口；两条路径包含的渠道、知识库功能并不相同。",
+      "related": [],
+      "seen_in": [],
+      "sources": [
+        {
+          "name": "ElevenLabs 官方：Eleven Realtime",
+          "url": "https://elevenlabs.io/blog/realtime"
+        }
+      ],
+      "added_at": "2026-10-24",
+      "last_verified": "2026-10-24",
+      "status": "verified",
+      "for_whom": "制作语音助手、互动角色或语音客服的开发者。",
+      "helps_with": "让应用接住语音、理解请求并直接用语音回答。",
+      "device": "可联网的应用与麦克风；开发端通过 ElevenAgents 或 WebSocket 接口连接。",
+      "difficulty": "需要配置；独立接口面向开发者。",
+      "region": "按 ElevenLabs 的账号和服务范围使用。",
+      "edge": "Mini偏自然对话，Max偏复杂任务；官方说明支持90种以上语言。",
+      "owner": "ElevenLabs",
+      "what": "ElevenLabs 的语音到语音模型，把听取、理解和说话合在同一模型里。",
+      "access": "在 ElevenAgents 的模型列表选用，或连接独立 Realtime API。独立接口使用 WebSocket，不能把原有 WebRTC 连接原样搬过去。",
+      "timeline": "2026年10月20日公布。独立 Realtime API 与 ElevenAgents 平台分别运行，前者不自动包含后者的全部渠道和知识库功能。",
+      "use_tags": [
+        "音乐与语音",
+        "AI 助手与模型"
+      ],
+      "where_used": "ElevenAgents平台，或独立Realtime WebSocket API。",
+      "reception": "按官方资料解释用途，本站未作独立性能横评。",
+      "company": {},
+      "lifecycle": {
+        "state": "在用"
+      },
+      "nianlun_seen": []
     }
   ]
 }
