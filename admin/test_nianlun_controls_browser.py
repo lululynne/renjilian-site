@@ -55,7 +55,7 @@ class NianlunControlsBrowserTests(unittest.TestCase):
             else: r.fulfill(json=bark())
         page.route("**/data/bark.json", serve)
         page.goto(self.base + "/nianlun.html" + query)
-        page.locator(".nl-item").first.wait_for()
+        page.locator(".nl-chip").first.wait_for()
         if page.locator("#nlCalendar").get_attribute("open") is None:
             page.locator("#nlCalendar > summary").click()
         return page
@@ -75,6 +75,10 @@ class NianlunControlsBrowserTests(unittest.TestCase):
         self.assertEqual(self.errors, [])
 
     def test_calendar_skips_unrecorded_days_and_invalid_query_is_cleaned(self):
+        for invalid_member in ["constructor", "__proto__"]:
+            invalid = self.open("?m=" + invalid_member)
+            self.assertNotIn("m=", invalid.url)
+            self.assertEqual(invalid.locator(".nl-item").count(), 4)
         page = self.open("?m=unknown&r=bad&d=2026-02-30")
         self.assertNotIn("?", page.url)
         page.locator("#nlLatest").click(); self.assertEqual(page.locator("#nlDate").input_value(), "2026-10-24")

@@ -164,7 +164,7 @@
   function readFilterFromUrl() {
     var m = "", params = new URLSearchParams(location.search), changed = false;
     m = params.get("m") || "";
-    if (m && (m === "other" || !MEMBER_NAME[m])) { m = ""; params.delete("m"); changed = true; }
+    if (m && (m === "other" || !Object.prototype.hasOwnProperty.call(MEMBER_NAME, m))) { m = ""; params.delete("m"); changed = true; }
     var r = params.get("r") || "", d = params.get("d") || "";
     REGION = r === "china" ? r : "";
     DAY = validDay(d) ? d : "";
