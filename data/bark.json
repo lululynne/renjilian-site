@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24",
+  "updated_at": "2026-10-25",
   "items": [
     {
       "id": "bark-20261009-delta-ai-safety",
@@ -19,6 +19,70 @@
         {
           "name": "Benzinga 报道",
           "url": "https://www.tradingview.com/news/benzinga:b2aaaa359094b:0-ahead-of-dal-earnings-elon-musk-mocks-delta-s-starlink-snub-accessing-the-internet-is-utterly-impossible/"
+        }
+      ]
+    },
+    {
+      "id": "bark-20261009-chatgpt-announcement-again",
+      "title": "熟悉的发布词又来一遍",
+      "speaker": "Tibo · @thsottiaux",
+      "at": "2026-10-09",
+      "quote": "Today, we are announcing ChatGPT.",
+      "quote_basis": "original",
+      "paraphrase": "Tibo当天发出这句宣布ChatGPT的开场白，并附上ChatGPT入口。这里只收录这条发言，不把它写成新模型发布或周年纪念。",
+      "comment": "入口还是那个入口，开场白又念了一遍。",
+      "sources": [
+        {
+          "name": "X 原帖",
+          "url": "https://x.com/thsottiaux/status/2108349826727588000"
+        }
+      ]
+    },
+    {
+      "id": "bark-20261010-blinked-saturday",
+      "title": "眨个眼，周六就到了",
+      "speaker": "Tibo · @thsottiaux",
+      "at": "2026-10-10",
+      "quote": "Blinked and it’s already Saturday",
+      "quote_basis": "original",
+      "paraphrase": "Tibo在周六发帖，说眨眼之间就已经到了星期六。",
+      "comment": "这一周的进度条，跳过了中间几格。",
+      "sources": [
+        {
+          "name": "X 原帖",
+          "url": "https://x.com/thsottiaux/status/2108840070648397933"
+        }
+      ]
+    },
+    {
+      "id": "bark-20261011-grok-shopping-card",
+      "title": "购物助手，先聊信用卡照片",
+      "speaker": "Elon Musk · @elonmusk",
+      "at": "2026-10-11",
+      "quote": "take a picture of your credit card",
+      "quote_basis": "original",
+      "paraphrase": "马斯克推介Grok Bot购物时，把信用卡照片写进了介绍的开头，并声称Bot会在网上找合适的价格、替人下单。这里记录的是他的产品推介。",
+      "comment": "比购物清单先出场的，是信用卡。",
+      "sources": [
+        {
+          "name": "X 原帖",
+          "url": "https://x.com/elonmusk/status/2109027407185277123"
+        }
+      ]
+    },
+    {
+      "id": "bark-20261011-perfect-resets",
+      "title": "完美之后，还得继续重置",
+      "speaker": "Tibo · @thsottiaux",
+      "at": "2026-10-11",
+      "quote": "The day we reach perfection it will be resets from there onwards",
+      "quote_basis": "original",
+      "paraphrase": "Tibo说，等到达到完美的那天，往后就会一直重置。他把“完美”和“重置”并排放在了一句话里。",
+      "comment": "完美听起来，也得留个重启键。",
+      "sources": [
+        {
+          "name": "X 原帖",
+          "url": "https://x.com/thsottiaux/status/2109090080497508356"
         }
       ]
     },
@@ -63,6 +127,26 @@
         {
           "name": "Tesla 官方说明",
           "url": "https://www.tesla.com/support/grok"
+        }
+      ]
+    },
+    {
+      "id": "bark-20261013-memory-transfer-intro",
+      "title": "新机机报到，先搬旧记忆",
+      "speaker": "Elon Musk · @elonmusk / Brian Roemmele · @BrianRoemmele",
+      "at": "2026-10-13",
+      "quote": "Grok @Bot memory transfer",
+      "quote_basis": "original",
+      "paraphrase": "马斯克写下这几个词，链接指向Brian Roemmele介绍Memory Transfer的原帖。Brian称这款Bot能把Claude或ChatGPT中积累的信息带给新Bot；这里记录作者介绍与转发，不把它当作本站实测或官方功能公告。",
+      "comment": "新机机的第一份见面礼，是一箱旧记忆。",
+      "sources": [
+        {
+          "name": "Musk 原帖",
+          "url": "https://x.com/elonmusk/status/2109867516646637579"
+        },
+        {
+          "name": "Brian Roemmele 原始介绍",
+          "url": "https://x.com/BrianRoemmele/status/2109853221808435364"
         }
       ]
     }
