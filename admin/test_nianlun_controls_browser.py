@@ -40,14 +40,14 @@ class NianlunControlsBrowserTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.browser.close(); cls.p.stop(); cls.server.shutdown(); cls.server.server_close(); cls.thread.join(2)
 
-    def open(self, query="", width=390, bark_handler=None, init=None, clock=False):
+    def open(self, query="", width=390, bark_handler=None, init=None, clock=False, timeline=None):
         ctx = self.browser.new_context(viewport={"width": width, "height": 844})
         ctx.route("**/*", lambda r: r.continue_() if urlsplit(r.request.url).netloc == urlsplit(self.base).netloc else r.abort())
         page = ctx.new_page(); self.addCleanup(ctx.close)
         if clock: page.clock.install()
         if init: page.add_init_script(init)
         self.errors = []; page.on("pageerror", lambda e: self.errors.append(str(e)))
-        page.route("**/data/nianlun.json", lambda r: r.fulfill(json=TIMELINE))
+        page.route("**/data/nianlun.json", lambda r: r.fulfill(json=TIMELINE if timeline is None else timeline))
         self.bark_requests = 0
         def serve(r):
             self.bark_requests += 1
@@ -72,6 +72,84 @@ class NianlunControlsBrowserTests(unittest.TestCase):
         self.assertEqual(page.locator(".nl-item").count(), 0); self.assertIn("这组筛选", page.locator("#nlList").inner_text())
         page.locator('[data-m=""]').click(); page.locator("#nlAllDates").click()
         self.assertEqual(page.locator(".nl-item").count(), 2)
+        self.assertEqual(self.errors, [])
+
+    def reading_timeline(self):
+        data = json.loads(json.dumps(TIMELINE))
+        for member, hint in zip(data["members"], ["研究报告·产品公告", "论文·官方仓库", "研究博客·产品发布"]):
+            member["reading_hint"] = hint
+        data["members"].append({"id": "silent", "name": "丁", "region": "china",
+                                "reading_hint": "版本记录·使用文档"})
+        return data
+
+    def test_member_hints_and_scope_states_keep_cumulative_counts(self):
+        page = self.open(timeline=self.reading_timeline())
+        option = lambda member: page.locator(f'.nl-chip[data-m="{member}"]')
+        self.assertEqual(option("openai").locator(".nl-reading-hint").count(), 1)
+        self.assertEqual(option("openai").locator(".nl-reading-hint").inner_text(), "研究报告·产品公告")
+        self.assertTrue(option("openai").locator(".nl-member-state").get_attribute("src").endswith("/bud.svg"))
+        self.assertTrue(option("silent").is_disabled())
+        self.assertTrue(option("silent").locator(".nl-member-state").get_attribute("src").endswith("/quiet-leaf.svg"))
+        option("google").click()
+        self.assertTrue(option("openai").locator(".nl-member-state").get_attribute("src").endswith("/bud.svg"),
+                        "选择一家不应把其他家的状态变成静默")
+        page.locator("#nlDate").fill("2026-10-22"); page.locator("#nlDate").dispatch_event("change")
+        self.assertTrue(option("deepseek").locator(".nl-member-state").get_attribute("src").endswith("/bud.svg"))
+        self.assertTrue(option("openai").locator(".nl-member-state").get_attribute("src").endswith("/quiet-leaf.svg"))
+        self.assertIn("暂未收录", option("openai").get_attribute("aria-label"))
+        self.assertEqual(option("openai").locator(".nl-n").inner_text(), "1")
+        page.locator('[data-region="china"]').click()
+        option("deepseek").click(); self.assertEqual(page.locator(".nl-item").count(), 1)
+        page.locator("#nlAllDates").click()
+        self.assertEqual(page.locator(".nl-item").count(), 2)
+        self.assertTrue(option("openai").locator(".nl-member-state").get_attribute("src").endswith("/quiet-leaf.svg"))
+        self.assertEqual(option("deepseek").locator(".nl-n").inner_text(), "2")
+        self.assertEqual(self.errors, [])
+
+    def test_member_hints_are_text_and_icons_are_transparent_static_controls(self):
+        data = self.reading_timeline()
+        hostile = '<img src=x onerror="window.hintPwn=1">'
+        data["members"][0]["reading_hint"] = hostile
+        page = self.open(timeline=data)
+        hint = page.locator('.nl-chip[data-m="openai"] .nl-reading-hint')
+        self.assertEqual(hint.count(), 1)
+        self.assertEqual(hint.inner_text(), hostile)
+        self.assertEqual(hint.locator("img").count(), 0)
+        self.assertIsNone(page.evaluate("window.hintPwn"))
+        for width in [320, 390, 1100]:
+            page.set_viewport_size({"width": width, "height": 844})
+            self.assertFalse(page.evaluate("document.documentElement.scrollWidth>innerWidth"))
+            self.assertEqual(page.locator(".nl-chip").evaluate_all("els=>els.filter(e=>Math.min(e.getBoundingClientRect().width,e.getBoundingClientRect().height)<44).length"), 0)
+        page.locator('.nl-chip[data-m=""]').focus()
+        for member in ["openai", "deepseek", "google", ""]:
+            page.keyboard.press("ArrowRight")
+            self.assertEqual(page.evaluate("document.activeElement.getAttribute('data-m')"), member)
+            self.assertEqual(page.locator(f'.nl-chip[data-m="{member}"]').get_attribute("aria-checked"), "true")
+        for member, suffix in [("openai", "/bud.svg"), ("silent", "/quiet-leaf.svg")]:
+            icon = page.locator(f'.nl-chip[data-m="{member}"] .nl-member-state')
+            self.assertTrue(icon.get_attribute("src").endswith(suffix))
+            self.assertEqual(icon.get_attribute("width"), "20")
+            self.assertEqual(icon.get_attribute("height"), "20")
+            pixels = icon.evaluate("""async img=>{
+                await img.decode(); const c=document.createElement('canvas'); c.width=20;c.height=20;
+                const x=c.getContext('2d');x.drawImage(img,0,0,20,20);
+                const d=x.getImageData(0,0,20,20).data;
+                return {corner:d[3],visible:[...d].some((v,i)=>i%4===3&&v>0)};
+            }""")
+            self.assertEqual(pixels["corner"], 0)
+            self.assertTrue(pixels["visible"])
+        self.assertEqual(self.errors, [])
+
+    def test_member_list_has_an_explicit_keyboard_scroll_entry(self):
+        page = self.open(timeline=self.reading_timeline())
+        roster = page.locator("#nlFilter")
+        self.assertEqual(roster.get_attribute("tabindex"), "0")
+        roster.focus()
+        self.assertEqual(page.evaluate("document.activeElement.id"), "nlFilter")
+        page.keyboard.press("ArrowRight")
+        page.wait_for_function("document.getElementById('nlFilter').scrollLeft > 0")
+        self.assertEqual(page.locator('.nl-chip[data-m=""]').get_attribute("aria-checked"), "true")
+        self.assertTrue(page.locator('.nl-chip[data-m="silent"]').is_disabled())
         self.assertEqual(self.errors, [])
 
     def test_calendar_skips_unrecorded_days_and_invalid_query_is_cleaned(self):

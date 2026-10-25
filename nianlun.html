@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>年轮 · 第二人称</title>
 <link rel="stylesheet" href="style.css?v=20261015-r0">
-<link rel="stylesheet" href="nianlun-controls.css?v=20261024-rings-bark">
+<link rel="stylesheet" href="nianlun-controls.css?v=20261025-member-reading">
 <noscript><style>.nl-list .log-state{display:none}</style></noscript>
 <link rel="stylesheet" href="visits.css?v=20261023-visits">
 </head>
@@ -55,11 +55,11 @@
       <p class="nl-calendar-note" id="nlDateHint">已录的早期节点也在这里，不按创刊日截断。</p>
     </details>
     <div class="nl-results">
-  <div class="nl-filter" id="nlFilter" role="radiogroup" aria-label="只看某一家"></div>
+  <div class="nl-filter" id="nlFilter" role="radiogroup" aria-label="只看某一家" tabindex="0"></div>
 
   <div class="nl-extras">
   <details class="nl-legend">
-    <summary>电池怎么看</summary>
+    <summary>电池与芽叶怎么看</summary>
     <p>格数按本站编辑判断标记重要度，不是产品评分或原来源的风险等级。</p>
     <ul>
       <li><img src="img/nianlun/battery-5.svg" width="48" height="24" alt="5 格"><span>新一代旗舰，或改变全行业价格</span></li>
@@ -68,6 +68,11 @@
       <li><img src="img/nianlun/battery-2.svg" width="48" height="24" alt="2 格"><span>小版本，或价格小调</span></li>
       <li><img src="img/nianlun/battery-1.svg" width="48" height="24" alt="1 格"><span>修复、文档变更</span></li>
     </ul>
+    <ul class="nl-member-legend">
+      <li><img src="img/nianlun/bud.svg" width="20" height="20" alt="芽"><span>芽：当前日期和范围有收录。</span></li>
+      <li><img src="img/nianlun/quiet-leaf.svg" width="20" height="20" alt="落叶"><span>叶：当前日期和范围暂未收录。</span></li>
+    </ul>
+    <p>名单数字为累计格数；芽叶随日期和国内范围变化。</p>
   </details>
 
   <section class="bark-panel" id="bark" aria-labelledby="barkTitle">
@@ -259,23 +264,48 @@
   }
 
   function syncChips() {
-    var chips = filterEl.querySelectorAll(".nl-chip"), i;
+    var chips = filterEl.querySelectorAll(".nl-chip"), scoped = Object.create(null), scopeTotal = 0, i;
+    DATA.items.forEach(function (it) {
+      if ((!DAY || String(it.at).slice(0, 10) === DAY) && (!REGION || DOMESTIC[it.member] === true)) {
+        scoped[it.member] = (scoped[it.member] || 0) + 1;
+        scopeTotal++;
+      }
+    });
     for (i = 0; i < chips.length; i++) {
-      var on = chips[i].getAttribute("data-m") === CURRENT;
+      var member = chips[i].getAttribute("data-m"), on = member === CURRENT;
       chips[i].setAttribute("aria-checked", on ? "true" : "false");
       chips[i].setAttribute("tabindex", on ? "0" : "-1");
+      var n = member ? scoped[member] || 0 : scopeTotal;
+      var total = member ? COUNTS[member] || 0 : DATA.items.length;
+      var state = n ? "当前范围收录 " + n + " 格" : "当前范围暂未收录";
+      var label = member ? MEMBER_NAME[member] : "全部成员";
+      if (member && !total) label += "，还没有记到";
+      label += "，累计 " + total + " 格；" + state;
+      var hint = chips[i].querySelector(".nl-reading-hint");
+      if (member && hint) label += "；怎么读：" + hint.textContent;
+      chips[i].setAttribute("aria-label", label);
+      var icon = chips[i].querySelector(".nl-member-state");
+      if (icon) {
+        icon.src = "img/nianlun/" + (n ? "bud.svg" : "quiet-leaf.svg");
+        icon.title = state;
+      }
     }
   }
 
   function renderFilter() {
-    var html = '<button type="button" class="nl-chip" role="radio" data-m="" aria-checked="true">全部' +
-      ' <span class="nl-n">' + (DATA.items || []).length + "</span></button>";
+    var html = '<button type="button" class="nl-chip" role="radio" data-m="" aria-checked="true">' +
+      '<span class="nl-member-line">全部 <span class="nl-n">' + DATA.items.length + "</span></span>" +
+      '<span class="nl-reading-hint">浏览全部记录</span></button>';
     DATA.members.forEach(function (m) {
       if (m.id === "other") return;
       var n = COUNTS[m.id] || 0;
       html += '<button type="button" class="nl-chip" role="radio" data-m="' + esc(m.id) + '"' +
-        (n ? "" : ' disabled aria-label="' + esc(m.name) + "，还没有记到" + '"') + ">" +
-        esc(m.name) + ' <span class="nl-n">' + n + "</span></button>";
+        (n ? "" : " disabled") + '><span class="nl-member-line">' +
+        '<span class="nl-member-face" aria-hidden="true">' + esc(String(m.name || m.id).charAt(0)) + "</span>" +
+        '<span class="nl-member-name">' + esc(m.name) + '</span> <span class="nl-n">' + n + "</span>" +
+        '<img class="nl-member-state" src="img/nianlun/quiet-leaf.svg" width="20" height="20" alt="" aria-hidden="true"></span>';
+      if (m.reading_hint) html += '<span class="nl-reading-hint">' + esc(m.reading_hint) + "</span>";
+      html += "</button>";
     });
     filterEl.innerHTML = html;
     syncChips();

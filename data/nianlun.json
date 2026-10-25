@@ -6,76 +6,91 @@
     {
       "id": "openai",
       "name": "OpenAI",
+      "reading_hint": "研究报告·产品公告·规则",
       "region": "international"
     },
     {
       "id": "anthropic",
       "name": "Anthropic",
+      "reading_hint": "技术报告·工程博客",
       "region": "international"
     },
     {
       "id": "google",
       "name": "Google",
+      "reading_hint": "研究博客·产品发布",
       "region": "international"
     },
     {
       "id": "xai",
       "name": "xAI",
+      "reading_hint": "官方公告·负责人原帖",
       "region": "international"
     },
     {
       "id": "deepseek",
       "name": "DeepSeek",
+      "reading_hint": "论文·官方仓库·发布",
       "region": "china"
     },
     {
       "id": "moonshot",
       "name": "月之暗面",
+      "reading_hint": "论文·产品公告",
       "region": "china"
     },
     {
       "id": "qwen",
       "name": "阿里通义",
+      "reading_hint": "论文·模型卡·官方仓库",
       "region": "china"
     },
     {
       "id": "zhipu",
       "name": "智谱",
+      "reading_hint": "模型报告·官方公告",
       "region": "china"
     },
     {
       "id": "doubao",
       "name": "字节豆包",
+      "reading_hint": "技术报告·产品发布",
       "region": "china"
     },
     {
       "id": "mimo",
       "name": "小米 MiMo",
+      "reading_hint": "技术报告·官方发布",
       "region": "china"
     },
     {
       "id": "cursor",
       "name": "Cursor",
+      "reading_hint": "版本记录·使用文档",
       "region": "international"
     },
     {
       "id": "minimax",
       "name": "MiniMax",
+      "reading_hint": "模型报告·产品发布",
       "region": "china"
     },
     {
       "id": "elevenlabs",
       "name": "ElevenLabs",
+      "reading_hint": "产品博客·接口文档",
       "region": "international"
     },
     {
       "id": "meta",
       "name": "Meta",
+      "reading_hint": "模型卡·官方仓库",
       "region": "international"
     },
     {
       "id": "cherry-studio",
       "name": "Cherry Studio",
+      "reading_hint": "版本记录·使用文档",
       "region": "china"
     },
     {

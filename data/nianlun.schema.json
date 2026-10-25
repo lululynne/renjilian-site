@@ -42,6 +42,12 @@
             "type": "string",
             "minLength": 1
           },
+          "reading_hint": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40,
+            "description": "这家怎么读：供读者选择原文类型的一行提示；可选以兼容旧数据。"
+          },
           "region": {
             "type": "string",
             "enum": [

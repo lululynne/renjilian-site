@@ -177,6 +177,23 @@ class NianlunDataTests(unittest.TestCase):
                     self.assertIn(it["read"], readings, "read 必须指向存在的精读")
                     self.assertNotEqual(readings[it["read"]].get("status"), "draft", "read 不许指向草稿")
 
+    def test_member_reading_hints(self) -> None:
+        for member in self.data["members"]:
+            if member["id"] == "other":
+                continue
+            with self.subTest(member=member["id"]):
+                hint = member.get("reading_hint")
+                self.assertIsInstance(hint, str)
+                self.assertTrue(4 <= len(hint) <= 40)
+
+    def test_optional_reading_hint_keeps_legacy_members_valid(self) -> None:
+        schema = self.schema["properties"]["members"]["items"]
+        legacy = {"id": "example", "name": "示例"}
+        self.assertEqual(check(legacy, schema, "$"), [])
+        self.assertEqual(check(dict(legacy, reading_hint="论文·官方公告"), schema, "$"), [])
+        for value in ("", "长" * 41, [], None):
+            self.assertTrue(check(dict(legacy, reading_hint=value), schema, "$"))
+
     def test_notes_point_to_real_ainotes(self) -> None:
         notes_ids = {e["id"] for e in load("data/ainotes.json")["items"]}
         for it in self.data["items"]:
