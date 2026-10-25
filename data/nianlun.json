@@ -100,6 +100,192 @@
   ],
   "items": [
     {
+      "id": "nl-20261011-codex-day6-reset",
+      "at": "2026-10-11T12:01:09+08:00",
+      "member": "openai",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 2,
+      "line": "Tibo宣布Day 6额度重置已完成传播。这是当次重置公告；适用计划与实际到账仍以各账号用量页为准，不代表永久提高套餐额度。",
+      "sources": [
+        {
+          "name": "Tibo完成公告",
+          "url": "https://x.com/thsottiaux/status/2109132167112782291"
+        }
+      ],
+      "read": "",
+      "notes": [
+        "bk-tibo",
+        "bk-usage"
+      ]
+    },
+    {
+      "id": "nl-20261009-elevenlabs-brand-kit",
+      "at": "2026-10-09T20:00:00+08:00",
+      "member": "elevenlabs",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 2,
+      "line": "ElevenLabs在ElevenCreative推出Brand Kit，可保存品牌标志、字体和颜色，并在Image & Video、Flows及其创作代理中引用，减少反复交代视觉规范。",
+      "sources": [
+        {
+          "name": "官方公告",
+          "url": "https://elevenlabs.io/blog/introducing-brand-kit"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261012-sol-context-500k",
+      "at": "2026-10-12T07:45:59+08:00",
+      "member": "openai",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 2,
+      "line": "Tibo宣布Codex与ChatGPT Work中的GPT-6.1 Sol默认上下文从272k提高至500k token，供更长任务使用。此条记录公告，不代替逐账号生效验证。",
+      "sources": [
+        {
+          "name": "Tibo原帖",
+          "url": "https://x.com/thsottiaux/status/2109430343346581527"
+        }
+      ],
+      "read": "",
+      "notes": [
+        "bk-tibo"
+      ]
+    },
+    {
+      "id": "nl-20261013-codex-day8-reset",
+      "at": "2026-10-13T13:06:06+08:00",
+      "member": "openai",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 2,
+      "line": "Tibo确认Day 8额度重置完成。这是10月13日的一次重置，与Day 6分别记录；公告不等于所有计划逐账号已到账，也不是永久扩额。",
+      "sources": [
+        {
+          "name": "Tibo完成公告",
+          "url": "https://x.com/thsottiaux/status/2109873287853707513"
+        }
+      ],
+      "read": "",
+      "notes": [
+        "bk-tibo",
+        "bk-usage"
+      ]
+    },
+    {
+      "id": "nl-20261012-glm-legal-beta",
+      "at": "2026-10-12",
+      "member": "zhipu",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 2,
+      "line": "智谱发布基于GLM-5.3-Flash的GLM-Legal，面向合同审阅、证据分析和合规工作，并开放Beta及API访问申请。申请入口不等于一般账号已获准使用。",
+      "sources": [
+        {
+          "name": "智谱官方",
+          "url": "https://z.ai/blog/glm-legal"
+        }
+      ],
+      "read": "",
+      "notes": [
+        "bk-glm-legal"
+      ]
+    },
+    {
+      "id": "nl-20261011-grok-bot-0702",
+      "at": "2026-10-11",
+      "member": "xai",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 2,
+      "line": "Grok Bot官方v0.70.2汇总更新加入自有邮箱收信与待批准的发信草稿、无需连接X账号的公开搜索，以及Figma、Notion、Canva等应用的聊天交互卡。汇总也包含较早0.69与0.70版本。",
+      "sources": [
+        {
+          "name": "官方版本记录",
+          "url": "https://x.ai/changelog/bot"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261009-claude-dynamic-workflows",
+      "at": "2026-10-09",
+      "member": "anthropic",
+      "domain": "门路",
+      "tags": [
+        "门路"
+      ],
+      "level": 2,
+      "line": "Claude Managed Agents开放dynamic workflows测试，代理可把大量工作写成分阶段运行的工作流，由服务器在后台调度并合并结果；使用需启用对应测试能力。",
+      "sources": [
+        {
+          "name": "官方发布记录",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        },
+        {
+          "name": "工作流说明",
+          "url": "https://platform.claude.com/docs/en/managed-agents/workflow-runs"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261012-meta-muse-wonder",
+      "at": "2026-10-12",
+      "member": "meta",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 2,
+      "line": "Meta发布Muse Wonder与Muse Wonder Full，加入跨对话记忆和长任务规划能力。Wonder通过Meta Model API及Muse Code提供，Wonder Full面向Muse Code订阅者；Muse应用内接入另行推进。",
+      "sources": [
+        {
+          "name": "Meta官方公告",
+          "url": "https://about.fb.com/news/2026/10/introducing-muse-wonder-models/"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20260915-typesafe-jev",
+      "at": "2026-09-15",
+      "member": "other",
+      "domain": "模型",
+      "tags": [
+        "模型"
+      ],
+      "level": 2,
+      "line": "TypeSafe以早期访问形式推出Jev，把非结构化输入转换为带类型的概率决策，重点是结构化结果而非自由生成长文。速度与可靠性表述属于公司主张，本站未做独立横评。",
+      "sources": [
+        {
+          "name": "TypeSafe官方",
+          "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "maker": "TypeSafe"
+    },
+    {
       "id": "nl-20261013-x-subscription",
       "at": "2026-10-13T07:08:39+08:00",
       "member": "xai",
