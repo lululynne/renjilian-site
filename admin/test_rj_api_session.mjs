@@ -181,3 +181,36 @@ test('a pending media response from an old selector generation cannot reach the 
   assert.equal(preview.stale, true);
   assert.equal(objectURLs.length, 0, 'stale bytes must not create a Blob URL');
 });
+
+test('an expected identity already replaced by another account cannot start a private write', async () => {
+  const values=new Map([['rj_session_selector',JSON.stringify({session_id:B,generation:4})]]);
+  const r=runtime({storage:values});
+  const response=await r.api.put('/api/me/card/display',{expected_owner_id:'account-a'},
+    {expectedIdentity:{session_id:A,generation:3}});
+  assert.equal(r.requests.length,0,'A intent must never be sent with B credentials');
+  assert.equal(response.stale,true);
+});
+
+test('identity changes in the fetch microtask prevent the request, rather than only hiding its response', async () => {
+  const values=new Map([['rj_session_selector',JSON.stringify({session_id:A,generation:3})]]);
+  const r=runtime({storage:values});
+  const pending=r.api.put('/api/me/card/display',{expected_owner_id:'account-a'},
+    {expectedIdentity:{session_id:A,generation:3}});
+  values.set('rj_session_selector',JSON.stringify({session_id:B,generation:4}));
+  const response=await pending;
+  assert.equal(r.requests.length,0,'a delayed fetch must recheck the expected selector');
+  assert.equal(response.stale,true);
+});
+
+test('a frozen non-secret identity snapshot pins its own selector without changing legacy calls', async () => {
+  const values=new Map([['rj_session_selector',JSON.stringify({session_id:A,generation:3})]]);
+  const r=runtime({storage:values});
+  const identity=r.api.identitySnapshot();
+  assert.equal(Object.isFrozen(identity),true);
+  assert.equal(identity.session_id,A); assert.equal(identity.generation,3);
+  assert.deepEqual(Object.keys(identity).sort(),['generation','session_id']);
+  const response=await r.api.get('/api/me/chest',{expectedIdentity:identity});
+  assert.equal(response.ok,true); assert.equal(r.requests[0].headers['X-RJ-Session'],A);
+  await r.api.get('/api/config');
+  assert.equal(r.requests.length,2);
+});

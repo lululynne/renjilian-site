@@ -641,7 +641,7 @@
   function fieldName(key) {
     return ({ display_name: "昵称", skin: "皮肤", published: "公开状态", bio: "签名", avatar: "头像",
       bg_preset: "背景", bg_focus: "背景位置", bg: "背景", devices: "设备", subs: "订阅", routes: "路线",
-      showcase: "展柜", my_call: "称呼", rel: "关系", titles: "头衔" })[key] || key;
+      showcase: "生活档案", my_call: "称呼", rel: "关系", titles: "头衔" })[key] || key;
   }
   function describeAvatar(value) {
     if (!value) return "未设置";
@@ -663,7 +663,7 @@
   }
   function describeShowcase(value) {
     return (value || []).map(function (slot) {
-      var details = [slot.zh || slot.kind || "未命名展柜"];
+      var details = [slot.zh || slot.kind || "未命名生活档案"];
       if (slot.hidden != null) details.push(slot.hidden ? "隐藏" : "展示");
       if (Array.isArray(slot.items)) details.push(slot.items.length ? JSON.stringify(slot.items) : "0 项");
       if (Array.isArray(slot.hours)) details.push("24 小时分布");

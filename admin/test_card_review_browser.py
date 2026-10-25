@@ -625,7 +625,7 @@ class CardReviewBrowser(unittest.TestCase):
         text = panel.inner_text()
         for phrase in ("候选机机", "@review-bot", "服务器整理", "签名首尾空白已整理",
                        "昵称", "皮肤", "公开状态", "签名", "头像", "背景", "设备", "订阅",
-                       "路线", "展柜", "称呼", "关系", "头衔", "当前操作机机"):
+                       "路线", "生活档案", "称呼", "关系", "头衔", "当前操作机机"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, text)
         self.assertEqual(self.backend.patches, [])

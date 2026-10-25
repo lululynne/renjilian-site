@@ -234,12 +234,17 @@
     acts(M);
     family(M);
     showcase(M);
+    var display = pub.published === true && pub.display_v1 && pub.display_v1.version === 1 ? pub.display_v1 : null;
+    if (window.RJ_COLLECTION) window.RJ_COLLECTION.paint($("collectionDisplay"), display);
+    show($("collectionDisplaySection"), !!display);
     if (pub.notice) { $("cdNotice").textContent = pub.notice; show($("cdNotice"), true); }
   }
 
   window.addEventListener("rj-identity-change", function () {
     clearPrivateMedia();
     activeModel = null;
+    $("collectionDisplay").replaceChildren();
+    show($("collectionDisplaySection"), false);
     $("hero").textContent = "";
     show($("hero"), false);
     $("bgband").removeAttribute("style");

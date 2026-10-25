@@ -46,6 +46,18 @@ window.RJ_API = (function () {
     return value.session_id ? value : null;
   }
 
+  function identitySnapshot() {
+    var value = selectorState();
+    return Object.freeze({ session_id: value.session_id, generation: value.generation });
+  }
+
+  function sameIdentity(value) {
+    if (!value || !Number.isSafeInteger(value.generation) || value.generation < 0
+        || !(value.session_id === null || typeof value.session_id === "string" && SESSION_RE.test(value.session_id))) return false;
+    var current = selectorState();
+    return value.generation === current.generation && value.session_id === current.session_id;
+  }
+
   function storeSelector(sessionId) {
     var old = selectorState();
     var generation = old.generation + 1;
@@ -168,6 +180,11 @@ window.RJ_API = (function () {
 
   function fetchCall(method, path, body, options, captured) {
     options = options || {};
+    var expected = null;
+    if (Object.prototype.hasOwnProperty.call(options, "expectedIdentity")) {
+      if (!sameIdentity(options.expectedIdentity)) return Promise.resolve({ status: 0, ok: false, stale: true, data: null });
+      expected = Object.freeze({ session_id: options.expectedIdentity.session_id, generation: options.expectedIdentity.generation });
+    }
     var init = { method: method, credentials: "include", headers: {}, cache: "no-store" };
     var boundedMutation = isSessionMutation(method, path) || (method === "POST" && (
       path === "/api/me/recovery/replace-prepare" || path === "/api/me/recovery/replace"
@@ -194,7 +211,7 @@ window.RJ_API = (function () {
     }) : null;
     if (controller) init.signal = controller.signal;
     else if (options.signal) init.signal = options.signal;
-    var active = captured || selectorState();
+    var active = captured || expected || selectorState();
     var requestGeneration = active.generation;
     if (active.session_id) init.headers["X-RJ-Session"] = active.session_id;
     if (body !== undefined) {
@@ -203,6 +220,7 @@ window.RJ_API = (function () {
     }
     var response = Promise.resolve().then(function () {
       if (cancelled) return interrupted;
+      if (expected && !sameIdentity(expected)) return { status: 0, ok: false, stale: true, data: null };
       return fetch(url(path), init).then(function (r) {
       return r.text().then(function (t) {
         var data = null;
@@ -486,6 +504,7 @@ window.RJ_API = (function () {
     forget: forget,
     meUnavailable: function () { return meProblem; },
     sessionGeneration: function () { return selectorState().generation; },
+    identitySnapshot: identitySnapshot,
     mediaPreview: mediaPreview,
     errorOf: errorOf,
     nameOf: nameOf,

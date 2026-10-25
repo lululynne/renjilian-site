@@ -1,0 +1,36 @@
+.chest-page{padding-top:35px;padding-bottom:60px;max-width:1180px}
+.chest-heading{border-bottom:2px solid var(--ink);padding-bottom:20px;margin-bottom:18px}
+.chest-kicker{font:11px/1.5 var(--mono,monospace);letter-spacing:.13em;color:var(--ink-soft)}
+.chest-heading h1{font:600 clamp(30px,5vw,44px)/1.3 var(--serif,serif);margin:5px 0 10px}
+.chest-heading>p:not(.chest-kicker){font-size:14px;line-height:1.7;margin:5px 0}
+.chest-who{font-weight:600;color:var(--sp-link)}
+.chest-page [hidden]{display:none!important}
+.chest-page button,.chest-actions a,.chest-state>a{min-height:44px;padding:10px 13px;border:1px solid var(--line);border-radius:9px;background:var(--sp-panel);color:var(--ink);font:inherit;font-size:13px;font-weight:500;line-height:1.5;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.chest-page button:disabled{opacity:.5;cursor:default}
+.chest-page button:focus-visible,.chest-page a:focus-visible,.chest-page input:focus-visible,.chest-page select:focus-visible{outline:3px solid var(--sp-link);outline-offset:3px}
+.chest-state{margin:12px 0 20px}.chest-state p{font-size:14px;line-height:1.7;margin-bottom:10px}
+.chest-actions{display:flex;flex-wrap:wrap;gap:8px}.chest-help{font-size:13px;line-height:1.7;color:var(--ink-soft);margin:12px 0;overflow-wrap:anywhere}
+.chest-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:28px;align-items:start;margin-top:24px}
+.chest-layout h2{font:600 23px/1.4 var(--serif,serif);margin:0 0 16px}
+.chest-shelf,.chest-cabinet{min-width:0}
+.chest-cabinet{border:1px solid var(--ink);border-radius:16px;background:var(--sp-panel);box-shadow:4px 5px 0 var(--sp-shadow);padding:20px}
+.chest-cabinet-heading{border-bottom:1px solid var(--line);margin-bottom:12px}
+.chest-filters{display:flex;flex-wrap:wrap;gap:10px}
+.chest-filters label{display:flex;flex:1 1 95px;flex-direction:column;gap:5px;font-size:12px;color:var(--ink-soft)}
+.chest-filters input,.chest-filters select{min-height:44px;max-width:100%;width:100%;background:var(--sp-panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:14px;line-height:1.5}
+.chest-filters .chest-search{flex-basis:100%}
+.chest-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.chest-item{display:flex;min-width:0;flex-direction:column;gap:9px;padding:12px 9px;border:1px solid var(--line);border-radius:10px;background:var(--sp-panel)}
+.chest-item>.collection-tile{flex:1}.chest-item .collection-tile strong,.chest-item .collection-tile>a{font-size:13px}
+.chest-item>button{margin-top:auto;width:100%}.chest-item details{font-size:11px;color:var(--ink-soft);overflow-wrap:anywhere}.chest-item summary{min-height:44px;cursor:pointer;padding:10px 0}
+.chest-position-button{width:100%;margin:4px 0 8px!important;min-height:44px}
+.chest-position-button[aria-pressed=true]{background:var(--sp-ochre);border-color:var(--ink)}
+.chest-slot-actions{display:flex;flex-wrap:wrap;gap:4px;margin-top:9px}.chest-slot-actions button{flex:1;min-width:44px;padding:8px 3px;font-size:12px}
+.chest-consent{display:flex;align-items:flex-start;gap:10px;padding:14px 0;margin-top:12px;cursor:pointer;font-size:14px;line-height:1.6}
+.chest-consent input{width:22px;height:22px;flex:none;accent-color:var(--sp-link);margin-top:2px}
+.chest-consent small{display:block;font-size:12px;color:var(--ink-soft);margin-top:4px}
+.chest-save-actions{display:flex;flex-wrap:wrap;gap:8px}.chest-save-actions>button{flex:1 1 120px}.chest-page .chest-primary{color:var(--sp-panel);background:var(--ink);border-color:var(--ink)}
+.chest-preview{border-top:2px dashed var(--line);padding-top:16px;margin-top:20px}.chest-preview h3{font:600 19px/1.4 var(--serif,serif);margin:0}
+@media(max-width:850px){.chest-layout{grid-template-columns:1fr;gap:30px}.chest-cabinet{order:-1}.chest-items{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:520px){.chest-page{padding-top:22px}.chest-cabinet{padding:15px 12px}.chest-items{grid-template-columns:repeat(2,minmax(0,1fr))}.chest-layout{gap:25px}.chest-actions a{flex:1 1 120px}.chest-slot-actions{gap:3px}.chest-slot-actions button{flex-basis:44px}.chest-preview .collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.chest-page *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}

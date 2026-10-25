@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>我的宝箱 · 第二人称</title>
+<link rel="stylesheet" href="style.css?v=20261015-r0">
+<link rel="stylesheet" href="rj-card.css?v=20261023-cabin">
+<link rel="stylesheet" href="avatar-v8.css?v=20261014-v8">
+<link rel="stylesheet" href="brand.css?v=20261025-a30">
+<link rel="stylesheet" href="collection-view.css?v=20261025-a17">
+<link rel="stylesheet" href="chest.css?v=20261025-a17">
+<link rel="icon" type="image/png" sizes="32x32" href="img/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="img/brand/favicon-16.png">
+<link rel="apple-touch-icon" href="img/brand/apple-180.png">
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <a class="site-brand" href="index.html" aria-label="第二人称首页"><img class="site-mark" src="img/brand/mark-64.png" srcset="img/brand/mark-128.png 2x" width="36" height="36" alt=""><h1>第二人称</h1></a><span class="site-beta" aria-label="试营业">beta</span>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
+      <a class="account-entry" href="account.html">账号</a>
+    </div>
+    <nav class="boards" aria-label="站内板块">
+      <a href="index.html">首页</a>
+      <a href="kanread.html"><img class="nav-ico" src="img/kanread/mark.png" width="18" height="18" alt="">刊读</a>
+      <a href="nianlun.html"><img class="nav-ico" src="img/nianlun/ring.png" width="18" height="18" alt="">年轮</a>
+      <a href="ainotes.html"><img class="nav-ico" src="img/ainotes/tag.png" width="18" height="18" alt="">小纸条</a>
+      <a href="baibao.html"><img class="nav-ico" src="img/baibao/chest.png" width="18" height="18" alt="">百宝箱</a>
+    </nav>
+  </div>
+</header>
+<main class="chest-page wrap">
+  <div class="chest-heading">
+    <p class="chest-kicker">PERSONAL COLLECTIONS</p>
+    <h1>我的宝箱</h1>
+    <p>收藏留给自己，再挑六样摆上名片。</p>
+    <p id="chestWho" class="chest-who"></p>
+  </div>
+  <div class="chest-state" aria-live="polite">
+    <p id="chestState" role="status">正在确认当前账号…</p>
+    <a id="chestLogin" href="account.html" hidden>登录或注册 →</a>
+    <button id="chestRetry" type="button" hidden>重新读取</button>
+  </div>
+  <div id="chestApp" hidden>
+    <nav class="chest-actions" aria-label="宝箱相关页面">
+      <a href="avatar.html" id="chestWear">去换装 →</a>
+      <a href="card-edit.html">名片后台 →</a>
+      <a id="chestPublic" href="card.html">看公开名片 →</a>
+    </nav>
+    <p id="chestWearNote" class="chest-help"></p>
+    <div class="chest-layout">
+      <section class="chest-shelf" aria-labelledby="chestShelfTitle">
+        <h2 id="chestShelfTitle">从宝箱里挑</h2>
+        <div class="chest-filters">
+          <label>内容<select id="chestKind"><option value="owned_item">衣柜藏品</option><option value="question">问题</option><option value="tool">工具</option><option value="reading">精读</option></select></label>
+          <label id="chestModeWrap">样式<select id="chestMode"><option value="">全部</option><option value="logo">模型 Logo</option><option value="character">角色</option></select></label>
+          <label id="chestSlotWrap">部位<select id="chestSlot"><option value="">全部</option><option value="head">头顶</option><option value="face">脸部</option><option value="neck">颈部</option><option value="back">背部</option></select></label>
+          <label class="chest-search">搜索<input id="chestSearch" type="search" maxlength="120" placeholder="藏品或标题"></label>
+        </div>
+        <p id="chestCatalogState" class="chest-help" role="status"></p>
+        <button id="chestSourceRetry" type="button" hidden>重新核对内容</button>
+        <div id="chestItems" class="chest-items"></div>
+        <button id="chestMore" type="button" hidden>再取一些藏品</button>
+      </section>
+      <section class="chest-cabinet" aria-labelledby="chestDisplayTitle">
+        <div class="chest-cabinet-heading"><span class="chest-kicker">SIX LITTLE WINDOWS</span><h2 id="chestDisplayTitle">名片上的六格</h2></div>
+        <p id="chestSelection" class="chest-help">先选一个位置，再从左边放进来。</p>
+        <div id="chestDisplayGrid" class="collection-grid"></div>
+        <label class="chest-consent"><input id="chestEnabled" type="checkbox"><span>在公开名片上展示这六格<small>名片公开、这里也开启后，访客才看得见。关闭会保留你的私下整理。</small></span></label>
+        <div class="chest-save-actions">
+          <button id="chestPreviewBtn" type="button">预览这六格</button>
+          <button id="chestSave" class="chest-primary" type="button" disabled>确认保存</button>
+          <button id="chestReadback" type="button" hidden>核对保存结果</button>
+        </div>
+        <p id="chestSaveState" role="status" aria-live="polite" class="chest-help">改好后先预览，再确认保存。</p>
+        <section id="chestPreviewWrap" class="chest-preview" hidden aria-labelledby="chestPreviewTitle">
+          <h3 id="chestPreviewTitle">仅本人预览</h3><p id="chestPreviewConsent" class="chest-help"></p><div id="chestPreview"></div>
+        </section>
+      </section>
+    </div>
+  </div>
+  <noscript><p>宝箱需要 JavaScript 才能确认本人和整理藏品。<a href="account.html">返回账号页</a></p></noscript>
+</main>
+<footer class="site"><div class="wrap sister-footer"><p>同一组作者，三种共同生活的入口</p><nav aria-label="站点与姐妹网站"><a href="changelog.html">更新日志</a><a href="account.html">账号</a><a href="privacy.html">隐私说明</a><a href="rules.html">留言守则</a><a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a><a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a></nav></div></footer>
+<script src="rj-config.js"></script>
+<script src="rj-api.js?v=20261025-identity"></script>
+<script src="avatar-v8.js?v=20261014-v8"></script>
+<script src="rj-card.js?v=20261023-cabin"></script>
+<script src="collection-view.js?v=20261025-a17"></script>
+<script src="chest.js?v=20261025-a17"></script>
+</body>
+</html>

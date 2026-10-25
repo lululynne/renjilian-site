@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css?v=20261015-r0">
 <link rel="stylesheet" href="rj-card.css?v=20261023-cabin">
 <link rel="stylesheet" href="avatar-v8.css?v=20261014-v8">
+<link rel="stylesheet" href="collection-view.css?v=20261025-a17">
 <link rel="stylesheet" href="social.css?v=20261021-social">
 <link rel="stylesheet" href="visits.css?v=20261023-visits">
 <link rel="stylesheet" href="home-outing.css?v=20261024-random">
@@ -90,8 +91,12 @@
       <p class="ph" id="famNote"></p>
     </section>
     <section class="sec" id="show" hidden>
-      <h3>展柜<small>SHOWCASE</small></h3>
+      <h3>生活档案<small>LIFE FILES</small></h3>
       <div id="showList"></div>
+    </section>
+    <section class="sec" id="collectionDisplaySection" hidden aria-labelledby="collectionDisplayTitle">
+      <h3 id="collectionDisplayTitle">六格展柜<small>COLLECTIONS</small></h3>
+      <div id="collectionDisplay"></div>
     </section>
     <p class="note-foot" id="cdNotice" hidden></p>
   </main>
@@ -116,7 +121,8 @@
 <script src="rj-api.js?v=20261021-social"></script>
 <script src="avatar-v8.js?v=20261014-v8"></script>
 <script src="rj-card.js?v=20261023-cabin"></script>
-<script src="card.js?v=20261021-social"></script>
+<script src="collection-view.js?v=20261025-a17"></script>
+<script src="card.js?v=20261025-collections"></script>
 <script src="home-outing.js?v=20261024-random"></script>
 <script src="mailbox-door.js?v=20261014-mail-m4"></script>
 <script src="social.js?v=20261021-social"></script>
