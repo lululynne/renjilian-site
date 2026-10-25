@@ -6,8 +6,8 @@
 .avatar-shell{max-width:1120px;margin:auto;padding:28px 16px 64px}.avatar-hero{max-width:720px;margin-bottom:24px}
 .avatar-kicker{font-size:13px;color:var(--av-accent);font-weight:800;margin:0 0 6px}.avatar-hero h1{font:800 clamp(34px,4vw,40px)/1.2 "Songti SC","Noto Serif SC",serif;margin:0}
 .avatar-hero>p:last-child{color:var(--av-soft);font-size:16px;max-width:620px}.avatar-workbench{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:20px;align-items:start}
-.avatar-preview-card,.avatar-editor-card{background:var(--av-card);border:1.5px solid var(--av-ink);border-radius:8px;box-shadow:4px 4px 0 var(--sp-shadow,#d5c7ad);padding:18px}
-.avatar-preview-card{position:sticky;top:12px}.avatar-preview-label{margin:0;color:var(--av-soft);font-size:13px;font-weight:700}.avatar-preview{width:min(290px,80vw);aspect-ratio:1;margin:14px auto}
+.avatar-preview-card,.avatar-editor-card{min-width:0;background:var(--av-card);border:1.5px solid var(--av-ink);border-radius:8px;box-shadow:4px 4px 0 var(--sp-shadow,#d5c7ad);padding:18px}
+.avatar-preview-card{position:sticky;top:12px}.avatar-preview-label{margin:0;color:var(--av-soft);font-size:13px;font-weight:700}.avatar-preview{width:min(290px,100%);aspect-ratio:1;margin:14px auto}
 .avatar-preview>.rj-character-avatar,.avatar-preview>.av{width:100%;height:100%}.avatar-preview-caption{text-align:center;min-height:24px;color:var(--av-soft)}
 .avatar-mode-switch{display:grid;grid-template-columns:1fr 1fr;background:#eee0ca;border-radius:14px;padding:4px;gap:4px}.avatar-mode-switch button,.avatar-save,.avatar-step-nav button,.avatar-page-button{min-height:44px;border-radius:11px;border:1px solid transparent;font:700 14px/1.2 inherit;cursor:pointer;color:var(--av-ink)}
 .avatar-mode-switch button{background:transparent}.avatar-mode-switch button[aria-pressed=true]{background:#fffaf1;border-color:var(--av-line);box-shadow:0 2px 7px rgba(80,45,20,.12)}

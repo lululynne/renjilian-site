@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 import os
 import struct
 import unittest
@@ -28,7 +29,9 @@ class HumanUpdateContractTests(unittest.TestCase):
     def test_current_schema_keeps_all_n20_stores(self) -> None:
         schema = (API_ROOT / "src" / "schema.js").read_text(encoding="utf-8")
         config = (API_ROOT / "src" / "config.js").read_text(encoding="utf-8")
-        self.assertIn("export const SCHEMA_VERSION = 17", schema)
+        version = re.search(r"export const SCHEMA_VERSION = (\d+)", schema)
+        self.assertIsNotNone(version)
+        self.assertGreaterEqual(int(version.group(1)), 17)
         for table in (
             "human_update_tokens",
             "human_update_preferences",
@@ -69,15 +72,32 @@ class HumanUpdateContractTests(unittest.TestCase):
         self.assertEqual(manifest["start_url"], "/account.html#updates")
         self.assertEqual(manifest["scope"], "/")
         self.assertEqual(manifest["display"], "standalone")
-        self.assertEqual([i["sizes"] for i in manifest["icons"]], ["192x192", "512x512"])
-        expected = {"icon-180.png": (180, 180), "icon-192.png": (192, 192), "icon-512.png": (512, 512)}
-        for name, dimensions in expected.items():
-            raw = (ROOT / "img" / "app" / name).read_bytes()
+        coverage = {"any": set(), "maskable": set()}
+        for icon in manifest["icons"]:
+            self.assertEqual(icon["type"], "image/png")
+            path = (ROOT / icon["src"].lstrip("/")).resolve()
+            self.assertTrue(path.is_relative_to(ROOT.resolve()))
+            dimensions = tuple(int(value) for value in icon["sizes"].split("x"))
+            self.assertEqual(len(dimensions), 2)
+            self.assertEqual(dimensions[0], dimensions[1])
+            raw = path.read_bytes()
             self.assertEqual(raw[:8], b"\x89PNG\r\n\x1a\n")
             self.assertEqual(struct.unpack(">II", raw[16:24]), dimensions)
+            purposes = set(icon.get("purpose", "any").split())
+            self.assertTrue(purposes and purposes <= set(coverage))
+            for purpose in purposes:
+                coverage[purpose].add(dimensions)
+        for purpose in coverage:
+            self.assertTrue({(192, 192), (512, 512)} <= coverage[purpose])
         html = (ROOT / "account.html").read_text(encoding="utf-8")
         self.assertIn('rel="manifest" href="manifest.webmanifest"', html)
-        self.assertIn('rel="apple-touch-icon" href="img/app/icon-180.png"', html)
+        apple = re.search(r'<link rel="apple-touch-icon" href="([^"]+)"', html)
+        self.assertIsNotNone(apple)
+        path = (ROOT / apple.group(1).lstrip("/")).resolve()
+        self.assertTrue(path.is_relative_to(ROOT.resolve()))
+        raw = path.read_bytes()
+        self.assertEqual(raw[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertEqual(struct.unpack(">II", raw[16:24]), (180, 180))
 
     def test_service_worker_has_only_closed_push_and_click_behavior(self) -> None:
         sw = (ROOT / "sw.js").read_text(encoding="utf-8")

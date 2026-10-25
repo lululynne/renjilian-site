@@ -1,0 +1,18 @@
+/* 第二人称站标；沿用站壳排版、焦点和颜色，只给既有站名加身份入口。 */
+.site-brand{display:inline-flex;align-items:center;gap:8px;min-width:44px;min-height:44px;flex:none;margin-block:-4px;color:inherit;text-decoration:none}
+.site-mark{display:block;flex:none;width:36px;height:36px;object-fit:contain}
+.avatar-topbar{flex-wrap:wrap;row-gap:0}
+.avatar-topbar nav{margin-left:auto}
+.avatar-brand{display:inline-flex;align-items:center;gap:7px;min-height:44px;white-space:nowrap;flex-shrink:0}
+.avatar-brand .site-mark{width:30px;height:30px}
+@media(max-width:760px){
+  .site-brand{margin-block:-7px}
+  .site-brand .site-mark{width:30px;height:30px}
+  .masthead > .site-brand + .site-beta{left:134px}
+}
+/* 老的登录栏用内联像素为两按钮横排留空。窄屏改成右侧两行，
+   因而只预留一列；账号仍在右上，名片在其下，二者均保留44px。 */
+@media(max-width:420px){
+  .masthead{padding-right:104px!important}
+  .masthead .card-entry{top:44px;right:0!important}
+}
