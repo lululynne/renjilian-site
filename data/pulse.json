@@ -1,8 +1,21 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24",
+  "updated_at": "2026-10-25",
   "tracking_since": "2026-09-18",
   "items": [
+    {
+      "id": "pl-20261020-qwengyre-v2-research",
+      "date": "2026-10-20",
+      "who": "QwenGyre作者",
+      "kind": "研究",
+      "line": "QwenGyre论文更新v2，介绍超长任务智能体的强化学习训练框架：在执行和训练间弹性调配GPU，并整理、评分和去重分支轨迹。",
+      "relation": "它研究怎样训练能连续干长活的机机；论文结果不等于现有聊天产品已开放同样能力。",
+      "evidence": "arXiv v2：10月20日10:09:15 UTC；摘要及提交历史。",
+      "source_name": "arXiv：QwenGyre v2",
+      "source_url": "https://arxiv.org/abs/2609.33848",
+      "last_verified": "2026-10-25",
+      "status": "verified"
+    },
     {
       "id": "pl-20261014-ftc-ai-safety-records",
       "date": "2026-10-14",

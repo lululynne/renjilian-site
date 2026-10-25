@@ -100,6 +100,34 @@
   ],
   "items": [
     {
+      "id": "nl-20261013-x-subscription",
+      "at": "2026-10-13T07:08:39+08:00",
+      "member": "xai",
+      "domain": "门路",
+      "tags": [
+        "订阅",
+        "额度"
+      ],
+      "level": 2,
+      "line": "SpaceXSI宣布X Subscription，整合Grok、Grok Bot、Cursor与X Premium。旧方案可保留；新付费方案Grok模型共享周池，Grok Bot及Cursor第三方模型限Premium及以上，第三方模型另购点数。",
+      "sources": [
+        {
+          "name": "SpaceXSI原帖",
+          "url": "https://x.com/SpaceXSI/status/2109783335296008414"
+        },
+        {
+          "name": "官方公告",
+          "url": "https://x.ai/news/x-subscription"
+        },
+        {
+          "name": "套餐与用量",
+          "url": "https://docs.x.ai/x-subscription/pricing"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
       "id": "nl-20261014-qwen-image21-mac-app",
       "at": "2026-10-14T18:08:18+08:00",
       "member": "qwen",
