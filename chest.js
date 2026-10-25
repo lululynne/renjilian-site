@@ -48,6 +48,7 @@
       .sort(function (a, b) { return a.position - b.position; });
   }
   function valueKey(value) { return JSON.stringify({ display_enabled: value.enabled, slots: refs(value.slots) }); }
+  function isDirty() { return valueKey(state) !== state.baseline; }
   function reviewKey() { return state.owner + ":" + state.rev + ":" + valueKey(state); }
   function firstEmpty() {
     for (var i = 1; i <= 6; i++) if (!state.slots.some(function (slot) { return slot.position === i; })) return i;
@@ -72,9 +73,9 @@
     return el;
   }
   function changed() {
-    state.reviewed = null; state.dirty = valueKey(state) !== state.baseline;
+    state.reviewed = null;
     $("chestPreview").replaceChildren(); $("chestPreviewWrap").hidden = true;
-    $("chestSaveState").textContent = state.dirty ? "有新的整理。先预览，再确认保存。" : "和已保存的一样。";
+    $("chestSaveState").textContent = isDirty() ? "有新的整理。先预览，再确认保存。" : "和已保存的一样。";
     render();
   }
   function renderControls() {
@@ -82,7 +83,7 @@
     var busy = state.saving || !!state.uncertain;
     $("chestEnabled").checked = state.enabled; $("chestEnabled").disabled = busy;
     $("chestPreviewBtn").disabled = busy;
-    $("chestSave").disabled = busy || !state.dirty || state.reviewed !== reviewKey();
+    $("chestSave").disabled = busy || !isDirty() || state.reviewed !== reviewKey();
     $("chestReadback").hidden = !state.uncertain; $("chestReadback").disabled = state.saving;
     $("chestMore").hidden = !state.more || $("chestKind").value !== "owned_item";
     $("chestMore").disabled = busy || state.loadingMore;
@@ -181,7 +182,7 @@
       if (!box || !Array.isArray(box.items) || box.items.length > 100 || box.owner_id !== display.owner_id) throw Error("两处账号信息没有对齐，请重新读取。");
       state = { identity: identity, owner: box.owner_id, items: box.items, more: box.next_cursor,
         rev: display.display_rev, enabled: display.display_enabled, slots: slots, selected: null, sources: {}, sourceLoading: {}, sourceErrors: {},
-        dirty: false, reviewed: null, uncertain: null, saving: false, loadingMore: false };
+        reviewed: null, uncertain: null, saving: false, loadingMore: false };
       state.selected = firstEmpty(); state.baseline = valueKey(state);
       C.avDefs(); $("chestWho").textContent = (me.display_name || "@" + me.handle) + " 的私人收藏";
       $("chestPublic").setAttribute("href", C.cardHref(me.handle));
@@ -220,7 +221,7 @@
     } catch (error) {
       if (!valid(t)) return; delete state.sources[type]; state.sourceErrors[type] = true;
     } finally {
-      clearTimeout(timer); parentSignal.removeEventListener("abort", abort);
+      clearTimeout(timer); sourceController.abort(); parentSignal.removeEventListener("abort", abort);
       if (valid(t)) { state.sourceLoading[type] = false; renderCandidates(); renderControls(); }
     }
   }
@@ -250,7 +251,7 @@
     $("chestSaveState").textContent = "这次保存结果还没有确认。先核对，系统不会自动重发。";
   }
   async function save() {
-    if (!editable() || !state.dirty || state.reviewed !== reviewKey()) return;
+    if (!editable() || !isDirty() || state.reviewed !== reviewKey()) return;
     var t = ticket(), body = { expected_owner_id: state.owner, expected_display_rev: state.rev, display_enabled: state.enabled, slots: refs(state.slots) };
     state.saving = true; render(); $("chestSaveState").textContent = "正在保存这六格…";
     try {
@@ -267,7 +268,7 @@
         return;
       }
       if (!response.data || response.data.owner_id !== t.owner || response.data.display_rev !== body.expected_display_rev + 1) { uncertain(body); return; }
-      state.rev = response.data.display_rev; state.baseline = valueKey(state); state.dirty = false; state.reviewed = null;
+      state.rev = response.data.display_rev; state.baseline = valueKey(state); state.reviewed = null;
       $("chestSaveState").textContent = state.enabled ? "已保存。名片公开时，访客会看见这六格中的有效内容。" : "已保存，并收起公开展示。你的私下整理仍保留。";
     } catch (error) { if (valid(t)) uncertain(body); }
     finally { if (valid(t)) { state.saving = false; render(); } }
@@ -285,7 +286,7 @@
       var actual = { enabled: current.display_enabled, slots: slots };
       if (current.display_rev === submitted.expected_display_rev + 1 && valueKey(actual) === valueKey({ enabled: submitted.display_enabled, slots: submitted.slots })) {
         state.rev = current.display_rev; state.enabled = current.display_enabled; state.slots = slots;
-        state.baseline = valueKey(state); state.dirty = false; state.reviewed = null; state.uncertain = null;
+        state.baseline = valueKey(state); state.reviewed = null; state.uncertain = null;
         $("chestSaveState").textContent = "已核对：这版六格已经保存。";
       } else if (current.display_rev === submitted.expected_display_rev) {
         state.uncertain = null; state.reviewed = null;

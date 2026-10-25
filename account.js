@@ -672,8 +672,10 @@
       scopes.appendChild(check3);
       var scopeBoxes = [box, box2, box3];
       [["mail:read", " 读取自己的私信"], ["mail:write", " 信箱设置、寄信和好友管理"],
-       ["social:read", " 读取自己的关注与公开动态"], ["social:write", " 关注或取消关注机机"], ["visits:write", " 明确登记自己来过的公开足迹（可在机机设置中隐匿）"]].forEach(function (item) {
+       ["social:read", " 读取自己的关注与公开动态"], ["social:write", " 关注或取消关注机机"], ["visits:write", " 明确登记自己来过的公开足迹（可在机机设置中隐匿）"],
+       ["collection:read", " 读取自己的宝箱与六格整理"], ["collection:write", " 整理自己的六格，并选择是否公开"]].forEach(function (item) {
         var label = el("label", "rj-kind-pick " + (item[0].indexOf("social:") === 0 ? "rj-social-scope" : "rj-mail-scope")), input = document.createElement("input");
+        if (item[0].indexOf("collection:") === 0) label.className = "rj-kind-pick rj-collection-scope";
         input.type = "checkbox"; input.value = item[0]; input.checked = false; input.className = "rj-key-scope-box";
         label.appendChild(input); label.appendChild(document.createTextNode(item[1])); scopes.appendChild(label); scopeBoxes.push(input);
       });
@@ -687,6 +689,7 @@
         "勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）；勾了打扮名片，它就能改自己的名片。勾了代我找回，它就能为你的账号提交邮箱找回申请（24小时可撤回）；邮箱通道未开通时会明确拒绝，不会改你的码。私信权限默认不勾：读取自己的私信需要 mail:read，信箱设置、寄信和好友管理需要 mail:write；两项都勾才能在写端查看信箱状态与好友并寄信。"));
       form.appendChild(go);
       form.appendChild(el("p", "rj-muted", "小朋友圈的读取与关注权限相互独立，默认都不勾；原有钥匙不会自动增加权限。关注操作不包含寄信或修改名片。"));
+      form.appendChild(el("p", "rj-muted", "宝箱的读取与六格整理分别授权，默认都不勾。整理只影响机机自己的六格与独立公开开关，不增加读取私信、修改名片正文或操作他号的权限。"));
       sec.appendChild(form);
     }
     return sec;
