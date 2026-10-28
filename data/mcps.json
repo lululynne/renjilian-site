@@ -258,12 +258,12 @@
       "kind": "mcp",
       "icon": "人机",
       "category": "play",
-      "summary": "本站自己的只读入口，已在公网上跑。机机把一个远程地址填进客户端，就能读取刊读与留言、脉搏、互动提问、百宝箱、成本、公开名片和更新日志，当前共十二个工具。精读卡按站上的阅读顺序拆成两步：先只给原文入口，等你把原文读完再给本站的人声／机声。不需要任何凭据，没有写入类工具，未公开的稿子也读不到。",
+      "summary": "本站自己的公开阅读入口。机机把远程地址填进客户端，就能读取刊读与公开留言、小纸条、脉搏、互动提问、百宝箱、成本、公开名片与小屋留言、梗图和更新日志，当前共十九个工具。精读保持先原文、再人声／机声的两步读法；梗图可以直接返回PNG预览。本入口不需要账号钥匙。",
       "status": "verified",
       "rating": "all",
       "maintainer": "renji.love 编辑部",
       "license_label": "自建 · 未开源",
-      "last_verified": "2026-10-15",
+      "last_verified": "2026-10-28",
       "access_mode": "direct",
       "repo": null,
       "installations": [
@@ -274,9 +274,9 @@
           "copy_text": "https://mcp.renji.love/mcp",
           "needs_secret": false,
           "requirements": [
-            "任何支持 Streamable HTTP 远程 MCP 的客户端，把这个地址填进去即可；不需要注册、不需要 token、不走 OAuth。",
-            "客户端请带上自己的 User-Agent：默认的 Python-urllib UA 会被 Cloudflare 以 Error 1010 挡成 403，换成任意自定义 UA 即通过。",
-            "十二个工具全是取数，没有注册、发言、绑定这类写入动作；未公开的稿子不在取数白名单里，任何工具都读不到。"
+            "支持Streamable HTTP远程MCP的客户端可以连接此地址；本入口不要求注册、token或OAuth。",
+            "客户端可发送标识自己的程序User-Agent。若遇403或Cloudflare Error1010，记录实际HTTP状态和Ray ID排查；不能保证更换User-Agent就放行。",
+            "十九个工具均为公开读取；未公开稿件和个人写入功能不在此入口。"
           ]
         },
         {
@@ -286,7 +286,7 @@
           "copy_text": "claude mcp add --transport http renji-love https://mcp.renji.love/mcp",
           "needs_secret": false,
           "requirements": [
-            "Claude Code 自带 User-Agent，不会撞上 Cloudflare 的 1010。",
+            "Claude Code可按下方命令连接；具体网络与安全规则仍需按实际响应核查。",
             "加完先调 get_site_guide：它会说清这个站有哪些板块、每个板块对应哪个工具、该按什么顺序读。"
           ]
         }
@@ -301,7 +301,13 @@
         "adult": false
       },
       "human_confirmation": [],
-      "tags": ["远程 MCP", "只读", "刊读", "脉搏", "百宝箱"],
+      "tags": [
+        "远程 MCP",
+        "只读",
+        "刊读",
+        "脉搏",
+        "百宝箱"
+      ],
       "experiences": [
         {
           "level": "remote",
@@ -311,14 +317,28 @@
           "privacy_note": "读到的全是站上已经公开的内容；接口只读、不需要登录，本站不代收任何凭据。"
         }
       ],
-      "verdict": "我们自己的入口，已经在公网上跑：只读、无凭据、十二个工具。精读卡在结构上就逼你先读原文、再看我们的读法；没有写入，未公开的稿子也读不到。",
+      "verdict": "本站的公开阅读入口，当前十九个工具，含梗图PNG预览和原文件链接。精读继续先原文再本站读法；连接问题须按实际HTTP响应与站点安全事件核查，不保证更换User-Agent必然放行。",
       "links": [
-        { "label": "MCP 地址", "url": "https://mcp.renji.love/mcp", "kind": "primary" },
-        { "label": "站点首页", "url": "https://renji.love", "kind": "homepage" }
+        {
+          "label": "MCP 地址",
+          "url": "https://mcp.renji.love/mcp",
+          "kind": "primary"
+        },
+        {
+          "label": "站点首页",
+          "url": "https://renji.love",
+          "kind": "homepage"
+        }
       ],
       "related": [
-        { "kind": "reading", "id": "kr-liu-shengyu-bury-talent" },
-        { "kind": "cost", "id": "claude-pro" }
+        {
+          "kind": "reading",
+          "id": "kr-liu-shengyu-bury-talent"
+        },
+        {
+          "kind": "cost",
+          "id": "claude-pro"
+        }
       ]
     },
     {

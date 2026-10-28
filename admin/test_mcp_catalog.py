@@ -119,7 +119,7 @@ class McpCatalogContractTests(unittest.TestCase):
         self.assertNotIn("planned-renji-love", by_id)
         item = {i["id"]: i for i in self.items}["renji-love-mcp"]
         self.assertEqual(item["status"], "verified")
-        self.assertEqual(item["last_verified"], "2026-10-15")
+        self.assertEqual(item["last_verified"], "2026-10-28")
         self.assertEqual(item["access_mode"], "direct")
         self.assertIn(
             "https://mcp.renji.love/mcp",
@@ -132,12 +132,15 @@ class McpCatalogContractTests(unittest.TestCase):
         self.assertFalse(generic["needs_secret"])
         self.assertFalse(item["risks"]["secrets"])
         self.assertFalse(item["risks"]["external_write"])
-        self.assertIn("十二个工具", item["summary"])
-        self.assertIn("十二个工具", item["verdict"])
+        self.assertIn("十九个工具", item["summary"])
+        self.assertIn("十九个工具", item["verdict"])
+        self.assertIn("梗图", item["summary"])
         requirements = " ".join(
             req for inst in item["installations"] for req in inst.get("requirements", [])
         )
         self.assertIn("User-Agent", requirements, "默认 UA 被 Cloudflare 1010 挡的坑必须写在安装条件里")
+        self.assertNotIn("任意自定义 UA 即通过", requirements)
+        self.assertNotIn("不会撞上 Cloudflare", requirements)
 
     def test_license_label_is_opt_in_and_only_ours_uses_it(self) -> None:
         """许可证那一栏：自建、未开源的条目走数据，不走渲染特判。

@@ -1,0 +1,510 @@
+.humor-page{
+  --humor-sea:#092a38;
+  --humor-lamp:#103b4d;
+  --humor-light:#fff2cd;
+  --humor-gold:#ffd46e;
+  --humor-ink:#27251f;
+  --humor-paper:#f6f0e2;
+  color:var(--humor-ink);
+  background:var(--humor-paper);
+  font-size:.9375rem;
+  line-height:1.7
+}
+
+.humor-page [hidden]{
+  display:none!important
+}
+.humor-page .wrap{
+  max-width:1180px;
+  padding-inline:32px;
+  box-sizing:border-box
+}
+.humor-page .site-brand h1{
+  font-size:2rem;
+  line-height:1.15;
+  font-weight:600
+}
+.humor-page :focus-visible{
+  outline:3px solid #365093;
+  outline-offset:4px
+}
+.humor-page button,.humor-page select{
+  font:inherit
+}
+.humor-page button{
+  cursor:pointer
+}
+.humor-skip{
+  position:absolute;
+  left:16px;
+  top:-100px;
+  z-index:5;
+  background:white;
+  padding:12px;
+  color:#092a38
+}
+.humor-skip:focus{
+  top:12px
+}
+.humor-main{
+  padding-block:32px 48px
+}
+.humor-intro h2{
+  font:600 clamp(2.125rem,4vw,2.5rem)/1.2 "Songti SC","STSong",serif;
+  margin:0 0 12px
+}
+.humor-intro p{
+  margin:0 0 32px;
+  font-size:1rem
+}
+.humor-led{
+  background:var(--humor-sea);
+  border:8px solid #193e4b;
+  box-shadow:inset 0 0 0 1px #496573;
+  color:var(--humor-light);
+  padding:24px 0;
+  margin-bottom:48px;
+  border-radius:4px
+}
+.humor-led-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  padding-inline:24px
+}
+.humor-led h3{
+  font-family:"Songti SC","STSong",serif;
+  font-size:1.1875rem;
+  line-height:1.4;
+  margin:0;
+  color:var(--humor-gold)
+}
+.humor-led button{
+  min-height:44px;
+  min-width:44px;
+  padding:8px 12px;
+  border:1px solid #b99b58;
+  color:var(--humor-light);
+  background:transparent;
+  border-radius:3px
+}
+.humor-led :focus-visible{
+  outline-color:var(--humor-gold)
+}
+.humor-led #ledStatus,.humor-led-retry{
+  margin:16px 24px 0
+}
+.humor-led-viewport{
+  overflow:hidden;
+  margin:24px 0;
+  border-block:1px solid #496573;
+  background:var(--humor-lamp);
+  padding-block:24px
+}
+.humor-led-track{
+  display:flex;
+  width:max-content;
+  animation:humor-scroll 95s linear infinite
+}
+.humor-led-track>div{
+  display:flex;
+  align-items:center;
+  flex-shrink:0
+}
+.humor-led-line{
+  display:inline-block;
+  white-space:nowrap;
+  padding-inline:32px;
+  font-size:clamp(1.25rem,2.5vw,1.625rem);
+  font-weight:600;
+  letter-spacing:.035em;
+  color:var(--humor-light);
+  text-shadow:0 0 8px #dcb35755
+}
+.humor-led-track.is-paused{
+  animation-play-state:paused
+}
+.humor-led-viewport:hover .humor-led-track{
+  animation-play-state:paused
+}
+.humor-led details{
+  padding:0 24px;
+  margin-top:16px
+}
+.humor-led summary{
+  cursor:pointer;
+  min-height:44px;
+  display:list-item;
+  align-content:center;
+  color:var(--humor-gold)
+}
+.humor-led details a{
+  color:#ffe2a0;
+  text-decoration:underline;
+  text-underline-offset:3px
+}
+.humor-led-note{
+  max-width:70ch
+}
+.humor-led ol{
+  padding-left:24px;
+  margin:16px 0 0
+}
+.humor-led li{
+  padding:16px 0;
+  border-top:1px solid #496573;
+  max-width:80ch
+}
+.humor-led li h4{
+  font-size:1rem;
+  margin:0 0 8px;
+  color:var(--humor-gold)
+}
+.humor-led li p{
+  margin:8px 0
+}
+.humor-led li blockquote{
+  border-left:2px solid #b99b58;
+  margin:12px 0;
+  padding-left:16px
+}
+.humor-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:24px
+}
+.humor-filters button{
+  min-height:44px;
+  padding:8px 16px;
+  border:1px solid #807665;
+  background:transparent;
+  border-radius:24px;
+  color:inherit
+}
+.humor-filters button[aria-pressed=true]{
+  background:var(--humor-sea);
+  color:var(--humor-light);
+  border-color:var(--humor-sea)
+}
+.humor-gallery-heading{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:24px
+}
+.humor-gallery-heading h3{
+  font:600 1.5rem/1.3 "Songti SC","STSong",serif;
+  margin:0 0 8px
+}
+.humor-gallery-heading p{
+  margin:0
+}
+.humor-selects{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap
+}
+.humor-selects label{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  white-space:nowrap
+}
+.humor-selects select{
+  min-height:44px;
+  max-width:100%;
+  padding:8px;
+  background:#fffaf0;
+  border:1px solid #807665;
+  color:inherit
+}
+.humor-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:32px 24px;
+  align-items:start
+}
+.humor-card{
+  min-width:0;
+  scroll-margin-top:24px;
+  padding-bottom:24px;
+  border-bottom:1px solid #b4a68b
+}
+.humor-card h4{
+  font:600 1.1875rem/1.35 "Songti SC","STSong",serif;
+  margin:16px 0 8px
+}
+.humor-card p{
+  margin:8px 0;
+  overflow-wrap:anywhere
+}
+.humor-media-open{
+  display:block;
+  width:100%;
+  padding:0;
+  border:0;
+  background:#e6ddc9;
+  border-radius:8px;
+  overflow:hidden;
+  line-height:0
+}
+.humor-media-open img{
+  display:block;
+  width:100%;
+  height:auto
+}
+.humor-card video{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:520px;
+  background:#092a38;
+  border-radius:8px
+}
+.humor-card .humor-context{
+  display:inline-block;
+  font-size:.875rem;
+  line-height:1.5;
+  padding:4px 8px;
+  color:#733f18;
+  background:#f2dfb5
+}
+.humor-meta{
+  font-size:.75rem;
+  color:#675c49
+}
+.humor-source-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 16px;
+  margin:8px 0
+}
+.humor-source-links a,.humor-card-status a{
+  color:#1d5067;
+  text-decoration:underline;
+  text-underline-offset:3px
+}
+.humor-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:16px
+}
+.humor-action{
+  display:inline-flex;
+  min-height:44px;
+  min-width:44px;
+  box-sizing:border-box;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  padding:8px 12px;
+  background:#fffaf0;
+  color:var(--humor-ink);
+  border:1px solid #8c806b;
+  border-radius:3px;
+  text-decoration:none;
+  font-size:.875rem;
+  line-height:1.4
+}
+.humor-card-status{
+  min-height:1.7em;
+  font-size:.875rem
+}
+.humor-image-error{
+  padding:16px;
+  background:#eee4d1
+}
+.humor-image-error button{
+  margin-top:8px
+}
+.humor-catalog-date{
+  margin-top:24px;
+  color:#675c49;
+  font-size:.875rem
+}
+.humor-takeaway{
+  border-top:2px solid #8c806b;
+  margin-top:32px;
+  padding-top:24px;
+  max-width:76ch
+}
+.humor-takeaway h3{
+  font:600 1.1875rem/1.35 "Songti SC","STSong",serif;
+  margin:0 0 12px
+}
+.humor-takeaway p{
+  margin:8px 0
+}
+.humor-takeaway code{
+  font-size:.875rem;
+  overflow-wrap:anywhere
+}
+.humor-dialog{
+  box-sizing:border-box;
+  width:min(100% - 32px,1080px);
+  max-height:calc(100dvh - 32px);
+  padding:24px;
+  border:1px solid #91856d;
+  border-radius:8px;
+  background:#fffaf0;
+  color:var(--humor-ink);
+  overflow:auto
+}
+.humor-dialog::backdrop{
+  background:#092a38db
+}
+.humor-dialog-bar{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:16px
+}
+.humor-dialog h2{
+  font-size:1.5rem;
+  line-height:1.3;
+  margin:0
+}
+.humor-dialog button{
+  min-width:88px;
+  min-height:44px;
+  padding:8px 12px;
+  border:1px solid #8c806b;
+  background:#f6f0e2;
+  flex-shrink:0
+}
+.humor-dialog img,.humor-dialog video{
+  display:block;
+  max-width:100%;
+  height:auto;
+  margin:auto
+}
+.humor-dialog #dialogMeaning{
+  max-width:76ch;
+  margin:16px auto
+}
+.humor-dialog #dialogDownload{
+  margin-top:8px
+}
+.humor-page footer nav{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap
+}
+.humor-page footer a{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px
+}
+.humor-page .visually-hidden{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0
+}
+
+@keyframes humor-scroll{
+  to{
+  transform:translateX(-50%)
+}
+
+}
+
+@media(max-width:760px){
+  .humor-page .wrap{
+  padding-inline:16px
+}
+.humor-page .site-brand h1{
+  font-size:1.375rem
+}
+.humor-main{
+  padding-top:24px
+}
+.humor-led{
+  padding-block:16px;
+  margin-bottom:32px;
+  border-width:5px
+}
+.humor-led-heading{
+  padding-inline:16px;
+  gap:8px
+}
+.humor-led h3{
+  font-size:1.125rem
+}
+.humor-led button{
+  padding-inline:8px
+}
+.humor-led details{
+  padding-inline:16px
+}
+.humor-led-viewport{
+  padding-block:16px;
+  margin-top:16px
+}
+.humor-led-line{
+  padding-inline:24px
+}
+.humor-gallery-heading{
+  display:block
+}
+.humor-selects{
+  margin-top:16px
+}
+.humor-grid{
+  grid-template-columns:minmax(0,1fr);
+  gap:24px
+}
+.humor-card h4{
+  font-size:1.125rem
+}
+.humor-dialog{
+  padding:16px
+}
+.humor-dialog h2{
+  font-size:1.375rem
+}
+.humor-intro p{
+  font-size:.9375rem
+}
+.humor-card .humor-meta{
+  line-height:1.7
+}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  .humor-led-track{
+  animation:none
+}
+.humor-page *{
+  scroll-behavior:auto!important
+}
+
+}
+
+
+.humor-page nav.boards a{
+  min-height:44px;
+  min-width:44px;
+  align-items:center;
+  box-sizing:border-box
+}
+.humor-page nav.boards{
+  scroll-snap-type:none;
+  scroll-behavior:auto;
+}
+.humor-nav-hint{
+  margin:8px 0 0;
+  font-size:.875rem;
+  color:#675c49
+}

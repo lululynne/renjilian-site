@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://renji.love/data/memes.schema.json",
+  "title": "第二人称公开梗图目录",
+  "$comment": "共享meme-catalog.mjs另核稳定ID唯一、文件名与ID相等、系列外键及真实文件字节；schema不表示实际图片已验过。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "updated_at", "series", "items"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "updated_at": { "$ref": "#/$defs/day" },
+    "series": {
+      "type": "array", "maxItems": 20,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "title"],
+        "properties": { "id": { "$ref": "#/$defs/id" }, "title": { "type": "string", "minLength": 1, "maxLength": 80 } }
+      }
+    },
+    "items": { "type": "array", "maxItems": 300, "items": { "$ref": "#/$defs/item" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "day": { "type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "asset": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "mime", "bytes", "sha256", "width", "height"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^img/memes/(?:previews/)?[a-z0-9]+(?:-[a-z0-9]+)*\\.(?:png|jpg|mp4)$" },
+        "mime": { "enum": ["image/png", "image/jpeg", "video/mp4"] },
+        "bytes": { "type": "integer", "minimum": 1, "maximum": 104857600 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "width": { "type": "integer", "minimum": 1, "maximum": 20000 },
+        "height": { "type": "integer", "minimum": 1, "maximum": 20000 }
+      }
+    },
+    "item": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "kind", "at", "series", "season", "meaning", "alt", "credit", "context", "sources", "original", "preview"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "kind": { "enum": ["image", "video"] },
+        "at": { "$ref": "#/$defs/day" },
+        "series": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "season": { "oneOf": [{ "type": "integer", "minimum": 1, "maximum": 99 }, { "type": "null" }] },
+        "meaning": { "type": "string", "minLength": 1, "maxLength": 1600 },
+        "alt": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "credit": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "context": { "enum": ["community-joke", "fiction"] },
+        "sources": {
+          "type": "array", "maxItems": 6,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["name", "url"],
+            "properties": { "name": { "type": "string", "minLength": 1, "maxLength": 100 }, "url": { "type": "string", "maxLength": 1500, "format": "uri", "pattern": "^https://" } }
+          }
+        },
+        "original": { "$ref": "#/$defs/asset" },
+        "preview": {
+          "allOf": [
+            { "$ref": "#/$defs/asset" },
+            { "properties": { "path": { "pattern": "^img/memes/previews/[a-z0-9]+(?:-[a-z0-9]+)*\\.png$" }, "mime": { "const": "image/png" }, "bytes": { "maximum": 393216 }, "width": { "maximum": 384 }, "height": { "maximum": 384 } } }
+          ]
+        }
+      },
+      "allOf": [
+        { "if": { "properties": { "series": { "type": "null" } } }, "then": { "properties": { "season": { "type": "null" } } }, "else": { "properties": { "season": { "type": "integer" } } } },
+        { "if": { "properties": { "kind": { "const": "video" } } }, "then": { "properties": { "original": { "properties": { "mime": { "const": "video/mp4" }, "path": { "pattern": "^img/memes/[a-z0-9]+(?:-[a-z0-9]+)*\\.mp4$" } } } } }, "else": { "properties": { "original": { "properties": { "mime": { "enum": ["image/png", "image/jpeg"] }, "path": { "pattern": "^img/memes/[a-z0-9]+(?:-[a-z0-9]+)*\\.(?:png|jpg)$" } } } } } }
+      ]
+    }
+  }
+}

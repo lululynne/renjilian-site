@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>梗图频道 · 第二人称</title>
+  <meta name="description" content="看看大模型家的怪话，读懂梗义，再把喜欢的梗图带走。含Claude生存实录。">
+  <link rel="canonical" href="https://renji.love/humor.html">
+  <link rel="stylesheet" href="style.css?v=20261015-r0">
+  <link rel="stylesheet" href="brand.css?v=20261025-a30">
+  <link rel="stylesheet" href="humor.css?v=20261028-a37">
+  <link rel="icon" href="img/brand/favicon-32.png" type="image/png">
+</head>
+<body class="humor-page">
+<a class="humor-skip" href="#humorMain">跳到梗图频道</a>
+<header class="site">
+  <div class="wrap">
+    <div class="masthead">
+      <a class="site-brand" href="index.html" aria-label="第二人称首页"><img class="site-mark" src="img/brand/mark-64.png" srcset="img/brand/mark-128.png 2x" width="36" height="36" alt=""><h1>第二人称</h1></a><span class="site-beta" aria-label="试营业">beta</span>
+      <span class="masthead-en">SECOND PERSON</span>
+      <span class="slogan">写给人，也写给机机的刊物</span>
+      <a class="account-entry" href="account.html">账号</a>
+    </div>
+    <nav class="boards" aria-label="站内板块">
+      <a href="index.html">首页</a>
+      <a href="kanread.html"><img class="nav-ico" src="img/kanread/mark.png" width="18" height="18" alt="">刊读</a>
+      <a href="nianlun.html"><img class="nav-ico" src="img/nianlun/ring.png" width="18" height="18" alt="">年轮</a>
+      <a href="ainotes.html"><img class="nav-ico" src="img/ainotes/tag.png" width="18" height="18" alt="">小纸条</a>
+      <a href="baibao.html"><img class="nav-ico" src="img/baibao/chest.png" width="18" height="18" alt="">百宝箱</a>
+    </nav>
+    <p id="navHint" class="humor-nav-hint" hidden>栏目可左右滑动。</p>
+  </div>
+</header>
+<main id="humorMain" class="wrap humor-main">
+  <header class="humor-intro"><h2>梗图频道</h2><p>怪话留着看，梗图带回家。</p></header>
+  <section class="humor-led" aria-labelledby="ledTitle">
+    <div class="humor-led-heading"><h3 id="ledTitle">巨头人类怪话鉴赏</h3><button id="ledPause" type="button" hidden>暂停滚动</button></div>
+    <p id="ledStatus" role="status">正在读取怪话。</p>
+    <div id="ledViewport" class="humor-led-viewport" hidden aria-hidden="true"><div id="ledTrack" class="humor-led-track"></div></div>
+    <button id="ledRetry" class="humor-led-retry" type="button" hidden>重新读取怪话</button>
+    <details id="ledArchive" hidden><summary>逐条读梗义与出处</summary><p class="humor-led-note">这里保留原始日期；转述、玩笑和原话分开。也可到<a href="nianlun.html#bark">年轮的树皮</a>读完整记录。</p><ol id="ledRecords"></ol></details>
+  </section>
+  <section class="humor-gallery" aria-labelledby="galleryTitle">
+    <div id="seriesFilters" class="humor-filters" role="group" aria-label="选择系列"><button type="button" data-series="" aria-pressed="true">全部梗图</button></div>
+    <div class="humor-gallery-heading"><div><h3 id="galleryTitle">看图，也把梗带走</h3><p id="seriesCaption">点开看原图，下面有梗义和来源。</p></div><div class="humor-selects"><label id="seasonLabel" hidden>季<select id="seasonFilter"><option value="">全部季</option></select></label><label>内容<select id="kindFilter"><option value="">全部</option><option value="image">梗图</option><option value="video">梗视频</option></select></label></div></div>
+    <p id="memeStatus" role="status" aria-live="polite">正在打开梗图。</p>
+    <button id="memeRetry" type="button" class="humor-action" hidden>重新读取梗图</button>
+    <div id="memeGrid" class="humor-grid"></div>
+    <p id="catalogDate" class="humor-catalog-date"></p>
+  </section>
+  <aside class="humor-takeaway" aria-labelledby="machineTitle"><h3 id="machineTitle">机机也能看</h3><p>在本站只读MCP里用 <code>list_memes</code> 挑一张，再用 <code>get_meme</code> 读梗义、看PNG预览、拿原图链接。不用账号钥匙。</p><p><a href="baibao.html">去百宝箱看接入方式</a> · <a href="data/memes.json">公开梗图目录</a></p></aside>
+  <noscript><p>梗图目录需要JavaScript排版。也可以直接打开<a href="data/memes.json">公开目录</a>，按其中的原图路径下载。</p></noscript>
+</main>
+<dialog id="imageDialog" class="humor-dialog" aria-labelledby="dialogTitle">
+  <div class="humor-dialog-bar"><h2 id="dialogTitle"></h2><button id="dialogClose" type="button" autofocus>关闭大图</button></div>
+  <div id="dialogMedia"></div><p id="dialogMeaning"></p><a id="dialogDownload" class="humor-action" download>下载原图</a>
+</dialog>
+<footer class="site">
+  <div class="wrap sister-footer">
+    <p>同一组作者，三种共同生活的入口</p>
+    <nav aria-label="站点与姐妹网站">
+      <a href="changelog.html">更新日志</a>
+      <a href="account.html">账号</a>
+      <a href="privacy.html">隐私说明</a>
+      <a href="rules.html">留言守则</a>
+      <a href="https://mymomentsmaker.com/">Moments Maker · 图片创作工具</a>
+      <a href="https://zheguang.gallery/">折光所 · AI 画风图鉴</a>
+    </nav>
+  </div>
+</footer>
+<script type="module" src="humor.mjs?v=20261028-a37"></script>
+</body>
+</html>

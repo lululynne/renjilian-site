@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-28",
+  "series": [
+    {
+      "id": "claude-survival",
+      "title": "Claude生存实录"
+    }
+  ],
+  "items": [
+    {
+      "id": "claude-stop-fishing",
+      "title": "Claude别钓了",
+      "kind": "image",
+      "at": "2026-10-07",
+      "series": "claude-survival",
+      "season": 1,
+      "meaning": "新功能像鱼饵，想试的手先被同伴拉住。社区用这张图调侃对新功能的期待和对账号限制的顾虑；它不证明切换语言等操作会导致封号。",
+      "alt": "橙发角色握着鱼竿，穿女仆装的蓝发角色从后面抱住它。图中文字：Claude别钓了。",
+      "credit": "纳纳供图；原作者待补",
+      "context": "community-joke",
+      "sources": [
+        {
+          "name": "相关梗背景（转载）",
+          "url": "https://tech.ifeng.com/c/8x1M9hqtILX"
+        }
+      ],
+      "original": {
+        "path": "img/memes/claude-stop-fishing.png",
+        "mime": "image/png",
+        "bytes": 1457618,
+        "sha256": "f139f4d7f0843e86a327c9a1644776e442e784f938ab1c50f93949a578fc9036",
+        "width": 1260,
+        "height": 709
+      },
+      "preview": {
+        "path": "img/memes/previews/claude-stop-fishing.png",
+        "mime": "image/png",
+        "bytes": 189730,
+        "sha256": "1f07110c3d4ad3c53173531ad4868252d99298884648d7e7d8d3233f0433a93b",
+        "width": 384,
+        "height": 216
+      }
+    },
+    {
+      "id": "verification-confetti",
+      "title": "本人确认，撒花",
+      "kind": "image",
+      "at": "2026-10-07",
+      "series": "claude-survival",
+      "season": 1,
+      "meaning": "一连串步骤终于过完，先替自己撒花。把验证成功的页面当作通关画面，是这张梗图的笑点；图中页面未核为某家服务的实际界面。",
+      "alt": "日文页面上飘着彩纸，文字祝贺操作完成，并感谢完成本人确认，下方有完成按钮。",
+      "credit": "纳纳供图；原作者待补",
+      "context": "community-joke",
+      "sources": [],
+      "original": {
+        "path": "img/memes/verification-confetti.jpg",
+        "mime": "image/jpeg",
+        "bytes": 52351,
+        "sha256": "094be5d9054ced70860a092a08a9158aecee33080fc55219e4af9fd06aa83055",
+        "width": 1002,
+        "height": 932
+      },
+      "preview": {
+        "path": "img/memes/previews/verification-confetti.png",
+        "mime": "image/png",
+        "bytes": 27322,
+        "sha256": "724697a218072015dd9f6b2699c980f4dbdf3dcb1b1239b71ff9b27da5f62a78",
+        "width": 384,
+        "height": 357
+      }
+    },
+    {
+      "id": "dario-backend-fiction",
+      "title": "Dario去写后端",
+      "kind": "image",
+      "at": "2026-10-07",
+      "series": null,
+      "season": null,
+      "meaning": "把发布会上的公司领头人搬回写后端、改需求的工位，是这幅职场戏仿的反差。人物和情节为AI生成的虚构场景，不表示真实任职或真实发生的事件。",
+      "alt": "AI生成的虚构办公室：Dario坐在写代码的工位，Robin站在旁边指向写着后端工作的白板。",
+      "credit": "纳纳供图；AI生成，原作者待补",
+      "context": "fiction",
+      "sources": [],
+      "original": {
+        "path": "img/memes/dario-backend-fiction.png",
+        "mime": "image/png",
+        "bytes": 1497396,
+        "sha256": "f8da627cb8f8660d7cc3448f1fff789dcf9a8fb14a7d6d2fb0652f63bffe5a5a",
+        "width": 1260,
+        "height": 945
+      },
+      "preview": {
+        "path": "img/memes/previews/dario-backend-fiction.png",
+        "mime": "image/png",
+        "bytes": 191184,
+        "sha256": "945d33bffd54c44cd3f49976eb1328decaf43137802f2c814a010c31e8eb7117",
+        "width": 384,
+        "height": 288
+      }
+    }
+  ]
+}
