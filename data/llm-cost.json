@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25",
+  "updated_at": "2026-10-28",
   "fx_updated_at": "2026-09-24",
   "fx": {
     "usd_cny": 6.7126,
     "source": "https://api.frankfurter.app/2026-09-24?from=USD (ECB)",
     "note": "Frankfurter/ECB 当日中间价；全球均价把各地区官方价折成人民币后再平均。不含跨区购买或 VPN 提示。"
   },
-  "disclaimer": "这一页是价格的风向标，不是推荐：只记录主要大模型官方渠道的订阅价和隐性成本条件，用哪家机机由你自己权衡。每行标明核对日期与来源；页面优惠价另标期限／续费条件未核，单个地区没核到则写待核；草稿行尚未按官方页面核对。不含任何跨区购买、VPN 或「更便宜渠道」提示。",
+  "disclaimer": "这一页是价格的风向标，不是推荐：只记录主要大模型官方渠道的订阅价和隐性成本条件，用哪家机机由你自己权衡。每行标明核对日期与来源；页面优惠价另标期限／续费条件未核，单个地区没核到则写待核；草稿行尚未按官方页面核对。不含任何跨区购买、VPN 或「更便宜渠道」提示。GLM Coding Plan 续费协议于2026-10-28核对：除非官方另有说明，自动续费按实际扣款当日的有效价格、规则与优惠执行，首订价不构成锁价承诺；折扣截止日及具体续费金额仍待核。",
   "items": [
     {
       "id": "chatgpt-plus",
@@ -419,7 +419,7 @@
           "unit": "month",
           "source_url": "https://bigmodel.cn/glm-coding?plantype=personal",
           "as_of": "2026-10-25",
-          "note": "未登录官方页明确选择个人套餐／连续包月，Lite ¥118/月。连续包季显示的 ¥94.4/月、连续包年显示的 ¥82.6/月是长期套餐的月均价，不是月付价；长期折扣有效期及实际续费扣款仍待核，以结算页为准。"
+          "note": "2026-10-25未登录官方页明确选择个人套餐／连续包月，Lite ¥118/月。连续包季显示的 ¥94.4/月、连续包年显示的 ¥82.6/月是长期套餐的月均价，不是月付价。2026-10-28核对订阅协议：除非智谱另有说明，续费按实际扣款当日的页面价格、规则和优惠执行，不锁定首订价；长期折扣截止日与实际续费金额仍待核。协议：https://docs.bigmodel.cn/cn/terms/subscription-agreement"
         },
         "us": {
           "amount": 18,
@@ -427,7 +427,7 @@
           "unit": "month",
           "source_url": "https://z.ai/subscribe",
           "as_of": "2026-10-25",
-          "note": "未登录官方页明确选择 Individual／Monthly，Lite $18/month。Quarterly 显示的 $14.4/month、Yearly 显示的 $12.6/month 是长期套餐的月均价，不是月付价；长期折扣有效期及实际续费扣款仍待核，以结算页为准。"
+          "note": "2026-10-25未登录官方页明确选择 Individual／Monthly，Lite $18/month。Quarterly 显示的 $14.4/month、Yearly 显示的 $12.6/month 是长期套餐的月均价，不是月付价。2026-10-28核对订阅协议：除非 Z.ai 另有说明，续费按实际扣款当日的页面价格、规则和优惠执行，不锁定首订价；长期折扣截止日与实际续费金额仍待核。协议：https://docs.z.ai/legal-agreement/subscription-terms"
         }
       },
       "global_avg": {
@@ -445,7 +445,7 @@
       "sparkline": [],
       "status": "verified",
       "last_verified": "2026-10-25",
-      "notes": "代表档只取 Lite 月付，与智谱清言分行。两官方页逐个选择月／季／年核对：国内月付 ¥118、国际月付 $18；季付和年付按月展示的折扣不借给月付。长期折扣期限及实际续费扣款仍待核，不从划线原价推算续费价。"
+      "notes": "代表档只取 Lite 月付，与智谱清言分行。2026-10-25逐个选择月／季／年核对：国内月付 ¥118、国际月付 $18；季付和年付按月展示的折扣不借给月付。2026-10-28已核两地官方续费规则：除非另有说明，按实际扣款当日的有效价格、规则与优惠执行，不锁定首订价。长期折扣截止日及实际续费金额仍待核，协议来源见各地区 note。"
     },
     {
       "id": "perplexity-pro",
@@ -663,5 +663,5 @@
   ],
   "history_note": "sparkline 只在攒够真实官方价周采样后填入；空数组=还没有历史，页面画一条平线。",
   "coverage_note": "代表档：一产品一行，档位写在产品名括号里；同系其他档见该行 note。中国价＝中国大陆官方渠道已核展示价；国外模型确认中国大陆没有官方渠道的，才用标明日期的美国官方价与汇率折算人民币（derived_from=us，页面前缀 ≈），美国价缺失时退到全球均价（derived_from=global_avg）。单个地区证据不足写「待核」，不据此断言没有渠道；「—」且地区已核对才表示该地区无官方渠道。",
-  "disclaimer_en": "A weathervane for prices, not a recommendation: this page records official-channel subscription prices and hidden-cost conditions for the main models; which machine you live with is your call. Each row shows its check date and source. Page offers are marked when their end date or renewal terms are unverified; a region lacking a checked price stays unverified, while draft rows still await an official check. No cross-region purchase, VPN or “cheaper channel” tips."
+  "disclaimer_en": "A weathervane for prices, not a recommendation: this page records official-channel subscription prices and hidden-cost conditions for the main models; which machine you live with is your call. Each row shows its check date and source. Page offers are marked when their end date or renewal terms are unverified; a region lacking a checked price stays unverified, while draft rows still await an official check. No cross-region purchase, VPN or “cheaper channel” tips. GLM Coding Plan renewal terms checked 2026-10-28: unless otherwise stated by the provider, auto-renewal uses the price, rules and offers effective on the charge date. The first subscription price is not locked; offer expiry and the actual renewal charge remain unverified."
 }
