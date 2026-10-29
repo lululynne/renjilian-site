@@ -100,6 +100,53 @@
   ],
   "items": [
     {
+      "id": "nl-20261009-heygen-voice-release",
+      "at": "2026-10-09",
+      "member": "other",
+      "maker": "HeyGen",
+      "tags": [
+        "语音",
+        "评测"
+      ],
+      "level": 2,
+      "line": "HeyGen发布自研HeyGen Voice。其研究页引用10月9日controlled-voice听感偏好榜首快照，范围限于同参考音色的语音克隆比较。",
+      "sources": [
+        {
+          "name": "HeyGen于10月9日提供的公司发布稿",
+          "url": "https://www.prnewswire.com/news-releases/heygen-launches-heygen-voice-debuting-at-1-on-artificial-analysis-leaderboard-302903718.html"
+        },
+        {
+          "name": "HeyGen研究页的10月9日榜单快照",
+          "url": "https://www.heygen.com/research/heygen-voice-scene-aware-voice-cloning"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "模型"
+    },
+    {
+      "id": "nl-20261001-tavus-griffin-preview",
+      "at": "2026-10-01",
+      "member": "other",
+      "maker": "Tavus",
+      "tags": [
+        "视频交互",
+        "研究预览",
+        "评测"
+      ],
+      "level": 2,
+      "line": "Tavus公布Griffin视频交互模型，Griffin-Lite研究预览仅向部分测试者开放。公司自报每人1分钟视频通话测试中，54人有26人认为对方是真人。",
+      "sources": [
+        {
+          "name": "Tavus于10月1日发布的Griffin说明与研究方法",
+          "url": "https://www.tavus.io/griffin"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "模型"
+    },
+    {
       "id": "nl-20261008-odyssey3-research-preview",
       "at": "2026-10-08",
       "member": "other",

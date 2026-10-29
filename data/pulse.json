@@ -4,6 +4,58 @@
   "tracking_since": "2026-09-18",
   "items": [
     {
+      "id": "pl-20261029-qwen-image21-turbo-weight-license",
+      "date": "2026-10-29",
+      "who": "Qwen",
+      "kind": "核对",
+      "line": "Qwen-Image-2.1-Turbo模型卡标8步去噪；此固定权重版本的研究许可限定研究或评估，商业使用需另取许可。",
+      "relation": "平台接口条款与下载权重许可是不同入口，不能互相代替。",
+      "evidence": "HF固定修订fc13ba1的模型卡及许可证；日期为核对日。",
+      "source_name": "Qwen官方HF固定版本模型卡与许可",
+      "source_url": "https://huggingface.co/Qwen/Qwen-Image-2.1-Turbo/tree/fc13ba1986fcb905854dc8de2f52eee395f49b5b",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
+      "id": "pl-20261009-community-workspace-mcp-v210",
+      "date": "2026-10-09",
+      "who": "Workspace MCP社区项目",
+      "kind": "发布",
+      "line": "社区项目Workspace MCP发布v2.1.0，新增Gmail转发草稿与可选GCS附件存储；该版README列120+工具及分层加载。",
+      "relation": "维护主体、授权范围与默认暴露工具应分别确认，连接器并非Google自有产品。",
+      "evidence": "v2.1.0发布稿与固定提交README的工具分层段。",
+      "source_name": "维护者GitHub v2.1.0发布",
+      "source_url": "https://github.com/taylorwilsdon/google_workspace_mcp/releases/tag/v2.1.0",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
+      "id": "pl-20261029-grok-imagine-mascot-template-check",
+      "date": "2026-10-29",
+      "who": "Grok Imagine",
+      "kind": "核对",
+      "line": "核对x.ai的Image2.0页面时，可见Mascot Maker、头像与图像编辑模板；本条只记官方目录，未验证生成效果或各账号权益。",
+      "relation": "模板入口、底层模型与账号套餐权益需要分开确认。",
+      "evidence": "官方模板目录；日期为本次核对日，不作为首发日。",
+      "source_name": "x.ai官方Image2.0页面",
+      "source_url": "https://x.ai/news/grok-imagine-image-2",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
+      "id": "pl-20261010-elliq-nysofa-extension-report",
+      "date": "2026-10-10",
+      "who": "NYSOFA／Intuition Robotics",
+      "kind": "报道",
+      "line": "行业媒体10月10日报道纽约州延续ElliQ合作，文中公司负责人也谈及延续；本条未独立核验合同、预算或健康成效。",
+      "relation": "持续合作值得跟进，参与者自报与可重复的健康成效研究需要分开。",
+      "evidence": "原始报道首段及公司负责人引述；日期按发布日。",
+      "source_name": "Robotics & Automation News原始报道",
+      "source_url": "https://roboticsandautomationnews.com/2026/10/10/new-york-extends-ai-companion-program-in-partnership-with-intuition-robotics/105806/",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
       "id": "pl-20261007-google-playground-unity-spark",
       "date": "2026-10-07",
       "who": "Google／Unity",

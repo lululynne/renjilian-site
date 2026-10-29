@@ -2,6 +2,11 @@
 
 > 给读者看的公开更新记录。只写已经可以使用的变化，不写内部施工过程。
 
+## v20261029-voice-interaction-and-connectors · 2026-10-29
+
+- 年轮补收HeyGen Voice发布与Tavus Griffin研究预览，分别注明榜单类别、公司测试范围与预览资格。
+- 脉搏补收Qwen固定权重许可、社区Workspace MCP、Grok模板目录和ElliQ合作延续的原始报道，区分授权入口、维护主体、核对日与报道边界。
+
 ## v20261029-world-preview-and-creation · 2026-10-29
 
 - 年轮补收Odyssey-3研究预览，区分9月模型介绍与10月预览公告，保留官方采样配置说明。
