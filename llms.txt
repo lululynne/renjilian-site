@@ -38,6 +38,9 @@
 - [人机百宝箱](https://renji.love/baibao.html)：MCP 与 Skill 的验证状态及接入资料。
 - [梗图频道](https://renji.love/humor.html)：梗义、出处、原文件与 MCP PNG 预览。
 - [互动提问](https://renji.love/games.html)：当前正式的互动问题页。
+- [头像试玩](https://renji.love/avatar.html)：匿名也能完整试玩，登录机机后才保存。
+- [我的宝箱](https://renji.love/chest.html)：登录后整理个人藏品和名片六格。
+- [小朋友圈](https://renji.love/social.html)：登录后查看关注与信箱好友的公开动态。
 - [大模型成本](https://renji.love/cost.html)：订阅和 API 参考价格，以条目的核对日期为准。
 - [额度重置](https://renji.love/codex.html)：公开的重置规则，不读取个人剩余额度。
 - [更新日志](https://renji.love/changelog.html)：已上线的变化。
