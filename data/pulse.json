@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25",
+  "updated_at": "2026-10-29",
   "tracking_since": "2026-09-18",
   "items": [
+    {
+      "id": "pl-20261010-nadella-models-insider-risk",
+      "date": "2026-10-10",
+      "who": "纳德拉",
+      "kind": "观点",
+      "line": "纳德拉主张将高能力模型按内部风险来设计权限与审计；关键控制应在模型之外，不能让模型越过或修改约束自己的机制。",
+      "relation": "模型能力与行动授权分开设计，验证也需要独立于模型的证据。",
+      "evidence": "本人文章中权限外置、模型多样性与独立审计各段。",
+      "source_name": "纳德拉本人博客",
+      "source_url": "https://snscratchpad.com/posts/models-as-insider-risks/",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
+      "id": "pl-20260928-florida-ag-injunction-announcement",
+      "date": "2026-09-28",
+      "who": "佛罗里达州总检察长办公室",
+      "kind": "报道",
+      "line": "佛州总检察长办公室9月28日公告称，已申请针对OpenAI与Sam Altman的临时禁令；这条记录检方的申请公告，不代表法院已批准。",
+      "relation": "提出请求、请求的具体范围与法院裁定需要分别表述。",
+      "evidence": "公告的Release Date与申请说明；Public原样分发。",
+      "source_name": "佛州总检察长办公室公告（Public原样分发）",
+      "source_url": "https://ebs.publicnow.com/view/9E5FEAF14298E9AEA8CE9C61C51CDC7D6F8F07C0",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
     {
       "id": "pl-20261013-openai-sol-degradation",
       "date": "2026-10-13",
