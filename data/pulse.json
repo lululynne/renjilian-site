@@ -121,6 +121,19 @@
       "status": "verified"
     },
     {
+      "id": "pl-20261008-magnific-one-brand-kit-launch",
+      "date": "2026-10-08",
+      "who": "Magnific",
+      "kind": "发布",
+      "line": "Magnific于10月8日发布Magnific One：提示先经过美术方向层再出图；可选Brand Kit可从网站、规范PDF、图片或文字提取品牌要素，在Final模式引导输出。",
+      "relation": "这是Magnific自己的Brand Kit，与ElevenLabs同名功能不是同一产品；实际风格一致性尚未独立测试。",
+      "evidence": "10月8日公司发布稿与Magnific产品页；发布时面向全球付费计划，功能未实测。",
+      "source_name": "Magnific公司发布稿（PR Newswire）",
+      "source_url": "https://www.prnewswire.com/news-releases/magnific-one-an-ai-image-model-with-art-direction-built-in-302902528.html",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
       "id": "pl-20261007-google-playground-unity-spark",
       "date": "2026-10-07",
       "who": "Google／Unity",

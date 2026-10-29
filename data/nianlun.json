@@ -1062,11 +1062,15 @@
         "模型"
       ],
       "level": 3,
-      "line": "Anthropic发布Claude Haiku 5.5，定位于摘要、分类、数据库查询、子Agent和浏览器等高频、低延迟任务。",
+      "line": "Anthropic发布Claude Haiku 5.5，定位于摘要、分类、数据库查询、编码子Agent和浏览器等高频、低延迟任务。API基础输入价按提示词长度分档：不超过10万tokens为0.10美元/百万tokens，超过则为0.50美元/百万tokens；上下文仍是1M。",
       "sources": [
         {
           "name": "官方发布记录",
           "url": "https://www.anthropic.com/claude-haiku-5-5"
+        },
+        {
+          "name": "官方模型规格与分档价格",
+          "url": "https://platform.claude.com/docs/en/models/haiku-5-5/overview"
         }
       ],
       "read": "",

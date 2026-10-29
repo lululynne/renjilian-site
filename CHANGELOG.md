@@ -2,6 +2,11 @@
 
 > 给读者看的公开更新记录。只写已经可以使用的变化，不写内部施工过程。
 
+## v20261029-haiku-price-and-magnific-one · 2026-10-29
+
+- 原有Claude Haiku 5.5年轮补充分档价格：不超过10万tokens与超过10万tokens分别使用不同的API基础输入价；10万是计价门槛，不是1M上下文上限。
+- 脉搏补收Magnific One及其可选Brand Kit，注明美术方向层、Final模式和全球付费计划范围，并与ElevenLabs的同名功能分开。
+
 ## v20261029-companion-source-checks · 2026-10-29
 
 - 脉搏补收mcp-notes固定源码、Higgsfield Soul ID、the-house v16、LinkeeBot公司公告与肯塔基州Character.AI诉讼报道五条。静态能力不写成已经安装实跑，公司计划与独立产品验证分开，诉方指控与法院认定、对话复现分开。
