@@ -2,6 +2,10 @@
 
 > 给读者看的公开更新记录。只写已经可以使用的变化，不写内部施工过程。
 
+## v20261029-si-force-incident-statement · 2026-10-29
+
+- 脉搏补收Axios刊载的Super Intelligence Force事故披露声明，保留立即披露、执法协作、补救和防护四项动作，同时注明执行机制与罚则未写明，不把声明升级成已成文法律。
+
 ## v20261029-lightroom-prompt-edit-check · 2026-10-29
 
 - 脉搏补收Lightroom桌面版9.6的Prompt to Edit，按Adobe官方9月29日文档更新时间记录为核对项；保留Early Access、DNG输出及面板额度/模型边界，不沿用第三方日期冒充首发。

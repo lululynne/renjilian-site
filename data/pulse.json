@@ -4,6 +4,19 @@
   "tracking_since": "2026-09-18",
   "items": [
     {
+      "id": "pl-20261009-si-force-incident-disclosure-statement",
+      "date": "2026-10-09",
+      "who": "白宫Super Intelligence Force",
+      "kind": "报道",
+      "line": "Axios刊载白宫Super Intelligence Force声明，列出AI公司立即披露模型事故、配合联邦和州执法、补救损害并落实防护四项动作；执行机制与罚则未写明。",
+      "relation": "声明提出事故披露、执法协作、补救和防护要求，但不能据此当作已成文法律或已有明确罚则。",
+      "evidence": "声明由Axios独家刊载；执行机制与罚则未写明，法律效力和适用范围不外推。",
+      "source_name": "Axios报道及刊载的SI Force完整声明",
+      "source_url": "https://www.axios.com/2026/10/09/anthropic-ai-security-white-house",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
       "id": "pl-20260929-lightroom-96-prompt-to-edit-check",
       "date": "2026-09-29",
       "who": "Adobe Lightroom",
