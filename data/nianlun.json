@@ -100,6 +100,54 @@
   ],
   "items": [
     {
+      "id": "nl-20260927-mimo-v26-mopd-tool-repeat-fix",
+      "at": "2026-09-27",
+      "member": "mimo",
+      "domain": "模型",
+      "tags": [
+        "工具调用",
+        "修复"
+      ],
+      "level": 3,
+      "line": "小米公开MiMo-V2.6工具调用重复问题及MOPD修复检查点。修正版自9月25日06:00起以原API名mimo-v2.6-pro和mimo-v2.6-flash提供，并承诺重置MiMo Desktop用户当前用量窗口的剩余额度。",
+      "sources": [
+        {
+          "name": "小米MiMo官方技术说明",
+          "url": "https://mimo.xiaomi.com/blog/mimo-v2-6-tool-call-repetition"
+        },
+        {
+          "name": "小米MiMo官方Hugging Face组织",
+          "url": "https://huggingface.co/XiaomiMiMo"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
+      "id": "nl-20261006-nano-banana-21",
+      "at": "2026-10-06",
+      "member": "google",
+      "domain": "模型",
+      "tags": [
+        "图像生成",
+        "价格"
+      ],
+      "level": 3,
+      "line": "Google发布Gemini Nano Banana 2.1，强化多轮角色一致性并支持最多14张参考图。标准API的1K图像折算价为0.0336美元，前代Nano Banana 2为0.067美元；约减半只限这一同档比较。",
+      "sources": [
+        {
+          "name": "Google官方模型页",
+          "url": "https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1?hl=en"
+        },
+        {
+          "name": "Google Gemini API官方价格页",
+          "url": "https://ai.google.dev/gemini-api/docs/pricing"
+        }
+      ],
+      "read": "",
+      "notes": []
+    },
+    {
       "id": "nl-20261009-heygen-voice-release",
       "at": "2026-10-09",
       "member": "other",

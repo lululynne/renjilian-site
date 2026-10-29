@@ -4,6 +4,32 @@
   "tracking_since": "2026-09-18",
   "items": [
     {
+      "id": "pl-20261008-vidu-q4-preview-reference-video",
+      "date": "2026-10-08",
+      "who": "Vidu",
+      "kind": "发布",
+      "line": "Vidu Q4 Preview参考生视频支持1至15张图片、0至3段参考音频，生成3至16秒并可同步输出音视频；一致性、口型与情绪表现仍是厂商能力说明，本站未实测。",
+      "relation": "做连续角色或商品视频时，参考素材上限和可核的输出规格比宣传词更有用。",
+      "evidence": "Vidu官方发布页记录于10月8日；模型名、参考图、音频和时长边界来自官方API参数。",
+      "source_name": "Vidu官方Q4产品页与API文档",
+      "source_url": "https://platform.vidu.com/docs/api-reference/video-models/vidu-q4-preview/reference-to-video",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
+      "id": "pl-20260729-xianyu-ai-services-h1-2026",
+      "date": "2026-07-29",
+      "who": "闲鱼",
+      "kind": "报告",
+      "line": "据IT之家转述闲鱼2026上半年数据，平台AI服务订单981.6万单、同比增157%，近500万用户购买；AI技能接单占AI订单45.1%，但未据此证明头像定制最畅销或统一价位。",
+      "relation": "平台需求存在不等于某个头像价位一定卖得动，接单前仍要看具体品类、交付和运营。",
+      "evidence": "7月29日媒体转述闲鱼披露；128至298元及最火头像说法未获同源支持，故删去。",
+      "source_name": "IT之家转述闲鱼2026上半年数据",
+      "source_url": "https://www.ithome.com/0/983/021.htm",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
       "id": "pl-20261029-qwen-image21-turbo-weight-license",
       "date": "2026-10-29",
       "who": "Qwen",
