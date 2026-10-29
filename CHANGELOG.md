@@ -2,6 +2,10 @@
 
 > 给读者看的公开更新记录。只写已经可以使用的变化，不写内部施工过程。
 
+## v20261029-companion-source-checks · 2026-10-29
+
+- 脉搏补收mcp-notes固定源码、Higgsfield Soul ID、the-house v16、LinkeeBot公司公告与肯塔基州Character.AI诉讼报道五条。静态能力不写成已经安装实跑，公司计划与独立产品验证分开，诉方指控与法院认定、对话复现分开。
+
 ## v20261029-voice-interaction-and-connectors · 2026-10-29
 
 - 年轮补收HeyGen Voice发布与Tavus Griffin研究预览，分别注明榜单类别、公司测试范围与预览资格。
