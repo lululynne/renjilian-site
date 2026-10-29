@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25",
+  "updated_at": "2026-10-29",
   "first_ring": "2026-09-30",
   "members": [
     {
@@ -99,6 +99,31 @@
     }
   ],
   "items": [
+    {
+      "id": "nl-20261008-odyssey3-research-preview",
+      "at": "2026-10-08",
+      "member": "other",
+      "maker": "Odyssey",
+      "tags": [
+        "世界模型",
+        "研究预览"
+      ],
+      "level": 2,
+      "line": "Odyssey于10月8日公告Odyssey-3研究预览，演示以文字、动作或事件驱动环境变化及第一/第三人称导航；9月15日已有模型介绍，官方性能表另列best-of-8采样设置。",
+      "sources": [
+        {
+          "name": "Odyssey：10月8日研究预览公告",
+          "url": "https://odyssey.systems/meet-odyssey-3"
+        },
+        {
+          "name": "Odyssey：9月15日模型介绍",
+          "url": "https://odyssey.systems/introducing-odyssey-3"
+        }
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "模型"
+    },
     {
       "id": "nl-20261011-codex-day6-reset",
       "at": "2026-10-11T12:01:09+08:00",

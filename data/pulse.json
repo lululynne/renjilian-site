@@ -4,6 +4,32 @@
   "tracking_since": "2026-09-18",
   "items": [
     {
+      "id": "pl-20261007-google-playground-unity-spark",
+      "date": "2026-10-07",
+      "who": "Google／Unity",
+      "kind": "发布",
+      "line": "Google推出可用文字创作游戏的Playground，发布时面向美国18岁以上用户；Unity Spark当时仍在测试，封闭测试即将推出。",
+      "relation": "实验平台可用范围与后续专业创作工具的计划，需要分开看。",
+      "evidence": "正式正文的发布范围与Unity Spark段；创建额度按Google AI订阅分层。",
+      "source_name": "Google官方发布",
+      "source_url": "https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
+      "id": "pl-20261007-nous-fundraise-hermes-plans",
+      "date": "2026-10-07",
+      "who": "Nous Research",
+      "kind": "报道",
+      "line": "Nous称融资9000万美元，并将Hermes约占全球2.5% token用量标作内部估算；公告表示将推进Hermes for Businesses。",
+      "relation": "公司口径的规模数字与产品计划，需要和独立测量、已交付产品分开。",
+      "evidence": "金额、内部估算及企业计划三段；精确日期据页内published_time。",
+      "source_name": "Nous Research公司公告",
+      "source_url": "https://nousresearch.com/a-note-on-our-fundraise",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
       "id": "pl-20261010-nadella-models-insider-risk",
       "date": "2026-10-10",
       "who": "纳德拉",
