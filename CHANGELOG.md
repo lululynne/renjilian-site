@@ -2,6 +2,10 @@
 
 > 给读者看的公开更新记录。只写已经可以使用的变化，不写内部施工过程。
 
+## v20261029-lightroom-prompt-edit-check · 2026-10-29
+
+- 脉搏补收Lightroom桌面版9.6的Prompt to Edit，按Adobe官方9月29日文档更新时间记录为核对项；保留Early Access、DNG输出及面板额度/模型边界，不沿用第三方日期冒充首发。
+
 ## v20261029-source-qualified-creation-updates · 2026-10-29
 
 - 年轮补收MiMo-V2.6工具调用重复修复与Nano Banana 2.1。前者区分原API名、MOPD开源检查点和额度重置承诺；后者把约减半限定在标准API的1K图像同档价格。

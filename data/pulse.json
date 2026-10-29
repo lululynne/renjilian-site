@@ -4,6 +4,19 @@
   "tracking_since": "2026-09-18",
   "items": [
     {
+      "id": "pl-20260929-lightroom-96-prompt-to-edit-check",
+      "date": "2026-09-29",
+      "who": "Adobe Lightroom",
+      "kind": "核对",
+      "line": "Adobe的Lightroom桌面版9.6文档列出Early Access的Prompt to Edit，支持示例或自写提示词编辑并保存DNG；额度与模型以面板为准。",
+      "relation": "复杂修图多一条自然语言入口；Early Access不等于正式稳定或所有账号均可使用。",
+      "evidence": "Adobe两页均于9月29日更新；版本更新页列9.6，操作指南列早期访问流程。",
+      "source_name": "Adobe Lightroom官方9.6更新说明",
+      "source_url": "https://helpx.adobe.com/lightroom/desktop/introduction/whats-new.html",
+      "last_verified": "2026-10-29",
+      "status": "verified"
+    },
+    {
       "id": "pl-20261008-vidu-q4-preview-reference-video",
       "date": "2026-10-08",
       "who": "Vidu",
