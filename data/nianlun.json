@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01",
+  "updated_at": "2026-11-05",
   "first_ring": "2026-09-30",
   "members": [
     {
@@ -99,6 +99,34 @@
     }
   ],
   "items": [
+    {
+      "id": "nl-20261104-openai-images-26",
+      "at": "2026-11-04",
+      "member": "openai",
+      "tags": ["图像", "发布"],
+      "level": 3,
+      "line": "OpenAI发布Images 2.6，覆盖ChatGPT、Codex及API。API分Flare与Sunburst；官方称生成快50%，Flare低画质最快约6秒，并非所有请求保证。",
+      "sources": [
+        {"name": "OpenAI Images 2.6官方公告", "url": "https://openai.com/index/introducing-images-2-6/"}
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "模型"
+    },
+    {
+      "id": "nl-20261102-claude-message-threads",
+      "at": "2026-11-02",
+      "member": "anthropic",
+      "tags": ["API", "公测"],
+      "level": 3,
+      "line": "Anthropic开放message threads公测，后续请求只传增量；线程加密驻内存、不落盘，闲置5分钟过期。官方称多数Claude Code用户的50万至100万token请求中位首token延迟约降35%，token用量不变。",
+      "sources": [
+        {"name": "Anthropic message threads官方说明", "url": "https://claude.com/resources/articles/message-threads"}
+      ],
+      "read": "",
+      "notes": [],
+      "domain": "门路"
+    },
     {
       "id": "nl-20261029-mistral-large4-open-weights",
       "at": "2026-10-29",

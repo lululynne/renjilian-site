@@ -1,7 +1,20 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25",
+  "updated_at": "2026-11-05",
   "items": [
+    {
+      "id": "bark-20261104-gifs-native-language",
+      "title": "把GIF叫作社交媒体的母语",
+      "speaker": "Coco Mao · OpenArt联合创始人兼CEO（OpenAI公告引述）",
+      "at": "2026-11-04",
+      "quote": "GIFs are the native language of social media, and GPT‑Image‑2.6 lets every OpenArt creator speak it fluently from a single prompt.",
+      "quote_basis": "reported",
+      "paraphrase": "OpenAI在Images 2.6公告中引述Coco Mao的话：她把GIF比作社交媒体的母语，并称创作者能借一次提示来表达。这里保留为官方公告中的合作方引文，不冒充独立性能测试。",
+      "comment": "从生成一张图，到给角色一个动作，表达的单位也变了。",
+      "sources": [
+        {"name": "OpenAI公告中的Coco Mao引文", "url": "https://openai.com/index/introducing-images-2-6/"}
+      ]
+    },
     {
       "id": "bark-20261009-delta-ai-safety",
       "title": "把安全测试搬到达美航班",
