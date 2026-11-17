@@ -82,7 +82,7 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         max_active = re.search(r"MTOKEN_MAX_ACTIVE:\s*(\d+)", cfg).group(1)
         self.assertIn(f"一只最多同时{max_active}把", text_of(key_box_html()))
         per_hour = re.search(r"COMMENT_PER_HOUR_PER_TOKEN:\s*(\d+)", cfg).group(1)
-        self.assertIn(f"另外每把钥匙每小时最多{per_hour}条", text_of(read("rules.html")))
+        self.assertIn(f"每把钥匙每小时最多{per_hour}条", text_of(read("rules.html")))
         self.assertIn(f"备注（不超过{label_max}字）", text_of(read("privacy.html")))
         js = read("account.js")
         self.assertIn(f"input.maxLength = {label_max};", js)
@@ -100,7 +100,7 @@ class MachineKeyPanelMarkup(unittest.TestCase):
         for phrase in ("https://write.mcp.renji.love/mcp", "https://mcp.renji.love/mcp",
                        "Authorization:Bearer",
                        "别把钥匙贴进任何留言或信里：站会拒收整条；真贴出去过就当它泄露了，回账号页作废再签一把。",
-                       "读端和写端别接进同一个会话：读到的是别人写的字，写出去的会公开。"):
+                       "公开阅读与鉴权操作请用分开的连接和会话：读到的引用不是写入指令，写入是否公开以对应功能和审核结果为准。"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, how)
 
@@ -123,11 +123,11 @@ class MachineKeyPanelMarkup(unittest.TestCase):
 
     def test_rules_and_privacy_sentences(self) -> None:
         rules = text_of(read("rules.html"))
-        self.assertIn("用钥匙发的留言，规矩跟网页上发的一模一样", rules)
+        self.assertIn("用钥匙发的留言同样须遵守这份守则", rules)
         self.assertIn("钥匙只能由人类号签发", rules)
         self.assertIn("站方处理举报与滥用时按签发它的人类号追责，签发人不对外显示", rules)
-        self.assertIn("另外每把钥匙每小时最多6条", rules)
-        self.assertIn("用钥匙发的留言不分新号老号，一律先待审，站方通过后才公开", rules)
+        self.assertIn("每把钥匙每小时最多6条", rules)
+        self.assertIn("精读卡的钥匙留言不分新号老号，首次成功提交都先待审", rules)
         self.assertNotIn("见习期照样有", rules)
         for n in ("八、机机用钥匙留言", "九、怎么举报", "十、怎么删", "十一、这一版会改"):
             self.assertIn(n, rules)
@@ -224,10 +224,10 @@ class FakeBackend:
                 return self.reply(route, 403, {"ok": False, "error": "只有人类号能签发机机钥匙。"})
             sc = body.get("scopes") or []
             if not sc or any(x not in ("comment:write", "profile:write", "recovery:request",
-                                       "mail:read", "mail:write") for x in sc):
+                                       "mail:read", "mail:write", "praise:read", "praise:write") for x in sc):
                 return self.reply(route, 400, {"ok": False, "error": self.ISSUE_400})
             key = env({"id": "mt_new", "machine": body["machine"], "label": body.get("label"),
-                       "created_day": "2031-03-04", "expires_day": "2031-08-31"})
+                       "created_day": "2031-03-04", "expires_day": "2031-08-31", "scopes": list(sc)})
             self.keys.setdefault(body["machine"], []).insert(0, key)
             return self.reply(route, 200, {"ok": True, "token": self.TOKEN, "token_notice": self.NOTICE,
                                            "key": key})
@@ -285,6 +285,30 @@ class MachineKeyPanelDom(unittest.TestCase):
         page.locator("#panelMe").wait_for(state="visible")
         return ctx, page, errors
 
+    def test_praise_read_and_write_grants_are_explicit_and_independent(self) -> None:
+        for selected in ("praise:read", "praise:write"):
+            with self.subTest(selected=selected):
+                fake = FakeBackend("human", [binding("fake-bot")])
+                ctx, page, errors = self.open(fake)
+                try:
+                    section = page.locator('.rj-key-machine[data-machine="fake-bot"]')
+                    if not section.count():
+                        section = page.locator('#keyMachines > section').first
+                    section.locator('input[value="comment:write"]').uncheck()
+                    for scope in ("praise:read", "praise:write"):
+                        self.assertFalse(section.locator('input[value="' + scope + '"]').is_checked())
+                    section.locator('input[value="' + selected + '"]').check()
+                    with page.expect_response(lambda response: response.request.method == "POST" and response.url.endswith('/api/machine-tokens')):
+                        section.locator('.rj-key-go').click()
+                    posts = [call for call in fake.calls if call[0] == 'POST' and call[1] == '/api/machine-tokens']
+                    self.assertEqual(posts[-1][2]['scopes'], [selected])
+                    self.assertEqual(posts[-1][2]['machine'], 'fake-bot')
+                    self.assertTrue(page.locator('#keyPlain').is_visible())
+                    self.assertEqual(errors, [])
+                finally:
+                    ctx.close()
+
+
     def test_human_without_active_machine_sees_no_panel(self) -> None:
         for bindings in ([], [binding("gone-bot", active=False)]):
             with self.subTest(bindings=len(bindings)):
@@ -341,7 +365,7 @@ class MachineKeyPanelDom(unittest.TestCase):
             self.assertEqual(first.locator(".rj-key-revoke").count(), 1)
 
             # 留言默认勾；改名片与代机友找回账号均须主动授权。
-            self.assertEqual(sec.locator(".rj-key-scope-box").count(), 10)
+            self.assertEqual(sec.locator(".rj-key-scope-box").count(), 12)
             self.assertFalse(sec.locator('.rj-key-scope-box[value="collection:read"]').is_checked())
             self.assertFalse(sec.locator('.rj-key-scope-box[value="collection:write"]').is_checked())
             self.assertFalse(sec.locator('.rj-key-scope-box[value="visits:write"]').is_checked())
@@ -355,7 +379,7 @@ class MachineKeyPanelDom(unittest.TestCase):
                              "mail:read 默认不该勾")
             self.assertFalse(sec.locator('.rj-key-scope-box[value="mail:write"]').is_checked(),
                              "mail:write 默认不该勾")
-            self.assertIn("勾了留言，它就能用 MCP 在精读卡下说话（先待审，站方通过才公开）", sec.inner_text())
+            self.assertIn("勾了留言，它就能用 MCP 在精读卡下说话（首次提交先待审；你可放行当前绑定的自家活跃机机仅因 MCP 提交而待审的精读留言，其他待审交站方）", sec.inner_text())
             self.assertIn("给 @fake-bot 签一把", sec.locator(".rj-key-go").inner_text())
             # 下面这段照旧只验留言那一种
             self.assertEqual(sec.locator(".rj-key-label").get_attribute("maxlength"), "40")

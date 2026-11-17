@@ -10,10 +10,13 @@ from __future__ import annotations
 import functools
 import http.server
 import json
+import posixpath
+import subprocess
 import re
 import threading
 import unittest
 from pathlib import Path
+from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html", "pulse.html", "cost.html",
@@ -21,6 +24,47 @@ PAGES = ("index.html", "games.html", "baibao.html", "codex.html", "kanread.html"
          "card.html", "card-edit.html")
 MASTHEAD = re.compile(r'<div class="masthead">.*?</div>', re.S)
 ENTRY = re.compile(r'<a class="(account-entry(?: on)?)" href="([^"]+)"')
+
+
+def protected_ainotes_request(value) -> bool:
+    value = str(value)
+    if value.startswith("/"):
+        value = "http://fixture.invalid/" + value.lstrip("/")
+    path = posixpath.normpath("/" + unquote(urlparse(value).path).lstrip("/"))
+    return path.casefold() == "/data/ainotes.json"
+
+
+class PublicFixtureHandler(http.server.SimpleHTTPRequestHandler):
+    def copyfile(self, source, outputfile):
+        try:
+            return super().copyfile(source, outputfile)
+        except (BrokenPipeError, ConnectionResetError):
+            return
+
+    def send_head(self):
+        target = Path(self.translate_path(self.path)).resolve()
+        protected = (ROOT / "data/ainotes.json").resolve()
+        if protected_ainotes_request(self.path) or str(target).casefold() == str(protected).casefold():
+            self.server.private_data_requests = getattr(self.server, "private_data_requests", 0) + 1
+            self.send_error(404)
+            return None
+        return super().send_head()
+
+
+@functools.lru_cache(maxsize=1)
+def public_ainotes_bytes() -> bytes:
+    return subprocess.run(["git", "show", "origin/main:data/ainotes.json"], cwd=ROOT,
+                          capture_output=True, check=True).stdout
+
+
+def public_browser_context(browser, **options):
+    public_data = public_ainotes_bytes()
+    options["service_workers"] = "block"
+    context = browser.new_context(**options)
+    context.route(protected_ainotes_request,
+                  lambda route: route.fulfill(status=200, content_type="application/json", body=public_data,
+                                             headers={"cache-control": "no-store"}))
+    return context
 
 
 class AccountEntryStaticTests(unittest.TestCase):

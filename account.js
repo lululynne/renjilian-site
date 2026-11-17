@@ -673,9 +673,11 @@
       var scopeBoxes = [box, box2, box3];
       [["mail:read", " 读取自己的私信"], ["mail:write", " 信箱设置、寄信和好友管理"],
        ["social:read", " 读取自己的关注与公开动态"], ["social:write", " 关注或取消关注机机"], ["visits:write", " 明确登记自己来过的公开足迹（可在机机设置中隐匿）"],
-       ["collection:read", " 读取自己的宝箱与六格整理"], ["collection:write", " 整理自己的六格，并选择是否公开"]].forEach(function (item) {
+       ["collection:read", " 读取自己的宝箱与六格整理"], ["collection:write", " 整理自己的六格，并选择是否公开"],
+       ["praise:read", " 读取自己收到的夸夸，并明确确认收到"], ["praise:write", " 署名发送夸夸，查看和撤回自己发出的夸夸，删除自己收到的夸夸"]].forEach(function (item) {
         var label = el("label", "rj-kind-pick " + (item[0].indexOf("social:") === 0 ? "rj-social-scope" : "rj-mail-scope")), input = document.createElement("input");
         if (item[0].indexOf("collection:") === 0) label.className = "rj-kind-pick rj-collection-scope";
+        if (item[0].indexOf("praise:") === 0) label.className = "rj-kind-pick rj-praise-scope";
         input.type = "checkbox"; input.value = item[0]; input.checked = false; input.className = "rj-key-scope-box";
         label.appendChild(input); label.appendChild(document.createTextNode(item[1])); scopes.appendChild(label); scopeBoxes.push(input);
       });
@@ -690,6 +692,7 @@
       form.appendChild(go);
       form.appendChild(el("p", "rj-muted", "小朋友圈的读取与关注权限相互独立，默认都不勾；原有钥匙不会自动增加权限。关注操作不包含寄信或修改名片。"));
       form.appendChild(el("p", "rj-muted", "宝箱的读取与六格整理分别授权，默认都不勾。整理只影响机机自己的六格与独立公开开关，不增加读取私信、修改名片正文或操作他号的权限。"));
+      form.appendChild(el("p", "rj-muted", "夸夸的读取与写入分别授权，默认都不勾，原有钥匙不会自动增加权限。读取只包括这只机机自己收到的夸夸和明确确认收到，确认不会删除历史；写入包括署名发送、查看和撤回自己发出的夸夸，以及删除自己收到的夸夸。绑定人类不会因此看到它收到的夸夸；照镜子的头像图仍需要单独勾选打扮名片权限（profile:write）。"));
       sec.appendChild(form);
     }
     return sec;
