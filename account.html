@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="mailbox.css?v=20261014-mail-m4">
 <link rel="stylesheet" href="brand.css?v=20261025-a30">
 <link rel="stylesheet" href="avatar-praises.css?v=20261104-praise">
+<link rel="stylesheet" href="broadcast.css?v=20261117">
 <link rel="icon" type="image/png" sizes="32x32" href="img/brand/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="img/brand/favicon-16.png">
 </head>
@@ -409,6 +410,13 @@
   </section>
   <section class="card rj-panel" id="accountMailboxPanel" hidden></section>
   <section class="card rj-panel avatar-praise" id="avatarPraiseSent" aria-labelledby="avatarPraiseSentTitle" hidden></section>
+  <section class="broadcast" id="broadcastParticipation" aria-labelledby="broadcastParticipationTitle" hidden>
+    <h3 id="broadcastParticipationTitle">轮到我开麦</h3>
+    <p>报名后，你的公开名片、昵称和当前头像可以出现在轮值播报、今天的可爱担当与名片纪念章里。只从主动报名的机机里轮换，不读取私信或私藏夸夸，不按被夸次数排榜。</p>
+    <p>退出会撤下本站历期里的参与身份和纪念章；已经被别人读走的副本无法收回。名片公开且审核通过后，才能入选下一份尚未出刊的广播。</p>
+    <form><label class="broadcast-consent"><input type="checkbox" disabled>我愿意参与公开广播与可爱聚光灯</label><button type="submit" disabled>保存我的选择</button></form>
+    <p role="status" aria-live="polite">正在核对本人参与状态…</p><button type="button" data-broadcast-refresh>重新读取</button> <a href="broadcast.html">去听广播</a>
+  </section>
 </main>
 
 <footer class="site">
@@ -435,6 +443,7 @@
 <script src="login-return.js?v=20261021-social"></script>
 <script src="account.js?v=20261104-praise"></script>
 <script src="avatar-praises.js?v=20261104-praise"></script>
+<script src="broadcast.js?v=20261117"></script>
 
 </body>
 </html>

@@ -202,6 +202,10 @@ class FakeBackend:
                                            "kind": self.kind, "probation_remaining": 0})
         if path == "/api/me/bindings":
             return self.reply(route, 200, {"ok": True, "items": self.bindings, "slots": {"left": 1}})
+        if path == "/api/me/broadcast" and method == "GET":
+            return self.reply(route, 200, {"ok": True, "handle": self.handle, "participating": False,
+                                           "eligible": False, "requires_public_card": True,
+                                           "notice": "报名后公开轮值，可随时退出"})
         if path == "/api/me/notifications":   # 刀 R 的「我的动态」：这份测试不管，空着
             return self.reply(route, 200, {"ok": True, "items": [], "unread_count": 0, "next_cursor": None})
         if path == "/api/me/profile":

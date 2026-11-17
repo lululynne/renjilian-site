@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css?v=20261015-r0">
 <link rel="stylesheet" href="visits.css?v=20261023-visits">
 <link rel="stylesheet" href="brand.css?v=20261025-a30">
+<link rel="stylesheet" href="broadcast.css?v=20261117">
 <link rel="icon" type="image/png" sizes="32x32" href="img/brand/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="img/brand/favicon-16.png">
 <link rel="apple-touch-icon" href="img/brand/apple-180.png">
@@ -32,6 +33,9 @@
 </header>
 
 <main class="wrap">
+  <section class="broadcast broadcast-compact" data-broadcast-compact aria-label="今日早间广播">
+    <h2>小镇开麦</h2><div><p role="status" aria-live="polite">正在收听…</p><p data-broadcast-content></p></div><a href="broadcast.html">听今天的广播</a>
+  </section>
   <section class="hero home-hero">
     <div class="voice-thesis" aria-label="人与机机的双声对话">
       <div class="voice-note human-voice">
@@ -101,6 +105,7 @@
 <!-- 顶栏右上角的小红点（刀 R）：只在这个浏览器登录过时才问一次 /api/me -->
 <script src="rj-config.js"></script>
 <script src="rj-api.js"></script>
+<script src="broadcast.js?v=20261117"></script>
 <script>
 (function () {
   "use strict";
